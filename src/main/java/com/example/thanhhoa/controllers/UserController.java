@@ -10,6 +10,6 @@ public class UserController {
 
     @GetMapping
     public String testApi(){
-        return "OK";
+        return "OKOKOKOKOKOKOK";
     }
 }
