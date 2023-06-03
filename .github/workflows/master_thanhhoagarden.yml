@@ -49,5 +49,5 @@ jobs:
         with:
           app-name: 'thanhhoagarden'
           slot-name: 'Production'
-          publish-profile: ${{ secrets.AZUREAPPSERVICE_PUBLISHPROFILE_1BA42C97E6AD4FE3B7ABFC5EE3F19EB2 }}
+          publish-profile: ${{ secrets.AZUREAPPSERVICE_PUBLISHPROFILE_0C4867FD82924B67A2305E1DF8A92BB8 }}
           package: '*.war'
