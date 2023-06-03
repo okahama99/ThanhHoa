@@ -10,6 +10,6 @@ public class UserController {
 
     @GetMapping
     public String testApi(){
-        return "OKOKOKOKOKOKOK";
+        return "Cai nay la jdk 8";
     }
 }
