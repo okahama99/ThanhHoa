@@ -28,7 +28,7 @@ jobs:
         uses: actions/upload-artifact@v2
         with:
           name: java-app
-          path: '${{ github.workspace }}/target/*.{war,jar,pom}'
+          path: '${{ github.workspace }}/target/*.jar
 
   deploy:
     runs-on: windows-latest
@@ -38,13 +38,13 @@ jobs:
       url: ${{ steps.deploy-to-webapp.outputs.webapp-url }}
 
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v2
       
       - name: Download artifact from build job
         uses: actions/download-artifact@v2
         with:
           name: java-app
-          path: '${{ github.workspace }}/target/*.{war,jar,pom}'
+#           path: '${{ github.workspace }}/target/*.{war,jar,pom}'
 
       - name: Deploy to Azure Web App
         id: deploy-to-webapp
