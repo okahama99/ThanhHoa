@@ -111,14 +111,26 @@
 		</dependency>
 
 	</dependencies>
-
 	<build>
+	  <plugins>
+	    <plugin>
+	      <groupId>org.apache.maven.plugins</groupId>
+	      <artifactId>maven-war-plugin</artifactId>
+	      <version>3.3.2</version>
+	      <configuration>
+		<warName>myapp</warName>
+	      </configuration>
+	    </plugin>
+	  </plugins>
+	</build>
+
+<!-- 	<build>
 		<plugins>
 			<plugin>
 				<groupId>org.springframework.boot</groupId>
 				<artifactId>spring-boot-maven-plugin</artifactId>
 			</plugin>
 		</plugins>
-	</build>
+	</build> -->
 
 </project>
