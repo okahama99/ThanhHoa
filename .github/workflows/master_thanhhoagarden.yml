@@ -46,7 +46,7 @@ jobs:
         uses: actions/download-artifact@v3
         with:
           name: java-app
-          path: '${{ github.workspace }}/target/*.jar'
+          path: 'D:\a\ThanhHoa\ThanhHoa\target\ThanhHoa-0.0.1-SNAPSHOT.jar'
 
       - name: Deploy to Azure Web App
         id: deploy-to-webapp
