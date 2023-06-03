@@ -30,14 +30,8 @@ public class Plant {
     @Column(nullable = false)
     private Double price;
 
-    @Column(nullable = false)
-    private Double rentPrice;
-
     @Column
     private Boolean withPot = false;
-
-    @Column
-    private Boolean forRent = false;
 
     @Enumerated(EnumType.ORDINAL)
     private Status status;
