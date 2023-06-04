@@ -10,6 +10,6 @@ public class UserController {
 
     @GetMapping
     public String testApi(){
-        return "Cai nay la jdk 8 lan so 2";
+        return "Test Deploy Swagger";
     }
 }
