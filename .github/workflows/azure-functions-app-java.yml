@@ -56,7 +56,7 @@ jobs:
     - name: 'Azure Login '
       uses: azure/actions/login@v1
       with:
-         creds: ${{ secrets.AZURE_CREDENTIALS }}
+         creds: '${{ secrets.AZURE_CREDENTIALS }}'
 
     - name: 'Run Azure Functions Action'
       uses: Azure/functions-action@v1
