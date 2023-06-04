@@ -14,23 +14,21 @@ jobs:
     runs-on: windows-latest
 
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v2
 
       - name: Set up Java version
-        uses: actions/setup-java@v3
+        uses: actions/setup-java@v1
         with:
-          distribution: 'temurin'
           java-version: '11'
-          cache: 'maven'
 
       - name: Build with Maven
-        run: mvn -B package --file pom.xml
+        run: mvn clean install
 
       - name: Upload artifact for deployment job
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v2
         with:
           name: java-app
-          path: '${{ github.workspace }}/target/*.jar'
+          path: '${{ github.workspace }}/target/*.war'
 
   deploy:
     runs-on: windows-latest
@@ -40,13 +38,10 @@ jobs:
       url: ${{ steps.deploy-to-webapp.outputs.webapp-url }}
 
     steps:
-      - uses: actions/checkout@v3
-      
       - name: Download artifact from build job
-        uses: actions/download-artifact@v3
+        uses: actions/download-artifact@v2
         with:
           name: java-app
-          path: 'D:\a\ThanhHoa\ThanhHoa\target\ThanhHoa-0.0.1-SNAPSHOT.jar'
 
       - name: Deploy to Azure Web App
         id: deploy-to-webapp
@@ -54,6 +49,5 @@ jobs:
         with:
           app-name: 'thanhhoagarden'
           slot-name: 'Production'
-          publish-profile: ${{ secrets.AZUREAPPSERVICE_PUBLISHPROFILE_A3B5E01C0E88442184AB8FAF353BFD1C }}
-          package: '${{ env.AZURE_WEBAPP_PACKAGE_PATH }}/target/ThanhHoa-0.0.1-SNAPSHOT.jar'
-#           package: '*.war'
+          publish-profile: ${{ secrets.AZUREAPPSERVICE_PUBLISHPROFILE_F0617CA09AA74671B1A8BFDBE03E09A2 }}
+          package: '*.war'
