@@ -53,8 +53,7 @@ jobs:
         uses: actions/upload-artifact@v3
         with:
           name: java-app
-          #path: '${{ github.workspace }}/target/*.jar'
-          path: '${{ github.workspace }}/target
+          path: '${{ github.workspace }}/target/ThanhHoa-0.0.1-SNAPSHOT.war'
 
   deploy:
     permissions:
