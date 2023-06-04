@@ -23,9 +23,9 @@ on:
     branches: ["master"]
 
 env:
-  AZURE_FUNCTIONAPP_NAME: 'thanhhoagarden'   # set this to your function app name on Azure
+  AZURE_FUNCTIONAPP_NAME: 'ThanhHoaGarden'   # set this to your function app name on Azure
   POM_XML_DIRECTORY: '.'                    # set this to the directory which contains pom.xml file
-  JAVA_VERSION: '8'                         # set this to the java version to use (e.g. '8', '11', '17')
+  JAVA_VERSION: '11'                         # set this to the java version to use (e.g. '8', '11', '17')
 
 jobs:
   build-and-deploy:
