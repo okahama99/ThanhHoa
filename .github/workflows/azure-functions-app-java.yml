@@ -53,7 +53,7 @@ jobs:
         mvn clean package
         popd
         
-    - uses: azure/login@v1
+    - uses: azure/actions/login@v1
       with: 
          creds: ${{ secrets.AZURE_CREDENTIALS }}
 
