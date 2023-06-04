@@ -10,6 +10,6 @@ public class UserController {
 
     @GetMapping
     public String testApi(){
-        return "Test Deploy Swagger";
+        return "Test Deploy GitHub Action";
     }
 }
