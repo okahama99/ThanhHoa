@@ -13,6 +13,9 @@ public class ShowOrderFeedback {
     private Long orderFeedbackID;
     private String description;
     private LocalDateTime createdDate;
-
     private List<OrderFeedbackIMG> orderFeedbackIMGList;
+
+    private Long ratingID;
+    private String ratingDes;
+
 }

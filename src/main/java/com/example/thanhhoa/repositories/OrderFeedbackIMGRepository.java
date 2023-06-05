@@ -8,6 +8,6 @@ import org.springframework.stereotype.Repository;
 import java.util.List;
 
 @Repository
-public interface OrderFeedbackIMGRepository extends JpaRepository<OrderFeedback, Long> {
+public interface OrderFeedbackIMGRepository extends JpaRepository<OrderFeedbackIMG, Long> {
     List<OrderFeedbackIMG> findAllByOrderFeedback(OrderFeedback orderFeedback);
 }

@@ -10,7 +10,7 @@ import java.io.IOException;
 import java.util.UUID;
 
 public interface ImageService {
-//    String getImageUrl(String name);
+    String getImageUrl(String name);
 
     String save(MultipartFile file) throws IOException;
 

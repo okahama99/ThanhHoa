@@ -13,7 +13,7 @@ import java.util.List;
 public interface PlantService {
     List<ShowPlantModel> getAllPlant(Pageable paging);
 
-    Plant createPlant(CreatePlantModel createPlantModel, MultipartFile[] files) throws Exception;
+    Boolean createPlant(CreatePlantModel createPlantModel, MultipartFile[] files) throws Exception;
 
     Boolean updatePlant(UpdatePlantModel updatePlantModel, MultipartFile[] files) throws Exception;
 

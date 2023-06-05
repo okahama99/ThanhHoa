@@ -1,6 +1,5 @@
 package com.example.thanhhoa.dtos.PlantModels;
 
-import com.example.thanhhoa.entities.PlantIMG;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -16,7 +15,6 @@ public class CreatePlantModel {
     private Double price;
     private Boolean withPot;
 
-    private List<PlantIMG> plantIMGList;
     private Long storeID;
     private Integer quantity;
     private Long shipPriceID;
