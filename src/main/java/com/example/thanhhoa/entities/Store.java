@@ -36,20 +36,21 @@ public class Store {
     @JoinColumn(name = "manager_id")
     private Manager manager;
 
-    @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY, mappedBy = "staff")
+    @ManyToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @JoinColumn(name = "plantShipPrice_id")
+    private PlantShipPrice plantShipPrice;
+
+    @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY, mappedBy = "store")
     private List<Staff> staffList;
 
-    @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY, mappedBy = "contract")
+    @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY, mappedBy = "store")
     private List<Contract> contractList;
 
-    @ManyToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-    @JoinTable( name = "store_plant",
-                joinColumns = @JoinColumn(name = "store_id"),
-                inverseJoinColumns = @JoinColumn(name = "plant_id"))
-    private List<Plant> plantList;
+    @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY, mappedBy = "store")
+    private List<StorePlant> storePlantList;
 
-    @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY, mappedBy = "order")
-    private List<Order> orderList;
+    @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY, mappedBy = "store")
+    private List<tblOrder> tblOrderList;
 
 
 }

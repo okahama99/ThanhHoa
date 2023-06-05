@@ -32,5 +32,5 @@ public class Notification {
 
     @ManyToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     @JoinColumn(name = "account_id")
-    private Account account;
+    private tblAccount tblAccount;
 }

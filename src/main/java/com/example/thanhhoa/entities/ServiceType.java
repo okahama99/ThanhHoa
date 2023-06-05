@@ -28,7 +28,7 @@ public class ServiceType {
     @Column(nullable = false)
     private LocalDateTime applyDate;
 
-    @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY, mappedBy = "contract_detail")
+    @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY, mappedBy = "serviceType")
     private List<ContractDetail> contractDetailList;
 
     @ManyToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)

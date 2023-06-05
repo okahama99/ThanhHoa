@@ -18,7 +18,7 @@
 //    @Override
 //    @Transactional
 //    public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-//        User user = null;
+//        tblUser user = null;
 //
 //        try {
 //            user = userService.getByUsername(username);

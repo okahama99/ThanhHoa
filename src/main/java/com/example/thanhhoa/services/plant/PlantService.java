@@ -1,5 +1,37 @@
 package com.example.thanhhoa.services.plant;
 
-public interface PlantService {
+import com.example.thanhhoa.dtos.PlantModels.CreatePlantModel;
+import com.example.thanhhoa.dtos.PlantModels.ShowPlantModel;
+import com.example.thanhhoa.dtos.PlantModels.UpdatePlantModel;
+import com.example.thanhhoa.entities.Category;
+import com.example.thanhhoa.entities.Plant;
+import org.springframework.data.domain.Pageable;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.util.List;
+
+public interface PlantService {
+    List<ShowPlantModel> getAllPlant(Pageable paging);
+
+    Plant createPlant(CreatePlantModel createPlantModel, MultipartFile[] files) throws Exception;
+
+    Boolean updatePlant(UpdatePlantModel updatePlantModel, MultipartFile[] files) throws Exception;
+
+    Boolean deletePlant(Long plantID);
+
+    Plant checkDuplicate(String plantName);
+
+    List<ShowPlantModel> getPlantByCategory(List<Category> categoryList, Pageable paging);
+
+    List<ShowPlantModel> getPlantByName(String name, Pageable paging);
+
+    List<ShowPlantModel> getNameByPrice(Double fromPrice, Double toPrice, Pageable paging);
+
+    List<ShowPlantModel> getPlantByCategoryAndName(List<Category> categoryList, String name, Pageable paging);
+
+    List<ShowPlantModel> getPlantByNameAndPrice(String name, Double fromPrice, Double toPrice, Pageable paging);
+
+    List<ShowPlantModel> getPlantByCategoryAndPrice(List<Category> categoryList, Double fromPrice, Double toPrice, Pageable paging);
+
+    List<ShowPlantModel> getPlantByCategoryAndNameAndPrice(List<Category> categoryList, String name, Double fromPrice, Double toPrice, Pageable paging);
 }

@@ -18,6 +18,6 @@ public class Category {
     @Column(nullable = false, length = 100)
     private String name;
 
-    @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY, mappedBy = "plant_category")
+    @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY, mappedBy = "category")
     private List<PlantCategory> plantCategoryList;
 }

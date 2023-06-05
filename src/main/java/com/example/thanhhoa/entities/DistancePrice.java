@@ -22,6 +22,6 @@ public class DistancePrice {
     @Column(nullable = false)
     private Double pricePerKm;
 
-    @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY, mappedBy = "order")
-    private List<Order> orderList;
+    @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY, mappedBy = "distancePrice")
+    private List<tblOrder> tblOrderList;
 }

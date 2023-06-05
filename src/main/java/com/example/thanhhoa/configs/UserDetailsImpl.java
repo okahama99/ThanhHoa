@@ -29,7 +29,7 @@
 //
 //    }
 //
-//    public static UserDetailsImpl build(User user) {
+//    public static UserDetailsImpl build(tblUser user) {
 //        List<GrantedAuthority> authorities = new ArrayList<>();
 //
 //        authorities.add(new SimpleGrantedAuthority(String.valueOf(user.getRoleId())));

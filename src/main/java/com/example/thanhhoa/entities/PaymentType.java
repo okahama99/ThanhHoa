@@ -18,6 +18,6 @@ public class PaymentType {
     @Column(nullable = false, length = 100)
     private String name;
 
-    @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY, mappedBy = "contract")
+    @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY, mappedBy = "paymentType")
     private List<Contract> contractList;
 }

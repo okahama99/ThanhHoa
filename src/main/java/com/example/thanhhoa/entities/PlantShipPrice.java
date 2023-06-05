@@ -21,6 +21,6 @@ public class PlantShipPrice {
     @Column(nullable = false)
     private Double distancePrice;
 
-    @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY, mappedBy = "store")
+    @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY, mappedBy = "plantShipPrice")
     private List<Store> storeList;
 }

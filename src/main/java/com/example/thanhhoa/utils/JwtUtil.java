@@ -29,7 +29,7 @@
 //    public String generateTokenEmail(String email) {
 //        Date now = new Date();
 //        Date expiryDate = new Date(now.getTime() + JWT_EXPIRATION);
-//        User user = userRepository.findUserByEmail(email);
+//        tblUser user = userRepository.findUserByEmail(email);
 //        UserProfileModel userProfile = userProfileService.findByUser(user);
 //        return Jwts.builder()
 //                .setSubject(user.getUsername())

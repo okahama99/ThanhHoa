@@ -76,6 +76,6 @@ public class Contract {
     @JoinColumn(name = "payment_type_id")
     private PaymentType paymentType;
 
-    @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY, mappedBy = "contract_detail")
+    @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY, mappedBy = "contract")
     private List<ContractDetail> contractDetailList;
 }

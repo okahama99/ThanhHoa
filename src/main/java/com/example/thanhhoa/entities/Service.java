@@ -28,7 +28,7 @@ public class Service {
     @Enumerated(EnumType.ORDINAL)
     private Status status;
 
-    @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY, mappedBy = "service_type")
+    @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY, mappedBy = "service")
     private List<ServiceType> serviceTypeList;
 
     @OneToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
