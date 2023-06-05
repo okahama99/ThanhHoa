@@ -24,4 +24,12 @@ public class ContractFeedback {
 
     @Enumerated(EnumType.ORDINAL)
     private Status status;
+
+    @ManyToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @JoinColumn(name = "staff_id")
+    private Staff staff;
+
+    @ManyToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @JoinColumn(name = "rating_id")
+    private Rating rating;
 }

@@ -5,6 +5,7 @@ import lombok.Getter;
 import lombok.Setter;
 
 import javax.persistence.*;
+import java.util.List;
 
 @Entity
 @Getter
@@ -26,4 +27,11 @@ public class Service {
 
     @Enumerated(EnumType.ORDINAL)
     private Status status;
+
+    @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY, mappedBy = "service_type")
+    private List<ServiceType> serviceTypeList;
+
+    @OneToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @JoinColumn(name = "service_category_id")
+    private ServiceCategory serviceCategory;
 }

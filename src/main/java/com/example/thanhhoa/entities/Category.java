@@ -4,6 +4,7 @@ import lombok.Getter;
 import lombok.Setter;
 
 import javax.persistence.*;
+import java.util.List;
 
 @Entity
 @Getter
@@ -16,4 +17,7 @@ public class Category {
 
     @Column(nullable = false, length = 100)
     private String name;
+
+    @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY, mappedBy = "plant_category")
+    private List<PlantCategory> plantCategoryList;
 }

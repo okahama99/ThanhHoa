@@ -20,4 +20,12 @@ public class Report {
 
     @Column(nullable = false)
     private LocalDateTime createdDate;
+
+    @ManyToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @JoinColumn(name = "contract_detail_id")
+    private ContractDetail contractDetail;
+
+    @ManyToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @JoinColumn(name = "customer_id")
+    private Customer customer;
 }

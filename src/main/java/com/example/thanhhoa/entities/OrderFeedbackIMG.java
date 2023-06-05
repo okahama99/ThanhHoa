@@ -16,4 +16,8 @@ public class OrderFeedbackIMG {
 
     @Column(nullable = false)
     private String url;
+
+    @ManyToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @JoinColumn(name = "order_feedback")
+    private OrderFeedback orderFeedback;
 }

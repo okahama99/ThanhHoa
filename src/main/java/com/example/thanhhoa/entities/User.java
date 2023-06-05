@@ -31,4 +31,12 @@ public class User {
 
     @Column(nullable = false)
     private String avatar;
+
+    @OneToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @JoinColumn(name = "province_id")
+    private Province province;
+
+    @OneToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @JoinColumn(name = "district_id")
+    private District district;
 }

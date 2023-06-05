@@ -29,4 +29,8 @@ public class Notification {
 
     @Column
     private Boolean isRead = false;
+
+    @ManyToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @JoinColumn(name = "account_id")
+    private Account account;
 }

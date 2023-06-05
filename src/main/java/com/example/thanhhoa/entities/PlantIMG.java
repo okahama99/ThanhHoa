@@ -16,4 +16,8 @@ public class PlantIMG {
 
     @Column(nullable = false)
     private String url;
+
+    @ManyToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @JoinColumn(name = "plant_id")
+    private Plant plant;
 }

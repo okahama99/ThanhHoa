@@ -17,4 +17,8 @@ public class WorkingDate {
 
     @Column(nullable = false)
     private LocalDateTime workingDate;
+
+    @ManyToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @JoinColumn(name = "contract_detail_id")
+    private ContractDetail contractDetail;
 }
