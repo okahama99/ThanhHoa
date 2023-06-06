@@ -1,6 +1,6 @@
 package com.example.thanhhoa.entities;
 
-import com.example.thanhhoa.constants.Status;
+import com.example.thanhhoa.enums.Status;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -28,6 +28,9 @@ public class tblOrder {
 
     @Column(nullable = false)
     private String address;
+
+    @Column
+    private String reason;
 
     @Column(nullable = false, length = 50)
     private String paymentMethod;
@@ -62,7 +65,7 @@ public class tblOrder {
     @Column
     private Double total = 0.0;
 
-    @Enumerated(EnumType.ORDINAL)
+    @Enumerated(EnumType.STRING)
     private Status status;
 
     @ManyToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
@@ -71,11 +74,11 @@ public class tblOrder {
 
     @ManyToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     @JoinColumn(name = "staff_id")
-    private Staff staff;
+    private tblAccount staff;
 
     @ManyToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     @JoinColumn(name = "customer_id")
-    private Customer customer;
+    private tblAccount customer;
 
     @ManyToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     @JoinColumn(name = "distance_price_id")

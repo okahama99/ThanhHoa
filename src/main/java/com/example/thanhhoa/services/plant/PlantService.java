@@ -21,17 +21,17 @@ public interface PlantService {
 
     Plant checkDuplicate(String plantName);
 
-    List<ShowPlantModel> getPlantByCategory(List<Category> categoryList, Pageable paging);
+    List<ShowPlantModel> getPlantByCategory(List<Long> categoryIDList, Pageable paging);
 
     List<ShowPlantModel> getPlantByName(String name, Pageable paging);
 
     List<ShowPlantModel> getNameByPrice(Double fromPrice, Double toPrice, Pageable paging);
 
-    List<ShowPlantModel> getPlantByCategoryAndName(List<Category> categoryList, String name, Pageable paging);
+    List<ShowPlantModel> getPlantByCategoryAndName(List<Long> categoryIDList, String name, Pageable paging);
 
     List<ShowPlantModel> getPlantByNameAndPrice(String name, Double fromPrice, Double toPrice, Pageable paging);
 
-    List<ShowPlantModel> getPlantByCategoryAndPrice(List<Category> categoryList, Double fromPrice, Double toPrice, Pageable paging);
+    List<ShowPlantModel> getPlantByCategoryAndPrice(List<Long> categoryIDList, Double fromPrice, Double toPrice, Pageable paging);
 
-    List<ShowPlantModel> getPlantByCategoryAndNameAndPrice(List<Category> categoryList, String name, Double fromPrice, Double toPrice, Pageable paging);
+    List<ShowPlantModel> getPlantByCategoryAndNameAndPrice(List<Long> categoryIDList, String name, Double fromPrice, Double toPrice, Pageable paging);
 }

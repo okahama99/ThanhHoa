@@ -1,6 +1,6 @@
 package com.example.thanhhoa.entities;
 
-import com.example.thanhhoa.constants.Status;
+import com.example.thanhhoa.enums.Status;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -20,6 +20,9 @@ public class tblAccount {
     @Column(unique = true, nullable = false)
     private String UID;
 
+    @Column
+    private String fcmToken;
+
     @Column(unique = true, nullable = false, length = 50)
     private String username;
 
@@ -29,10 +32,25 @@ public class tblAccount {
     @Column(nullable = false)
     private LocalDateTime createdDate;
 
-    @Column
-    private String fcmToken;
+    @Column(nullable = false, length = 50)
+    private String fullName;
 
-    @Enumerated(EnumType.ORDINAL)
+    @Column(unique = true, nullable = false, length = 100)
+    private String email;
+
+    @Column(nullable = false, length = 20)
+    private String phone;
+
+    @Column(nullable = false)
+    private String address;
+
+    @Column
+    private Boolean gender = false;
+
+    @Column(nullable = false)
+    private String avatar;
+
+    @Enumerated(EnumType.STRING)
     private Status status;
 
     @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY, mappedBy = "tblAccount")
@@ -41,20 +59,4 @@ public class tblAccount {
     @OneToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     @JoinColumn(name = "role_id")
     private Role role;
-
-    @OneToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-    @JoinColumn(name = "user_id")
-    private tblUser tblUser;
-
-    @OneToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-    @JoinColumn(name = "manager_id")
-    private Manager manager;
-
-    @OneToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-    @JoinColumn(name = "staff_id")
-    private Staff staff;
-
-    @OneToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-    @JoinColumn(name = "customer_id")
-    private Customer customer;
 }

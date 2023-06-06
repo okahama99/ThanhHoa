@@ -32,16 +32,8 @@ public class Store {
     @JoinColumn(name = "district_id")
     private District district;
 
-    @OneToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-    @JoinColumn(name = "manager_id")
-    private Manager manager;
-
-    @ManyToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-    @JoinColumn(name = "plantShipPrice_id")
-    private PlantShipPrice plantShipPrice;
-
     @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY, mappedBy = "store")
-    private List<Staff> staffList;
+    private List<StoreStaff> staffList;
 
     @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY, mappedBy = "store")
     private List<Contract> contractList;

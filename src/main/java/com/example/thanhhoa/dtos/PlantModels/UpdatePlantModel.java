@@ -8,6 +8,7 @@ import java.util.List;
 @Getter
 @Setter
 public class UpdatePlantModel {
+    private Long storeID;
     private Long plantID;
     private String name;
     private String description;

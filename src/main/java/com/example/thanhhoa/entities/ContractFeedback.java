@@ -1,6 +1,6 @@
 package com.example.thanhhoa.entities;
 
-import com.example.thanhhoa.constants.Status;
+import com.example.thanhhoa.enums.Status;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -22,14 +22,14 @@ public class ContractFeedback {
     @Column(nullable = false)
     private LocalDateTime date;
 
-    @Enumerated(EnumType.ORDINAL)
+    @Enumerated(EnumType.STRING)
     private Status status;
-
-    @ManyToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-    @JoinColumn(name = "staff_id")
-    private Staff staff;
 
     @ManyToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     @JoinColumn(name = "rating_id")
     private Rating rating;
+
+    @OneToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @JoinColumn(name = "contract_id")
+    private Contract contract;
 }

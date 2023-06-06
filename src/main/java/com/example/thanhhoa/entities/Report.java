@@ -27,5 +27,5 @@ public class Report {
 
     @ManyToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     @JoinColumn(name = "customer_id")
-    private Customer customer;
+    private tblAccount customer;
 }

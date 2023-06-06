@@ -1,6 +1,6 @@
 package com.example.thanhhoa.entities;
 
-import com.example.thanhhoa.constants.Status;
+import com.example.thanhhoa.enums.Status;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -25,7 +25,7 @@ public class Service {
     @Column
     private Double price;
 
-    @Enumerated(EnumType.ORDINAL)
+    @Enumerated(EnumType.STRING)
     private Status status;
 
     @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY, mappedBy = "service")

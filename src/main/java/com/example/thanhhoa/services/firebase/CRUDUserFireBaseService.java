@@ -16,19 +16,19 @@ public class CRUDUserFireBaseService {
 
     public static String saveUser(UserFCMToken userFCMToken) throws InterruptedException, ExecutionException {
         Firestore dbFirestore = FirestoreClient.getFirestore();
-        ApiFuture<WriteResult> collectionsApiFuture = dbFirestore.collection("Users").document(userFCMToken.getUserID().toString()).set(userFCMToken);
+        ApiFuture<WriteResult> collectionsApiFuture = dbFirestore.collection("Users").document(userFCMToken.getAccountID().toString()).set(userFCMToken);
         return collectionsApiFuture.get().getUpdateTime().toString();
     }
 
     public static String updateUser(UserFCMToken userFCMToken) throws InterruptedException, ExecutionException {
         Firestore dbFirestore = FirestoreClient.getFirestore();
-        ApiFuture<WriteResult> collectionsApiFuture = dbFirestore.collection("Users").document(userFCMToken.getUserID().toString()).set(userFCMToken);
+        ApiFuture<WriteResult> collectionsApiFuture = dbFirestore.collection("Users").document(userFCMToken.getAccountID().toString()).set(userFCMToken);
         return collectionsApiFuture.get().getUpdateTime().toString();
     }
 
     public static String deleteUser(UserFCMToken userFCMToken) {
         Firestore dbFirestore = FirestoreClient.getFirestore();
-        dbFirestore.collection("Users").document(userFCMToken.getUserID().toString()).delete();
+        dbFirestore.collection("Users").document(userFCMToken.getAccountID().toString()).delete();
         return "Đã xóa.";
     }
 

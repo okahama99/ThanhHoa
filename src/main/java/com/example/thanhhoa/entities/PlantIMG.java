@@ -15,7 +15,7 @@ public class PlantIMG {
     private Long id;
 
     @Column(nullable = false)
-    private String imgName;
+    private String imgURL;
 
     @ManyToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     @JoinColumn(name = "plant_id")

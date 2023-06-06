@@ -1,6 +1,6 @@
 package com.example.thanhhoa.entities;
 
-import com.example.thanhhoa.constants.Status;
+import com.example.thanhhoa.enums.Status;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -35,6 +35,9 @@ public class Contract {
     @Column(nullable = false, length = 50)
     private String paymentMethod;
 
+    @Column
+    private String reason;
+
     @Column(nullable = false)
     private LocalDateTime createdDate;
 
@@ -53,24 +56,20 @@ public class Contract {
     @Column
     private Boolean isFeedback = false;
 
-    @Enumerated(EnumType.ORDINAL)
+    @Enumerated(EnumType.STRING)
     private Status status;
-
-    @OneToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-    @JoinColumn(name = "contract_feedback_id")
-    private ContractFeedback contractFeedback;
 
     @ManyToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     @JoinColumn(name = "store_id")
     private Store store;
 
     @ManyToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-    @JoinColumn(name = "staff_id")
-    private Staff staff;
+    @JoinColumn(name = "account_staff_id")
+    private tblAccount accStaff;
 
     @ManyToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-    @JoinColumn(name = "customer_id")
-    private Customer customer;
+    @JoinColumn(name = "account_customer_id")
+    private tblAccount accCustomer;
 
     @ManyToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     @JoinColumn(name = "payment_type_id")

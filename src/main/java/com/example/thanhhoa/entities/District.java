@@ -16,4 +16,8 @@ public class District {
 
     @Column(nullable = false, length = 50)
     private String districtName;
+
+    @ManyToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @JoinColumn(name = "province_id")
+    private Province province;
 }

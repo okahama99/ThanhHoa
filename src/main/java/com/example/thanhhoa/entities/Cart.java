@@ -22,6 +22,6 @@ public class Cart {
     private Plant plant;
 
     @ManyToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-    @JoinColumn(name = "customer_id")
-    private Customer customer;
+    @JoinColumn(name = "account_id")
+    private tblAccount account;
 }
