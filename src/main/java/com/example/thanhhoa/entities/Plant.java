@@ -19,10 +19,10 @@ public class Plant {
     @Column(nullable = false)
     private String name;
 
-    @Column(nullable = false)
+    @Column(nullable = false, columnDefinition="nvarchar(max)")
     private String description;
 
-    @Column(nullable = false)
+    @Column(nullable = false, columnDefinition="nvarchar(max)")
     private String careNote;
 
     @Column(nullable = false)

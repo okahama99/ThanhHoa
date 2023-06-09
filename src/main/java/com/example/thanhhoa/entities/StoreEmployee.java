@@ -18,7 +18,7 @@ import javax.persistence.ManyToOne;
 @Entity
 @Getter
 @Setter
-public class StoreStaff {
+public class StoreEmployee {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;

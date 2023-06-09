@@ -19,7 +19,7 @@ public class ContractDetail {
     @Column(nullable = false)
     private String timeWorking;
 
-    @Column(nullable = false)
+    @Column(nullable = false, columnDefinition="nvarchar(max)")
     private String note;
 
     @Column(nullable = false)
@@ -44,4 +44,8 @@ public class ContractDetail {
     @ManyToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     @JoinColumn(name = "service_type_id")
     private ServiceType serviceType;
+
+    @ManyToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @JoinColumn(name = "combo_id")
+    private Combo combo;
 }

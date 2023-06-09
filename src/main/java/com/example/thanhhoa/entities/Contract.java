@@ -17,7 +17,7 @@ public class Contract {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(nullable = false)
+    @Column(nullable = false,columnDefinition="nvarchar(max)")
     private String title;
 
     @Column(nullable = false, length = 50)
@@ -35,7 +35,7 @@ public class Contract {
     @Column(nullable = false, length = 50)
     private String paymentMethod;
 
-    @Column
+    @Column(columnDefinition="nvarchar(max)")
     private String reason;
 
     @Column(nullable = false)

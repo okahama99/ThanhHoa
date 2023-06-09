@@ -34,6 +34,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
@@ -270,11 +271,33 @@ public class PlantServiceImpl implements PlantService {
     }
 
     @Override
-    public Boolean deletePlant(Long plantID) {
+    public Boolean deletePlant(Long plantID) throws IOException {
         Optional<Plant> checkingPlant = plantRepository.findById(plantID);
         if (checkingPlant != null) {
             checkingPlant.get().setStatus(Status.INACTIVE);
             plantRepository.save(checkingPlant.get());
+
+            List<PlantCategory> plantCategoryList = plantCategoryRepository.findAllByPlant_Id(plantID);
+            if(plantCategoryList!=null){
+                for (PlantCategory plantCategory : plantCategoryList) {
+                    plantCategoryRepository.delete(plantCategory);
+                }
+            }
+
+            List<StorePlant> storePlantList = storePlantRepository.findByPlantId(plantID);
+            if(storePlantList!=null){
+                for (StorePlant storePlant : storePlantList) {
+                    storePlantRepository.delete(storePlant);
+                }
+            }
+
+            List<PlantIMG> plantIMGList = plantIMGRepository.findByPlantId(plantID);
+            if(plantIMGList!=null){
+                for (PlantIMG plantIMG : plantIMGList) {
+                    imageService.delete(plantIMG.getImgURL());
+                    plantIMGRepository.delete(plantIMG);
+                }
+            }
             return true;
         }
         return false;

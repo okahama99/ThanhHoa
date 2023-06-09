@@ -22,6 +22,9 @@ public class DistancePrice {
     @Column(nullable = false)
     private Double pricePerKm;
 
+    @Column(nullable = false)
+    private Boolean isActive;
+
     @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY, mappedBy = "distancePrice")
     private List<tblOrder> tblOrderList;
 }

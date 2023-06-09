@@ -8,6 +8,7 @@ import com.example.thanhhoa.entities.Plant;
 import org.springframework.data.domain.Pageable;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
 import java.util.List;
 
 public interface PlantService {
@@ -17,7 +18,7 @@ public interface PlantService {
 
     Boolean updatePlant(UpdatePlantModel updatePlantModel, MultipartFile[] files) throws Exception;
 
-    Boolean deletePlant(Long plantID);
+    Boolean deletePlant(Long plantID) throws IOException;
 
     Plant checkDuplicate(String plantName);
 

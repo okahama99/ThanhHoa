@@ -33,7 +33,6 @@ public class OpenApi30Config {
                         .contact(new Contact()
                                 .name("Thanh Hoa chain stores"))
 //                                .url("https://niemtinvang.vn")
-//                                .email("goldentrustcons@gmail.com"))
                         .license(new License()
                                 .name("Apache 2.0")
                                 .url("https://springdoc.org")))

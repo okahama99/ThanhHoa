@@ -4,7 +4,11 @@ import com.example.thanhhoa.entities.PlantIMG;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
+import java.util.List;
+
 @Repository
 public interface PlantIMGRepository extends JpaRepository<PlantIMG, Long> {
     PlantIMG findByImgURL(String imgName);
+
+    List<PlantIMG> findByPlantId(Long plantId);
 }

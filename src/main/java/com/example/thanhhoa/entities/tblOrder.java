@@ -29,7 +29,7 @@ public class tblOrder {
     @Column(nullable = false)
     private String address;
 
-    @Column
+    @Column(columnDefinition="nvarchar(max)")
     private String reason;
 
     @Column(nullable = false, length = 50)

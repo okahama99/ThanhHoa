@@ -15,13 +15,13 @@ public class Notification {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(nullable = false)
+    @Column(nullable = false, columnDefinition="nvarchar(max)")
     private String title;
 
     @Column(nullable = false)
     private String link;
 
-    @Column(nullable = false)
+    @Column(nullable = false, columnDefinition="nvarchar(max)")
     private String description;
 
     @Column(nullable = false)

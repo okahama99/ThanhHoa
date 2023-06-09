@@ -19,7 +19,7 @@ public class Service {
     @Column(nullable = false)
     private String name;
 
-    @Column(nullable = false)
+    @Column(nullable = false, columnDefinition="nvarchar(max)")
     private String description;
 
     @Column
@@ -30,8 +30,4 @@ public class Service {
 
     @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY, mappedBy = "service")
     private List<ServiceType> serviceTypeList;
-
-    @OneToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-    @JoinColumn(name = "service_category_id")
-    private ServiceCategory serviceCategory;
 }

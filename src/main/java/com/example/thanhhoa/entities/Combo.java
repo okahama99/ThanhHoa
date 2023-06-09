@@ -3,24 +3,27 @@ package com.example.thanhhoa.entities;
 import lombok.Getter;
 import lombok.Setter;
 
-import javax.persistence.*;
+import javax.persistence.CascadeType;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.FetchType;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.OneToMany;
 import java.time.LocalDateTime;
 import java.util.List;
 
 @Entity
 @Getter
 @Setter
-public class ServiceType {
-
+public class Combo {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(nullable = false, length = 100)
-    private String name;
-
     @Column(nullable = false)
-    private String size;
+    private String range;
 
     @Column(nullable = false)
     private Integer percentage;
@@ -31,10 +34,6 @@ public class ServiceType {
     @Column(nullable = false)
     private Boolean isActive;
 
-    @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY, mappedBy = "serviceType")
+    @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY, mappedBy = "combo")
     private List<ContractDetail> contractDetailList;
-
-    @ManyToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-    @JoinColumn(name = "service_id")
-    private Service service;
 }

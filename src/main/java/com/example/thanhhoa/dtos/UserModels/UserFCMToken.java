@@ -8,7 +8,6 @@ import lombok.Setter;
 public class UserFCMToken {
     private String fcmToken;
     private Long accountID;
-    private Long storeID;
     private String userName;
     private String fullName;
     private String email;

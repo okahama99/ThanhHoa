@@ -17,16 +17,13 @@ public class tblAccount {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(unique = true, nullable = false)
-    private String UID;
-
     @Column
     private String fcmToken;
 
     @Column(unique = true, nullable = false, length = 50)
     private String username;
 
-    @Column(nullable = false, length = 50)
+    @Column(nullable = false)
     private String password;
 
     @Column(nullable = false)

@@ -25,15 +25,11 @@ public class Store {
     private String phone;
 
     @OneToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-    @JoinColumn(name = "province_id")
-    private Province province;
-
-    @OneToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     @JoinColumn(name = "district_id")
     private District district;
 
     @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY, mappedBy = "store")
-    private List<StoreStaff> staffList;
+    private List<StoreEmployee> empList;
 
     @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY, mappedBy = "store")
     private List<Contract> contractList;

@@ -7,4 +7,26 @@ public class SearchType {
         HEIGHT,
         PRICE
     }
+
+    public enum STATUS{
+        ACTIVE,
+        INACTIVE
+    }
+
+    public enum LOGIN_WITH_EMAIL_OR_PHONE{
+        EMAIL,
+        PHONE
+    }
+
+    public enum USER{
+        ID,
+        USERNAME,
+        FULLNAME,
+        EMAIL,
+        PHONE,
+        ADDRESS,
+        GENDER,
+        CREATEDDATE,
+        STATUS
+    }
 }
