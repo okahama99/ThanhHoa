@@ -71,7 +71,7 @@ public class PlantServiceImpl implements PlantService {
         Page<Plant> pagingResult = plantPagingRepository.findAllByStatus(Status.ACTIVE, paging);
         if (pagingResult.hasContent()) {
             double totalPage = Math.ceil((double) pagingResult.getTotalElements() / paging.getPageSize());
-            Page<ShowPlantModel> modelResult = pagingResult.map(new Converter<>() {
+            Page<ShowPlantModel> modelResult = pagingResult.map(new Converter<Plant, ShowPlantModel>() {
                 @Override
                 protected ShowPlantModel doForward(Plant plant) {
                     List<ShowPlantCategory> categoryList = new ArrayList<>();
@@ -326,7 +326,7 @@ public class PlantServiceImpl implements PlantService {
 
         Page<Plant> pagingResult = new PageImpl<>(noDuplicatePlantList);
         double totalPage = Math.ceil((double) pagingResult.getTotalElements() / paging.getPageSize());
-        Page<ShowPlantModel> modelResult = pagingResult.map(new Converter<>() {
+        Page<ShowPlantModel> modelResult = pagingResult.map(new Converter<Plant, ShowPlantModel>() {
             @Override
             protected ShowPlantModel doForward(Plant plant) {
                 List<ShowOrderFeedback> showOrderFeedbackList = new ArrayList<>();
@@ -376,7 +376,7 @@ public class PlantServiceImpl implements PlantService {
         Page<Plant> pagingResult = plantPagingRepository.findByNameAndStatus(name, Status.ACTIVE, paging);
         if (pagingResult.hasContent()) {
             double totalPage = Math.ceil((double) pagingResult.getTotalElements() / paging.getPageSize());
-            Page<ShowPlantModel> modelResult = pagingResult.map(new Converter<>() {
+            Page<ShowPlantModel> modelResult = pagingResult.map(new Converter<Plant, ShowPlantModel>() {
                 @Override
                 protected ShowPlantModel doForward(Plant plant) {
                     List<ShowPlantCategory> categoryList = new ArrayList<>();
@@ -440,7 +440,7 @@ public class PlantServiceImpl implements PlantService {
         Page<Plant> pagingResult = plantPagingRepository.findByPriceBetweenAndStatus(fromPrice, toPrice, Status.ACTIVE, paging);
         if (pagingResult.hasContent()) {
             double totalPage = Math.ceil((double) pagingResult.getTotalElements() / paging.getPageSize());
-            Page<ShowPlantModel> modelResult = pagingResult.map(new Converter<>() {
+            Page<ShowPlantModel> modelResult = pagingResult.map(new Converter<Plant, ShowPlantModel>() {
                 @Override
                 protected ShowPlantModel doForward(Plant plant) {
                     List<ShowPlantCategory> categoryList = new ArrayList<>();
@@ -518,7 +518,7 @@ public class PlantServiceImpl implements PlantService {
 
             Page<Plant> pagingResult = new PageImpl<>(noDuplicatePlantList);
             double totalPage = Math.ceil((double) pagingResult.getTotalElements() / paging.getPageSize());
-            Page<ShowPlantModel> modelResult = pagingResult.map(new Converter<>() {
+            Page<ShowPlantModel> modelResult = pagingResult.map(new Converter<Plant, ShowPlantModel>() {
                 @Override
                 protected ShowPlantModel doForward(Plant plant) {
                     List<ShowOrderFeedback> showOrderFeedbackList = new ArrayList<>();
@@ -570,7 +570,7 @@ public class PlantServiceImpl implements PlantService {
         Page<Plant> pagingResult = plantPagingRepository.findByPriceBetweenAndNameAndStatus(fromPrice, toPrice, name, Status.ACTIVE, paging);
         if (pagingResult.hasContent()) {
             double totalPage = Math.ceil((double) pagingResult.getTotalElements() / paging.getPageSize());
-            Page<ShowPlantModel> modelResult = pagingResult.map(new Converter<>() {
+            Page<ShowPlantModel> modelResult = pagingResult.map(new Converter<Plant, ShowPlantModel>() {
                 @Override
                 protected ShowPlantModel doForward(Plant plant) {
                     List<ShowPlantCategory> categoryList = new ArrayList<>();
@@ -648,7 +648,7 @@ public class PlantServiceImpl implements PlantService {
 
             Page<Plant> pagingResult = new PageImpl<>(noDuplicatePlantList);
             double totalPage = Math.ceil((double) pagingResult.getTotalElements() / paging.getPageSize());
-            Page<ShowPlantModel> modelResult = pagingResult.map(new Converter<>() {
+            Page<ShowPlantModel> modelResult = pagingResult.map(new Converter<Plant, ShowPlantModel>() {
                 @Override
                 protected ShowPlantModel doForward(Plant plant) {
                     List<ShowOrderFeedback> showOrderFeedbackList = new ArrayList<>();
@@ -714,7 +714,7 @@ public class PlantServiceImpl implements PlantService {
 
             Page<Plant> pagingResult = new PageImpl<>(noDuplicatePlantList);
             double totalPage = Math.ceil((double) pagingResult.getTotalElements() / paging.getPageSize());
-            Page<ShowPlantModel> modelResult = pagingResult.map(new Converter<>() {
+            Page<ShowPlantModel> modelResult = pagingResult.map(new Converter<Plant, ShowPlantModel>() {
                 @Override
                 protected ShowPlantModel doForward(Plant plant) {
                     List<ShowOrderFeedback> showOrderFeedbackList = new ArrayList<>();
