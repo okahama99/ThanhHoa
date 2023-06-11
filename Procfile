@@ -1,1 +1,1 @@
-web: java -Dserver.port=$PORT -jar ThanhHoa.jar
+web: java -Dserver.port=$PORT -jar target/ThanhHoa-0.0.1-SNAPSHOT.jar
