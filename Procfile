@@ -1,1 +1,1 @@
-web: java -jar out/ThanhHoa.jar
+web: java -jar target/ThanhHoa.jar
