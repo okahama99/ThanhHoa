@@ -15,6 +15,7 @@ import com.example.thanhhoa.services.otp.OtpService;
 import com.example.thanhhoa.services.user.UserService;
 import com.example.thanhhoa.utils.JwtUtil;
 import com.example.thanhhoa.utils.Util;
+import io.swagger.v3.oas.annotations.Parameter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -34,6 +35,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -96,7 +98,6 @@ public class UserController {
         }
     }
 
-    @PreAuthorize("isAuthenticated()")
     @RequestMapping(value = "/logout", method = RequestMethod.GET, produces = "application/json;charset=UTF-8")
     public String logoutPage(HttpServletRequest request, HttpServletResponse response) {
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
@@ -207,13 +208,19 @@ public class UserController {
         return ResponseEntity.badRequest().body(result);
     }
 
-    //@PreAuthorize("hasRole('Admin')")
+
     @GetMapping(value = "/findUserByRoleName", produces = "application/json;charset=UTF-8")
     public ResponseEntity<Object> findUserByRoleName(@RequestParam String roleName,
                                                      @RequestParam int pageNo,
                                                      @RequestParam int pageSize,
                                                      @RequestParam SearchType.USER sortBy,
-                                                     @RequestParam boolean sortTypeAsc) {
+                                                     @RequestParam boolean sortTypeAsc,
+                                                     @RequestHeader(name = "Authorization") @Parameter(hidden = true) String token) throws Exception {
+        String jwt = jwtUtil.getAndValidateJwt(token);
+        Long userId = jwtUtil.getUserIdFromJWT(jwt);
+        if (userId == null){
+            throw new IllegalArgumentException("Invalid jwt.");
+        }
         Pageable paging;
         if (sortBy.equals("FULLNAME")) {
             paging = util.makePaging(pageNo, pageSize, "fullName", sortTypeAsc);
@@ -230,13 +237,18 @@ public class UserController {
         return ResponseEntity.ok().body(userList);
     }
 
-    //@PreAuthorize("hasRole('Admin')")
     @GetMapping(value = "/findUserByStatus", produces = "application/json;charset=UTF-8")
     public ResponseEntity<Object> findUserByStatus(@RequestParam SearchType.STATUS status,
                                                    @RequestParam int pageNo,
                                                    @RequestParam int pageSize,
                                                    @RequestParam SearchType.USER sortBy,
-                                                   @RequestParam boolean sortTypeAsc) {
+                                                   @RequestParam boolean sortTypeAsc,
+                                                   @RequestHeader(name = "Authorization") @Parameter(hidden = true) String token) throws Exception {
+        String jwt = jwtUtil.getAndValidateJwt(token);
+        Long userId = jwtUtil.getUserIdFromJWT(jwt);
+        if (userId == null){
+            throw new IllegalArgumentException("Invalid jwt.");
+        }
         Pageable paging;
         if (sortBy.equals("FULLNAME")) {
             paging = util.makePaging(pageNo, pageSize, "fullName", sortTypeAsc);
@@ -265,13 +277,18 @@ public class UserController {
         return ResponseEntity.ok().body(userList);
     }
 
-    //@PreAuthorize("hasRole('Admin')")
     @GetMapping("/findUserByFullName")
     public ResponseEntity<Object> findUserByFullName(@RequestParam String fullName,
                                                      @RequestParam int pageNo,
                                                      @RequestParam int pageSize,
                                                      @RequestParam SearchType.USER sortBy,
-                                                     @RequestParam boolean sortTypeAsc) {
+                                                     @RequestParam boolean sortTypeAsc,
+                                                     @RequestHeader(name = "Authorization") @Parameter(hidden = true) String token) throws Exception {
+        String jwt = jwtUtil.getAndValidateJwt(token);
+        Long userId = jwtUtil.getUserIdFromJWT(jwt);
+        if (userId == null){
+            throw new IllegalArgumentException("Invalid jwt.");
+        }
         Pageable paging;
         if (sortBy.equals("FULLNAME")) {
             paging = util.makePaging(pageNo, pageSize, "fullName", sortTypeAsc);
@@ -288,15 +305,21 @@ public class UserController {
         return ResponseEntity.ok().body(userList);
     }
 
-    @GetMapping(path = "/getUserByID", produces = "application/json;charset=UTF-8")
-    public ResponseEntity<Object> getUserByID(@RequestParam String token){
+    @GetMapping(path = "/getUserByToken", produces = "application/json;charset=UTF-8")
+    public ResponseEntity<Object> getUserByToken(@RequestHeader(name = "Authorization") @Parameter(hidden = true) String token){
         ShowUserModel userModel = userService.getUserByID(jwtUtil.getUserIdFromJWT(token));
         return ResponseEntity.ok().body(userModel);
     }
 
-    //    @PreAuthorize("hasRole('Admin')")
     @PostMapping(value = "/changeUserRole/{userid}", produces = "application/json;charset=UTF-8")
-    public HttpStatus changeUserRole(@PathVariable(name = "userid") Long userid, @RequestParam Long roleId) {
+    public HttpStatus changeUserRole(@PathVariable(name = "userid") Long userid,
+                                     @RequestParam Long roleId,
+                                     @RequestHeader(name = "Authorization") @Parameter(hidden = true) String token) throws Exception {
+        String jwt = jwtUtil.getAndValidateJwt(token);
+        Long userId = jwtUtil.getUserIdFromJWT(jwt);
+        if (userId == null){
+            throw new IllegalArgumentException("Invalid jwt.");
+        }
         userService.changeUserRole(userid, roleId);
         return HttpStatus.OK;
 
@@ -308,7 +331,6 @@ public class UserController {
         return CRUDUserFireBaseService.saveUser(userFCMToken);
     }
 
-    //    @PreAuthorize("hasRole('ROLE_USER')")
     @PostMapping("/deleteFcmToken")
     public String deleteFcmToken(@RequestParam Long userid) throws InterruptedException, ExecutionException {
         userService.deleteUserFcmToken(userid);

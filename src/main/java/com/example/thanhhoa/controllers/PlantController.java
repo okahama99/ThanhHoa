@@ -5,7 +5,9 @@ import com.example.thanhhoa.dtos.PlantModels.ShowPlantModel;
 import com.example.thanhhoa.dtos.PlantModels.UpdatePlantModel;
 import com.example.thanhhoa.enums.SearchType;
 import com.example.thanhhoa.services.plant.PlantService;
+import com.example.thanhhoa.utils.JwtUtil;
 import com.example.thanhhoa.utils.Util;
+import io.swagger.v3.oas.annotations.Parameter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -14,6 +16,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RequestPart;
@@ -33,11 +36,18 @@ public class PlantController {
     private PlantService plantService;
     @Autowired
     private Util util;
+    @Autowired
+    private JwtUtil jwtUtil;
 
-    //    @PreAuthorize("hasAuthority('ROLE_ADMIN')")
     @PostMapping(value = "/createPlant", produces = "application/json;charset=UTF-8")
     public ResponseEntity<Object> createPlant(@RequestBody CreatePlantModel createPlantModel,
-                                              @RequestPart(required = false) @Size(min = 1) MultipartFile[] files) throws Exception {
+                                              @RequestPart(required = false) @Size(min = 1) MultipartFile[] files,
+                                              @RequestHeader(name = "Authorization") @Parameter(hidden = true) String token) throws Exception {
+        String jwt = jwtUtil.getAndValidateJwt(token);
+        Long userId = jwtUtil.getUserIdFromJWT(jwt);
+        if (userId == null){
+            throw new IllegalArgumentException("Invalid jwt.");
+        }
         if (plantService.checkDuplicate(createPlantModel.getName()) != null) {
             return ResponseEntity.badRequest().body("Cây cùng tên đã tồn tại.");
         } else {
@@ -49,10 +59,15 @@ public class PlantController {
         }
     }
 
-    //    @PreAuthorize("hasAuthority('ROLE_ADMIN')")
     @PutMapping(value = "/updatePlant", produces = "application/json;charset=UTF-8")
     public ResponseEntity<Object> updatePlant(@RequestBody UpdatePlantModel updatePlantModel,
-                                              @RequestPart(required = false) @Size(min = 1) MultipartFile[] files) throws Exception {
+                                              @RequestPart(required = false) @Size(min = 1) MultipartFile[] files,
+                                              @RequestHeader(name = "Authorization") @Parameter(hidden = true) String token) throws Exception {
+        String jwt = jwtUtil.getAndValidateJwt(token);
+        Long userId = jwtUtil.getUserIdFromJWT(jwt);
+        if (userId == null){
+            throw new IllegalArgumentException("Invalid jwt.");
+        }
         if (plantService.checkDuplicate(updatePlantModel.getName()) != null) {
             return ResponseEntity.badRequest().body("Cây cùng tên đã tồn tại.");
         } else {
@@ -64,9 +79,14 @@ public class PlantController {
         }
     }
 
-    //    @PreAuthorize("hasAuthority('ROLE_ADMIN')")
     @DeleteMapping(value = "/deletePlant/{plantID}", produces = "application/json;charset=UTF-8")
-    public ResponseEntity<Object> deletePlant(@PathVariable(name = "plantID") Long plantID) throws IOException {
+    public ResponseEntity<Object> deletePlant(@PathVariable(name = "plantID") Long plantID,
+                                              @RequestHeader(name = "Authorization") @Parameter(hidden = true) String token) throws Exception {
+        String jwt = jwtUtil.getAndValidateJwt(token);
+        Long userId = jwtUtil.getUserIdFromJWT(jwt);
+        if (userId == null){
+            throw new IllegalArgumentException("Invalid jwt.");
+        }
         if (plantService.deletePlant(plantID)) {
             return ResponseEntity.ok().body("Xóa cây thành công.");
         } else {
