@@ -1,6 +1,7 @@
 package com.example.thanhhoa.services.user;
 
 import com.example.thanhhoa.dtos.UserModels.RegisterUserModel;
+import com.example.thanhhoa.dtos.UserModels.ShowUserModel;
 import com.example.thanhhoa.dtos.UserModels.UserFCMToken;
 import com.example.thanhhoa.entities.Role;
 import com.example.thanhhoa.entities.tblAccount;
@@ -107,5 +108,22 @@ public class UserServiceImpl implements UserService {
         tblAccount user = userRepository.getById(userId);
         user.setFcmToken(null);
         userRepository.saveAndFlush(user);
+    }
+
+    @Override
+    public ShowUserModel getUserByID(Long userID) {
+        tblAccount user = userRepository.getById(userID);
+        ShowUserModel userModel = new ShowUserModel();
+        userModel.setUserName(user.getUsername());
+        userModel.setFullName(user.getFullName());
+        userModel.setAddress(user.getAddress());
+        userModel.setCreatedDate(user.getCreatedDate());
+        userModel.setGender(user.getGender());
+        userModel.setAvatar(user.getAvatar());
+        userModel.setRoleID(user.getRole().getId());
+        userModel.setRoleName(user.getRole().getRoleName());
+        userModel.setPhone(user.getPhone());
+        userModel.setEmail(user.getEmail());
+        return userModel;
     }
 }

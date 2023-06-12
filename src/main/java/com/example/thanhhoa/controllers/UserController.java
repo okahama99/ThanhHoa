@@ -1,6 +1,7 @@
 package com.example.thanhhoa.controllers;
 
 import com.example.thanhhoa.dtos.UserModels.RegisterUserModel;
+import com.example.thanhhoa.dtos.UserModels.ShowUserModel;
 import com.example.thanhhoa.dtos.UserModels.UserFCMToken;
 import com.example.thanhhoa.entities.tblAccount;
 import com.example.thanhhoa.enums.SearchType;
@@ -200,7 +201,7 @@ public class UserController {
     public ResponseEntity<Object> register(@RequestBody RegisterUserModel registerUserModel) {
         registerUserModel.setPassword(passwordEncoder.encode(registerUserModel.getPassword()));
         String result = userService.register(registerUserModel);
-        if (result != null) {
+        if (result.equals("Tạo User thành công.")) {
             return ResponseEntity.ok().body(result);
         }
         return ResponseEntity.badRequest().body(result);
@@ -285,6 +286,12 @@ public class UserController {
                     .body("No User found with input: '" + fullName + "'. ");
         }
         return ResponseEntity.ok().body(userList);
+    }
+
+    @GetMapping(path = "/getUserByID", produces = "application/json;charset=UTF-8")
+    public ResponseEntity<Object> getUserByID(@RequestParam String token){
+        ShowUserModel userModel = userService.getUserByID(jwtUtil.getUserIdFromJWT(token));
+        return ResponseEntity.ok().body(userModel);
     }
 
     //    @PreAuthorize("hasRole('Admin')")

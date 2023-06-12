@@ -1,6 +1,7 @@
 package com.example.thanhhoa.services.user;
 
 import com.example.thanhhoa.dtos.UserModels.RegisterUserModel;
+import com.example.thanhhoa.dtos.UserModels.ShowUserModel;
 import com.example.thanhhoa.dtos.UserModels.UserFCMToken;
 import com.example.thanhhoa.entities.tblAccount;
 
@@ -22,4 +23,6 @@ public interface UserService {
     void updateUserFcmToken(UserFCMToken userFCMToken);
 
     void deleteUserFcmToken(Long userid);
+
+    ShowUserModel getUserByID(Long userID);
 }
