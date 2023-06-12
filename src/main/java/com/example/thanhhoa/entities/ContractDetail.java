@@ -19,7 +19,8 @@ public class ContractDetail {
     @Column(nullable = false)
     private String timeWorking;
 
-    @Column(nullable = false, columnDefinition="nvarchar(max)")
+    @Lob
+    @Column(nullable = false)
     private String note;
 
     @Column(nullable = false)

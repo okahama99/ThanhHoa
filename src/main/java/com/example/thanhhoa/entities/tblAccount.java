@@ -3,6 +3,7 @@ package com.example.thanhhoa.entities;
 import com.example.thanhhoa.enums.Status;
 import lombok.Getter;
 import lombok.Setter;
+import org.springframework.data.annotation.CreatedDate;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
@@ -26,6 +27,7 @@ public class tblAccount {
     @Column(nullable = false)
     private String password;
 
+    @CreatedDate
     @Column(nullable = false)
     private LocalDateTime createdDate;
 

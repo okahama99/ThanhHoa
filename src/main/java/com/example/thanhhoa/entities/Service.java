@@ -19,7 +19,8 @@ public class Service {
     @Column(nullable = false)
     private String name;
 
-    @Column(nullable = false, columnDefinition="nvarchar(max)")
+    @Lob
+    @Column(nullable = false)
     private String description;
 
     @Column

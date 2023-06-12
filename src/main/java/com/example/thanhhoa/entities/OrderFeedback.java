@@ -3,6 +3,7 @@ package com.example.thanhhoa.entities;
 import com.example.thanhhoa.enums.Status;
 import lombok.Getter;
 import lombok.Setter;
+import org.springframework.data.annotation.CreatedDate;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
@@ -17,9 +18,11 @@ public class OrderFeedback {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(nullable = false, columnDefinition="nvarchar(max)")
+    @Lob
+    @Column(nullable = false)
     private String description;
 
+    @CreatedDate
     @Column(nullable = false)
     private LocalDateTime createdDate;
 

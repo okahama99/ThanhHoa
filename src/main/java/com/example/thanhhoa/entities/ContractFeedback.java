@@ -16,7 +16,8 @@ public class ContractFeedback {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(nullable = false, columnDefinition="nvarchar(max)")
+    @Lob
+    @Column(nullable = false)
     private String description;
 
     @Column(nullable = false)

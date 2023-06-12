@@ -3,6 +3,7 @@ package com.example.thanhhoa.entities;
 import com.example.thanhhoa.enums.Status;
 import lombok.Getter;
 import lombok.Setter;
+import org.springframework.data.annotation.CreatedDate;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
@@ -17,7 +18,8 @@ public class Contract {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(nullable = false,columnDefinition="nvarchar(max)")
+    @Lob
+    @Column(nullable = false)
     private String title;
 
     @Column(nullable = false, length = 50)
@@ -35,9 +37,11 @@ public class Contract {
     @Column(nullable = false, length = 50)
     private String paymentMethod;
 
-    @Column(columnDefinition="nvarchar(max)")
+    @Lob
+    @Column(nullable = false)
     private String reason;
 
+    @CreatedDate
     @Column(nullable = false)
     private LocalDateTime createdDate;
 

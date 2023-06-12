@@ -3,6 +3,7 @@ package com.example.thanhhoa.entities;
 import com.example.thanhhoa.enums.Status;
 import lombok.Getter;
 import lombok.Setter;
+import org.springframework.data.annotation.CreatedDate;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
@@ -29,7 +30,8 @@ public class tblOrder {
     @Column(nullable = false)
     private String address;
 
-    @Column(columnDefinition="nvarchar(max)")
+    @Lob
+    @Column(nullable = false)
     private String reason;
 
     @Column(nullable = false, length = 50)
@@ -38,6 +40,7 @@ public class tblOrder {
     @Column(nullable = false)
     private String progressStatus;
 
+    @CreatedDate
     @Column(nullable = false)
     private LocalDateTime createdDate;
 
