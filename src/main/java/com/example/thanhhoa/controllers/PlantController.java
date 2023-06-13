@@ -8,7 +8,9 @@ import com.example.thanhhoa.services.plant.PlantService;
 import com.example.thanhhoa.utils.JwtUtil;
 import com.example.thanhhoa.utils.Util;
 import io.swagger.v3.oas.annotations.Parameter;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -25,7 +27,6 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.validation.constraints.Size;
-import java.io.IOException;
 import java.util.List;
 
 @RestController
@@ -41,13 +42,13 @@ public class PlantController {
 
     @PostMapping(value = "/createPlant", produces = "application/json;charset=UTF-8")
     public ResponseEntity<Object> createPlant(@RequestBody CreatePlantModel createPlantModel,
-                                              @RequestPart(required = false) @Size(min = 1) MultipartFile[] files,
-                                              @RequestHeader(name = "Authorization") @Parameter(hidden = true) String token) throws Exception {
-        String jwt = jwtUtil.getAndValidateJwt(token);
-        Long userId = jwtUtil.getUserIdFromJWT(jwt);
-        if (userId == null){
-            throw new IllegalArgumentException("Invalid jwt.");
-        }
+                                              @RequestPart(required = false) MultipartFile[] files) throws Exception {
+//                                              @RequestHeader(name = "Authorization") @Parameter(hidden = true) String token) throws Exception {
+//        String jwt = jwtUtil.getAndValidateJwt(token);
+//        Long userId = jwtUtil.getUserIdFromJWT(jwt);
+//        if (userId == null) {
+//            throw new IllegalArgumentException("Invalid jwt.");
+//        }
         if (plantService.checkDuplicate(createPlantModel.getName()) != null) {
             return ResponseEntity.badRequest().body("Cây cùng tên đã tồn tại.");
         } else {
@@ -65,7 +66,7 @@ public class PlantController {
                                               @RequestHeader(name = "Authorization") @Parameter(hidden = true) String token) throws Exception {
         String jwt = jwtUtil.getAndValidateJwt(token);
         Long userId = jwtUtil.getUserIdFromJWT(jwt);
-        if (userId == null){
+        if (userId == null) {
             throw new IllegalArgumentException("Invalid jwt.");
         }
         if (plantService.checkDuplicate(updatePlantModel.getName()) != null) {
@@ -84,7 +85,7 @@ public class PlantController {
                                               @RequestHeader(name = "Authorization") @Parameter(hidden = true) String token) throws Exception {
         String jwt = jwtUtil.getAndValidateJwt(token);
         Long userId = jwtUtil.getUserIdFromJWT(jwt);
-        if (userId == null){
+        if (userId == null) {
             throw new IllegalArgumentException("Invalid jwt.");
         }
         if (plantService.deletePlant(plantID)) {
@@ -104,89 +105,57 @@ public class PlantController {
         return plant;
     }
 
-    @GetMapping(value = "/getPlantByCategory", produces = "application/json;charset=UTF-8")
+    @GetMapping(value = "/getPlantByID", produces = "application/json;charset=UTF-8")
     public @ResponseBody
-    List<ShowPlantModel> getPlantByCategory(@RequestParam List<Long> categoryIDList,
-                                            @RequestParam int pageNo,
-                                            @RequestParam int pageSize,
-                                            @RequestParam SearchType.PLANT sortBy,
-                                            @RequestParam boolean sortAsc) {
-        List<ShowPlantModel> plant = plantService.getPlantByCategory(categoryIDList, util.makePaging(pageNo, pageSize, sortBy.toString().toLowerCase(), sortAsc));
-        return plant;
+    ResponseEntity<Object> getPlantByID(@RequestParam Long plantID) {
+        ShowPlantModel model = plantService.getPlantByID(plantID);
+        if(model!=null){
+            return ResponseEntity.ok().body(model);
+        }
+        return ResponseEntity.badRequest().body("Cây không tồn tại.");
     }
 
-    @GetMapping(value = "/getPlantByName", produces = "application/json;charset=UTF-8")
+    @GetMapping(value = "/searchPlant", produces = "application/json;charset=UTF-8")
     public @ResponseBody
-    List<ShowPlantModel> getPlantByName(@RequestParam String name,
-                                        @RequestParam int pageNo,
-                                        @RequestParam int pageSize,
-                                        @RequestParam SearchType.PLANT sortBy,
-                                        @RequestParam boolean sortAsc) {
-        List<ShowPlantModel> plant = plantService.getPlantByName(name, util.makePaging(pageNo, pageSize, sortBy.toString().toLowerCase(), sortAsc));
-        return plant;
-    }
+    ResponseEntity<Object> searchPlant(@RequestParam(required = false) String plantName,
+                                       @RequestParam(required = false) String categoryName,
+                                       @RequestParam(required = false) Double fromPrice,
+                                       @RequestParam(required = false) Double toPrice,
+                                       @RequestParam int pageNo,
+                                       @RequestParam int pageSize,
+                                       @RequestParam SearchType.PLANT sortBy,
+                                       @RequestParam boolean sortAsc) {
+        Pageable paging = util.makePaging(pageNo, pageSize, sortBy.toString().toLowerCase(), sortAsc);
 
-    @GetMapping(value = "/getNameByPrice", produces = "application/json;charset=UTF-8")
-    public @ResponseBody
-    List<ShowPlantModel> getNameByPrice(@RequestParam Double fromPrice,
-                                        @RequestParam Double toPrice,
-                                        @RequestParam int pageNo,
-                                        @RequestParam int pageSize,
-                                        @RequestParam SearchType.PLANT sortBy,
-                                        @RequestParam boolean sortAsc) {
-        List<ShowPlantModel> plant = plantService.getNameByPrice(fromPrice, toPrice, util.makePaging(pageNo, pageSize, sortBy.toString().toLowerCase(), sortAsc));
-        return plant;
-    }
-
-    @GetMapping(value = "/getPlantByCategoryAndName", produces = "application/json;charset=UTF-8")
-    public @ResponseBody
-    List<ShowPlantModel> getPlantByCategoryAndName(@RequestParam List<Long> categoryIDList,
-                                                   @RequestParam String name,
-                                                   @RequestParam int pageNo,
-                                                   @RequestParam int pageSize,
-                                                   @RequestParam SearchType.PLANT sortBy,
-                                                   @RequestParam boolean sortAsc) {
-        List<ShowPlantModel> plant = plantService.getPlantByCategoryAndName(categoryIDList, name, util.makePaging(pageNo, pageSize, sortBy.toString().toLowerCase(), sortAsc));
-        return plant;
-    }
-
-    @GetMapping(value = "/getPlantByNameAndPrice", produces = "application/json;charset=UTF-8")
-    public @ResponseBody
-    List<ShowPlantModel> getPlantByNameAndPrice(@RequestParam String name,
-                                                @RequestParam Double fromPrice,
-                                                @RequestParam Double toPrice,
-                                                @RequestParam int pageNo,
-                                                @RequestParam int pageSize,
-                                                @RequestParam SearchType.PLANT sortBy,
-                                                @RequestParam boolean sortAsc) {
-        List<ShowPlantModel> plant = plantService.getPlantByNameAndPrice(name, fromPrice, toPrice, util.makePaging(pageNo, pageSize, sortBy.toString().toLowerCase(), sortAsc));
-        return plant;
-    }
-
-    @GetMapping(value = "/getPlantByCategoryAndPrice", produces = "application/json;charset=UTF-8")
-    public @ResponseBody
-    List<ShowPlantModel> getPlantByCategoryAndPrice(@RequestParam List<Long> categoryIDList,
-                                                   @RequestParam Double fromPrice,
-                                                   @RequestParam Double toPrice,
-                                                   @RequestParam int pageNo,
-                                                   @RequestParam int pageSize,
-                                                   @RequestParam SearchType.PLANT sortBy,
-                                                   @RequestParam boolean sortAsc) {
-        List<ShowPlantModel> plant = plantService.getPlantByCategoryAndPrice(categoryIDList, fromPrice, toPrice, util.makePaging(pageNo, pageSize, sortBy.toString().toLowerCase(), sortAsc));
-        return plant;
-    }
-
-    @GetMapping(value = "/getPlantByCategoryAndNameAndPrice", produces = "application/json;charset=UTF-8")
-    public @ResponseBody
-    List<ShowPlantModel> getPlantByCategoryAndNameAndPrice(@RequestParam List<Long> categoryIDList,
-                                                    @RequestParam String name,
-                                                    @RequestParam Double fromPrice,
-                                                    @RequestParam Double toPrice,
-                                                    @RequestParam int pageNo,
-                                                    @RequestParam int pageSize,
-                                                    @RequestParam SearchType.PLANT sortBy,
-                                                    @RequestParam boolean sortAsc) {
-        List<ShowPlantModel> plant = plantService.getPlantByCategoryAndNameAndPrice(categoryIDList, name, fromPrice, toPrice, util.makePaging(pageNo, pageSize, sortBy.toString().toLowerCase(), sortAsc));
-        return plant;
+        if (!StringUtils.isEmpty(plantName.trim()) && StringUtils.isEmpty(categoryName.trim())
+                && fromPrice == null && toPrice == null) {
+            return ResponseEntity.ok().body(plantService.getPlantByName(plantName, paging));
+        } else if (StringUtils.isEmpty(plantName.trim()) && !StringUtils.isEmpty(categoryName.trim())
+                && fromPrice == null && toPrice == null) {
+            return ResponseEntity.ok().body(plantService.getPlantByCategory(categoryName, paging));
+        } else if (StringUtils.isEmpty(plantName.trim()) && StringUtils.isEmpty(categoryName.trim())
+                && fromPrice != null && toPrice == null) {
+            return ResponseEntity.ok().body(plantService.getNameByPriceMin(fromPrice, paging));
+        } else if (StringUtils.isEmpty(plantName.trim()) && StringUtils.isEmpty(categoryName.trim())
+                && fromPrice == null && toPrice != null) {
+            return ResponseEntity.ok().body(plantService.getNameByPriceMax(toPrice, paging));
+        } else if (StringUtils.isEmpty(plantName.trim()) && StringUtils.isEmpty(categoryName.trim())
+                && fromPrice != null && toPrice != null) {
+            return ResponseEntity.ok().body(plantService.getNameByPriceInRange(fromPrice, toPrice, paging));
+        } else if (!StringUtils.isEmpty(plantName.trim()) && !StringUtils.isEmpty(categoryName.trim())
+                && fromPrice == null && toPrice == null) {
+            return ResponseEntity.ok().body(plantService.getPlantByCategoryAndName(categoryName, plantName, paging));
+        } else if (!StringUtils.isEmpty(plantName.trim()) && StringUtils.isEmpty(categoryName.trim())
+                && fromPrice != null && toPrice != null) {
+            return ResponseEntity.ok().body(plantService.getPlantByNameAndPrice(plantName, fromPrice, toPrice, paging));
+        } else if (StringUtils.isEmpty(plantName.trim()) && !StringUtils.isEmpty(categoryName.trim())
+                && fromPrice != null && toPrice != null) {
+            return ResponseEntity.ok().body(plantService.getPlantByCategoryAndPrice(categoryName, fromPrice, toPrice, paging));
+        } else if (!StringUtils.isEmpty(plantName.trim()) && !StringUtils.isEmpty(categoryName.trim())
+                && fromPrice != null && toPrice != null) {
+            return ResponseEntity.ok().body(plantService.getPlantByCategoryAndNameAndPrice(categoryName, plantName, fromPrice, toPrice, paging));
+        }else{
+            return ResponseEntity.badRequest().body("Không thể tìm cây với giá trị đã nhập.");
+        }
     }
 }

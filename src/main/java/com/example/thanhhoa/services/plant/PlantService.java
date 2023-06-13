@@ -14,6 +14,8 @@ import java.util.List;
 public interface PlantService {
     List<ShowPlantModel> getAllPlant(Pageable paging);
 
+    ShowPlantModel getPlantByID(Long plantID);
+
     Boolean createPlant(CreatePlantModel createPlantModel, MultipartFile[] files) throws Exception;
 
     Boolean updatePlant(UpdatePlantModel updatePlantModel, MultipartFile[] files) throws Exception;
@@ -22,17 +24,21 @@ public interface PlantService {
 
     Plant checkDuplicate(String plantName);
 
-    List<ShowPlantModel> getPlantByCategory(List<Long> categoryIDList, Pageable paging);
+    List<ShowPlantModel> getPlantByCategory(String categoryName, Pageable paging);
 
     List<ShowPlantModel> getPlantByName(String name, Pageable paging);
 
-    List<ShowPlantModel> getNameByPrice(Double fromPrice, Double toPrice, Pageable paging);
+    List<ShowPlantModel> getNameByPriceMin(Double minPrice, Pageable paging);
 
-    List<ShowPlantModel> getPlantByCategoryAndName(List<Long> categoryIDList, String name, Pageable paging);
+    List<ShowPlantModel> getNameByPriceMax(Double maxPrice, Pageable paging);
+
+    List<ShowPlantModel> getNameByPriceInRange(Double fromPrice, Double toPrice, Pageable paging);
+
+    List<ShowPlantModel> getPlantByCategoryAndName(String categoryName, String name, Pageable paging);
 
     List<ShowPlantModel> getPlantByNameAndPrice(String name, Double fromPrice, Double toPrice, Pageable paging);
 
-    List<ShowPlantModel> getPlantByCategoryAndPrice(List<Long> categoryIDList, Double fromPrice, Double toPrice, Pageable paging);
+    List<ShowPlantModel> getPlantByCategoryAndPrice(String categoryName, Double fromPrice, Double toPrice, Pageable paging);
 
-    List<ShowPlantModel> getPlantByCategoryAndNameAndPrice(List<Long> categoryIDList, String name, Double fromPrice, Double toPrice, Pageable paging);
+    List<ShowPlantModel> getPlantByCategoryAndNameAndPrice(String categoryName, String name, Double fromPrice, Double toPrice, Pageable paging);
 }

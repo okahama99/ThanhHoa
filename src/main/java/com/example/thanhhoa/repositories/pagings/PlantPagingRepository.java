@@ -13,6 +13,10 @@ public interface PlantPagingRepository extends PagingAndSortingRepository<Plant,
 
     Page<Plant> findByNameAndStatus(String name, Status status, Pageable pageable);
 
+    Page<Plant> findByPriceGreaterThan(Double minPrice, Status status, Pageable pageable);
+
+    Page<Plant> findByPriceLessThan(Double maxPrice, Status status, Pageable pageable);
+
     Page<Plant> findByPriceBetweenAndStatus(Double fromPrice, Double toPrice, Status status, Pageable pageable);
 
     Page<Plant> findByPriceBetweenAndNameAndStatus(Double fromPrice, Double toPrice, String name, Status status, Pageable pageable);

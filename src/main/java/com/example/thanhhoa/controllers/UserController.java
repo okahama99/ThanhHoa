@@ -140,11 +140,11 @@ public class UserController {
     }
 
     @RequestMapping("/login-google")
-    public String loginGoogle(HttpServletRequest request) throws IOException {
+    public ResponseEntity<Object> loginGoogle(HttpServletRequest request) throws Exception {
         String code = request.getParameter("code");
 
         if (code == null || code.isEmpty()) {
-            return "redirect:/login?google=error";
+            return ResponseEntity.badRequest().body("Lỗi lấy code từ request.");
         }
         String accessToken = googleUtils.getToken(code);
 
@@ -156,7 +156,16 @@ public class UserController {
                 authorities);
         authentication.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
         SecurityContextHolder.getContext().setAuthentication(authentication);
-        return "redirect:/user";
+
+        SecurityContextHolder.getContext().setAuthentication(authentication);
+
+        Map<String, String> response = new HashMap<>(2);
+
+        String token = jwtUtil.generateToken(authentication);
+
+        response.put("status", "Đăng nhập thành công.");
+        response.put("token", token);
+        return ResponseEntity.ok().body(response);
     }
 
     @PostMapping(value = "/resetPasswordOTPEmail", produces = "application/json;charset=UTF-8")
