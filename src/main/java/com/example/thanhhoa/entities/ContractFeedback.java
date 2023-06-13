@@ -1,6 +1,7 @@
 package com.example.thanhhoa.entities;
 
 import com.example.thanhhoa.enums.Status;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -10,6 +11,7 @@ import java.time.LocalDateTime;
 @Entity
 @Getter
 @Setter
+@JsonIgnoreProperties(value = {"handler","hibernateLazyInitializer","fieldHandler"})
 public class ContractFeedback {
 
     @Id
@@ -23,7 +25,7 @@ public class ContractFeedback {
     @Column(nullable = false)
     private LocalDateTime date;
 
-    @Enumerated(EnumType.STRING)
+    @Enumerated(EnumType.ORDINAL)
     private Status status;
 
     @ManyToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)

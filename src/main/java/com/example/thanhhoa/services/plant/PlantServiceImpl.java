@@ -1,13 +1,9 @@
 package com.example.thanhhoa.services.plant;
 
-import com.example.thanhhoa.dtos.OrderFeedbackModels.ShowOrderFeedback;
 import com.example.thanhhoa.dtos.PlantModels.CreatePlantModel;
-import com.example.thanhhoa.dtos.PlantModels.ShowPlantCategory;
 import com.example.thanhhoa.dtos.PlantModels.ShowPlantModel;
 import com.example.thanhhoa.dtos.PlantModels.UpdatePlantModel;
 import com.example.thanhhoa.entities.Category;
-import com.example.thanhhoa.entities.OrderFeedback;
-import com.example.thanhhoa.entities.OrderFeedbackIMG;
 import com.example.thanhhoa.entities.Plant;
 import com.example.thanhhoa.entities.PlantCategory;
 import com.example.thanhhoa.entities.PlantIMG;
@@ -16,8 +12,6 @@ import com.example.thanhhoa.entities.Store;
 import com.example.thanhhoa.entities.StorePlant;
 import com.example.thanhhoa.enums.Status;
 import com.example.thanhhoa.repositories.CategoryRepository;
-import com.example.thanhhoa.repositories.OrderFeedbackIMGRepository;
-import com.example.thanhhoa.repositories.OrderFeedbackRepository;
 import com.example.thanhhoa.repositories.PlantCategoryRepository;
 import com.example.thanhhoa.repositories.PlantIMGRepository;
 import com.example.thanhhoa.repositories.PlantRepository;
@@ -48,10 +42,6 @@ public class PlantServiceImpl implements PlantService {
     @Autowired
     private PlantIMGRepository plantIMGRepository;
     @Autowired
-    private OrderFeedbackRepository orderFeedbackRepository;
-    @Autowired
-    private OrderFeedbackIMGRepository orderFeedbackIMGRepository;
-    @Autowired
     private PlantShipPriceRepository plantShipPriceRepository;
     @Autowired
     private PlantCategoryRepository plantCategoryRepository;
@@ -68,53 +58,18 @@ public class PlantServiceImpl implements PlantService {
 
     @Override
     public List<ShowPlantModel> getAllPlant(Pageable paging) {
-        Page<Plant> pagingResult = plantPagingRepository.findAllByStatus(Status.ON_SELL, paging);
+        Page<Plant> pagingResult = plantPagingRepository.findAllByStatus(Status.ONSELL, paging);
         if (pagingResult.hasContent()) {
-            double totalPage = Math.ceil((double) pagingResult.getTotalElements() / paging.getPageSize());
+            double totalPage = Math.ceil(pagingResult.getTotalPages());
             Page<ShowPlantModel> modelResult = pagingResult.map(new Converter<Plant, ShowPlantModel>() {
                 @Override
                 protected ShowPlantModel doForward(Plant plant) {
-                    List<ShowPlantCategory> categoryList = new ArrayList<>();
-                    List<PlantCategory> plantCategoryList = plantCategoryRepository.findAllByPlant_Id(plant.getId());
-                    if (plantCategoryList != null) {
-                        for (PlantCategory plantCategory : plantCategoryList) {
-                            ShowPlantCategory showPlantCategory = new ShowPlantCategory();
-                            showPlantCategory.setCategoryID(plantCategory.getCategory().getId());
-                            showPlantCategory.setCategoryName(plantCategory.getCategory().getName());
-                            categoryList.add(showPlantCategory);
-                        }
-                    }
-
-                    List<ShowOrderFeedback> showOrderFeedbackList = new ArrayList<>();
-                    List<OrderFeedback> orderFeedbackList = orderFeedbackRepository.findAllByPlant_IdAndStatus(plant.getId(), Status.ON_SELL);
-                    if (orderFeedbackList != null) {
-                        for (OrderFeedback orderFeedback : orderFeedbackList) {
-                            ShowOrderFeedback showOrderFeedback = new ShowOrderFeedback();
-
-                            List<OrderFeedbackIMG> orderFeedbackIMGList = orderFeedbackIMGRepository.findAllByOrderFeedback(orderFeedback);
-                            if (orderFeedbackIMGList != null) {
-                                showOrderFeedback.setOrderFeedbackIMGList(orderFeedbackIMGList);
-                            }
-
-                            showOrderFeedback.setRatingID(orderFeedback.getId());
-                            showOrderFeedback.setRatingDes(orderFeedback.getDescription());
-                            showOrderFeedback.setOrderFeedbackID(orderFeedback.getId());
-                            showOrderFeedback.setDescription(orderFeedback.getDescription());
-                            showOrderFeedback.setCreatedDate(orderFeedback.getCreatedDate());
-
-                            showOrderFeedbackList.add(showOrderFeedback);
-                        }
-                    }
-
                     ShowPlantModel model = new ShowPlantModel();
                     model.setPlantID(plant.getId());
                     model.setName(plant.getName());
                     model.setHeight(plant.getHeight());
                     model.setPrice(plant.getPrice());
                     model.setWithPot(plant.getWithPot());
-                    model.setTotalFeedback(orderFeedbackList.size());
-                    model.setPlantCategoryList(categoryList);
-                    model.setOrderFeedbackList(showOrderFeedbackList);
                     model.setTotalPage(totalPage);
                     return model;
                 }
@@ -137,52 +92,17 @@ public class PlantServiceImpl implements PlantService {
             return null;
         }
         Plant plant = checkExistedPlant.get();
-        List<ShowPlantCategory> categoryList = new ArrayList<>();
-        List<PlantCategory> plantCategoryList = plantCategoryRepository.findAllByPlant_Id(plant.getId());
-        if (plantCategoryList != null) {
-            for (PlantCategory plantCategory : plantCategoryList) {
-                ShowPlantCategory showPlantCategory = new ShowPlantCategory();
-                showPlantCategory.setCategoryID(plantCategory.getCategory().getId());
-                showPlantCategory.setCategoryName(plantCategory.getCategory().getName());
-                categoryList.add(showPlantCategory);
-            }
-        }
-
-        List<ShowOrderFeedback> showOrderFeedbackList = new ArrayList<>();
-        List<OrderFeedback> orderFeedbackList = orderFeedbackRepository.findAllByPlant_IdAndStatus(plant.getId(), Status.ON_SELL);
-        if (orderFeedbackList != null) {
-            for (OrderFeedback orderFeedback : orderFeedbackList) {
-                ShowOrderFeedback showOrderFeedback = new ShowOrderFeedback();
-
-                List<OrderFeedbackIMG> orderFeedbackIMGList = orderFeedbackIMGRepository.findAllByOrderFeedback(orderFeedback);
-                if (orderFeedbackIMGList != null) {
-                    showOrderFeedback.setOrderFeedbackIMGList(orderFeedbackIMGList);
-                }
-
-                showOrderFeedback.setRatingID(orderFeedback.getId());
-                showOrderFeedback.setRatingDes(orderFeedback.getDescription());
-                showOrderFeedback.setOrderFeedbackID(orderFeedback.getId());
-                showOrderFeedback.setDescription(orderFeedback.getDescription());
-                showOrderFeedback.setCreatedDate(orderFeedback.getCreatedDate());
-
-                showOrderFeedbackList.add(showOrderFeedback);
-            }
-        }
-
         ShowPlantModel model = new ShowPlantModel();
         model.setPlantID(plant.getId());
         model.setName(plant.getName());
         model.setHeight(plant.getHeight());
         model.setPrice(plant.getPrice());
         model.setWithPot(plant.getWithPot());
-        model.setTotalFeedback(orderFeedbackList.size());
-        model.setPlantCategoryList(categoryList);
-        model.setOrderFeedbackList(showOrderFeedbackList);
         return model;
     }
 
     @Override
-    public Boolean createPlant(CreatePlantModel createPlantModel, MultipartFile[] files) throws Exception {
+    public Boolean createPlant(CreatePlantModel createPlantModel) throws Exception {
         Plant plant = new Plant();
 
         plant.setName(createPlantModel.getName());
@@ -191,7 +111,7 @@ public class PlantServiceImpl implements PlantService {
         plant.setPrice(createPlantModel.getPrice());
         plant.setCareNote(createPlantModel.getCareNote());
         plant.setWithPot(createPlantModel.getWithPot());
-        plant.setStatus(Status.ON_SELL);
+        plant.setStatus(Status.ONSELL);
         Plant plantWithID = plantRepository.saveAndFlush(plant);
 
         if (createPlantModel.getCategoryIDList() == null) {
@@ -208,7 +128,7 @@ public class PlantServiceImpl implements PlantService {
             }
         }
 
-        for (MultipartFile file : files) {
+        for (MultipartFile file : createPlantModel.getFiles()) {
             String fileName = imageService.save(file);
             String imgName = imageService.getImageUrl(fileName);
             PlantIMG plantIMG = new PlantIMG();
@@ -229,7 +149,7 @@ public class PlantServiceImpl implements PlantService {
     }
 
     @Override
-    public Boolean updatePlant(UpdatePlantModel updatePlantModel, MultipartFile[] files) throws Exception {
+    public Boolean updatePlant(UpdatePlantModel updatePlantModel, List<MultipartFile> files) throws Exception {
         Optional<Plant> checkPlant = plantRepository.findById(updatePlantModel.getPlantID());
         if (checkPlant != null) {
             Plant plant = checkPlant.get();
@@ -361,14 +281,8 @@ public class PlantServiceImpl implements PlantService {
     }
 
     @Override
-    public List<ShowPlantModel> getPlantByCategory(String categoryName, Pageable paging) {
-        List<Category> categoryList = categoryRepository.findByNameLike(categoryName);
-
-        List<PlantCategory> plantCategoryList = new ArrayList<>();
-        for (Category category : categoryList) {
-            List<PlantCategory> tmpPlantCategoryList = plantCategoryRepository.findByCategory_Id(category.getId());
-            plantCategoryList.addAll(tmpPlantCategoryList);
-        }
+    public List<ShowPlantModel> getPlantByCategory(Long categoryID, Pageable paging) {
+        List<PlantCategory> plantCategoryList = plantCategoryRepository.findByCategory_Id(categoryID);
 
         List<Plant> plantList = new ArrayList<>();
         for (PlantCategory plantCategory : plantCategoryList) {
@@ -382,36 +296,12 @@ public class PlantServiceImpl implements PlantService {
         Page<ShowPlantModel> modelResult = pagingResult.map(new Converter<Plant, ShowPlantModel>() {
             @Override
             protected ShowPlantModel doForward(Plant plant) {
-                List<ShowOrderFeedback> showOrderFeedbackList = new ArrayList<>();
-                List<OrderFeedback> orderFeedbackList = orderFeedbackRepository.findAllByPlant_IdAndStatus(plant.getId(), Status.ON_SELL);
-                if (orderFeedbackList != null) {
-                    for (OrderFeedback orderFeedback : orderFeedbackList) {
-                        ShowOrderFeedback showOrderFeedback = new ShowOrderFeedback();
-
-                        List<OrderFeedbackIMG> orderFeedbackIMGList = orderFeedbackIMGRepository.findAllByOrderFeedback(orderFeedback);
-                        if (orderFeedbackIMGList != null) {
-                            showOrderFeedback.setOrderFeedbackIMGList(orderFeedbackIMGList);
-                        }
-
-                        showOrderFeedback.setRatingID(orderFeedback.getId());
-                        showOrderFeedback.setRatingDes(orderFeedback.getDescription());
-                        showOrderFeedback.setOrderFeedbackID(orderFeedback.getId());
-                        showOrderFeedback.setDescription(orderFeedback.getDescription());
-                        showOrderFeedback.setCreatedDate(orderFeedback.getCreatedDate());
-
-                        showOrderFeedbackList.add(showOrderFeedback);
-                    }
-                }
-
                 ShowPlantModel model = new ShowPlantModel();
                 model.setPlantID(plant.getId());
                 model.setName(plant.getName());
                 model.setHeight(plant.getHeight());
                 model.setPrice(plant.getPrice());
                 model.setWithPot(plant.getWithPot());
-                model.setTotalFeedback(orderFeedbackList.size());
-                model.setPlantCategoryList(null);
-                model.setOrderFeedbackList(showOrderFeedbackList);
                 model.setTotalPage(totalPage);
                 return model;
             }
@@ -426,53 +316,18 @@ public class PlantServiceImpl implements PlantService {
 
     @Override
     public List<ShowPlantModel> getPlantByName(String name, Pageable paging) {
-        Page<Plant> pagingResult = plantPagingRepository.findByNameAndStatus(name, Status.ON_SELL, paging);
+        Page<Plant> pagingResult = plantPagingRepository.findByNameAndStatus(name, Status.ONSELL, paging);
         if (pagingResult.hasContent()) {
             double totalPage = Math.ceil((double) pagingResult.getTotalElements() / paging.getPageSize());
             Page<ShowPlantModel> modelResult = pagingResult.map(new Converter<Plant, ShowPlantModel>() {
                 @Override
                 protected ShowPlantModel doForward(Plant plant) {
-                    List<ShowPlantCategory> categoryList = new ArrayList<>();
-                    List<PlantCategory> plantCategoryList = plantCategoryRepository.findAllByPlant_Id(plant.getId());
-                    if (plantCategoryList != null) {
-                        for (PlantCategory plantCategory : plantCategoryList) {
-                            ShowPlantCategory showPlantCategory = new ShowPlantCategory();
-                            showPlantCategory.setCategoryID(plantCategory.getCategory().getId());
-                            showPlantCategory.setCategoryName(plantCategory.getCategory().getName());
-                            categoryList.add(showPlantCategory);
-                        }
-                    }
-
-                    List<ShowOrderFeedback> showOrderFeedbackList = new ArrayList<>();
-                    List<OrderFeedback> orderFeedbackList = orderFeedbackRepository.findAllByPlant_IdAndStatus(plant.getId(), Status.ON_SELL);
-                    if (orderFeedbackList != null) {
-                        for (OrderFeedback orderFeedback : orderFeedbackList) {
-                            ShowOrderFeedback showOrderFeedback = new ShowOrderFeedback();
-
-                            List<OrderFeedbackIMG> orderFeedbackIMGList = orderFeedbackIMGRepository.findAllByOrderFeedback(orderFeedback);
-                            if (orderFeedbackIMGList != null) {
-                                showOrderFeedback.setOrderFeedbackIMGList(orderFeedbackIMGList);
-                            }
-
-                            showOrderFeedback.setRatingID(orderFeedback.getId());
-                            showOrderFeedback.setRatingDes(orderFeedback.getDescription());
-                            showOrderFeedback.setOrderFeedbackID(orderFeedback.getId());
-                            showOrderFeedback.setDescription(orderFeedback.getDescription());
-                            showOrderFeedback.setCreatedDate(orderFeedback.getCreatedDate());
-
-                            showOrderFeedbackList.add(showOrderFeedback);
-                        }
-                    }
-
                     ShowPlantModel model = new ShowPlantModel();
                     model.setPlantID(plant.getId());
                     model.setName(plant.getName());
                     model.setHeight(plant.getHeight());
                     model.setPrice(plant.getPrice());
                     model.setWithPot(plant.getWithPot());
-                    model.setTotalFeedback(orderFeedbackList.size());
-                    model.setPlantCategoryList(categoryList);
-                    model.setOrderFeedbackList(showOrderFeedbackList);
                     model.setTotalPage(totalPage);
                     return model;
                 }
@@ -490,53 +345,18 @@ public class PlantServiceImpl implements PlantService {
 
     @Override
     public List<ShowPlantModel> getNameByPriceMin(Double minPrice, Pageable paging) {
-        Page<Plant> pagingResult = plantPagingRepository.findByPriceGreaterThan(minPrice, Status.ON_SELL, paging);
+        Page<Plant> pagingResult = plantPagingRepository.findByPriceGreaterThan(minPrice, Status.ONSELL, paging);
         if (pagingResult.hasContent()) {
             double totalPage = Math.ceil((double) pagingResult.getTotalElements() / paging.getPageSize());
             Page<ShowPlantModel> modelResult = pagingResult.map(new Converter<Plant, ShowPlantModel>() {
                 @Override
                 protected ShowPlantModel doForward(Plant plant) {
-                    List<ShowPlantCategory> categoryList = new ArrayList<>();
-                    List<PlantCategory> plantCategoryList = plantCategoryRepository.findAllByPlant_Id(plant.getId());
-                    if (plantCategoryList != null) {
-                        for (PlantCategory plantCategory : plantCategoryList) {
-                            ShowPlantCategory showPlantCategory = new ShowPlantCategory();
-                            showPlantCategory.setCategoryID(plantCategory.getCategory().getId());
-                            showPlantCategory.setCategoryName(plantCategory.getCategory().getName());
-                            categoryList.add(showPlantCategory);
-                        }
-                    }
-
-                    List<ShowOrderFeedback> showOrderFeedbackList = new ArrayList<>();
-                    List<OrderFeedback> orderFeedbackList = orderFeedbackRepository.findAllByPlant_IdAndStatus(plant.getId(), Status.ON_SELL);
-                    if (orderFeedbackList != null) {
-                        for (OrderFeedback orderFeedback : orderFeedbackList) {
-                            ShowOrderFeedback showOrderFeedback = new ShowOrderFeedback();
-
-                            List<OrderFeedbackIMG> orderFeedbackIMGList = orderFeedbackIMGRepository.findAllByOrderFeedback(orderFeedback);
-                            if (orderFeedbackIMGList != null) {
-                                showOrderFeedback.setOrderFeedbackIMGList(orderFeedbackIMGList);
-                            }
-
-                            showOrderFeedback.setRatingID(orderFeedback.getId());
-                            showOrderFeedback.setRatingDes(orderFeedback.getDescription());
-                            showOrderFeedback.setOrderFeedbackID(orderFeedback.getId());
-                            showOrderFeedback.setDescription(orderFeedback.getDescription());
-                            showOrderFeedback.setCreatedDate(orderFeedback.getCreatedDate());
-
-                            showOrderFeedbackList.add(showOrderFeedback);
-                        }
-                    }
-
                     ShowPlantModel model = new ShowPlantModel();
                     model.setPlantID(plant.getId());
                     model.setName(plant.getName());
                     model.setHeight(plant.getHeight());
                     model.setPrice(plant.getPrice());
                     model.setWithPot(plant.getWithPot());
-                    model.setTotalFeedback(orderFeedbackList.size());
-                    model.setPlantCategoryList(categoryList);
-                    model.setOrderFeedbackList(showOrderFeedbackList);
                     model.setTotalPage(totalPage);
                     return model;
                 }
@@ -554,53 +374,18 @@ public class PlantServiceImpl implements PlantService {
 
     @Override
     public List<ShowPlantModel> getNameByPriceMax(Double maxPrice, Pageable paging) {
-        Page<Plant> pagingResult = plantPagingRepository.findByPriceLessThan(maxPrice, Status.ON_SELL, paging);
+        Page<Plant> pagingResult = plantPagingRepository.findByPriceLessThan(maxPrice, Status.ONSELL, paging);
         if (pagingResult.hasContent()) {
             double totalPage = Math.ceil((double) pagingResult.getTotalElements() / paging.getPageSize());
             Page<ShowPlantModel> modelResult = pagingResult.map(new Converter<Plant, ShowPlantModel>() {
                 @Override
                 protected ShowPlantModel doForward(Plant plant) {
-                    List<ShowPlantCategory> categoryList = new ArrayList<>();
-                    List<PlantCategory> plantCategoryList = plantCategoryRepository.findAllByPlant_Id(plant.getId());
-                    if (plantCategoryList != null) {
-                        for (PlantCategory plantCategory : plantCategoryList) {
-                            ShowPlantCategory showPlantCategory = new ShowPlantCategory();
-                            showPlantCategory.setCategoryID(plantCategory.getCategory().getId());
-                            showPlantCategory.setCategoryName(plantCategory.getCategory().getName());
-                            categoryList.add(showPlantCategory);
-                        }
-                    }
-
-                    List<ShowOrderFeedback> showOrderFeedbackList = new ArrayList<>();
-                    List<OrderFeedback> orderFeedbackList = orderFeedbackRepository.findAllByPlant_IdAndStatus(plant.getId(), Status.ON_SELL);
-                    if (orderFeedbackList != null) {
-                        for (OrderFeedback orderFeedback : orderFeedbackList) {
-                            ShowOrderFeedback showOrderFeedback = new ShowOrderFeedback();
-
-                            List<OrderFeedbackIMG> orderFeedbackIMGList = orderFeedbackIMGRepository.findAllByOrderFeedback(orderFeedback);
-                            if (orderFeedbackIMGList != null) {
-                                showOrderFeedback.setOrderFeedbackIMGList(orderFeedbackIMGList);
-                            }
-
-                            showOrderFeedback.setRatingID(orderFeedback.getId());
-                            showOrderFeedback.setRatingDes(orderFeedback.getDescription());
-                            showOrderFeedback.setOrderFeedbackID(orderFeedback.getId());
-                            showOrderFeedback.setDescription(orderFeedback.getDescription());
-                            showOrderFeedback.setCreatedDate(orderFeedback.getCreatedDate());
-
-                            showOrderFeedbackList.add(showOrderFeedback);
-                        }
-                    }
-
                     ShowPlantModel model = new ShowPlantModel();
                     model.setPlantID(plant.getId());
                     model.setName(plant.getName());
                     model.setHeight(plant.getHeight());
                     model.setPrice(plant.getPrice());
                     model.setWithPot(plant.getWithPot());
-                    model.setTotalFeedback(orderFeedbackList.size());
-                    model.setPlantCategoryList(categoryList);
-                    model.setOrderFeedbackList(showOrderFeedbackList);
                     model.setTotalPage(totalPage);
                     return model;
                 }
@@ -618,53 +403,18 @@ public class PlantServiceImpl implements PlantService {
 
     @Override
     public List<ShowPlantModel> getNameByPriceInRange(Double fromPrice, Double toPrice, Pageable paging) {
-        Page<Plant> pagingResult = plantPagingRepository.findByPriceBetweenAndStatus(fromPrice, toPrice, Status.ON_SELL, paging);
+        Page<Plant> pagingResult = plantPagingRepository.findByPriceBetweenAndStatus(fromPrice, toPrice, Status.ONSELL, paging);
         if (pagingResult.hasContent()) {
             double totalPage = Math.ceil((double) pagingResult.getTotalElements() / paging.getPageSize());
             Page<ShowPlantModel> modelResult = pagingResult.map(new Converter<Plant, ShowPlantModel>() {
                 @Override
                 protected ShowPlantModel doForward(Plant plant) {
-                    List<ShowPlantCategory> categoryList = new ArrayList<>();
-                    List<PlantCategory> plantCategoryList = plantCategoryRepository.findAllByPlant_Id(plant.getId());
-                    if (plantCategoryList != null) {
-                        for (PlantCategory plantCategory : plantCategoryList) {
-                            ShowPlantCategory showPlantCategory = new ShowPlantCategory();
-                            showPlantCategory.setCategoryID(plantCategory.getCategory().getId());
-                            showPlantCategory.setCategoryName(plantCategory.getCategory().getName());
-                            categoryList.add(showPlantCategory);
-                        }
-                    }
-
-                    List<ShowOrderFeedback> showOrderFeedbackList = new ArrayList<>();
-                    List<OrderFeedback> orderFeedbackList = orderFeedbackRepository.findAllByPlant_IdAndStatus(plant.getId(), Status.ON_SELL);
-                    if (orderFeedbackList != null) {
-                        for (OrderFeedback orderFeedback : orderFeedbackList) {
-                            ShowOrderFeedback showOrderFeedback = new ShowOrderFeedback();
-
-                            List<OrderFeedbackIMG> orderFeedbackIMGList = orderFeedbackIMGRepository.findAllByOrderFeedback(orderFeedback);
-                            if (orderFeedbackIMGList != null) {
-                                showOrderFeedback.setOrderFeedbackIMGList(orderFeedbackIMGList);
-                            }
-
-                            showOrderFeedback.setRatingID(orderFeedback.getId());
-                            showOrderFeedback.setRatingDes(orderFeedback.getDescription());
-                            showOrderFeedback.setOrderFeedbackID(orderFeedback.getId());
-                            showOrderFeedback.setDescription(orderFeedback.getDescription());
-                            showOrderFeedback.setCreatedDate(orderFeedback.getCreatedDate());
-
-                            showOrderFeedbackList.add(showOrderFeedback);
-                        }
-                    }
-
                     ShowPlantModel model = new ShowPlantModel();
                     model.setPlantID(plant.getId());
                     model.setName(plant.getName());
                     model.setHeight(plant.getHeight());
                     model.setPrice(plant.getPrice());
                     model.setWithPot(plant.getWithPot());
-                    model.setTotalFeedback(orderFeedbackList.size());
-                    model.setPlantCategoryList(categoryList);
-                    model.setOrderFeedbackList(showOrderFeedbackList);
                     model.setTotalPage(totalPage);
                     return model;
                 }
@@ -681,20 +431,15 @@ public class PlantServiceImpl implements PlantService {
     }
 
     @Override
-    public List<ShowPlantModel> getPlantByCategoryAndName(String categoryName, String name, Pageable paging) {
-        List<Category> categoryList = categoryRepository.findByNameLike(categoryName);
+    public List<ShowPlantModel> getPlantByCategoryAndName(Long categoryID, String name, Pageable paging) {
+        List<PlantCategory> plantCategoryList = plantCategoryRepository.findByCategory_Id(categoryID);
 
-        List<PlantCategory> plantCategoryList = new ArrayList<>();
-        for (Category category : categoryList) {
-            List<PlantCategory> tmpPlantCategoryList = plantCategoryRepository.findByCategory_Id(category.getId());
-            plantCategoryList.addAll(tmpPlantCategoryList);
-        }
         List<Plant> catePlantList = new ArrayList<>();
         for (PlantCategory plantCategory : plantCategoryList) {
             catePlantList.add(plantCategory.getPlant());
         }
 
-        List<Plant> plantList = plantRepository.findByNameLikeAndStatus(name, Status.ON_SELL);
+        List<Plant> plantList = plantRepository.findByNameLikeAndStatus(name, Status.ONSELL);
         if (plantList != null) {
             plantList.addAll(catePlantList);
             List<Plant> noDuplicatePlantList = new ArrayList<>(new HashSet<>(plantList));
@@ -704,36 +449,12 @@ public class PlantServiceImpl implements PlantService {
             Page<ShowPlantModel> modelResult = pagingResult.map(new Converter<Plant, ShowPlantModel>() {
                 @Override
                 protected ShowPlantModel doForward(Plant plant) {
-                    List<ShowOrderFeedback> showOrderFeedbackList = new ArrayList<>();
-                    List<OrderFeedback> orderFeedbackList = orderFeedbackRepository.findAllByPlant_IdAndStatus(plant.getId(), Status.ON_SELL);
-                    if (orderFeedbackList != null) {
-                        for (OrderFeedback orderFeedback : orderFeedbackList) {
-                            ShowOrderFeedback showOrderFeedback = new ShowOrderFeedback();
-
-                            List<OrderFeedbackIMG> orderFeedbackIMGList = orderFeedbackIMGRepository.findAllByOrderFeedback(orderFeedback);
-                            if (orderFeedbackIMGList != null) {
-                                showOrderFeedback.setOrderFeedbackIMGList(orderFeedbackIMGList);
-                            }
-
-                            showOrderFeedback.setRatingID(orderFeedback.getId());
-                            showOrderFeedback.setRatingDes(orderFeedback.getDescription());
-                            showOrderFeedback.setOrderFeedbackID(orderFeedback.getId());
-                            showOrderFeedback.setDescription(orderFeedback.getDescription());
-                            showOrderFeedback.setCreatedDate(orderFeedback.getCreatedDate());
-
-                            showOrderFeedbackList.add(showOrderFeedback);
-                        }
-                    }
-
                     ShowPlantModel model = new ShowPlantModel();
                     model.setPlantID(plant.getId());
                     model.setName(plant.getName());
                     model.setHeight(plant.getHeight());
                     model.setPrice(plant.getPrice());
                     model.setWithPot(plant.getWithPot());
-                    model.setTotalFeedback(orderFeedbackList.size());
-                    model.setPlantCategoryList(null);
-                    model.setOrderFeedbackList(showOrderFeedbackList);
                     model.setTotalPage(totalPage);
                     return model;
                 }
@@ -750,53 +471,18 @@ public class PlantServiceImpl implements PlantService {
 
     @Override
     public List<ShowPlantModel> getPlantByNameAndPrice(String name, Double fromPrice, Double toPrice, Pageable paging) {
-        Page<Plant> pagingResult = plantPagingRepository.findByPriceBetweenAndNameAndStatus(fromPrice, toPrice, name, Status.ON_SELL, paging);
+        Page<Plant> pagingResult = plantPagingRepository.findByPriceBetweenAndNameAndStatus(fromPrice, toPrice, name, Status.ONSELL, paging);
         if (pagingResult.hasContent()) {
             double totalPage = Math.ceil((double) pagingResult.getTotalElements() / paging.getPageSize());
             Page<ShowPlantModel> modelResult = pagingResult.map(new Converter<Plant, ShowPlantModel>() {
                 @Override
                 protected ShowPlantModel doForward(Plant plant) {
-                    List<ShowPlantCategory> categoryList = new ArrayList<>();
-                    List<PlantCategory> plantCategoryList = plantCategoryRepository.findAllByPlant_Id(plant.getId());
-                    if (plantCategoryList != null) {
-                        for (PlantCategory plantCategory : plantCategoryList) {
-                            ShowPlantCategory showPlantCategory = new ShowPlantCategory();
-                            showPlantCategory.setCategoryID(plantCategory.getCategory().getId());
-                            showPlantCategory.setCategoryName(plantCategory.getCategory().getName());
-                            categoryList.add(showPlantCategory);
-                        }
-                    }
-
-                    List<ShowOrderFeedback> showOrderFeedbackList = new ArrayList<>();
-                    List<OrderFeedback> orderFeedbackList = orderFeedbackRepository.findAllByPlant_IdAndStatus(plant.getId(), Status.ON_SELL);
-                    if (orderFeedbackList != null) {
-                        for (OrderFeedback orderFeedback : orderFeedbackList) {
-                            ShowOrderFeedback showOrderFeedback = new ShowOrderFeedback();
-
-                            List<OrderFeedbackIMG> orderFeedbackIMGList = orderFeedbackIMGRepository.findAllByOrderFeedback(orderFeedback);
-                            if (orderFeedbackIMGList != null) {
-                                showOrderFeedback.setOrderFeedbackIMGList(orderFeedbackIMGList);
-                            }
-
-                            showOrderFeedback.setRatingID(orderFeedback.getId());
-                            showOrderFeedback.setRatingDes(orderFeedback.getDescription());
-                            showOrderFeedback.setOrderFeedbackID(orderFeedback.getId());
-                            showOrderFeedback.setDescription(orderFeedback.getDescription());
-                            showOrderFeedback.setCreatedDate(orderFeedback.getCreatedDate());
-
-                            showOrderFeedbackList.add(showOrderFeedback);
-                        }
-                    }
-
                     ShowPlantModel model = new ShowPlantModel();
                     model.setPlantID(plant.getId());
                     model.setName(plant.getName());
                     model.setHeight(plant.getHeight());
                     model.setPrice(plant.getPrice());
                     model.setWithPot(plant.getWithPot());
-                    model.setTotalFeedback(orderFeedbackList.size());
-                    model.setPlantCategoryList(categoryList);
-                    model.setOrderFeedbackList(showOrderFeedbackList);
                     model.setTotalPage(totalPage);
                     return model;
                 }
@@ -813,20 +499,15 @@ public class PlantServiceImpl implements PlantService {
     }
 
     @Override
-    public List<ShowPlantModel> getPlantByCategoryAndPrice(String categoryName, Double fromPrice, Double toPrice, Pageable paging) {
-        List<Category> categoryList = categoryRepository.findByNameLike(categoryName);
+    public List<ShowPlantModel> getPlantByCategoryAndPrice(Long categoryID, Double fromPrice, Double toPrice, Pageable paging) {
+        List<PlantCategory> plantCategoryList = plantCategoryRepository.findByCategory_Id(categoryID);
 
-        List<PlantCategory> plantCategoryList = new ArrayList<>();
-        for (Category category : categoryList) {
-            List<PlantCategory> tmpPlantCategoryList = plantCategoryRepository.findByCategory_Id(category.getId());
-            plantCategoryList.addAll(tmpPlantCategoryList);
-        }
         List<Plant> catePlantList = new ArrayList<>();
         for (PlantCategory plantCategory : plantCategoryList) {
             catePlantList.add(plantCategory.getPlant());
         }
 
-        List<Plant> plantList = plantRepository.findByPriceBetweenAndStatus(fromPrice, toPrice, Status.ON_SELL);
+        List<Plant> plantList = plantRepository.findByPriceBetweenAndStatus(fromPrice, toPrice, Status.ONSELL);
         if (plantList != null) {
             plantList.addAll(catePlantList);
             List<Plant> noDuplicatePlantList = new ArrayList<>(new HashSet<>(plantList));
@@ -836,36 +517,12 @@ public class PlantServiceImpl implements PlantService {
             Page<ShowPlantModel> modelResult = pagingResult.map(new Converter<Plant, ShowPlantModel>() {
                 @Override
                 protected ShowPlantModel doForward(Plant plant) {
-                    List<ShowOrderFeedback> showOrderFeedbackList = new ArrayList<>();
-                    List<OrderFeedback> orderFeedbackList = orderFeedbackRepository.findAllByPlant_IdAndStatus(plant.getId(), Status.ON_SELL);
-                    if (orderFeedbackList != null) {
-                        for (OrderFeedback orderFeedback : orderFeedbackList) {
-                            ShowOrderFeedback showOrderFeedback = new ShowOrderFeedback();
-
-                            List<OrderFeedbackIMG> orderFeedbackIMGList = orderFeedbackIMGRepository.findAllByOrderFeedback(orderFeedback);
-                            if (orderFeedbackIMGList != null) {
-                                showOrderFeedback.setOrderFeedbackIMGList(orderFeedbackIMGList);
-                            }
-
-                            showOrderFeedback.setRatingID(orderFeedback.getId());
-                            showOrderFeedback.setRatingDes(orderFeedback.getDescription());
-                            showOrderFeedback.setOrderFeedbackID(orderFeedback.getId());
-                            showOrderFeedback.setDescription(orderFeedback.getDescription());
-                            showOrderFeedback.setCreatedDate(orderFeedback.getCreatedDate());
-
-                            showOrderFeedbackList.add(showOrderFeedback);
-                        }
-                    }
-
                     ShowPlantModel model = new ShowPlantModel();
                     model.setPlantID(plant.getId());
                     model.setName(plant.getName());
                     model.setHeight(plant.getHeight());
                     model.setPrice(plant.getPrice());
                     model.setWithPot(plant.getWithPot());
-                    model.setTotalFeedback(orderFeedbackList.size());
-                    model.setPlantCategoryList(null);
-                    model.setOrderFeedbackList(showOrderFeedbackList);
                     model.setTotalPage(totalPage);
                     return model;
                 }
@@ -881,20 +538,15 @@ public class PlantServiceImpl implements PlantService {
     }
 
     @Override
-    public List<ShowPlantModel> getPlantByCategoryAndNameAndPrice(String categoryName, String name, Double fromPrice, Double toPrice, Pageable paging) {
-        List<Category> categoryList = categoryRepository.findByNameLike(categoryName);
+    public List<ShowPlantModel> getPlantByCategoryAndNameAndPrice(Long categoryID, String name, Double fromPrice, Double toPrice, Pageable paging) {
+        List<PlantCategory> plantCategoryList = plantCategoryRepository.findByCategory_Id(categoryID);
 
-        List<PlantCategory> plantCategoryList = new ArrayList<>();
-        for (Category category : categoryList) {
-            List<PlantCategory> tmpPlantCategoryList = plantCategoryRepository.findByCategory_Id(category.getId());
-            plantCategoryList.addAll(tmpPlantCategoryList);
-        }
         List<Plant> catePlantList = new ArrayList<>();
         for (PlantCategory plantCategory : plantCategoryList) {
             catePlantList.add(plantCategory.getPlant());
         }
 
-        List<Plant> plantList = plantRepository.findByPriceBetweenAndNameAndStatus(fromPrice, toPrice, name, Status.ON_SELL);
+        List<Plant> plantList = plantRepository.findByPriceBetweenAndNameAndStatus(fromPrice, toPrice, name, Status.ONSELL);
         if (plantList != null) {
             plantList.addAll(catePlantList);
             List<Plant> noDuplicatePlantList = new ArrayList<>(new HashSet<>(plantList));
@@ -904,36 +556,12 @@ public class PlantServiceImpl implements PlantService {
             Page<ShowPlantModel> modelResult = pagingResult.map(new Converter<Plant, ShowPlantModel>() {
                 @Override
                 protected ShowPlantModel doForward(Plant plant) {
-                    List<ShowOrderFeedback> showOrderFeedbackList = new ArrayList<>();
-                    List<OrderFeedback> orderFeedbackList = orderFeedbackRepository.findAllByPlant_IdAndStatus(plant.getId(), Status.ON_SELL);
-                    if (orderFeedbackList != null) {
-                        for (OrderFeedback orderFeedback : orderFeedbackList) {
-                            ShowOrderFeedback showOrderFeedback = new ShowOrderFeedback();
-
-                            List<OrderFeedbackIMG> orderFeedbackIMGList = orderFeedbackIMGRepository.findAllByOrderFeedback(orderFeedback);
-                            if (orderFeedbackIMGList != null) {
-                                showOrderFeedback.setOrderFeedbackIMGList(orderFeedbackIMGList);
-                            }
-
-                            showOrderFeedback.setRatingID(orderFeedback.getId());
-                            showOrderFeedback.setRatingDes(orderFeedback.getDescription());
-                            showOrderFeedback.setOrderFeedbackID(orderFeedback.getId());
-                            showOrderFeedback.setDescription(orderFeedback.getDescription());
-                            showOrderFeedback.setCreatedDate(orderFeedback.getCreatedDate());
-
-                            showOrderFeedbackList.add(showOrderFeedback);
-                        }
-                    }
-
                     ShowPlantModel model = new ShowPlantModel();
                     model.setPlantID(plant.getId());
                     model.setName(plant.getName());
                     model.setHeight(plant.getHeight());
                     model.setPrice(plant.getPrice());
                     model.setWithPot(plant.getWithPot());
-                    model.setTotalFeedback(orderFeedbackList.size());
-                    model.setPlantCategoryList(null);
-                    model.setOrderFeedbackList(showOrderFeedbackList);
                     model.setTotalPage(totalPage);
                     return model;
                 }

@@ -1,7 +1,7 @@
 package com.example.thanhhoa.repositories.pagings;
 
-import com.example.thanhhoa.enums.Status;
 import com.example.thanhhoa.entities.Plant;
+import com.example.thanhhoa.enums.Status;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.repository.PagingAndSortingRepository;

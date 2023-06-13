@@ -2,12 +2,14 @@ package com.example.thanhhoa.dtos.PlantModels;
 
 import lombok.Getter;
 import lombok.Setter;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.Serializable;
 import java.util.List;
 
 @Getter
 @Setter
-public class CreatePlantModel {
+public class CreatePlantModel implements Serializable {
     private String name;
     private String description;
     private String careNote;
@@ -19,4 +21,5 @@ public class CreatePlantModel {
     private Integer quantity;
     private Long shipPriceID;
     private List<Long> categoryIDList;
+    private List<MultipartFile> files;
 }

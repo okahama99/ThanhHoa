@@ -16,15 +16,15 @@ public interface PlantService {
 
     ShowPlantModel getPlantByID(Long plantID);
 
-    Boolean createPlant(CreatePlantModel createPlantModel, MultipartFile[] files) throws Exception;
+    Boolean createPlant(CreatePlantModel createPlantModel) throws Exception;
 
-    Boolean updatePlant(UpdatePlantModel updatePlantModel, MultipartFile[] files) throws Exception;
+    Boolean updatePlant(UpdatePlantModel updatePlantModel, List<MultipartFile> files) throws Exception;
 
     Boolean deletePlant(Long plantID) throws IOException;
 
     Plant checkDuplicate(String plantName);
 
-    List<ShowPlantModel> getPlantByCategory(String categoryName, Pageable paging);
+    List<ShowPlantModel> getPlantByCategory(Long categoryID, Pageable paging);
 
     List<ShowPlantModel> getPlantByName(String name, Pageable paging);
 
@@ -34,11 +34,11 @@ public interface PlantService {
 
     List<ShowPlantModel> getNameByPriceInRange(Double fromPrice, Double toPrice, Pageable paging);
 
-    List<ShowPlantModel> getPlantByCategoryAndName(String categoryName, String name, Pageable paging);
+    List<ShowPlantModel> getPlantByCategoryAndName(Long categoryID, String name, Pageable paging);
 
     List<ShowPlantModel> getPlantByNameAndPrice(String name, Double fromPrice, Double toPrice, Pageable paging);
 
-    List<ShowPlantModel> getPlantByCategoryAndPrice(String categoryName, Double fromPrice, Double toPrice, Pageable paging);
+    List<ShowPlantModel> getPlantByCategoryAndPrice(Long categoryID, Double fromPrice, Double toPrice, Pageable paging);
 
-    List<ShowPlantModel> getPlantByCategoryAndNameAndPrice(String categoryName, String name, Double fromPrice, Double toPrice, Pageable paging);
+    List<ShowPlantModel> getPlantByCategoryAndNameAndPrice(Long categoryID, String name, Double fromPrice, Double toPrice, Pageable paging);
 }

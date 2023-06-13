@@ -1,6 +1,7 @@
 package com.example.thanhhoa.entities;
 
 import com.example.thanhhoa.enums.Status;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import lombok.Getter;
 import lombok.Setter;
 import org.springframework.data.annotation.CreatedDate;
@@ -12,6 +13,7 @@ import java.util.List;
 @Entity
 @Getter
 @Setter
+@JsonIgnoreProperties(value = {"handler","hibernateLazyInitializer","fieldHandler"})
 public class tblOrder {
 
     @Id
@@ -68,7 +70,7 @@ public class tblOrder {
     @Column
     private Double total = 0.0;
 
-    @Enumerated(EnumType.STRING)
+    @Enumerated(EnumType.ORDINAL)
     private Status status;
 
     @ManyToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)

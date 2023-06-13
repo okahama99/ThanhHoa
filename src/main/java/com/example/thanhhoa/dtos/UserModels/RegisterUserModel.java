@@ -6,11 +6,12 @@ import lombok.Setter;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
+import java.io.Serializable;
 
 @Getter
 @Setter
-public class RegisterUserModel {
-    @NotBlank(message = "username is REQUIRED")
+public class RegisterUserModel implements Serializable{
+        @NotBlank(message = "username is REQUIRED")
     @NotNull(message = "username is REQUIRED")
     @Size(max = 50, message = "Username must be atleast 10 and max 50 characters")
     private String username;

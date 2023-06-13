@@ -21,7 +21,6 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -40,11 +39,11 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.client.HttpClientErrorException;
 
 import javax.mail.MessagingException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -74,7 +73,7 @@ public class UserController {
     @Autowired
     private UserPagingRepository userPagingRepository;
 
-    @PostMapping(value = "/login", produces = "application/json;charset=UTF-8")
+    @PostMapping(value = "/login",produces = "application/json;charset=UTF-8")
     public ResponseEntity<Object> login(@RequestParam String username,
                                         @RequestParam String password) {
         try {
@@ -98,7 +97,7 @@ public class UserController {
         }
     }
 
-    @RequestMapping(value = "/logout", method = RequestMethod.GET, produces = "application/json;charset=UTF-8")
+    @RequestMapping(value = "/logout",method = RequestMethod.GET, produces = "application/json;charset=UTF-8")
     public String logoutPage(HttpServletRequest request, HttpServletResponse response) {
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
         if (auth != null) {
@@ -107,7 +106,7 @@ public class UserController {
         return "redirect:/";
     }
 
-    @RequestMapping(value = "/loginWithEmailOrPhone", method = RequestMethod.POST, produces = "application/json;charset=UTF-8")
+    @RequestMapping(value = "/loginWithEmailOrPhone",method = RequestMethod.POST, produces = "application/json;charset=UTF-8")
     public ResponseEntity<Object> loginWithEmailOrPhone(@RequestParam SearchType.LOGIN_WITH_EMAIL_OR_PHONE loginType,
                                                         @RequestParam(required = false) String email,
                                                         @RequestParam(required = false) String phone) throws Exception {
@@ -139,7 +138,7 @@ public class UserController {
         return ResponseEntity.badRequest().body("Lỗi đăng nhập, vui lòng kiểm tra lại thông tin của " + loginType + ".");
     }
 
-    @RequestMapping("/login-google")
+    @RequestMapping("/loginGoogle")
     public ResponseEntity<Object> loginGoogle(HttpServletRequest request) throws Exception {
         String code = request.getParameter("code");
 
@@ -168,7 +167,7 @@ public class UserController {
         return ResponseEntity.ok().body(response);
     }
 
-    @PostMapping(value = "/resetPasswordOTPEmail", produces = "application/json;charset=UTF-8")
+    @PostMapping(value = "/resetPasswordOTPEmail",produces = "application/json;charset=UTF-8")
     public ResponseEntity<Object> resetPasswordOTPEmail(@RequestParam("email") String email) throws MessagingException {
 
         Map<String, String> response = new HashMap<>(2);
@@ -188,7 +187,7 @@ public class UserController {
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
 
-    @PostMapping(value = "/validateOTP", produces = "application/json;charset=UTF-8")
+    @PostMapping(value = "/validateOTP",produces = "application/json;charset=UTF-8")
     public ResponseEntity<Object> validateOTP(@RequestParam String email,
                                               @RequestParam Integer otp) {
         // validate provided OTP.
@@ -200,14 +199,14 @@ public class UserController {
         return new ResponseEntity<>("OTP chính xác", HttpStatus.OK);
     }
 
-    @PostMapping(value = "/changePassword", produces = "application/json;charset=UTF-8")
+    @PostMapping(value = "/changePassword",produces = "application/json;charset=UTF-8")
     public ResponseEntity<Object> changePassword(@RequestParam String email,
                                                  @RequestParam String password) {
         userService.resetPasswordUser(email, passwordEncoder.encode(password));
         return new ResponseEntity<>("Đổi mật khẩu thành công", HttpStatus.OK);
     }
 
-    @PostMapping(value = "/register", produces = "application/json;charset=UTF-8")
+    @PostMapping(value = "/register",produces = "application/json;charset=UTF-8")
     public ResponseEntity<Object> register(@RequestBody RegisterUserModel registerUserModel) {
         registerUserModel.setPassword(passwordEncoder.encode(registerUserModel.getPassword()));
         String result = userService.register(registerUserModel);
@@ -217,17 +216,21 @@ public class UserController {
         return ResponseEntity.badRequest().body(result);
     }
 
+    @GetMapping
+    public String test(){
+        throw new IllegalArgumentException("Invalid jwt.");
+    }
 
-    @GetMapping(value = "/findUserByRoleName", produces = "application/json;charset=UTF-8")
-    public ResponseEntity<Object> findUserByRoleName(@RequestParam String roleName,
-                                                     @RequestParam int pageNo,
-                                                     @RequestParam int pageSize,
-                                                     @RequestParam SearchType.USER sortBy,
-                                                     @RequestParam boolean sortTypeAsc,
-                                                     @RequestHeader(name = "Authorization") @Parameter(hidden = true) String token) throws Exception {
+    @GetMapping(produces = "application/json;charset=UTF-8")
+    public ResponseEntity<Object> searchUser(@RequestParam String searchParam,
+                                             @RequestParam int pageNo,
+                                             @RequestParam int pageSize,
+                                             @RequestParam SearchType.USER sortBy,
+                                             @RequestParam boolean sortTypeAsc,
+                                             @RequestHeader(name = "Authorization") @Parameter(hidden = true) String token) throws Exception {
         String jwt = jwtUtil.getAndValidateJwt(token);
         Long userId = jwtUtil.getUserIdFromJWT(jwt);
-        if (userId == null){
+        if (userId == null) {
             throw new IllegalArgumentException("Invalid jwt.");
         }
         Pageable paging;
@@ -238,6 +241,7 @@ public class UserController {
         } else {
             paging = util.makePaging(pageNo, pageSize, sortBy.toString().toLowerCase(), sortTypeAsc);
         }
+        String roleName = null;
         Page<tblAccount> userList = userPagingRepository.findByRole_RoleNameLike(roleName, paging);
         if (userList == null) {
             return ResponseEntity.badRequest()
@@ -246,87 +250,20 @@ public class UserController {
         return ResponseEntity.ok().body(userList);
     }
 
-    @GetMapping(value = "/findUserByStatus", produces = "application/json;charset=UTF-8")
-    public ResponseEntity<Object> findUserByStatus(@RequestParam SearchType.STATUS status,
-                                                   @RequestParam int pageNo,
-                                                   @RequestParam int pageSize,
-                                                   @RequestParam SearchType.USER sortBy,
-                                                   @RequestParam boolean sortTypeAsc,
-                                                   @RequestHeader(name = "Authorization") @Parameter(hidden = true) String token) throws Exception {
-        String jwt = jwtUtil.getAndValidateJwt(token);
-        Long userId = jwtUtil.getUserIdFromJWT(jwt);
-        if (userId == null){
-            throw new IllegalArgumentException("Invalid jwt.");
-        }
-        Pageable paging;
-        if (sortBy.equals("FULLNAME")) {
-            paging = util.makePaging(pageNo, pageSize, "fullName", sortTypeAsc);
-        } else if (sortBy.equals("CREATEDDATE")) {
-            paging = util.makePaging(pageNo, pageSize, "createdDate", sortTypeAsc);
-        } else {
-            paging = util.makePaging(pageNo, pageSize, sortBy.toString().toLowerCase(), sortTypeAsc);
-        }
-        Page<tblAccount> userList = null;
-        switch (status) {
-            case ACTIVE:
-                userList = userPagingRepository.findByStatus(Status.ACTIVE, paging);
-                if (userList == null) {
-                    return ResponseEntity.badRequest()
-                            .body("No User found with input: '" + status + "'. ");
-                }
-                break;
-            case INACTIVE:
-                userList = userPagingRepository.findByStatus(Status.INACTIVE, paging);
-                if (userList == null) {
-                    return ResponseEntity.badRequest()
-                            .body("No User found with input: '" + status + "'. ");
-                }
-                break;
-        }
-        return ResponseEntity.ok().body(userList);
+    @GetMapping(value = "/getByToken",produces = "application/json;charset=UTF-8")
+    public ResponseEntity<Object> getUserByToken(HttpServletRequest request) {
+        String authTokenHeader = request.getHeader("Authorization");
+        String token = authTokenHeader.substring(7);
+        return ResponseEntity.ok().body(userService.getById(jwtUtil.getUserIdFromJWT(token)));
     }
 
-    @GetMapping("/findUserByFullName")
-    public ResponseEntity<Object> findUserByFullName(@RequestParam String fullName,
-                                                     @RequestParam int pageNo,
-                                                     @RequestParam int pageSize,
-                                                     @RequestParam SearchType.USER sortBy,
-                                                     @RequestParam boolean sortTypeAsc,
-                                                     @RequestHeader(name = "Authorization") @Parameter(hidden = true) String token) throws Exception {
-        String jwt = jwtUtil.getAndValidateJwt(token);
-        Long userId = jwtUtil.getUserIdFromJWT(jwt);
-        if (userId == null){
-            throw new IllegalArgumentException("Invalid jwt.");
-        }
-        Pageable paging;
-        if (sortBy.equals("FULLNAME")) {
-            paging = util.makePaging(pageNo, pageSize, "fullName", sortTypeAsc);
-        } else if (sortBy.equals("CREATEDDATE")) {
-            paging = util.makePaging(pageNo, pageSize, "createdDate", sortTypeAsc);
-        } else {
-            paging = util.makePaging(pageNo, pageSize, sortBy.toString().toLowerCase(), sortTypeAsc);
-        }
-        Page<tblAccount> userList = userPagingRepository.findByFullNameLike(fullName, paging);
-        if (userList == null) {
-            return ResponseEntity.badRequest()
-                    .body("No User found with input: '" + fullName + "'. ");
-        }
-        return ResponseEntity.ok().body(userList);
-    }
-
-    @GetMapping(path = "/getUserByToken", produces = "application/json;charset=UTF-8")
-    public ResponseEntity<Object> getUserByToken(@RequestHeader(name = "Authorization") @Parameter(hidden = true) String token){
-        ShowUserModel userModel = userService.getUserByID(jwtUtil.getUserIdFromJWT(token));
-        return ResponseEntity.ok().body(userModel);
-    }
-
-    @PostMapping(value = "/changeUserRole/{userid}", produces = "application/json;charset=UTF-8")
+    @PostMapping(value = "/{userid}", produces = "application/json;charset=UTF-8")
     public HttpStatus changeUserRole(@PathVariable(name = "userid") Long userid,
                                      @RequestParam Long roleId,
                                      @RequestHeader(name = "Authorization") @Parameter(hidden = true) String token) throws Exception {
         String jwt = jwtUtil.getAndValidateJwt(token);
         Long userId = jwtUtil.getUserIdFromJWT(jwt);
-        if (userId == null){
+        if (userId == null) {
             throw new IllegalArgumentException("Invalid jwt.");
         }
         userService.changeUserRole(userid, roleId);

@@ -26,7 +26,6 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
-import javax.validation.constraints.Size;
 import java.util.List;
 
 @RestController
@@ -40,19 +39,18 @@ public class PlantController {
     @Autowired
     private JwtUtil jwtUtil;
 
-    @PostMapping(value = "/createPlant", produces = "application/json;charset=UTF-8")
+    @PostMapping(produces = "application/json;charset=UTF-8")
     public ResponseEntity<Object> createPlant(@RequestBody CreatePlantModel createPlantModel,
-                                              @RequestPart(required = false) MultipartFile[] files) throws Exception {
-//                                              @RequestHeader(name = "Authorization") @Parameter(hidden = true) String token) throws Exception {
-//        String jwt = jwtUtil.getAndValidateJwt(token);
-//        Long userId = jwtUtil.getUserIdFromJWT(jwt);
-//        if (userId == null) {
-//            throw new IllegalArgumentException("Invalid jwt.");
-//        }
+                                              @RequestHeader(name = "Authorization") @Parameter(hidden = true) String token) throws Exception {
+        String jwt = jwtUtil.getAndValidateJwt(token);
+        Long userId = jwtUtil.getUserIdFromJWT(jwt);
+        if (userId == null) {
+            throw new IllegalArgumentException("Invalid jwt.");
+        }
         if (plantService.checkDuplicate(createPlantModel.getName()) != null) {
             return ResponseEntity.badRequest().body("Cây cùng tên đã tồn tại.");
         } else {
-            boolean result = plantService.createPlant(createPlantModel, files);
+            boolean result = plantService.createPlant(createPlantModel);
             if (result) {
                 return ResponseEntity.ok().body("Tạo thành công.");
             }
@@ -60,9 +58,9 @@ public class PlantController {
         }
     }
 
-    @PutMapping(value = "/updatePlant", produces = "application/json;charset=UTF-8")
+    @PutMapping(produces = "application/json;charset=UTF-8")
     public ResponseEntity<Object> updatePlant(@RequestBody UpdatePlantModel updatePlantModel,
-                                              @RequestPart(required = false) @Size(min = 1) MultipartFile[] files,
+                                              @RequestPart(required = false) List<MultipartFile> files,
                                               @RequestHeader(name = "Authorization") @Parameter(hidden = true) String token) throws Exception {
         String jwt = jwtUtil.getAndValidateJwt(token);
         Long userId = jwtUtil.getUserIdFromJWT(jwt);
@@ -80,7 +78,7 @@ public class PlantController {
         }
     }
 
-    @DeleteMapping(value = "/deletePlant/{plantID}", produces = "application/json;charset=UTF-8")
+    @DeleteMapping(produces = "application/json;charset=UTF-8")
     public ResponseEntity<Object> deletePlant(@PathVariable(name = "plantID") Long plantID,
                                               @RequestHeader(name = "Authorization") @Parameter(hidden = true) String token) throws Exception {
         String jwt = jwtUtil.getAndValidateJwt(token);
@@ -95,66 +93,64 @@ public class PlantController {
         }
     }
 
-    @GetMapping(value = "/getAllPlant", produces = "application/json;charset=UTF-8")
-    public @ResponseBody
-    List<ShowPlantModel> getAllPlant(@RequestParam int pageNo,
-                                     @RequestParam int pageSize,
-                                     @RequestParam SearchType.PLANT sortBy,
-                                     @RequestParam boolean sortAsc) {
-        List<ShowPlantModel> plant = plantService.getAllPlant(util.makePaging(pageNo, pageSize, sortBy.toString().toLowerCase(), sortAsc));
-        return plant;
+    @GetMapping(produces = "application/json;charset=UTF-8")
+    public @ResponseBody List<ShowPlantModel> getAllPlant(@RequestParam int pageNo,
+                                              @RequestParam int pageSize,
+                                              @RequestParam SearchType.PLANT sortBy,
+                                              @RequestParam boolean sortAsc) {
+        return plantService.getAllPlant(util.makePaging(pageNo, pageSize, sortBy.toString().toLowerCase(), sortAsc));
     }
 
-    @GetMapping(value = "/getPlantByID", produces = "application/json;charset=UTF-8")
+    @GetMapping(value = "/{plantID}", produces = "application/json;charset=UTF-8")
     public @ResponseBody
-    ResponseEntity<Object> getPlantByID(@RequestParam Long plantID) {
+    ResponseEntity<Object> getPlantByID(@PathVariable("plantID") Long plantID) {
         ShowPlantModel model = plantService.getPlantByID(plantID);
-        if(model!=null){
+        if (model != null) {
             return ResponseEntity.ok().body(model);
         }
         return ResponseEntity.badRequest().body("Cây không tồn tại.");
     }
 
-    @GetMapping(value = "/searchPlant", produces = "application/json;charset=UTF-8")
+    @GetMapping(value = "/plantFilter", produces = "application/json;charset=UTF-8")
     public @ResponseBody
     ResponseEntity<Object> searchPlant(@RequestParam(required = false) String plantName,
-                                       @RequestParam(required = false) String categoryName,
+                                       @RequestParam(required = false) Long categoryID,
                                        @RequestParam(required = false) Double fromPrice,
                                        @RequestParam(required = false) Double toPrice,
                                        @RequestParam int pageNo,
                                        @RequestParam int pageSize,
                                        @RequestParam SearchType.PLANT sortBy,
-                                       @RequestParam boolean sortAsc) {
+                                       @RequestParam(required = false, defaultValue = "true") boolean sortAsc) {
         Pageable paging = util.makePaging(pageNo, pageSize, sortBy.toString().toLowerCase(), sortAsc);
 
-        if (!StringUtils.isEmpty(plantName.trim()) && StringUtils.isEmpty(categoryName.trim())
+        if (!StringUtils.isEmpty(plantName.trim()) && categoryID == null
                 && fromPrice == null && toPrice == null) {
             return ResponseEntity.ok().body(plantService.getPlantByName(plantName, paging));
-        } else if (StringUtils.isEmpty(plantName.trim()) && !StringUtils.isEmpty(categoryName.trim())
+        } else if (StringUtils.isEmpty(plantName.trim()) && categoryID != null
                 && fromPrice == null && toPrice == null) {
-            return ResponseEntity.ok().body(plantService.getPlantByCategory(categoryName, paging));
-        } else if (StringUtils.isEmpty(plantName.trim()) && StringUtils.isEmpty(categoryName.trim())
+            return ResponseEntity.ok().body(plantService.getPlantByCategory(categoryID, paging));
+        } else if (StringUtils.isEmpty(plantName.trim()) && categoryID == null
                 && fromPrice != null && toPrice == null) {
             return ResponseEntity.ok().body(plantService.getNameByPriceMin(fromPrice, paging));
-        } else if (StringUtils.isEmpty(plantName.trim()) && StringUtils.isEmpty(categoryName.trim())
+        } else if (StringUtils.isEmpty(plantName.trim()) && categoryID == null
                 && fromPrice == null && toPrice != null) {
             return ResponseEntity.ok().body(plantService.getNameByPriceMax(toPrice, paging));
-        } else if (StringUtils.isEmpty(plantName.trim()) && StringUtils.isEmpty(categoryName.trim())
+        } else if (StringUtils.isEmpty(plantName.trim()) && categoryID == null
                 && fromPrice != null && toPrice != null) {
             return ResponseEntity.ok().body(plantService.getNameByPriceInRange(fromPrice, toPrice, paging));
-        } else if (!StringUtils.isEmpty(plantName.trim()) && !StringUtils.isEmpty(categoryName.trim())
+        } else if (!StringUtils.isEmpty(plantName.trim()) && categoryID != null
                 && fromPrice == null && toPrice == null) {
-            return ResponseEntity.ok().body(plantService.getPlantByCategoryAndName(categoryName, plantName, paging));
-        } else if (!StringUtils.isEmpty(plantName.trim()) && StringUtils.isEmpty(categoryName.trim())
+            return ResponseEntity.ok().body(plantService.getPlantByCategoryAndName(categoryID, plantName, paging));
+        } else if (!StringUtils.isEmpty(plantName.trim()) && categoryID == null
                 && fromPrice != null && toPrice != null) {
             return ResponseEntity.ok().body(plantService.getPlantByNameAndPrice(plantName, fromPrice, toPrice, paging));
-        } else if (StringUtils.isEmpty(plantName.trim()) && !StringUtils.isEmpty(categoryName.trim())
+        } else if (StringUtils.isEmpty(plantName.trim()) && categoryID != null
                 && fromPrice != null && toPrice != null) {
-            return ResponseEntity.ok().body(plantService.getPlantByCategoryAndPrice(categoryName, fromPrice, toPrice, paging));
-        } else if (!StringUtils.isEmpty(plantName.trim()) && !StringUtils.isEmpty(categoryName.trim())
+            return ResponseEntity.ok().body(plantService.getPlantByCategoryAndPrice(categoryID, fromPrice, toPrice, paging));
+        } else if (!StringUtils.isEmpty(plantName.trim()) && categoryID != null
                 && fromPrice != null && toPrice != null) {
-            return ResponseEntity.ok().body(plantService.getPlantByCategoryAndNameAndPrice(categoryName, plantName, fromPrice, toPrice, paging));
-        }else{
+            return ResponseEntity.ok().body(plantService.getPlantByCategoryAndNameAndPrice(categoryID, plantName, fromPrice, toPrice, paging));
+        } else {
             return ResponseEntity.badRequest().body("Không thể tìm cây với giá trị đã nhập.");
         }
     }

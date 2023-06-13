@@ -1,6 +1,7 @@
 package com.example.thanhhoa.entities;
 
 import com.example.thanhhoa.enums.Status;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import lombok.Getter;
 import lombok.Setter;
 import org.springframework.data.annotation.CreatedDate;
@@ -12,6 +13,7 @@ import java.util.List;
 @Entity
 @Getter
 @Setter
+@JsonIgnoreProperties(value = {"handler","hibernateLazyInitializer","fieldHandler"})
 public class OrderFeedback {
 
     @Id
@@ -26,7 +28,7 @@ public class OrderFeedback {
     @Column(nullable = false)
     private LocalDateTime createdDate;
 
-    @Enumerated(EnumType.STRING)
+    @Enumerated(EnumType.ORDINAL)
     private Status status;
 
     @ManyToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)

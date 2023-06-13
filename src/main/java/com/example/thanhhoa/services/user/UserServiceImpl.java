@@ -120,8 +120,6 @@ public class UserServiceImpl implements UserService {
         userModel.setCreatedDate(user.getCreatedDate());
         userModel.setGender(user.getGender());
         userModel.setAvatar(user.getAvatar());
-        userModel.setRoleID(user.getRole().getId());
-        userModel.setRoleName(user.getRole().getRoleName());
         userModel.setPhone(user.getPhone());
         userModel.setEmail(user.getEmail());
         return userModel;
