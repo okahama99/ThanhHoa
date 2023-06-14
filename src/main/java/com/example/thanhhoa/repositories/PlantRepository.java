@@ -11,7 +11,7 @@ import java.util.List;
 public interface PlantRepository extends JpaRepository<Plant, Long> {
     Plant findByName(String plantName);
 
-    List<Plant> findByNameLikeAndStatus(String name, Status status);
+    List<Plant> findByNameContainingAndStatus(String name, Status status);
 
     List<Plant> findByPriceBetweenAndStatus(Double fromPrice, Double toPrice, Status status);
 

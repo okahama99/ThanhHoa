@@ -439,7 +439,7 @@ public class PlantServiceImpl implements PlantService {
             catePlantList.add(plantCategory.getPlant());
         }
 
-        List<Plant> plantList = plantRepository.findByNameLikeAndStatus(name, Status.ONSELL);
+        List<Plant> plantList = plantRepository.findByNameContainingAndStatus(name, Status.ONSELL);
         if (plantList != null) {
             plantList.addAll(catePlantList);
             List<Plant> noDuplicatePlantList = new ArrayList<>(new HashSet<>(plantList));

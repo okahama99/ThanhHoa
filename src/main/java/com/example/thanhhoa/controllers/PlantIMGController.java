@@ -19,7 +19,7 @@ public class PlantIMGController {
 
     @GetMapping(value = "/getByPlantID", produces = "application/json;charset=UTF-8")
     public @ResponseBody
-    List<PlantIMG> getIMGByPlantID(@RequestParam Long plantID) {
+    List<String> getIMGByPlantID(@RequestParam Long plantID) {
         return plantIMGService.getByPlantID(plantID);
     }
 }

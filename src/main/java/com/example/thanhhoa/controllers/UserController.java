@@ -1,11 +1,11 @@
 package com.example.thanhhoa.controllers;
 
+import com.example.thanhhoa.dtos.UserModels.RegisterStaffModel;
 import com.example.thanhhoa.dtos.UserModels.RegisterUserModel;
 import com.example.thanhhoa.dtos.UserModels.ShowUserModel;
 import com.example.thanhhoa.dtos.UserModels.UserFCMToken;
 import com.example.thanhhoa.entities.tblAccount;
 import com.example.thanhhoa.enums.SearchType;
-import com.example.thanhhoa.enums.Status;
 import com.example.thanhhoa.repositories.UserRepository;
 import com.example.thanhhoa.repositories.pagings.UserPagingRepository;
 import com.example.thanhhoa.services.firebase.CRUDUserFireBaseService;
@@ -15,9 +15,8 @@ import com.example.thanhhoa.services.otp.OtpService;
 import com.example.thanhhoa.services.user.UserService;
 import com.example.thanhhoa.utils.JwtUtil;
 import com.example.thanhhoa.utils.Util;
-import io.swagger.v3.oas.annotations.Parameter;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -34,12 +33,12 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
-import org.springframework.web.client.HttpClientErrorException;
+import org.springframework.web.server.ResponseStatusException;
 
 import javax.mail.MessagingException;
 import javax.servlet.http.HttpServletRequest;
@@ -48,6 +47,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Random;
 import java.util.concurrent.ExecutionException;
 
 @RestController
@@ -73,7 +73,7 @@ public class UserController {
     @Autowired
     private UserPagingRepository userPagingRepository;
 
-    @PostMapping(value = "/login",produces = "application/json;charset=UTF-8")
+    @PostMapping(value = "/login", produces = "application/json;charset=UTF-8")
     public ResponseEntity<Object> login(@RequestParam String username,
                                         @RequestParam String password) {
         try {
@@ -97,7 +97,7 @@ public class UserController {
         }
     }
 
-    @RequestMapping(value = "/logout",method = RequestMethod.GET, produces = "application/json;charset=UTF-8")
+    @RequestMapping(value = "/logout", method = RequestMethod.GET, produces = "application/json;charset=UTF-8")
     public String logoutPage(HttpServletRequest request, HttpServletResponse response) {
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
         if (auth != null) {
@@ -106,7 +106,7 @@ public class UserController {
         return "redirect:/";
     }
 
-    @RequestMapping(value = "/loginWithEmailOrPhone",method = RequestMethod.POST, produces = "application/json;charset=UTF-8")
+    @RequestMapping(value = "/loginWithEmailOrPhone", method = RequestMethod.POST, produces = "application/json;charset=UTF-8")
     public ResponseEntity<Object> loginWithEmailOrPhone(@RequestParam SearchType.LOGIN_WITH_EMAIL_OR_PHONE loginType,
                                                         @RequestParam(required = false) String email,
                                                         @RequestParam(required = false) String phone) throws Exception {
@@ -167,7 +167,7 @@ public class UserController {
         return ResponseEntity.ok().body(response);
     }
 
-    @PostMapping(value = "/resetPasswordOTPEmail",produces = "application/json;charset=UTF-8")
+    @PostMapping(value = "/resetPasswordOTPEmail", produces = "application/json;charset=UTF-8")
     public ResponseEntity<Object> resetPasswordOTPEmail(@RequestParam("email") String email) throws MessagingException {
 
         Map<String, String> response = new HashMap<>(2);
@@ -187,7 +187,7 @@ public class UserController {
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
 
-    @PostMapping(value = "/validateOTP",produces = "application/json;charset=UTF-8")
+    @PostMapping(value = "/validateOTP", produces = "application/json;charset=UTF-8")
     public ResponseEntity<Object> validateOTP(@RequestParam String email,
                                               @RequestParam Integer otp) {
         // validate provided OTP.
@@ -199,14 +199,14 @@ public class UserController {
         return new ResponseEntity<>("OTP chính xác", HttpStatus.OK);
     }
 
-    @PostMapping(value = "/changePassword",produces = "application/json;charset=UTF-8")
+    @PostMapping(value = "/changePassword", produces = "application/json;charset=UTF-8")
     public ResponseEntity<Object> changePassword(@RequestParam String email,
                                                  @RequestParam String password) {
         userService.resetPasswordUser(email, passwordEncoder.encode(password));
         return new ResponseEntity<>("Đổi mật khẩu thành công", HttpStatus.OK);
     }
 
-    @PostMapping(value = "/register",produces = "application/json;charset=UTF-8")
+    @PostMapping(value = "/register", produces = "application/json;charset=UTF-8")
     public ResponseEntity<Object> register(@RequestBody RegisterUserModel registerUserModel) {
         registerUserModel.setPassword(passwordEncoder.encode(registerUserModel.getPassword()));
         String result = userService.register(registerUserModel);
@@ -216,22 +216,36 @@ public class UserController {
         return ResponseEntity.badRequest().body(result);
     }
 
-    @GetMapping
-    public String test(){
-        throw new IllegalArgumentException("Invalid jwt.");
+    @GetMapping(produces = "application/json;charset=UTF-8")
+    public @ResponseBody
+    List<ShowUserModel> getAll(@RequestParam int pageNo,
+                               @RequestParam int pageSize,
+                               @RequestParam SearchType.USER sortBy,
+                               @RequestParam(required = false, defaultValue = "true") Boolean sortTypeAsc) {
+        Pageable paging;
+        if (sortBy.equals("FULLNAME")) {
+            paging = util.makePaging(pageNo, pageSize, "fullName", sortTypeAsc);
+        } else if (sortBy.equals("CREATEDDATE")) {
+            paging = util.makePaging(pageNo, pageSize, "createdDate", sortTypeAsc);
+        } else {
+            paging = util.makePaging(pageNo, pageSize, sortBy.toString().toLowerCase(), sortTypeAsc);
+        }
+        return userService.getAll(paging);
     }
 
-    @GetMapping(produces = "application/json;charset=UTF-8")
-    public ResponseEntity<Object> searchUser(@RequestParam String searchParam,
+    @GetMapping(value = "/userFilter", produces = "application/json;charset=UTF-8")
+    public ResponseEntity<Object> userFilter(@RequestParam(required = false) String username,
+                                             @RequestParam(required = false) String fullName,
+                                             @RequestParam(required = false) String email,
+                                             @RequestParam(required = false) String phone,
                                              @RequestParam int pageNo,
                                              @RequestParam int pageSize,
                                              @RequestParam SearchType.USER sortBy,
-                                             @RequestParam boolean sortTypeAsc,
-                                             @RequestHeader(name = "Authorization") @Parameter(hidden = true) String token) throws Exception {
-        String jwt = jwtUtil.getAndValidateJwt(token);
-        Long userId = jwtUtil.getUserIdFromJWT(jwt);
-        if (userId == null) {
-            throw new IllegalArgumentException("Invalid jwt.");
+                                             @RequestParam(required = false, defaultValue = "true") Boolean sortTypeAsc,
+                                             HttpServletRequest request) {
+        String roleName = jwtUtil.getRoleNameFromJWT(request);
+        if (!roleName.equalsIgnoreCase("Admin")) {
+            throw new ResponseStatusException(HttpStatus.FORBIDDEN, "-----------------------------------Người dùng không có quyền truy cập---------------------------");
         }
         Pageable paging;
         if (sortBy.equals("FULLNAME")) {
@@ -241,16 +255,45 @@ public class UserController {
         } else {
             paging = util.makePaging(pageNo, pageSize, sortBy.toString().toLowerCase(), sortTypeAsc);
         }
-        String roleName = null;
-        Page<tblAccount> userList = userPagingRepository.findByRole_RoleNameLike(roleName, paging);
-        if (userList == null) {
-            return ResponseEntity.badRequest()
-                    .body("No User found with input: '" + roleName + "'. ");
+        if (!StringUtils.isEmpty(username) && StringUtils.isEmpty(fullName)
+                && StringUtils.isEmpty(email) && StringUtils.isEmpty(phone)) {
+            return ResponseEntity.ok().body(userService.getUserByUsername(username, paging));
+        } else if (StringUtils.isEmpty(username) && !StringUtils.isEmpty(fullName)
+                && StringUtils.isEmpty(email) && StringUtils.isEmpty(phone)) {
+            return ResponseEntity.ok().body(userService.getUserByFullName(fullName, paging));
+        } else if (StringUtils.isEmpty(username) && StringUtils.isEmpty(fullName)
+                && !StringUtils.isEmpty(email) && StringUtils.isEmpty(phone)) {
+            return ResponseEntity.ok().body(userService.getUserByEmail(email, paging));
+        } else if (StringUtils.isEmpty(username) && StringUtils.isEmpty(fullName)
+                && StringUtils.isEmpty(email) && !StringUtils.isEmpty(phone)) {
+            return ResponseEntity.ok().body(userService.getUserByPhone(phone, paging));
+        } else if (StringUtils.isEmpty(username) && StringUtils.isEmpty(fullName)
+                && !StringUtils.isEmpty(email) && !StringUtils.isEmpty(phone)) {
+            return ResponseEntity.ok().body(userService.getUserByEmailAndPhone(email, phone, paging));
+        } else if (!StringUtils.isEmpty(username) && !StringUtils.isEmpty(fullName)
+                && StringUtils.isEmpty(email) && StringUtils.isEmpty(phone)) {
+            return ResponseEntity.ok().body(userService.getUserByUsernameAndFullName(username, fullName, paging));
+        } else if (StringUtils.isEmpty(username) && !StringUtils.isEmpty(fullName)
+                && !StringUtils.isEmpty(email) && StringUtils.isEmpty(phone)) {
+            return ResponseEntity.ok().body(userService.getUserByFullNameAndEmail(fullName, email, paging));
+        } else if (StringUtils.isEmpty(username) && !StringUtils.isEmpty(fullName)
+                && StringUtils.isEmpty(email) && !StringUtils.isEmpty(phone)) {
+            return ResponseEntity.ok().body(userService.getUserByFullNameAndPhone(fullName, phone, paging));
+        } else if (!StringUtils.isEmpty(username) && StringUtils.isEmpty(fullName)
+                && StringUtils.isEmpty(email) && !StringUtils.isEmpty(phone)) {
+            return ResponseEntity.ok().body(userService.getUserByUsernameAndPhone(username, phone, paging));
+        } else if (!StringUtils.isEmpty(username) && StringUtils.isEmpty(fullName)
+                && !StringUtils.isEmpty(email) && StringUtils.isEmpty(phone)) {
+            return ResponseEntity.ok().body(userService.getUserByUsernameAndEmail(username, email, paging));
+        } else if (!StringUtils.isEmpty(username) && !StringUtils.isEmpty(fullName)
+                && !StringUtils.isEmpty(email) && !StringUtils.isEmpty(phone)) {
+            return ResponseEntity.ok().body(userService.getUserByUsernameAndFullNameAndEmailAndPhone(username, fullName, email, phone, paging));
+        } else {
+            return ResponseEntity.badRequest().body("Không thể tìm người dùng với giá trị đã nhập.");
         }
-        return ResponseEntity.ok().body(userList);
     }
 
-    @GetMapping(value = "/getByToken",produces = "application/json;charset=UTF-8")
+    @GetMapping(value = "/getByToken", produces = "application/json;charset=UTF-8")
     public ResponseEntity<Object> getUserByToken(HttpServletRequest request) {
         String authTokenHeader = request.getHeader("Authorization");
         String token = authTokenHeader.substring(7);
@@ -260,11 +303,10 @@ public class UserController {
     @PostMapping(value = "/{userid}", produces = "application/json;charset=UTF-8")
     public HttpStatus changeUserRole(@PathVariable(name = "userid") Long userid,
                                      @RequestParam Long roleId,
-                                     @RequestHeader(name = "Authorization") @Parameter(hidden = true) String token) throws Exception {
-        String jwt = jwtUtil.getAndValidateJwt(token);
-        Long userId = jwtUtil.getUserIdFromJWT(jwt);
-        if (userId == null) {
-            throw new IllegalArgumentException("Invalid jwt.");
+                                     HttpServletRequest request) {
+        String roleName = jwtUtil.getRoleNameFromJWT(request);
+        if (!roleName.equalsIgnoreCase("Admin")) {
+            throw new ResponseStatusException(HttpStatus.FORBIDDEN, "-----------------------------------Người dùng không có quyền truy cập---------------------------");
         }
         userService.changeUserRole(userid, roleId);
         return HttpStatus.OK;
@@ -290,5 +332,19 @@ public class UserController {
         userFCMToken.setEmail(user.getEmail());
         userFCMToken.setPhone(user.getPhone());
         return CRUDUserFireBaseService.updateUser(userFCMToken);
+    }
+
+    @GetMapping(value = "/tempPassword", produces = "application/json;charset=UTF-8")
+    public String getTempPassword(@RequestBody RegisterStaffModel registerStaffModel,
+                                  @RequestParam(value = "Must be Owner or Manager or Staff") String role,
+                                  HttpServletRequest request) {
+        String roleName = jwtUtil.getRoleNameFromJWT(request);
+        if (!roleName.equalsIgnoreCase("Admin")) {
+            throw new ResponseStatusException(HttpStatus.FORBIDDEN, "-----------------------------------Người dùng không có quyền truy cập---------------------------");
+        }
+        Random random = new Random();
+        int randomNum = 100000 + random.nextInt(900000);
+        registerStaffModel.setPassword(randomNum + (""));
+        return userService.generateTempPassword(registerStaffModel, role);
     }
 }

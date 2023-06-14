@@ -9,10 +9,13 @@ import com.example.thanhhoa.services.user.UserService;
 import io.jsonwebtoken.*;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Component;
 import org.springframework.util.StringUtils;
+import org.springframework.web.server.ResponseStatusException;
 
+import javax.servlet.http.HttpServletRequest;
 import java.util.Date;
 
 @Component
@@ -123,6 +126,20 @@ public class JwtUtil {
                 .getBody();
 
         return claims.get("username", String.class);
+    }
+
+    public String getRoleNameFromJWT(HttpServletRequest request) {
+        String authTokenHeader = request.getHeader("Authorization");
+        if(authTokenHeader==null){
+            throw new ResponseStatusException(HttpStatus.FORBIDDEN,"-----------------------------------Người dùng không có quyền truy cập---------------------------");
+        }
+        String token = authTokenHeader.substring(7);
+        Claims claims = Jwts.parser()
+                .setSigningKey(JWT_SECRET)
+                .parseClaimsJws(token)
+                .getBody();
+
+        return claims.get("role", String.class);
     }
 
     public boolean validateToken(String authToken) {

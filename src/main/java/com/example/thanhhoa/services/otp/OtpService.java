@@ -32,7 +32,7 @@ public class OtpService {
             helper.setText(email, true);
             helper.setTo(to);
             helper.setSubject(subject);
-            helper.setFrom("Thanh Hoa");
+            helper.setFrom("nhtn08101999@gmail.com");
             mailSender.send(mimeMessage);
         }catch (MessagingException e){
             System.out.println("gửi mail sai rồi");
@@ -77,12 +77,11 @@ public class OtpService {
         return "<h1 style=\"color: #5e9ca0; text-align: center;\">--- Thanh Hoa ---</h1>\n" +
                 "<h2 style=\"color: #2e6c80; text-align: center;\">Thay đổi mật khẩu:</h2>\n" +
                 "<p>Xin ch&agrave;o&nbsp;"+ name + "<br />Ch&uacute;ng t&ocirc;i l&agrave; team Thanh Hoa,&nbsp;</p>\n" +
-                "<p>Qu&yacute; kh&aacute;ch nhận được mail n&agrave;y l&agrave; v&igrave; qu&yacute; kh&aacute;ch (cũng c&oacute; thể l&agrave; ai đ&oacute; giả mạo danh nghĩa qu&yacute; kh&aacute;ch thực hiện thay đổi mật khẩu tại Thanh Hoa, vui l&ograve;ng ghi lại m&atilde; otp dưới đ&acirc;y để tiếp tục tạo mật khẩu mới.</p>\n" +
+                "<p>Qu&yacute; kh&aacute;ch nhận được mail n&agrave;y l&agrave; v&igrave; qu&yacute; kh&aacute;ch (cũng c&oacute; thể l&agrave; ai đ&oacute; giả mạo danh nghĩa qu&yacute; kh&aacute;ch) thực hiện thay đổi mật khẩu tại Thanh Hoa, vui l&ograve;ng ghi lại m&atilde; otp dưới đ&acirc;y để tiếp tục tạo mật khẩu mới.</p>\n" +
                 "<p>"+ otp + "&nbsp;</p>\n" +
                 "<p>M&atilde; opt sẽ c&oacute; hiệu lực trong v&ograve;ng 5 ph&uacute;t.</p>\n" +
                 "<p>Nếu đ&acirc;y kh&ocirc;ng phải do qu&yacute; kh&aacute;ch thực hiện thao t&aacute;c, c&oacute; thể y&ecirc;n t&acirc;m bỏ qua nội dung mail n&agrave;y.</p>\n" +
                 "<p>Cảm ơn qu&yacute; kh&aacute;ch đ&atilde; sử dụng dịch vụ của ch&uacute;ng t&ocirc;i, xin ch&uacute;c qu&yacute; kh&aacute;ch c&oacute; một ng&agrave;y tốt l&agrave;nh.</p>\n" +
-                "<p>Đường dẫn tới website: <a href=\"\\&quot;Link trang web\\&quot;\">Link trang web</a></p>\n" +
                 "<p>Xin vui l&ograve;ng kh&ocirc;ng trả lời mail từ hệ thống.</p>\n" +
                 "<p><strong>&nbsp;</strong></p>";
     }
