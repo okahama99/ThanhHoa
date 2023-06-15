@@ -1,9 +1,18 @@
 package com.example.thanhhoa.utils;
 
+import com.example.thanhhoa.dtos.CategoryModels.ShowCategoryModel;
+import com.example.thanhhoa.dtos.FeedbackModels.ShowContractFeedbackModel;
+import com.example.thanhhoa.dtos.FeedbackModels.ShowOrderFeedbackIMGModel;
+import com.example.thanhhoa.dtos.FeedbackModels.ShowOrderFeedbackModel;
+import com.example.thanhhoa.dtos.FeedbackModels.ShowRatingModel;
 import com.example.thanhhoa.dtos.PlantModels.ShowPlantCategory;
 import com.example.thanhhoa.dtos.PlantModels.ShowPlantModel;
 import com.example.thanhhoa.dtos.PlantShipPriceModels.ShowPlantShipPriceModel;
 import com.example.thanhhoa.dtos.UserModels.ShowUserModel;
+import com.example.thanhhoa.entities.Category;
+import com.example.thanhhoa.entities.ContractFeedback;
+import com.example.thanhhoa.entities.OrderFeedback;
+import com.example.thanhhoa.entities.OrderFeedbackIMG;
 import com.example.thanhhoa.entities.Plant;
 import com.example.thanhhoa.entities.PlantCategory;
 import com.example.thanhhoa.entities.tblAccount;
@@ -107,4 +116,96 @@ public class Util {
         }
     }
 
+    public List<ShowCategoryModel> categoryPagingConverter(Page<Category> pagingResult, Pageable paging){
+        if (pagingResult.hasContent()) {
+            double totalPage = Math.ceil((double) pagingResult.getTotalElements() / paging.getPageSize());
+            Page<ShowCategoryModel> modelResult = pagingResult.map(new Converter<Category, ShowCategoryModel>() {
+                @Override
+                protected ShowCategoryModel doForward(Category category) {
+                    ShowCategoryModel model = new ShowCategoryModel();
+                    model.setCategoryID(category.getId());
+                    model.setCategoryName(category.getName());
+                    model.setTotalPage(totalPage);
+                    return model;
+                }
+
+                @Override
+                protected Category doBackward(ShowCategoryModel showCategoryModel) {
+                    return null;
+                }
+            });
+            return modelResult.getContent();
+        } else {
+            return new ArrayList<>();
+        }
+    }
+
+    public List<ShowOrderFeedbackModel> orderFeedbackPagingConverter(Page<OrderFeedback> pagingResult, Pageable paging){
+        if (pagingResult.hasContent()) {
+            double totalPage = Math.ceil((double) pagingResult.getTotalElements() / paging.getPageSize());
+            Page<ShowOrderFeedbackModel> modelResult = pagingResult.map(new Converter<OrderFeedback, ShowOrderFeedbackModel>() {
+                @Override
+                protected ShowOrderFeedbackModel doForward(OrderFeedback orderFeedback) {
+                    ShowRatingModel ratingModel = new ShowRatingModel();
+                    ratingModel.setId(orderFeedback.getRating().getId());
+                    ratingModel.setDescription(orderFeedback.getRating().getDescription());
+
+                    List<ShowOrderFeedbackIMGModel> imgModelList = new ArrayList<>();
+                    ShowOrderFeedbackIMGModel imgModel = new ShowOrderFeedbackIMGModel();
+                    for (OrderFeedbackIMG img : orderFeedback.getOrderFeedbackIMGList()) {
+                        imgModel.setId(img.getId());
+                        imgModel.setImgURL(imgModel.getImgURL());
+                        imgModelList.add(imgModel);
+                    }
+
+                    ShowOrderFeedbackModel model = new ShowOrderFeedbackModel();
+                    model.setOrderFeedbackID(orderFeedback.getId());
+                    model.setDescription(orderFeedback.getDescription());
+                    model.setCreatedDate(orderFeedback.getCreatedDate());
+                    model.setRatingModel(ratingModel);
+                    model.setImgList(imgModelList);
+                    model.setTotalPage(totalPage);
+                    return model;
+                }
+
+                @Override
+                protected OrderFeedback doBackward(ShowOrderFeedbackModel showOrderFeedback) {
+                    return null;
+                }
+            });
+            return modelResult.getContent();
+        } else {
+            return new ArrayList<>();
+        }
+    }
+
+    public List<ShowContractFeedbackModel> contractFeedbackPagingConverter(Page<ContractFeedback> pagingResult, Pageable paging){
+        if (pagingResult.hasContent()) {
+            double totalPage = Math.ceil((double) pagingResult.getTotalElements() / paging.getPageSize());
+            Page<ShowContractFeedbackModel> modelResult = pagingResult.map(new Converter<ContractFeedback, ShowContractFeedbackModel>() {
+                @Override
+                protected ShowContractFeedbackModel doForward(ContractFeedback contractFeedback) {
+                    ShowRatingModel ratingModel = new ShowRatingModel();
+                    ratingModel.setId(contractFeedback.getRating().getId());
+                    ratingModel.setDescription(contractFeedback.getRating().getDescription());
+
+                    ShowContractFeedbackModel model = new ShowContractFeedbackModel();
+                    model.setContractFeedbackID(contractFeedback.getId());
+                    model.setDescription(contractFeedback.getDescription());
+                    model.setCreatedDate(contractFeedback.getDate());
+                    model.setRatingModel(ratingModel);
+                    model.setTotalPage(totalPage);
+                    return model;
+                }
+
+                @Override
+                protected ContractFeedback doBackward(ShowContractFeedbackModel showContractFeedback) {
+                    return null;
+                }
+            });
+            return modelResult.getContent();
+        } else {
+            return new ArrayList<>();
+        }
+    }
 }

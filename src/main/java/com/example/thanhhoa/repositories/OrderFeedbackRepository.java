@@ -9,5 +9,6 @@ import java.util.List;
 
 @Repository
 public interface OrderFeedbackRepository extends JpaRepository<OrderFeedback, Long> {
-    List<OrderFeedback> findAllByPlant_IdAndStatus(Long plantID, Status status);
+
+    OrderFeedback findByIdAndStatus(Long orderFeedbackID, Status status);
 }

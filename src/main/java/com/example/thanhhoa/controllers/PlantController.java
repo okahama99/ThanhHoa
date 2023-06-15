@@ -7,7 +7,6 @@ import com.example.thanhhoa.enums.SearchType;
 import com.example.thanhhoa.services.plant.PlantService;
 import com.example.thanhhoa.utils.JwtUtil;
 import com.example.thanhhoa.utils.Util;
-import io.swagger.v3.oas.annotations.Parameter;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Pageable;
@@ -19,7 +18,6 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RequestPart;
@@ -47,7 +45,7 @@ public class PlantController {
                                               HttpServletRequest request) throws Exception {
         String roleName = jwtUtil.getRoleNameFromJWT(request);
         if (!roleName.equalsIgnoreCase("Owner")) {
-            throw new ResponseStatusException(HttpStatus.FORBIDDEN,"-----------------------------------Người dùng không có quyền truy cập---------------------------");
+            throw new ResponseStatusException(HttpStatus.FORBIDDEN, "-----------------------------------Người dùng không có quyền truy cập---------------------------");
         }
         if (plantService.checkDuplicate(createPlantModel.getName()) != null) {
             return ResponseEntity.badRequest().body("Cây cùng tên đã tồn tại.");
@@ -66,7 +64,7 @@ public class PlantController {
                                               HttpServletRequest request) throws Exception {
         String roleName = jwtUtil.getRoleNameFromJWT(request);
         if (!roleName.equalsIgnoreCase("Owner") || !roleName.equalsIgnoreCase("Manager")) {
-            throw new ResponseStatusException(HttpStatus.FORBIDDEN,"-----------------------------------Người dùng không có quyền truy cập---------------------------");
+            throw new ResponseStatusException(HttpStatus.FORBIDDEN, "-----------------------------------Người dùng không có quyền truy cập---------------------------");
         }
         if (plantService.checkDuplicate(updatePlantModel.getName()) != null) {
             return ResponseEntity.badRequest().body("Cây cùng tên đã tồn tại.");
@@ -79,12 +77,12 @@ public class PlantController {
         }
     }
 
-    @DeleteMapping(value = "/{plantID}",produces = "application/json;charset=UTF-8")
+    @DeleteMapping(value = "/{plantID}", produces = "application/json;charset=UTF-8")
     public ResponseEntity<Object> deletePlant(@PathVariable(name = "plantID") Long plantID,
                                               HttpServletRequest request) throws Exception {
         String roleName = jwtUtil.getRoleNameFromJWT(request);
         if (!roleName.equalsIgnoreCase("Owner")) {
-            throw new ResponseStatusException(HttpStatus.FORBIDDEN,"-----------------------------------Người dùng không có quyền truy cập---------------------------");
+            throw new ResponseStatusException(HttpStatus.FORBIDDEN, "-----------------------------------Người dùng không có quyền truy cập---------------------------");
         }
         if (plantService.deletePlant(plantID)) {
             return ResponseEntity.ok().body("Xóa cây thành công.");
@@ -94,10 +92,11 @@ public class PlantController {
     }
 
     @GetMapping(produces = "application/json;charset=UTF-8")
-    public @ResponseBody List<ShowPlantModel> getAllPlant(@RequestParam int pageNo,
-                                              @RequestParam int pageSize,
-                                              @RequestParam SearchType.PLANT sortBy,
-                                              @RequestParam(required = false, defaultValue = "true") Boolean sortAsc) {
+    public @ResponseBody
+    List<ShowPlantModel> getAllPlant(@RequestParam int pageNo,
+                                     @RequestParam int pageSize,
+                                     @RequestParam SearchType.PLANT sortBy,
+                                     @RequestParam(required = false, defaultValue = "true") Boolean sortAsc) {
         return plantService.getAllPlant(util.makePaging(pageNo, pageSize, sortBy.toString().toLowerCase(), sortAsc));
     }
 
