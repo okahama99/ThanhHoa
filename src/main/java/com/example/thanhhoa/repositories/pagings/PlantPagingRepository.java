@@ -11,7 +11,7 @@ import org.springframework.stereotype.Repository;
 public interface PlantPagingRepository extends PagingAndSortingRepository<Plant, Long> {
     Page<Plant> findAllByStatus(Status status, Pageable pageable);
 
-    Page<Plant> findByNameAndStatus(String name, Status status, Pageable pageable);
+    Page<Plant> findByNameContainingAndStatus(String name, Status status, Pageable pageable);
 
     Page<Plant> findByPriceGreaterThan(Double minPrice, Status status, Pageable pageable);
 
@@ -19,5 +19,5 @@ public interface PlantPagingRepository extends PagingAndSortingRepository<Plant,
 
     Page<Plant> findByPriceBetweenAndStatus(Double fromPrice, Double toPrice, Status status, Pageable pageable);
 
-    Page<Plant> findByPriceBetweenAndNameAndStatus(Double fromPrice, Double toPrice, String name, Status status, Pageable pageable);
+    Page<Plant> findByPriceBetweenAndNameContainingAndStatus(Double fromPrice, Double toPrice, String name, Status status, Pageable pageable);
 }

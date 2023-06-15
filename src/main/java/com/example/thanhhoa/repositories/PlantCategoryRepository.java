@@ -14,4 +14,6 @@ public interface PlantCategoryRepository extends JpaRepository<PlantCategory, Lo
     List<PlantCategory> findByPlant(Plant plant);
 
     List<PlantCategory> findByCategory_Id(Long categoryID);
+
+    List<PlantCategory> findByCategory_IdAndPlant_NameContaining(Long categoryID, String plantName);
 }

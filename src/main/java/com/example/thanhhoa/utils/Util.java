@@ -82,8 +82,8 @@ public class Util {
                 protected ShowPlantModel doForward(Plant plant) {
                     List<PlantCategory> plantCategoryList = plantCategoryRepository.findAllByPlant_Id(plant.getId());
                     List<ShowPlantCategory> showPlantCategoryList = new ArrayList<>();
-                    ShowPlantCategory showPlantCategory = new ShowPlantCategory();
                     for (PlantCategory plantCategory : plantCategoryList) {
+                        ShowPlantCategory showPlantCategory = new ShowPlantCategory();
                         showPlantCategory.setCategoryID(plantCategory.getCategory().getId());
                         showPlantCategory.setCategoryName(plantCategory.getCategory().getName());
                         showPlantCategoryList.add(showPlantCategory);
@@ -151,8 +151,8 @@ public class Util {
                     ratingModel.setDescription(orderFeedback.getRating().getDescription());
 
                     List<ShowOrderFeedbackIMGModel> imgModelList = new ArrayList<>();
-                    ShowOrderFeedbackIMGModel imgModel = new ShowOrderFeedbackIMGModel();
                     for (OrderFeedbackIMG img : orderFeedback.getOrderFeedbackIMGList()) {
+                        ShowOrderFeedbackIMGModel imgModel = new ShowOrderFeedbackIMGModel();
                         imgModel.setId(img.getId());
                         imgModel.setImgURL(imgModel.getImgURL());
                         imgModelList.add(imgModel);

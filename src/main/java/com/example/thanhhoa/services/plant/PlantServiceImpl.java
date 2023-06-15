@@ -293,7 +293,7 @@ public class PlantServiceImpl implements PlantService {
 
     @Override
     public List<ShowPlantModel> getPlantByName(String name, Pageable paging) {
-        Page<Plant> pagingResult = plantPagingRepository.findByNameAndStatus(name, Status.ONSELL, paging);
+        Page<Plant> pagingResult = plantPagingRepository.findByNameContainingAndStatus(name, Status.ONSELL, paging);
         return util.plantPagingConverter(pagingResult, paging);
     }
 
@@ -317,27 +317,34 @@ public class PlantServiceImpl implements PlantService {
 
     @Override
     public List<ShowPlantModel> getPlantByCategoryAndName(Long categoryID, String name, Pageable paging) {
-        List<PlantCategory> plantCategoryList = plantCategoryRepository.findByCategory_Id(categoryID);
-
+        List<PlantCategory> plantCategoryList = plantCategoryRepository.findByCategory_IdAndPlant_NameContaining(categoryID, name);
         List<Plant> catePlantList = new ArrayList<>();
         for (PlantCategory plantCategory : plantCategoryList) {
             catePlantList.add(plantCategory.getPlant());
         }
-
-        List<Plant> plantList = plantRepository.findByNameContainingAndStatus(name, Status.ONSELL);
-        if (plantList != null) {
-            plantList.addAll(catePlantList);
-            List<Plant> noDuplicatePlantList = new ArrayList<>(new HashSet<>(plantList));
-
-            Page<Plant> pagingResult = new PageImpl<>(noDuplicatePlantList);
-            return util.plantPagingConverter(pagingResult, paging);
-        }
-        return null;
+        Page<Plant> pagingResult = new PageImpl<>(catePlantList);
+        return util.plantPagingConverter(pagingResult, paging);
+//        List<PlantCategory> plantCategoryList = plantCategoryRepository.findByCategory_Id(categoryID);
+//
+//        List<Plant> catePlantList = new ArrayList<>();
+//        for (PlantCategory plantCategory : plantCategoryList) {
+//            catePlantList.add(plantCategory.getPlant());
+//        }
+//
+//        List<Plant> plantList = plantRepository.findByNameContainingAndStatus(name, Status.ONSELL);
+//        if (plantList != null) {
+//            plantList.addAll(catePlantList);
+//            List<Plant> noDuplicatePlantList = new ArrayList<>(new HashSet<>(plantList));
+//
+//            Page<Plant> pagingResult = new PageImpl<>(noDuplicatePlantList);
+//            return util.plantPagingConverter(pagingResult, paging);
+//        }
+//        return null;
     }
 
     @Override
     public List<ShowPlantModel> getPlantByNameAndPrice(String name, Double fromPrice, Double toPrice, Pageable paging) {
-        Page<Plant> pagingResult = plantPagingRepository.findByPriceBetweenAndNameAndStatus(fromPrice, toPrice, name, Status.ONSELL, paging);
+        Page<Plant> pagingResult = plantPagingRepository.findByPriceBetweenAndNameContainingAndStatus(fromPrice, toPrice, name, Status.ONSELL, paging);
         return util.plantPagingConverter(pagingResult, paging);
     }
 
