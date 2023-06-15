@@ -11,6 +11,8 @@ public interface FeedbackService {
 
     ShowOrderFeedbackModel getOrderFeedbackByID(Long orderFeedbackID);
 
+    ShowOrderFeedbackModel getOrderFeedbackByUserID(Long userID);
+
     List<ShowContractFeedbackModel> getAllContractFeedback(Pageable pageable);
 
     ShowContractFeedbackModel getContractFeedbackByID(Long contractFeedbackID);

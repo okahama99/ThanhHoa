@@ -72,6 +72,34 @@ public class FeedbackServiceImpl implements FeedbackService {
     }
 
     @Override
+    public ShowOrderFeedbackModel getOrderFeedbackByUserID(Long userID) {
+        Optional<OrderFeedback> searchResult = orderFeedbackRepository.findByCustomer_IdAndStatus(userID, Status.ACTIVE);
+        if (searchResult == null) {
+            return null;
+        }
+        OrderFeedback orderFeedback = searchResult.get();
+        ShowRatingModel ratingModel = new ShowRatingModel();
+        ratingModel.setId(orderFeedback.getRating().getId());
+        ratingModel.setDescription(orderFeedback.getRating().getDescription());
+
+        List<ShowOrderFeedbackIMGModel> imgModelList = new ArrayList<>();
+        ShowOrderFeedbackIMGModel imgModel = new ShowOrderFeedbackIMGModel();
+        for (OrderFeedbackIMG img : orderFeedback.getOrderFeedbackIMGList()) {
+            imgModel.setId(img.getId());
+            imgModel.setImgURL(imgModel.getImgURL());
+            imgModelList.add(imgModel);
+        }
+
+        ShowOrderFeedbackModel model = new ShowOrderFeedbackModel();
+        model.setOrderFeedbackID(orderFeedback.getId());
+        model.setDescription(orderFeedback.getDescription());
+        model.setCreatedDate(orderFeedback.getCreatedDate());
+        model.setRatingModel(ratingModel);
+        model.setImgList(imgModelList);
+        return model;
+    }
+
+    @Override
     public List<ShowContractFeedbackModel> getAllContractFeedback(Pageable pageable) {
         Page<ContractFeedback> pagingResult = contractFeedbackPagingRepository.findAllByStatus(Status.ACTIVE, pageable);
         return util.contractFeedbackPagingConverter(pagingResult, pageable);

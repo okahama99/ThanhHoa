@@ -49,8 +49,10 @@ public class ThanhHoaApplication {
 		};
 	}
 
-	public void firebaseInit() throws IOException {
-		FileInputStream serviceAccount = new FileInputStream("src/main/java/com/example/thanhhoa/services/firebase/firebase.json");
+	@Bean
+	void firestore() throws IOException {
+		FileInputStream serviceAccount =
+				new FileInputStream("src/main/java/com/example/thanhhoa/services/firebase/firebase.json");
 
 		FirebaseOptions options = new FirebaseOptions.Builder()
 				.setCredentials(GoogleCredentials.fromStream(serviceAccount))

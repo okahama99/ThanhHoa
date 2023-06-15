@@ -316,7 +316,7 @@ public class UserController {
     @PostMapping("/createFcmToken")
     public String createFcmToken(@RequestBody UserFCMToken userFCMToken) throws InterruptedException, ExecutionException {
         userService.updateUserFcmToken(userFCMToken);
-        return CRUDUserFireBaseService.saveUser(userFCMToken);
+        return CRUDUserFireBaseService.createUser(userFCMToken);
     }
 
     @PostMapping("/deleteFcmToken")
@@ -326,11 +326,6 @@ public class UserController {
         UserFCMToken userFCMToken = new UserFCMToken();
         userFCMToken.setFcmToken(null);
         userFCMToken.setAccountID(user.getId());
-        userFCMToken.setUserName(user.getUsername());
-        userFCMToken.setFullName(user.getFullName());
-        userFCMToken.setAvatar(user.getAvatar());
-        userFCMToken.setEmail(user.getEmail());
-        userFCMToken.setPhone(user.getPhone());
         return CRUDUserFireBaseService.updateUser(userFCMToken);
     }
 

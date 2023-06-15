@@ -47,6 +47,16 @@ public class FeedbackController {
         return ResponseEntity.badRequest().body("Feedback không tồn tại.");
     }
 
+    @GetMapping(value = "orderFeedback/{userID}", produces = "application/json;charset=UTF-8")
+    public @ResponseBody
+    ResponseEntity<Object> getOrderFeedbackIDByUserID(@PathVariable("userID") Long userID) {
+        ShowOrderFeedbackModel model = feedbackService.getOrderFeedbackByUserID(userID);
+        if (model != null) {
+            return ResponseEntity.ok().body(model);
+        }
+        return ResponseEntity.badRequest().body("Feedback không tồn tại.");
+    }
+
     @GetMapping(value = "contractFeedback",produces = "application/json;charset=UTF-8")
     public @ResponseBody
     List<ShowContractFeedbackModel> getAllContractFeedback(@RequestParam int pageNo,
