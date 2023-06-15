@@ -4,6 +4,7 @@ import com.example.thanhhoa.dtos.PlantModels.CreatePlantModel;
 import com.example.thanhhoa.dtos.PlantModels.ShowPlantCategory;
 import com.example.thanhhoa.dtos.PlantModels.ShowPlantModel;
 import com.example.thanhhoa.dtos.PlantModels.UpdatePlantModel;
+import com.example.thanhhoa.dtos.PlantShipPriceModels.ShowPlantShipPriceModel;
 import com.example.thanhhoa.entities.Category;
 import com.example.thanhhoa.entities.Plant;
 import com.example.thanhhoa.entities.PlantCategory;
@@ -81,15 +82,18 @@ public class PlantServiceImpl implements PlantService {
             showPlantCategory.setCategoryName(plantCategory.getCategory().getName());
             showPlantCategoryList.add(showPlantCategory);
         }
+        ShowPlantShipPriceModel showPlantShipPriceModel = new ShowPlantShipPriceModel();
+        showPlantShipPriceModel.setId(plant.getPlantShipPrice().getId());
+        showPlantShipPriceModel.setPotSize(plant.getPlantShipPrice().getPotSize());
+        showPlantShipPriceModel.setPricePerPlant(plant.getPlantShipPrice().getPricePerPlant());
+
         ShowPlantModel model = new ShowPlantModel();
         model.setPlantID(plant.getId());
         model.setName(plant.getName());
         model.setHeight(plant.getHeight());
         model.setPrice(plant.getPrice());
         model.setWithPot(plant.getWithPot());
-        model.setShipPriceID(plant.getPlantShipPrice().getId());
-        model.setPotSize(plant.getPlantShipPrice().getPotSize());
-        model.setPricePerPlant(plant.getPlantShipPrice().getPricePerPlant());
+        model.setShowPlantShipPriceModel(showPlantShipPriceModel);
         model.setPlantCategoryList(showPlantCategoryList);
         return model;
     }

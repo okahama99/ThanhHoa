@@ -1,7 +1,6 @@
 package com.example.thanhhoa.dtos.PlantModels;
 
-import com.example.thanhhoa.entities.PlantCategory;
-import com.example.thanhhoa.entities.PlantShipPrice;
+import com.example.thanhhoa.dtos.PlantShipPriceModels.ShowPlantShipPriceModel;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -17,9 +16,7 @@ public class ShowPlantModel {
     private Boolean withPot;
     private Double totalPage;
 
-    private Long shipPriceID;
-    private String potSize;
-    private Double pricePerPlant;
+    private ShowPlantShipPriceModel showPlantShipPriceModel;
 
     private List<ShowPlantCategory> plantCategoryList;
 }
