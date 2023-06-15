@@ -3,7 +3,6 @@ package com.example.thanhhoa.services.plant;
 import com.example.thanhhoa.dtos.PlantModels.CreatePlantModel;
 import com.example.thanhhoa.dtos.PlantModels.ShowPlantModel;
 import com.example.thanhhoa.dtos.PlantModels.UpdatePlantModel;
-import com.example.thanhhoa.entities.Category;
 import com.example.thanhhoa.entities.Plant;
 import org.springframework.data.domain.Pageable;
 import org.springframework.web.multipart.MultipartFile;

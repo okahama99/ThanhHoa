@@ -123,31 +123,31 @@ public class PlantController {
                                        @RequestParam(required = false, defaultValue = "true") boolean sortAsc) {
         Pageable paging = util.makePaging(pageNo, pageSize, sortBy.toString().toLowerCase(), sortAsc);
 
-        if (!StringUtils.isEmpty(plantName.trim()) && categoryID == null
+        if (!StringUtils.isEmpty(plantName) && categoryID == null
                 && fromPrice == null && toPrice == null) {
             return ResponseEntity.ok().body(plantService.getPlantByName(plantName, paging));
-        } else if (StringUtils.isEmpty(plantName.trim()) && categoryID != null
+        } else if (StringUtils.isEmpty(plantName) && categoryID != null
                 && fromPrice == null && toPrice == null) {
             return ResponseEntity.ok().body(plantService.getPlantByCategory(categoryID, paging));
-        } else if (StringUtils.isEmpty(plantName.trim()) && categoryID == null
+        } else if (StringUtils.isEmpty(plantName) && categoryID == null
                 && fromPrice != null && toPrice == null) {
             return ResponseEntity.ok().body(plantService.getNameByPriceMin(fromPrice, paging));
-        } else if (StringUtils.isEmpty(plantName.trim()) && categoryID == null
+        } else if (StringUtils.isEmpty(plantName) && categoryID == null
                 && fromPrice == null && toPrice != null) {
             return ResponseEntity.ok().body(plantService.getNameByPriceMax(toPrice, paging));
-        } else if (StringUtils.isEmpty(plantName.trim()) && categoryID == null
+        } else if (StringUtils.isEmpty(plantName) && categoryID == null
                 && fromPrice != null && toPrice != null) {
             return ResponseEntity.ok().body(plantService.getNameByPriceInRange(fromPrice, toPrice, paging));
-        } else if (!StringUtils.isEmpty(plantName.trim()) && categoryID != null
+        } else if (!StringUtils.isEmpty(plantName) && categoryID != null
                 && fromPrice == null && toPrice == null) {
             return ResponseEntity.ok().body(plantService.getPlantByCategoryAndName(categoryID, plantName, paging));
-        } else if (!StringUtils.isEmpty(plantName.trim()) && categoryID == null
+        } else if (!StringUtils.isEmpty(plantName) && categoryID == null
                 && fromPrice != null && toPrice != null) {
             return ResponseEntity.ok().body(plantService.getPlantByNameAndPrice(plantName, fromPrice, toPrice, paging));
-        } else if (StringUtils.isEmpty(plantName.trim()) && categoryID != null
+        } else if (StringUtils.isEmpty(plantName) && categoryID != null
                 && fromPrice != null && toPrice != null) {
             return ResponseEntity.ok().body(plantService.getPlantByCategoryAndPrice(categoryID, fromPrice, toPrice, paging));
-        } else if (!StringUtils.isEmpty(plantName.trim()) && categoryID != null
+        } else if (!StringUtils.isEmpty(plantName) && categoryID != null
                 && fromPrice != null && toPrice != null) {
             return ResponseEntity.ok().body(plantService.getPlantByCategoryAndNameAndPrice(categoryID, plantName, fromPrice, toPrice, paging));
         } else {

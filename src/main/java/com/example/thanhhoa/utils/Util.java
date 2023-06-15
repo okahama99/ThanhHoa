@@ -1,8 +1,14 @@
 package com.example.thanhhoa.utils;
 
+import com.example.thanhhoa.dtos.PlantModels.ShowPlantCategory;
+import com.example.thanhhoa.dtos.PlantModels.ShowPlantModel;
 import com.example.thanhhoa.dtos.UserModels.ShowUserModel;
+import com.example.thanhhoa.entities.Plant;
+import com.example.thanhhoa.entities.PlantCategory;
 import com.example.thanhhoa.entities.tblAccount;
+import com.example.thanhhoa.repositories.PlantCategoryRepository;
 import com.google.common.base.Converter;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -12,6 +18,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class Util {
+
+    @Autowired
+    private PlantCategoryRepository plantCategoryRepository;
     /**
      * Small Util to return {@link Pageable} to replace dup code in serviceImpl
      */
@@ -46,6 +55,45 @@ public class Util {
 
                 @Override
                 protected tblAccount doBackward(ShowUserModel ShowUserModel) {
+                    return null;
+                }
+            });
+            return modelResult.getContent();
+        } else {
+            return new ArrayList<>();
+        }
+    }
+
+    public List<ShowPlantModel> plantPagingConverter(Page<Plant> pagingResult, Pageable paging){
+        if (pagingResult.hasContent()) {
+            double totalPage = Math.ceil((double) pagingResult.getTotalElements() / paging.getPageSize());
+            Page<ShowPlantModel> modelResult = pagingResult.map(new Converter<Plant, ShowPlantModel>() {
+                @Override
+                protected ShowPlantModel doForward(Plant plant) {
+                    List<PlantCategory> plantCategoryList = plantCategoryRepository.findAllByPlant_Id(plant.getId());
+                    List<ShowPlantCategory> showPlantCategoryList = new ArrayList<>();
+                    ShowPlantCategory showPlantCategory = new ShowPlantCategory();
+                    for (PlantCategory plantCategory : plantCategoryList) {
+                        showPlantCategory.setCategoryID(plantCategory.getCategory().getId());
+                        showPlantCategory.setCategoryName(plantCategory.getCategory().getName());
+                        showPlantCategoryList.add(showPlantCategory);
+                    }
+                    ShowPlantModel model = new ShowPlantModel();
+                    model.setPlantID(plant.getId());
+                    model.setName(plant.getName());
+                    model.setHeight(plant.getHeight());
+                    model.setPrice(plant.getPrice());
+                    model.setWithPot(plant.getWithPot());
+                    model.setShipPriceID(plant.getPlantShipPrice().getId());
+                    model.setPotSize(plant.getPlantShipPrice().getPotSize());
+                    model.setPricePerPlant(plant.getPlantShipPrice().getPricePerPlant());
+                    model.setPlantCategoryList(showPlantCategoryList);
+                    model.setTotalPage(totalPage);
+                    return model;
+                }
+
+                @Override
+                protected Plant doBackward(ShowPlantModel showPlantModel) {
                     return null;
                 }
             });

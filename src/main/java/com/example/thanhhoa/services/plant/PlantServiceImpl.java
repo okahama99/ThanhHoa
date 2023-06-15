@@ -1,6 +1,7 @@
 package com.example.thanhhoa.services.plant;
 
 import com.example.thanhhoa.dtos.PlantModels.CreatePlantModel;
+import com.example.thanhhoa.dtos.PlantModels.ShowPlantCategory;
 import com.example.thanhhoa.dtos.PlantModels.ShowPlantModel;
 import com.example.thanhhoa.dtos.PlantModels.UpdatePlantModel;
 import com.example.thanhhoa.entities.Category;
@@ -20,6 +21,7 @@ import com.example.thanhhoa.repositories.StorePlantRepository;
 import com.example.thanhhoa.repositories.StoreRepository;
 import com.example.thanhhoa.repositories.pagings.PlantPagingRepository;
 import com.example.thanhhoa.services.firebaseIMG.ImageService;
+import com.example.thanhhoa.utils.Util;
 import com.google.common.base.Converter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -55,34 +57,13 @@ public class PlantServiceImpl implements PlantService {
     private StoreRepository storeRepository;
     @Autowired
     private ImageService imageService;
+    @Autowired
+    private Util util;
 
     @Override
     public List<ShowPlantModel> getAllPlant(Pageable paging) {
         Page<Plant> pagingResult = plantPagingRepository.findAllByStatus(Status.ONSELL, paging);
-        if (pagingResult.hasContent()) {
-            double totalPage = Math.ceil(pagingResult.getTotalPages());
-            Page<ShowPlantModel> modelResult = pagingResult.map(new Converter<Plant, ShowPlantModel>() {
-                @Override
-                protected ShowPlantModel doForward(Plant plant) {
-                    ShowPlantModel model = new ShowPlantModel();
-                    model.setPlantID(plant.getId());
-                    model.setName(plant.getName());
-                    model.setHeight(plant.getHeight());
-                    model.setPrice(plant.getPrice());
-                    model.setWithPot(plant.getWithPot());
-                    model.setTotalPage(totalPage);
-                    return model;
-                }
-
-                @Override
-                protected Plant doBackward(ShowPlantModel showPlantModel) {
-                    return null;
-                }
-            });
-            return modelResult.getContent();
-        } else {
-            return new ArrayList<>();
-        }
+        return util.plantPagingConverter(pagingResult, paging);
     }
 
     @Override
@@ -92,12 +73,24 @@ public class PlantServiceImpl implements PlantService {
             return null;
         }
         Plant plant = checkExistedPlant.get();
+        List<PlantCategory> plantCategoryList = plantCategoryRepository.findAllByPlant_Id(plant.getId());
+        List<ShowPlantCategory> showPlantCategoryList = new ArrayList<>();
+        ShowPlantCategory showPlantCategory = new ShowPlantCategory();
+        for (PlantCategory plantCategory : plantCategoryList) {
+            showPlantCategory.setCategoryID(plantCategory.getCategory().getId());
+            showPlantCategory.setCategoryName(plantCategory.getCategory().getName());
+            showPlantCategoryList.add(showPlantCategory);
+        }
         ShowPlantModel model = new ShowPlantModel();
         model.setPlantID(plant.getId());
         model.setName(plant.getName());
         model.setHeight(plant.getHeight());
         model.setPrice(plant.getPrice());
         model.setWithPot(plant.getWithPot());
+        model.setShipPriceID(plant.getPlantShipPrice().getId());
+        model.setPotSize(plant.getPlantShipPrice().getPotSize());
+        model.setPricePerPlant(plant.getPlantShipPrice().getPricePerPlant());
+        model.setPlantCategoryList(showPlantCategoryList);
         return model;
     }
 
@@ -292,142 +285,31 @@ public class PlantServiceImpl implements PlantService {
         List<Plant> noDuplicatePlantList = new ArrayList<>(new HashSet<>(plantList));
 
         Page<Plant> pagingResult = new PageImpl<>(noDuplicatePlantList);
-        double totalPage = Math.ceil((double) pagingResult.getTotalElements() / paging.getPageSize());
-        Page<ShowPlantModel> modelResult = pagingResult.map(new Converter<Plant, ShowPlantModel>() {
-            @Override
-            protected ShowPlantModel doForward(Plant plant) {
-                ShowPlantModel model = new ShowPlantModel();
-                model.setPlantID(plant.getId());
-                model.setName(plant.getName());
-                model.setHeight(plant.getHeight());
-                model.setPrice(plant.getPrice());
-                model.setWithPot(plant.getWithPot());
-                model.setTotalPage(totalPage);
-                return model;
-            }
-
-            @Override
-            protected Plant doBackward(ShowPlantModel showPlantModel) {
-                return null;
-            }
-        });
-        return modelResult.getContent();
+        return util.plantPagingConverter(pagingResult, paging);
     }
 
     @Override
     public List<ShowPlantModel> getPlantByName(String name, Pageable paging) {
         Page<Plant> pagingResult = plantPagingRepository.findByNameAndStatus(name, Status.ONSELL, paging);
-        if (pagingResult.hasContent()) {
-            double totalPage = Math.ceil((double) pagingResult.getTotalElements() / paging.getPageSize());
-            Page<ShowPlantModel> modelResult = pagingResult.map(new Converter<Plant, ShowPlantModel>() {
-                @Override
-                protected ShowPlantModel doForward(Plant plant) {
-                    ShowPlantModel model = new ShowPlantModel();
-                    model.setPlantID(plant.getId());
-                    model.setName(plant.getName());
-                    model.setHeight(plant.getHeight());
-                    model.setPrice(plant.getPrice());
-                    model.setWithPot(plant.getWithPot());
-                    model.setTotalPage(totalPage);
-                    return model;
-                }
-
-                @Override
-                protected Plant doBackward(ShowPlantModel showPlantModel) {
-                    return null;
-                }
-            });
-            return modelResult.getContent();
-        } else {
-            return new ArrayList<>();
-        }
+        return util.plantPagingConverter(pagingResult, paging);
     }
 
     @Override
     public List<ShowPlantModel> getNameByPriceMin(Double minPrice, Pageable paging) {
         Page<Plant> pagingResult = plantPagingRepository.findByPriceGreaterThan(minPrice, Status.ONSELL, paging);
-        if (pagingResult.hasContent()) {
-            double totalPage = Math.ceil((double) pagingResult.getTotalElements() / paging.getPageSize());
-            Page<ShowPlantModel> modelResult = pagingResult.map(new Converter<Plant, ShowPlantModel>() {
-                @Override
-                protected ShowPlantModel doForward(Plant plant) {
-                    ShowPlantModel model = new ShowPlantModel();
-                    model.setPlantID(plant.getId());
-                    model.setName(plant.getName());
-                    model.setHeight(plant.getHeight());
-                    model.setPrice(plant.getPrice());
-                    model.setWithPot(plant.getWithPot());
-                    model.setTotalPage(totalPage);
-                    return model;
-                }
-
-                @Override
-                protected Plant doBackward(ShowPlantModel showPlantModel) {
-                    return null;
-                }
-            });
-            return modelResult.getContent();
-        } else {
-            return new ArrayList<>();
-        }
+        return util.plantPagingConverter(pagingResult, paging);
     }
 
     @Override
     public List<ShowPlantModel> getNameByPriceMax(Double maxPrice, Pageable paging) {
         Page<Plant> pagingResult = plantPagingRepository.findByPriceLessThan(maxPrice, Status.ONSELL, paging);
-        if (pagingResult.hasContent()) {
-            double totalPage = Math.ceil((double) pagingResult.getTotalElements() / paging.getPageSize());
-            Page<ShowPlantModel> modelResult = pagingResult.map(new Converter<Plant, ShowPlantModel>() {
-                @Override
-                protected ShowPlantModel doForward(Plant plant) {
-                    ShowPlantModel model = new ShowPlantModel();
-                    model.setPlantID(plant.getId());
-                    model.setName(plant.getName());
-                    model.setHeight(plant.getHeight());
-                    model.setPrice(plant.getPrice());
-                    model.setWithPot(plant.getWithPot());
-                    model.setTotalPage(totalPage);
-                    return model;
-                }
-
-                @Override
-                protected Plant doBackward(ShowPlantModel showPlantModel) {
-                    return null;
-                }
-            });
-            return modelResult.getContent();
-        } else {
-            return new ArrayList<>();
-        }
+        return util.plantPagingConverter(pagingResult, paging);
     }
 
     @Override
     public List<ShowPlantModel> getNameByPriceInRange(Double fromPrice, Double toPrice, Pageable paging) {
         Page<Plant> pagingResult = plantPagingRepository.findByPriceBetweenAndStatus(fromPrice, toPrice, Status.ONSELL, paging);
-        if (pagingResult.hasContent()) {
-            double totalPage = Math.ceil((double) pagingResult.getTotalElements() / paging.getPageSize());
-            Page<ShowPlantModel> modelResult = pagingResult.map(new Converter<Plant, ShowPlantModel>() {
-                @Override
-                protected ShowPlantModel doForward(Plant plant) {
-                    ShowPlantModel model = new ShowPlantModel();
-                    model.setPlantID(plant.getId());
-                    model.setName(plant.getName());
-                    model.setHeight(plant.getHeight());
-                    model.setPrice(plant.getPrice());
-                    model.setWithPot(plant.getWithPot());
-                    model.setTotalPage(totalPage);
-                    return model;
-                }
-
-                @Override
-                protected Plant doBackward(ShowPlantModel showPlantModel) {
-                    return null;
-                }
-            });
-            return modelResult.getContent();
-        } else {
-            return new ArrayList<>();
-        }
+        return util.plantPagingConverter(pagingResult, paging);
     }
 
     @Override
@@ -445,26 +327,7 @@ public class PlantServiceImpl implements PlantService {
             List<Plant> noDuplicatePlantList = new ArrayList<>(new HashSet<>(plantList));
 
             Page<Plant> pagingResult = new PageImpl<>(noDuplicatePlantList);
-            double totalPage = Math.ceil((double) pagingResult.getTotalElements() / paging.getPageSize());
-            Page<ShowPlantModel> modelResult = pagingResult.map(new Converter<Plant, ShowPlantModel>() {
-                @Override
-                protected ShowPlantModel doForward(Plant plant) {
-                    ShowPlantModel model = new ShowPlantModel();
-                    model.setPlantID(plant.getId());
-                    model.setName(plant.getName());
-                    model.setHeight(plant.getHeight());
-                    model.setPrice(plant.getPrice());
-                    model.setWithPot(plant.getWithPot());
-                    model.setTotalPage(totalPage);
-                    return model;
-                }
-
-                @Override
-                protected Plant doBackward(ShowPlantModel showPlantModel) {
-                    return null;
-                }
-            });
-            return modelResult.getContent();
+            return util.plantPagingConverter(pagingResult, paging);
         }
         return null;
     }
@@ -472,30 +335,7 @@ public class PlantServiceImpl implements PlantService {
     @Override
     public List<ShowPlantModel> getPlantByNameAndPrice(String name, Double fromPrice, Double toPrice, Pageable paging) {
         Page<Plant> pagingResult = plantPagingRepository.findByPriceBetweenAndNameAndStatus(fromPrice, toPrice, name, Status.ONSELL, paging);
-        if (pagingResult.hasContent()) {
-            double totalPage = Math.ceil((double) pagingResult.getTotalElements() / paging.getPageSize());
-            Page<ShowPlantModel> modelResult = pagingResult.map(new Converter<Plant, ShowPlantModel>() {
-                @Override
-                protected ShowPlantModel doForward(Plant plant) {
-                    ShowPlantModel model = new ShowPlantModel();
-                    model.setPlantID(plant.getId());
-                    model.setName(plant.getName());
-                    model.setHeight(plant.getHeight());
-                    model.setPrice(plant.getPrice());
-                    model.setWithPot(plant.getWithPot());
-                    model.setTotalPage(totalPage);
-                    return model;
-                }
-
-                @Override
-                protected Plant doBackward(ShowPlantModel showPlantModel) {
-                    return null;
-                }
-            });
-            return modelResult.getContent();
-        } else {
-            return new ArrayList<>();
-        }
+        return util.plantPagingConverter(pagingResult, paging);
     }
 
     @Override
@@ -513,26 +353,7 @@ public class PlantServiceImpl implements PlantService {
             List<Plant> noDuplicatePlantList = new ArrayList<>(new HashSet<>(plantList));
 
             Page<Plant> pagingResult = new PageImpl<>(noDuplicatePlantList);
-            double totalPage = Math.ceil((double) pagingResult.getTotalElements() / paging.getPageSize());
-            Page<ShowPlantModel> modelResult = pagingResult.map(new Converter<Plant, ShowPlantModel>() {
-                @Override
-                protected ShowPlantModel doForward(Plant plant) {
-                    ShowPlantModel model = new ShowPlantModel();
-                    model.setPlantID(plant.getId());
-                    model.setName(plant.getName());
-                    model.setHeight(plant.getHeight());
-                    model.setPrice(plant.getPrice());
-                    model.setWithPot(plant.getWithPot());
-                    model.setTotalPage(totalPage);
-                    return model;
-                }
-
-                @Override
-                protected Plant doBackward(ShowPlantModel showPlantModel) {
-                    return null;
-                }
-            });
-            return modelResult.getContent();
+            return util.plantPagingConverter(pagingResult, paging);
         }
         return null;
     }
@@ -552,26 +373,7 @@ public class PlantServiceImpl implements PlantService {
             List<Plant> noDuplicatePlantList = new ArrayList<>(new HashSet<>(plantList));
 
             Page<Plant> pagingResult = new PageImpl<>(noDuplicatePlantList);
-            double totalPage = Math.ceil((double) pagingResult.getTotalElements() / paging.getPageSize());
-            Page<ShowPlantModel> modelResult = pagingResult.map(new Converter<Plant, ShowPlantModel>() {
-                @Override
-                protected ShowPlantModel doForward(Plant plant) {
-                    ShowPlantModel model = new ShowPlantModel();
-                    model.setPlantID(plant.getId());
-                    model.setName(plant.getName());
-                    model.setHeight(plant.getHeight());
-                    model.setPrice(plant.getPrice());
-                    model.setWithPot(plant.getWithPot());
-                    model.setTotalPage(totalPage);
-                    return model;
-                }
-
-                @Override
-                protected Plant doBackward(ShowPlantModel showPlantModel) {
-                    return null;
-                }
-            });
-            return modelResult.getContent();
+            return util.plantPagingConverter(pagingResult, paging);
         }
         return null;
     }
