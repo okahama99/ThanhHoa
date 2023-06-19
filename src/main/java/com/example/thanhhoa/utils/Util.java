@@ -7,6 +7,7 @@ import com.example.thanhhoa.dtos.FeedbackModels.ShowOrderFeedbackModel;
 import com.example.thanhhoa.dtos.FeedbackModels.ShowRatingModel;
 import com.example.thanhhoa.dtos.PlantModels.ShowPlantCategory;
 import com.example.thanhhoa.dtos.PlantModels.ShowPlantModel;
+import com.example.thanhhoa.dtos.PlantPriceModels.ShowPlantPriceModel;
 import com.example.thanhhoa.dtos.PlantShipPriceModels.ShowPlantShipPriceModel;
 import com.example.thanhhoa.dtos.UserModels.ShowUserModel;
 import com.example.thanhhoa.entities.Category;
@@ -93,14 +94,19 @@ public class Util {
                     showPlantShipPriceModel.setPotSize(plant.getPlantShipPrice().getPotSize());
                     showPlantShipPriceModel.setPricePerPlant(plant.getPlantShipPrice().getPricePerPlant());
 
+                    ShowPlantPriceModel showPlantPriceModel = new ShowPlantPriceModel();
+                    showPlantPriceModel.setId(plant.getPlantPrice().getId());
+                    showPlantPriceModel.setPrice(plant.getPlantPrice().getPrice());
+                    showPlantPriceModel.setApplyDate(plant.getPlantPrice().getApplyDate());
+
                     ShowPlantModel model = new ShowPlantModel();
                     model.setPlantID(plant.getId());
                     model.setName(plant.getName());
                     model.setHeight(plant.getHeight());
-                    model.setPrice(plant.getPrice());
                     model.setWithPot(plant.getWithPot());
                     model.setShowPlantShipPriceModel(showPlantShipPriceModel);
                     model.setPlantCategoryList(showPlantCategoryList);
+                    model.setShowPlantPriceModel(showPlantPriceModel);
                     model.setTotalPage(totalPage);
                     return model;
                 }

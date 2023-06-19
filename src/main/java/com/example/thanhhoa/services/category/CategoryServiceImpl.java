@@ -30,7 +30,7 @@ public class CategoryServiceImpl implements CategoryService{
     }
 
     @Override
-    public ShowCategoryModel getCategoryByID(Long categoryID) {
+    public ShowCategoryModel getCategoryByID(String categoryID) {
         Optional<Category> searchResult = categoryRepository.findById(categoryID);
         if(searchResult == null){
             return null;

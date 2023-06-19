@@ -18,7 +18,7 @@ public class ShowUserModel implements Serializable {
     private Boolean gender;
     private LocalDateTime createdDate;
 
-    private Long roleID;
+    private String roleID;
     private String roleName;
     private Double totalPage;
 }

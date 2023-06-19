@@ -1,22 +1,20 @@
 package com.example.thanhhoa.entities;
 
 import com.example.thanhhoa.enums.Status;
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import lombok.Getter;
 import lombok.Setter;
 
 import javax.persistence.*;
+import java.io.Serializable;
 import java.time.LocalDateTime;
 
 @Entity
 @Getter
 @Setter
-@JsonIgnoreProperties(value = {"handler","hibernateLazyInitializer","fieldHandler"})
-public class ContractFeedback {
+public class ContractFeedback implements Serializable {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    private String id;
 
     @Lob
     @Column(nullable = false)

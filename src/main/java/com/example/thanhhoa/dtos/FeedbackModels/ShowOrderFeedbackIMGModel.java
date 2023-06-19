@@ -8,6 +8,6 @@ import java.io.Serializable;
 @Getter
 @Setter
 public class ShowOrderFeedbackIMGModel implements Serializable {
-    private Long id;
+    private String id;
     private String imgURL;
 }

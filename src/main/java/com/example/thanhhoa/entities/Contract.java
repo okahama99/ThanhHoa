@@ -1,24 +1,22 @@
 package com.example.thanhhoa.entities;
 
 import com.example.thanhhoa.enums.Status;
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import lombok.Getter;
 import lombok.Setter;
 import org.springframework.data.annotation.CreatedDate;
 
 import javax.persistence.*;
+import java.io.Serializable;
 import java.time.LocalDateTime;
 import java.util.List;
 
 @Entity
 @Getter
 @Setter
-@JsonIgnoreProperties(value = {"handler","hibernateLazyInitializer","fieldHandler"})
-public class Contract {
+public class Contract implements Serializable {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    private String id;
 
     @Lob
     @Column(nullable = false)
@@ -43,15 +41,20 @@ public class Contract {
     @Column(nullable = false)
     private String reason;
 
-    @CreatedDate
     @Column(nullable = false)
     private LocalDateTime createdDate;
 
     @Column(nullable = false)
-    private LocalDateTime startDate;
+    private LocalDateTime startedDate;
 
     @Column(nullable = false)
-    private LocalDateTime endDate;
+    private LocalDateTime endedDate;
+
+    @Column(nullable = false)
+    private LocalDateTime approvedDate;
+
+    @Column(nullable = false)
+    private LocalDateTime rejectedDate;
 
     @Column
     private Double deposit = 0.0;
@@ -62,6 +65,9 @@ public class Contract {
     @Column
     private Boolean isFeedback = false;
 
+    @Column
+    private Boolean isSigned = false;
+
     @Enumerated(EnumType.ORDINAL)
     private Status status;
 
@@ -71,11 +77,11 @@ public class Contract {
 
     @ManyToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     @JoinColumn(name = "account_staff_id")
-    private tblAccount accStaff;
+    private tblAccount staff;
 
     @ManyToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     @JoinColumn(name = "account_customer_id")
-    private tblAccount accCustomer;
+    private tblAccount customer;
 
     @ManyToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     @JoinColumn(name = "payment_type_id")

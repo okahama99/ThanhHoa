@@ -10,7 +10,7 @@ import java.util.List;
 @Getter
 @Setter
 public class ShowOrderFeedbackModel implements Serializable {
-    private Long orderFeedbackID;
+    private String orderFeedbackID;
     private String description;
     private LocalDateTime createdDate;
 

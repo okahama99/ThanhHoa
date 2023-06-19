@@ -8,5 +8,5 @@ import java.util.List;
 public interface CategoryService {
     List<ShowCategoryModel> getAllCategory(Pageable paging);
 
-    ShowCategoryModel getCategoryByID(Long categoryID);
+    ShowCategoryModel getCategoryByID(String categoryID);
 }

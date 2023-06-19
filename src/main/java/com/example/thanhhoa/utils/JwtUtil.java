@@ -47,7 +47,6 @@ public class JwtUtil {
                 .setExpiration(expiryDate)
                 .signWith(SignatureAlgorithm.HS512, JWT_SECRET)
                 .claim("role", user.getRole().getRoleName())
-                .claim("id", user.getId())
                 .claim("username", user.getUsername())
                 .claim("email", user.getEmail())
                 .claim("phone", user.getPhone())
@@ -60,7 +59,7 @@ public class JwtUtil {
         Date expiryDate = new Date(now.getTime() + JWT_EXPIRATION);
 
         UserDetailsImpl userPrincipal = (UserDetailsImpl) authentication.getPrincipal();
-        tblAccount user = userService.getById(userPrincipal.getUserID());
+        tblAccount user = userService.getByUsername(userPrincipal.getUsername());
 
         String avatarLink = "Không có avatar";
 
@@ -73,7 +72,6 @@ public class JwtUtil {
                 .setIssuedAt(now)
                 .setExpiration(expiryDate)
                 .signWith(SignatureAlgorithm.HS512, JWT_SECRET)
-                .claim("id", user.getId())
                 .claim("username", user.getUsername())
                 .claim("fullName", user.getFullName())
                 .claim("role", userPrincipal.getAuthorities())
@@ -87,7 +85,7 @@ public class JwtUtil {
         Date now = new Date();
         Date expiryDate = new Date(now.getTime() + JWT_EXPIRATION);
 
-        tblAccount user = userService.getById(account.getId());
+        tblAccount user = userService.getByUsername(account.getUsername());
 
         String avatarLink = "Không có avatar";
 
@@ -100,7 +98,6 @@ public class JwtUtil {
                 .setIssuedAt(now)
                 .setExpiration(expiryDate)
                 .signWith(SignatureAlgorithm.HS512, JWT_SECRET)
-                .claim("id", user.getId())
                 .claim("username", user.getUsername())
                 .claim("fullName", user.getFullName())
                 .claim("role", user.getRole().getRoleName())
@@ -110,14 +107,14 @@ public class JwtUtil {
                 .compact();
     }
 
-    public Long getUserIdFromJWT(String token) {
-        Claims claims = Jwts.parser()
-                .setSigningKey(JWT_SECRET)
-                .parseClaimsJws(token)
-                .getBody();
-
-        return claims.get("id", Long.class);
-    }
+//    public Long getUserIdFromJWT(String token) {
+//        Claims claims = Jwts.parser()
+//                .setSigningKey(JWT_SECRET)
+//                .parseClaimsJws(token)
+//                .getBody();
+//
+//        return claims.get("id", Long.class);
+//    }
 
     public String getUserNameFromJWT(String token) {
         Claims claims = Jwts.parser()

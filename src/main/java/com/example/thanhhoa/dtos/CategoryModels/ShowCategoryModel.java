@@ -6,7 +6,7 @@ import lombok.Setter;
 @Getter
 @Setter
 public class ShowCategoryModel {
-    private Long categoryID;
+    private String categoryID;
     private String categoryName;
     private Double totalPage;
 }

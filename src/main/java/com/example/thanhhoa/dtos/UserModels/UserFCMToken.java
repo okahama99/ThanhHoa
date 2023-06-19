@@ -9,5 +9,5 @@ import java.io.Serializable;
 @Setter
 public class UserFCMToken implements Serializable {
     private String fcmToken;
-    private Long accountID;
+    private String username;
 }

@@ -4,11 +4,13 @@ import com.example.thanhhoa.dtos.PlantModels.CreatePlantModel;
 import com.example.thanhhoa.dtos.PlantModels.ShowPlantCategory;
 import com.example.thanhhoa.dtos.PlantModels.ShowPlantModel;
 import com.example.thanhhoa.dtos.PlantModels.UpdatePlantModel;
+import com.example.thanhhoa.dtos.PlantPriceModels.ShowPlantPriceModel;
 import com.example.thanhhoa.dtos.PlantShipPriceModels.ShowPlantShipPriceModel;
 import com.example.thanhhoa.entities.Category;
 import com.example.thanhhoa.entities.Plant;
 import com.example.thanhhoa.entities.PlantCategory;
 import com.example.thanhhoa.entities.PlantIMG;
+import com.example.thanhhoa.entities.PlantPrice;
 import com.example.thanhhoa.entities.PlantShipPrice;
 import com.example.thanhhoa.entities.Store;
 import com.example.thanhhoa.entities.StorePlant;
@@ -16,6 +18,7 @@ import com.example.thanhhoa.enums.Status;
 import com.example.thanhhoa.repositories.CategoryRepository;
 import com.example.thanhhoa.repositories.PlantCategoryRepository;
 import com.example.thanhhoa.repositories.PlantIMGRepository;
+import com.example.thanhhoa.repositories.PlantPriceRepository;
 import com.example.thanhhoa.repositories.PlantRepository;
 import com.example.thanhhoa.repositories.PlantShipPriceRepository;
 import com.example.thanhhoa.repositories.StorePlantRepository;
@@ -46,6 +49,8 @@ public class PlantServiceImpl implements PlantService {
     @Autowired
     private PlantShipPriceRepository plantShipPriceRepository;
     @Autowired
+    private PlantPriceRepository plantPriceRepository;
+    @Autowired
     private PlantCategoryRepository plantCategoryRepository;
     @Autowired
     private StorePlantRepository storePlantRepository;
@@ -62,12 +67,12 @@ public class PlantServiceImpl implements PlantService {
 
     @Override
     public List<ShowPlantModel> getAllPlant(Pageable paging) {
-        Page<Plant> pagingResult = plantPagingRepository.findAllByStatus(Status.ONSELL, paging);
+        Page<Plant> pagingResult = plantPagingRepository.findAllByStatus(Status.ONSALE, paging);
         return util.plantPagingConverter(pagingResult, paging);
     }
 
     @Override
-    public ShowPlantModel getPlantByID(Long plantID) {
+    public ShowPlantModel getPlantByID(String plantID) {
         Optional<Plant> checkExistedPlant = plantRepository.findById(plantID);
         if (checkExistedPlant == null) {
             return null;
@@ -86,83 +91,120 @@ public class PlantServiceImpl implements PlantService {
         showPlantShipPriceModel.setPotSize(plant.getPlantShipPrice().getPotSize());
         showPlantShipPriceModel.setPricePerPlant(plant.getPlantShipPrice().getPricePerPlant());
 
+        ShowPlantPriceModel showPlantPriceModel = new ShowPlantPriceModel();
+        showPlantPriceModel.setId(plant.getPlantPrice().getId());
+        showPlantPriceModel.setPrice(plant.getPlantPrice().getPrice());
+        showPlantPriceModel.setApplyDate(plant.getPlantPrice().getApplyDate());
+
         ShowPlantModel model = new ShowPlantModel();
         model.setPlantID(plant.getId());
         model.setName(plant.getName());
         model.setHeight(plant.getHeight());
-        model.setPrice(plant.getPrice());
         model.setWithPot(plant.getWithPot());
         model.setShowPlantShipPriceModel(showPlantShipPriceModel);
         model.setPlantCategoryList(showPlantCategoryList);
+        model.setShowPlantPriceModel(showPlantPriceModel);
         return model;
     }
 
     @Override
-    public Boolean createPlant(CreatePlantModel createPlantModel) throws Exception {
-        Plant plant = new Plant();
+    public String createPlant(CreatePlantModel createPlantModel) throws Exception {
+        Optional<PlantShipPrice> plantShipPrice = plantShipPriceRepository.findById(createPlantModel.getShipPriceID());
+        if(plantShipPrice == null){
+            return "Không tìm thấy dữ liệu với ShipPriceID = "+createPlantModel.getShipPriceID()+".";
+        }
 
+        Optional<PlantPrice> plantPrice = plantPriceRepository.findById(createPlantModel.getPlantPriceID());
+        if(plantPrice == null){
+            return "Không tìm thấy dữ liệu với PlantPriceID = "+createPlantModel.getPlantPriceID()+".";
+        }
+
+        if (createPlantModel.getCategoryIDList() == null) {
+            return "Danh sách Category không được để trống.";
+        }
+
+        String plantID = null;
+        if(plantRepository.count() == 0){
+            plantID = "P-1";
+        }else{
+            plantID = plantRepository.findFirstByStatusOrderByIdDesc(Status.ONSALE).getId();
+        }
+
+        if(!plantID.equals(null)){
+            String[] idArr;
+            idArr = plantID.split("-");
+            int idNumber = Integer.parseInt(idArr[1]);
+            idNumber++;
+            plantID = idArr[0] + "-" + idNumber;
+        }
+
+        Plant plant = new Plant();
+        plant.setId(plantID);
         plant.setName(createPlantModel.getName());
         plant.setDescription(createPlantModel.getDescription());
         plant.setHeight(createPlantModel.getHeight());
-        plant.setPrice(createPlantModel.getPrice());
         plant.setCareNote(createPlantModel.getCareNote());
         plant.setWithPot(createPlantModel.getWithPot());
-        plant.setStatus(Status.ONSELL);
+        plant.setStatus(Status.ONSALE);
+        plant.setPlantShipPrice(plantShipPrice.get());
+        plant.setPlantPrice(plantPrice.get());
         Plant plantWithID = plantRepository.saveAndFlush(plant);
 
-        if (createPlantModel.getCategoryIDList() == null) {
-            return false;
-        }
-
         PlantCategory plantCategory = new PlantCategory();
-        for (Long categoryID : createPlantModel.getCategoryIDList()) {
+        for (String categoryID : createPlantModel.getCategoryIDList()) {
             Optional<Category> category = categoryRepository.findById(categoryID);
             if (category != null) {
                 plantCategory.setCategory(category.get());
                 plantCategory.setPlant(plantWithID);
                 plantCategoryRepository.save(plantCategory);
             }
+
+            return "Không tìm thấy Category với CategoryID = " + categoryID + ".";
         }
 
-        for (MultipartFile file : createPlantModel.getFiles()) {
-            String fileName = imageService.save(file);
-            String imgName = imageService.getImageUrl(fileName);
-            PlantIMG plantIMG = new PlantIMG();
-            plantIMG.setPlant(plantWithID);
-            plantIMG.setImgURL(imgName);
-            plantIMGRepository.save(plantIMG);
+        if(createPlantModel.getFiles() != null){
+            for (MultipartFile file : createPlantModel.getFiles()) {
+                String fileName = imageService.save(file);
+                String imgName = imageService.getImageUrl(fileName);
+                PlantIMG plantIMG = new PlantIMG();
+                plantIMG.setPlant(plantWithID);
+                plantIMG.setImgURL(imgName);
+                plantIMGRepository.save(plantIMG);
+            }
         }
-
-        StorePlant storePlant = new StorePlant();
-        storePlant.setPlant(plantWithID);
-        storePlant.setQuantity(createPlantModel.getQuantity());
-        storePlantRepository.save(storePlant);
-
-        PlantShipPrice plantShipPrice = new PlantShipPrice();
-        plantShipPrice.setId(createPlantModel.getShipPriceID());
-        plantShipPriceRepository.save(plantShipPrice);
-        return true;
+        return "Tạo thành công.";
     }
 
     @Override
-    public Boolean updatePlant(UpdatePlantModel updatePlantModel, List<MultipartFile> files) throws Exception {
+    public String updatePlant(UpdatePlantModel updatePlantModel, List<MultipartFile> files) throws Exception {
         Optional<Plant> checkPlant = plantRepository.findById(updatePlantModel.getPlantID());
         if (checkPlant != null) {
+            Optional<PlantShipPrice> plantShipPrice = plantShipPriceRepository.findById(updatePlantModel.getShipPriceID());
+            if(plantShipPrice == null){
+                return "Không tìm thấy dữ liệu với ShipPriceID = "+updatePlantModel.getShipPriceID()+".";
+            }
+
+            Optional<PlantPrice> plantPrice = plantPriceRepository.findById(updatePlantModel.getPlantPriceID());
+            if(plantPrice == null){
+                return "Không tìm thấy dữ liệu với PlantPriceID = "+updatePlantModel.getPlantPriceID()+".";
+            }
+
             Plant plant = checkPlant.get();
             plant.setName(updatePlantModel.getName());
             plant.setDescription(updatePlantModel.getDescription());
             plant.setHeight(updatePlantModel.getHeight());
-            plant.setPrice(updatePlantModel.getPrice());
             plant.setCareNote(updatePlantModel.getCareNote());
             plant.setWithPot(updatePlantModel.getWithPot());
+            plant.setPlantShipPrice(plantShipPrice.get());
+            plant.setPlantPrice(plantPrice.get());
             plantRepository.save(plant);
 
             if (updatePlantModel.getCategoryIDList() == null) {
-                return false;
+                return "Danh sách Category không được để trống.";
             }
             // Tim category tu list categoryID roi add vao 1 list
             List<Category> categoryList = new ArrayList<>();
-            for (Long categoryID : updatePlantModel.getCategoryIDList()) {
+            for (String categoryID : updatePlantModel.getCategoryIDList()) {
                 Optional<Category> category = categoryRepository.findById(categoryID);
                 if (category != null) {
                     categoryList.add(category.get());
@@ -205,66 +247,38 @@ public class PlantServiceImpl implements PlantService {
                 }
             }
 
-            for (PlantIMG image : plant.getPlantIMGList()) {
-                String imgNameString = image.getImgURL();
-                PlantIMG plantImage = plantIMGRepository.findByImgURL(imgNameString);
-                plantImage.setPlant(null);
-                plantImage.setImgURL(null);
-                plantIMGRepository.save(plantImage);
-                String[] strArr;
-                strArr = imgNameString.split("[/;?]");
-                imageService.delete(strArr[7]);
+            if(updatePlantModel.getFiles() != null)
+            {
+                for (PlantIMG image : plant.getPlantIMGList()) {
+                    String imgNameString = image.getImgURL();
+                    PlantIMG plantImage = plantIMGRepository.findByImgURL(imgNameString);
+                    plantImage.setPlant(null);
+                    plantImage.setImgURL(null);
+                    plantIMGRepository.save(plantImage);
+                    String[] strArr;
+                    strArr = imgNameString.split("[/;?]");
+                    imageService.delete(strArr[7]);
+                }
+                for (MultipartFile file : files) {
+                    String fileName = imageService.save(file);
+                    String imgName = imageService.getImageUrl(fileName);
+                    PlantIMG plantIMG = new PlantIMG();
+                    plantIMG.setPlant(plant);
+                    plantIMG.setImgURL(imgName);
+                    plantIMGRepository.save(plantIMG);
+                }
             }
-            for (MultipartFile file : files) {
-                String fileName = imageService.save(file);
-                String imgName = imageService.getImageUrl(fileName);
-                PlantIMG plantIMG = new PlantIMG();
-                plantIMG.setPlant(plant);
-                plantIMG.setImgURL(imgName);
-                plantIMGRepository.save(plantIMG);
-            }
-
-            Optional<Store> store = storeRepository.findById(updatePlantModel.getStoreID());
-            StorePlant storePlant = storePlantRepository.findByPlantAndStore(plant, store.get());
-            storePlant.setQuantity(updatePlantModel.getQuantity());
-            storePlantRepository.save(storePlant);
-
-            Optional<PlantShipPrice> plantShipPrice = plantShipPriceRepository.findById(updatePlantModel.getShipPriceID());
-            plantShipPrice.get().setId(updatePlantModel.getShipPriceID());
-            plantShipPriceRepository.save(plantShipPrice.get());
-            return true;
+            return "Cập nhật thành công.";
         }
-        return false;
+        return "Cập nhật thất bại.";
     }
 
     @Override
-    public Boolean deletePlant(Long plantID) throws IOException {
+    public Boolean deletePlant(String plantID){
         Optional<Plant> checkingPlant = plantRepository.findById(plantID);
         if (checkingPlant != null) {
             checkingPlant.get().setStatus(Status.INACTIVE);
             plantRepository.save(checkingPlant.get());
-
-            List<PlantCategory> plantCategoryList = plantCategoryRepository.findAllByPlant_Id(plantID);
-            if (plantCategoryList != null) {
-                for (PlantCategory plantCategory : plantCategoryList) {
-                    plantCategoryRepository.delete(plantCategory);
-                }
-            }
-
-            List<StorePlant> storePlantList = storePlantRepository.findByPlantId(plantID);
-            if (storePlantList != null) {
-                for (StorePlant storePlant : storePlantList) {
-                    storePlantRepository.delete(storePlant);
-                }
-            }
-
-            List<PlantIMG> plantIMGList = plantIMGRepository.findByPlantId(plantID);
-            if (plantIMGList != null) {
-                for (PlantIMG plantIMG : plantIMGList) {
-                    imageService.delete(plantIMG.getImgURL());
-                    plantIMGRepository.delete(plantIMG);
-                }
-            }
             return true;
         }
         return false;
@@ -277,7 +291,7 @@ public class PlantServiceImpl implements PlantService {
     }
 
     @Override
-    public List<ShowPlantModel> getPlantByCategory(Long categoryID, Pageable paging) {
+    public List<ShowPlantModel> getPlantByCategory(String categoryID, Pageable paging) {
         List<PlantCategory> plantCategoryList = plantCategoryRepository.findByCategory_Id(categoryID);
 
         List<Plant> plantList = new ArrayList<>();
@@ -293,30 +307,30 @@ public class PlantServiceImpl implements PlantService {
 
     @Override
     public List<ShowPlantModel> getPlantByName(String name, Pageable paging) {
-        Page<Plant> pagingResult = plantPagingRepository.findByNameContainingAndStatus(name, Status.ONSELL, paging);
+        Page<Plant> pagingResult = plantPagingRepository.findByNameContainingAndStatus(name, Status.ONSALE, paging);
         return util.plantPagingConverter(pagingResult, paging);
     }
 
     @Override
     public List<ShowPlantModel> getNameByPriceMin(Double minPrice, Pageable paging) {
-        Page<Plant> pagingResult = plantPagingRepository.findByPriceGreaterThan(minPrice, Status.ONSELL, paging);
+        Page<Plant> pagingResult = plantPagingRepository.findByPlantPrice_PriceGreaterThan(minPrice, Status.ONSALE, paging);
         return util.plantPagingConverter(pagingResult, paging);
     }
 
     @Override
     public List<ShowPlantModel> getNameByPriceMax(Double maxPrice, Pageable paging) {
-        Page<Plant> pagingResult = plantPagingRepository.findByPriceLessThan(maxPrice, Status.ONSELL, paging);
+        Page<Plant> pagingResult = plantPagingRepository.findByPlantPrice_PriceLessThan(maxPrice, Status.ONSALE, paging);
         return util.plantPagingConverter(pagingResult, paging);
     }
 
     @Override
     public List<ShowPlantModel> getNameByPriceInRange(Double fromPrice, Double toPrice, Pageable paging) {
-        Page<Plant> pagingResult = plantPagingRepository.findByPriceBetweenAndStatus(fromPrice, toPrice, Status.ONSELL, paging);
+        Page<Plant> pagingResult = plantPagingRepository.findByPlantPrice_PriceBetweenAndStatus(fromPrice, toPrice, Status.ONSALE, paging);
         return util.plantPagingConverter(pagingResult, paging);
     }
 
     @Override
-    public List<ShowPlantModel> getPlantByCategoryAndName(Long categoryID, String name, Pageable paging) {
+    public List<ShowPlantModel> getPlantByCategoryAndName(String categoryID, String name, Pageable paging) {
         List<PlantCategory> plantCategoryList = plantCategoryRepository.findByCategory_IdAndPlant_NameContaining(categoryID, name);
         List<Plant> catePlantList = new ArrayList<>();
         for (PlantCategory plantCategory : plantCategoryList) {
@@ -344,12 +358,12 @@ public class PlantServiceImpl implements PlantService {
 
     @Override
     public List<ShowPlantModel> getPlantByNameAndPrice(String name, Double fromPrice, Double toPrice, Pageable paging) {
-        Page<Plant> pagingResult = plantPagingRepository.findByPriceBetweenAndNameContainingAndStatus(fromPrice, toPrice, name, Status.ONSELL, paging);
+        Page<Plant> pagingResult = plantPagingRepository.findByPlantPrice_PriceBetweenAndNameContainingAndStatus(fromPrice, toPrice, name, Status.ONSALE, paging);
         return util.plantPagingConverter(pagingResult, paging);
     }
 
     @Override
-    public List<ShowPlantModel> getPlantByCategoryAndPrice(Long categoryID, Double fromPrice, Double toPrice, Pageable paging) {
+    public List<ShowPlantModel> getPlantByCategoryAndPrice(String categoryID, Double fromPrice, Double toPrice, Pageable paging) {
         List<PlantCategory> plantCategoryList = plantCategoryRepository.findByCategory_Id(categoryID);
 
         List<Plant> catePlantList = new ArrayList<>();
@@ -357,7 +371,7 @@ public class PlantServiceImpl implements PlantService {
             catePlantList.add(plantCategory.getPlant());
         }
 
-        List<Plant> plantList = plantRepository.findByPriceBetweenAndStatus(fromPrice, toPrice, Status.ONSELL);
+        List<Plant> plantList = plantRepository.findByPlantPrice_PriceBetweenAndStatus(fromPrice, toPrice, Status.ONSALE);
         if (plantList != null) {
             plantList.addAll(catePlantList);
             List<Plant> noDuplicatePlantList = new ArrayList<>(new HashSet<>(plantList));
@@ -369,7 +383,7 @@ public class PlantServiceImpl implements PlantService {
     }
 
     @Override
-    public List<ShowPlantModel> getPlantByCategoryAndNameAndPrice(Long categoryID, String name, Double fromPrice, Double toPrice, Pageable paging) {
+    public List<ShowPlantModel> getPlantByCategoryAndNameAndPrice(String categoryID, String name, Double fromPrice, Double toPrice, Pageable paging) {
         List<PlantCategory> plantCategoryList = plantCategoryRepository.findByCategory_Id(categoryID);
 
         List<Plant> catePlantList = new ArrayList<>();
@@ -377,7 +391,7 @@ public class PlantServiceImpl implements PlantService {
             catePlantList.add(plantCategory.getPlant());
         }
 
-        List<Plant> plantList = plantRepository.findByPriceBetweenAndNameAndStatus(fromPrice, toPrice, name, Status.ONSELL);
+        List<Plant> plantList = plantRepository.findByPlantPrice_PriceBetweenAndNameAndStatus(fromPrice, toPrice, name, Status.ONSALE);
         if (plantList != null) {
             plantList.addAll(catePlantList);
             List<Plant> noDuplicatePlantList = new ArrayList<>(new HashSet<>(plantList));

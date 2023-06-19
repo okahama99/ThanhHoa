@@ -9,7 +9,7 @@ import java.time.LocalDateTime;
 @Getter
 @Setter
 public class ShowContractFeedbackModel implements Serializable {
-    private Long contractFeedbackID;
+    private String contractFeedbackID;
     private String description;
     private LocalDateTime createdDate;
 

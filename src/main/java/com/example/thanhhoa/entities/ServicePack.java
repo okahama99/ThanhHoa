@@ -1,6 +1,5 @@
 package com.example.thanhhoa.entities;
 
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -12,17 +11,16 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.OneToMany;
+import java.io.Serializable;
 import java.time.LocalDateTime;
 import java.util.List;
 
 @Entity
 @Getter
 @Setter
-@JsonIgnoreProperties(value = {"handler","hibernateLazyInitializer","fieldHandler"})
-public class Combo {
+public class ServicePack implements Serializable {
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    private String id;
 
     @Column(nullable = false)
     private String range;
@@ -33,9 +31,6 @@ public class Combo {
     @Column(nullable = false)
     private LocalDateTime applyDate;
 
-    @Column(nullable = false)
-    private Boolean isActive;
-
-    @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY, mappedBy = "combo")
+    @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY, mappedBy = "servicePack")
     private List<ContractDetail> contractDetailList;
 }

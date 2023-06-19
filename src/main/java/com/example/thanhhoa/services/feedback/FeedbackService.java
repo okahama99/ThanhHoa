@@ -9,11 +9,20 @@ import java.util.List;
 public interface FeedbackService {
     List<ShowOrderFeedbackModel> getAllOrderFeedback(Pageable pageable);
 
-    ShowOrderFeedbackModel getOrderFeedbackByID(Long orderFeedbackID);
+    ShowOrderFeedbackModel getOrderFeedbackByID(String orderFeedbackID);
 
-    ShowOrderFeedbackModel getOrderFeedbackByUserID(Long userID);
+    ShowOrderFeedbackModel getOrderFeedbackByUsername(String username);
+
+    List<ShowOrderFeedbackModel> getOrderFeedbackByPlantID(String plantID, Pageable pageable);
+
+    ShowOrderFeedbackModel getOrderFeedbackByOrderID(String orderID);
+
+
+    // ------------------------------------------------ CONTRACT -------------------------------------------------------------------
 
     List<ShowContractFeedbackModel> getAllContractFeedback(Pageable pageable);
 
-    ShowContractFeedbackModel getContractFeedbackByID(Long contractFeedbackID);
+    ShowContractFeedbackModel getContractFeedbackByID(String contractFeedbackID);
+
+    ShowContractFeedbackModel getContractFeedbackByContractID(String contractID);
 }

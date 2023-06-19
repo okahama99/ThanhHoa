@@ -10,5 +10,7 @@ import org.springframework.stereotype.Repository;
 @Repository
 public interface OrderFeedbackPagingRepository extends PagingAndSortingRepository<OrderFeedback, Long> {
     Page<OrderFeedback> findAllByStatus(Status status, Pageable pageable);
+
+    Page<OrderFeedback> findByPlantId(String plantID, Pageable pageable);
     
 }

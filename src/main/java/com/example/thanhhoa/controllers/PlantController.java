@@ -50,11 +50,11 @@ public class PlantController {
         if (plantService.checkDuplicate(createPlantModel.getName()) != null) {
             return ResponseEntity.badRequest().body("Cây cùng tên đã tồn tại.");
         } else {
-            boolean result = plantService.createPlant(createPlantModel);
-            if (result) {
-                return ResponseEntity.ok().body("Tạo thành công.");
+            String result = plantService.createPlant(createPlantModel);
+            if (result.equals("Tạo thành công.")) {
+                return ResponseEntity.ok().body(result);
             }
-            return ResponseEntity.badRequest().body("Tạo thất bại.");
+            return ResponseEntity.badRequest().body(result);
         }
     }
 
@@ -69,17 +69,17 @@ public class PlantController {
         if (plantService.checkDuplicate(updatePlantModel.getName()) != null) {
             return ResponseEntity.badRequest().body("Cây cùng tên đã tồn tại.");
         } else {
-            boolean result = plantService.updatePlant(updatePlantModel, files);
-            if (result) {
-                return ResponseEntity.ok().body("Chỉnh sửa thành công.");
+            String result = plantService.updatePlant(updatePlantModel, files);
+            if (result.equals("Chỉnh sửa thành công.")) {
+                return ResponseEntity.ok().body(result);
             }
-            return ResponseEntity.badRequest().body("Chỉnh sửa thất bại.");
+            return ResponseEntity.badRequest().body(result);
         }
     }
 
     @DeleteMapping(value = "/{plantID}", produces = "application/json;charset=UTF-8")
-    public ResponseEntity<Object> deletePlant(@PathVariable(name = "plantID") Long plantID,
-                                              HttpServletRequest request) throws Exception {
+    public ResponseEntity<Object> deletePlant(@PathVariable(name = "plantID") String plantID,
+                                              HttpServletRequest request){
         String roleName = jwtUtil.getRoleNameFromJWT(request);
         if (!roleName.equalsIgnoreCase("Owner")) {
             throw new ResponseStatusException(HttpStatus.FORBIDDEN, "-----------------------------------Người dùng không có quyền truy cập---------------------------");
@@ -102,7 +102,7 @@ public class PlantController {
 
     @GetMapping(value = "/{plantID}", produces = "application/json;charset=UTF-8")
     public @ResponseBody
-    ResponseEntity<Object> getPlantByID(@PathVariable("plantID") Long plantID) {
+    ResponseEntity<Object> getPlantByID(@PathVariable("plantID") String plantID) {
         ShowPlantModel model = plantService.getPlantByID(plantID);
         if (model != null) {
             return ResponseEntity.ok().body(model);
@@ -113,7 +113,7 @@ public class PlantController {
     @GetMapping(value = "/plantFilter", produces = "application/json;charset=UTF-8")
     public @ResponseBody
     ResponseEntity<Object> searchPlant(@RequestParam(required = false) String plantName,
-                                       @RequestParam(required = false) Long categoryID,
+                                       @RequestParam(required = false) String categoryID,
                                        @RequestParam(required = false) Double fromPrice,
                                        @RequestParam(required = false) Double toPrice,
                                        @RequestParam int pageNo,

@@ -1,21 +1,19 @@
 package com.example.thanhhoa.entities;
 
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import lombok.Getter;
 import lombok.Setter;
 
 import javax.persistence.*;
+import java.io.Serializable;
 import java.time.LocalDateTime;
 
 @Entity
 @Getter
 @Setter
-@JsonIgnoreProperties(value = {"handler","hibernateLazyInitializer","fieldHandler"})
-public class WorkingDate {
+public class WorkingDate implements Serializable {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    private String id;
 
     @Column(nullable = false)
     private LocalDateTime workingDate;

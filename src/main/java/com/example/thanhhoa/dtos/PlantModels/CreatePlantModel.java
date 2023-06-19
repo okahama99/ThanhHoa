@@ -14,12 +14,10 @@ public class CreatePlantModel implements Serializable {
     private String description;
     private String careNote;
     private Double height;
-    private Double price;
     private Boolean withPot;
 
-    private Long storeID;
-    private Integer quantity;
-    private Long shipPriceID;
-    private List<Long> categoryIDList;
+    private String shipPriceID;
+    private String plantPriceID;
+    private List<String> categoryIDList;
     private List<MultipartFile> files;
 }

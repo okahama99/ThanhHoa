@@ -7,25 +7,25 @@ import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
+import javax.persistence.OneToMany;
 import java.io.Serializable;
+import java.time.LocalDateTime;
+import java.util.List;
 
 @Entity
 @Getter
 @Setter
-public class ServiceIMG implements Serializable {
-
+public class PlantPrice implements Serializable {
     @Id
     private String id;
 
     @Column(nullable = false)
-    private String imgURL;
+    private Double price;
 
-    @ManyToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-    @JoinColumn(name = "service_id")
-    private Service service;
+    @Column(nullable = false)
+    private LocalDateTime applyDate;
+
+    @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY, mappedBy = "plantPrice")
+    private List<Plant> plantList;
 }

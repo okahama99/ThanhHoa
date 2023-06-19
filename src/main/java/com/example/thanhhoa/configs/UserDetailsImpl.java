@@ -13,15 +13,13 @@ import java.util.Objects;
 public class UserDetailsImpl implements org.springframework.security.core.userdetails.UserDetails {
     private static final long serialVersionUID = 1L;
 
-    private Long userID;
     private Collection<? extends GrantedAuthority> authorities;
     @JsonIgnore
     private String username;
     private String password;
 
-    public UserDetailsImpl(Long id, String username, String password,
+    public UserDetailsImpl(String username, String password,
                            Collection<? extends GrantedAuthority> authorities) {
-        this.userID = id;
         this.username = username;
         this.password = password;
         this.authorities = authorities;
@@ -34,7 +32,6 @@ public class UserDetailsImpl implements org.springframework.security.core.userde
         authorities.add(new SimpleGrantedAuthority(String.valueOf(user.getRole().getId())));
 
         return new UserDetailsImpl(
-                user.getId(),
                 user.getUsername(),
                 user.getPassword(),
                 authorities);
@@ -75,14 +72,6 @@ public class UserDetailsImpl implements org.springframework.security.core.userde
         return true;
     }
 
-    public Long getUserID() {
-        return userID;
-    }
-
-    public void setUserID(Long userID) {
-        this.userID = userID;
-    }
-
     public void setUsername(String username) {
         this.username = username;
     }
@@ -94,6 +83,6 @@ public class UserDetailsImpl implements org.springframework.security.core.userde
         if (obj == null || getClass() != obj.getClass())
             return false;
         UserDetailsImpl user = (UserDetailsImpl) obj;
-        return Objects.equals(userID, user.userID);
+        return Objects.equals(username, user.getUsername());
     }
 }

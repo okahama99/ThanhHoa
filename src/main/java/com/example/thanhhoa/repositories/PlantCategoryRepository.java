@@ -9,11 +9,11 @@ import java.util.List;
 
 @Repository
 public interface PlantCategoryRepository extends JpaRepository<PlantCategory, Long> {
-    List<PlantCategory> findAllByPlant_Id(Long plantID);
+    List<PlantCategory> findAllByPlant_Id(String plantID);
 
     List<PlantCategory> findByPlant(Plant plant);
 
-    List<PlantCategory> findByCategory_Id(Long categoryID);
+    List<PlantCategory> findByCategory_Id(String categoryID);
 
-    List<PlantCategory> findByCategory_IdAndPlant_NameContaining(Long categoryID, String plantName);
+    List<PlantCategory> findByCategory_IdAndPlant_NameContaining(String categoryID, String plantName);
 }

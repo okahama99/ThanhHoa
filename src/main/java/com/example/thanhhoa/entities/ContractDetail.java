@@ -1,22 +1,20 @@
 package com.example.thanhhoa.entities;
 
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import lombok.Getter;
 import lombok.Setter;
 
 import javax.persistence.*;
+import java.io.Serializable;
 import java.time.LocalDateTime;
 import java.util.List;
 
 @Entity
 @Getter
 @Setter
-@JsonIgnoreProperties(value = {"handler","hibernateLazyInitializer","fieldHandler"})
-public class ContractDetail {
+public class ContractDetail implements Serializable {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    private String id;
 
     @Column(nullable = false)
     private String timeWorking;
@@ -49,6 +47,6 @@ public class ContractDetail {
     private ServiceType serviceType;
 
     @ManyToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-    @JoinColumn(name = "combo_id")
-    private Combo combo;
+    @JoinColumn(name = "service_pack_id")
+    private ServicePack servicePack;
 }

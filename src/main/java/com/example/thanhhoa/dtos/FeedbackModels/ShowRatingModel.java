@@ -8,6 +8,6 @@ import java.io.Serializable;
 @Getter
 @Setter
 public class ShowRatingModel implements Serializable {
-    private Long id;
+    private String id;
     private String description;
 }

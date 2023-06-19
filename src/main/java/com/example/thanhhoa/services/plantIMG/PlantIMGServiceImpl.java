@@ -18,7 +18,7 @@ public class PlantIMGServiceImpl implements PlantIMGService{
     private ImageService imageService;
 
     @Override
-    public List<String> getByPlantID(Long plantID) {
+    public List<String> getByPlantID(String plantID) {
         List<PlantIMG> imgList = plantIMGRepository.findByPlantId(plantID);
         List<String> imgURL = new ArrayList<>();
         for (PlantIMG plantIMG : imgList) {

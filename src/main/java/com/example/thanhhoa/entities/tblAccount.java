@@ -1,30 +1,26 @@
 package com.example.thanhhoa.entities;
 
 import com.example.thanhhoa.enums.Status;
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import lombok.Getter;
 import lombok.Setter;
 import org.springframework.data.annotation.CreatedDate;
 
 import javax.persistence.*;
+import java.io.Serializable;
 import java.time.LocalDateTime;
 import java.util.List;
 
 @Entity
 @Getter
 @Setter
-@JsonIgnoreProperties(value = {"handler","hibernateLazyInitializer","fieldHandler"})
-public class tblAccount {
+public class tblAccount implements Serializable {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    @Column(unique = true, nullable = false, length = 50)
+    private String username;
 
     @Column
     private String fcmToken;
-
-    @Column(unique = true, nullable = false, length = 50)
-    private String username;
 
     @Column(nullable = false)
     private String password;

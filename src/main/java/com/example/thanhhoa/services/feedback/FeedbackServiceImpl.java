@@ -44,7 +44,7 @@ public class FeedbackServiceImpl implements FeedbackService {
     }
 
     @Override
-    public ShowOrderFeedbackModel getOrderFeedbackByID(Long orderFeedbackID) {
+    public ShowOrderFeedbackModel getOrderFeedbackByID(String orderFeedbackID) {
         Optional<OrderFeedback> searchResult = orderFeedbackRepository.findById(orderFeedbackID);
         if (searchResult == null) {
             return null;
@@ -72,8 +72,8 @@ public class FeedbackServiceImpl implements FeedbackService {
     }
 
     @Override
-    public ShowOrderFeedbackModel getOrderFeedbackByUserID(Long userID) {
-        Optional<OrderFeedback> searchResult = orderFeedbackRepository.findByCustomer_IdAndStatus(userID, Status.ACTIVE);
+    public ShowOrderFeedbackModel getOrderFeedbackByUsername(String username) {
+        Optional<OrderFeedback> searchResult = orderFeedbackRepository.findByCustomer_UsernameAndStatus(username, Status.ACTIVE);
         if (searchResult == null) {
             return null;
         }
@@ -100,14 +100,70 @@ public class FeedbackServiceImpl implements FeedbackService {
     }
 
     @Override
+    public List<ShowOrderFeedbackModel> getOrderFeedbackByPlantID(String plantID, Pageable pageable) {
+        Page<OrderFeedback> pagingResult = orderFeedbackPagingRepository.findByPlantId(plantID, pageable);
+        return util.orderFeedbackPagingConverter(pagingResult, pageable);
+    }
+
+    @Override
+    public ShowOrderFeedbackModel getOrderFeedbackByOrderID(String orderID) {
+        Optional<OrderFeedback> checkOrderFeedback = orderFeedbackRepository.findByTblOrder_Id(orderID);
+        if(checkOrderFeedback == null){
+            return null;
+        }
+
+        OrderFeedback orderFeedback = checkOrderFeedback.get();
+        ShowRatingModel ratingModel = new ShowRatingModel();
+        ratingModel.setId(orderFeedback.getRating().getId());
+        ratingModel.setDescription(orderFeedback.getRating().getDescription());
+
+        List<ShowOrderFeedbackIMGModel> imgModelList = new ArrayList<>();
+        ShowOrderFeedbackIMGModel imgModel = new ShowOrderFeedbackIMGModel();
+        for (OrderFeedbackIMG img : orderFeedback.getOrderFeedbackIMGList()) {
+            imgModel.setId(img.getId());
+            imgModel.setImgURL(imgModel.getImgURL());
+            imgModelList.add(imgModel);
+        }
+
+        ShowOrderFeedbackModel model = new ShowOrderFeedbackModel();
+        model.setOrderFeedbackID(orderFeedback.getId());
+        model.setDescription(orderFeedback.getDescription());
+        model.setCreatedDate(orderFeedback.getCreatedDate());
+        model.setRatingModel(ratingModel);
+        model.setImgList(imgModelList);
+        return model;
+    }
+
+    // -------------------------------------------- CONTRACT -----------------------------------------
+
+    @Override
     public List<ShowContractFeedbackModel> getAllContractFeedback(Pageable pageable) {
         Page<ContractFeedback> pagingResult = contractFeedbackPagingRepository.findAllByStatus(Status.ACTIVE, pageable);
         return util.contractFeedbackPagingConverter(pagingResult, pageable);
     }
 
     @Override
-    public ShowContractFeedbackModel getContractFeedbackByID(Long contractFeedbackID) {
+    public ShowContractFeedbackModel getContractFeedbackByID(String contractFeedbackID) {
         Optional<ContractFeedback> searchResult = contractFeedbackRepository.findById(contractFeedbackID);
+        if(searchResult == null){
+            return null;
+        }
+        ContractFeedback contractFeedback = searchResult.get();
+        ShowRatingModel ratingModel = new ShowRatingModel();
+        ratingModel.setId(contractFeedback.getRating().getId());
+        ratingModel.setDescription(contractFeedback.getRating().getDescription());
+
+        ShowContractFeedbackModel model = new ShowContractFeedbackModel();
+        model.setContractFeedbackID(contractFeedback.getId());
+        model.setDescription(contractFeedback.getDescription());
+        model.setCreatedDate(contractFeedback.getDate());
+        model.setRatingModel(ratingModel);
+        return model;
+    }
+
+    @Override
+    public ShowContractFeedbackModel getContractFeedbackByContractID(String contractID) {
+        Optional<ContractFeedback> searchResult = contractFeedbackRepository.findByContract_Id(contractID);
         if(searchResult == null){
             return null;
         }

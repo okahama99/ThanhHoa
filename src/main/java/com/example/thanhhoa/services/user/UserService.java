@@ -12,8 +12,6 @@ import java.util.List;
 public interface UserService {
     tblAccount getByUsername(String username);
 
-    tblAccount getById(Long userID);
-
     void resetPasswordUser(String email, String password);
 
     tblAccount loginWithEmail(String email);
@@ -24,12 +22,11 @@ public interface UserService {
 
     String generateTempPassword(RegisterStaffModel registerStaffModel, String roleName);
 
-    void changeUserRole(Long userId, Long roleId);
+    void changeUserRole(String username, String roleId);
 
     void updateUserFcmToken(UserFCMToken userFCMToken);
 
-    void deleteUserFcmToken(Long userid);
-
+    void deleteUserFcmToken(String username);
 
     List<ShowUserModel> getAll(Pageable paging);
 

@@ -1,22 +1,20 @@
 package com.example.thanhhoa.entities;
 
 import com.example.thanhhoa.enums.Status;
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import lombok.Getter;
 import lombok.Setter;
 
 import javax.persistence.*;
+import java.io.Serializable;
 import java.util.List;
 
 @Entity
 @Getter
 @Setter
-@JsonIgnoreProperties(value = {"handler","hibernateLazyInitializer","fieldHandler"})
-public class Plant {
+public class Plant implements Serializable {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    private String id;
 
     @Column(nullable = false)
     private String name;
@@ -31,9 +29,6 @@ public class Plant {
 
     @Column(nullable = false)
     private Double height;
-
-    @Column(nullable = false)
-    private Double price;
 
     @Column
     private Boolean withPot = false;
@@ -62,4 +57,8 @@ public class Plant {
 
     @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY, mappedBy = "plant")
     private List<OrderFeedback> orderFeedbackList;
+
+    @ManyToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @JoinColumn(name = "plant_price_id")
+    private PlantPrice plantPrice;
 }

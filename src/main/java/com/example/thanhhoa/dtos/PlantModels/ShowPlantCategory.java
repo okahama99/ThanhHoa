@@ -8,6 +8,6 @@ import java.io.Serializable;
 @Getter
 @Setter
 public class ShowPlantCategory implements Serializable {
-    private Long categoryID;
+    private String categoryID;
     private String categoryName;
 }

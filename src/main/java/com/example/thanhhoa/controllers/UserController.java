@@ -7,7 +7,6 @@ import com.example.thanhhoa.dtos.UserModels.UserFCMToken;
 import com.example.thanhhoa.entities.tblAccount;
 import com.example.thanhhoa.enums.SearchType;
 import com.example.thanhhoa.repositories.UserRepository;
-import com.example.thanhhoa.repositories.pagings.UserPagingRepository;
 import com.example.thanhhoa.services.firebase.CRUDUserFireBaseService;
 import com.example.thanhhoa.services.google.GooglePojo;
 import com.example.thanhhoa.services.google.GoogleUtils;
@@ -70,8 +69,6 @@ public class UserController {
     private GoogleUtils googleUtils;
     @Autowired
     private UserRepository userRepository;
-    @Autowired
-    private UserPagingRepository userPagingRepository;
 
     @PostMapping(value = "/login", produces = "application/json;charset=UTF-8")
     public ResponseEntity<Object> login(@RequestParam String username,
@@ -150,7 +147,7 @@ public class UserController {
         GooglePojo googlePojo = googleUtils.getUserInfo(accessToken);
         tblAccount user = googleUtils.buildUser(googlePojo);
         List<GrantedAuthority> authorities = new ArrayList<>();
-        authorities.add(new SimpleGrantedAuthority(user.getRole().getId().toString()));
+        authorities.add(new SimpleGrantedAuthority(user.getRole().getId()));
         UsernamePasswordAuthenticationToken authentication = new UsernamePasswordAuthenticationToken(user, null,
                 authorities);
         authentication.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
@@ -297,18 +294,18 @@ public class UserController {
     public ResponseEntity<Object> getUserByToken(HttpServletRequest request) {
         String authTokenHeader = request.getHeader("Authorization");
         String token = authTokenHeader.substring(7);
-        return ResponseEntity.ok().body(userService.getById(jwtUtil.getUserIdFromJWT(token)));
+        return ResponseEntity.ok().body(userService.getByUsername(jwtUtil.getUserNameFromJWT(token)));
     }
 
-    @PostMapping(value = "/{userid}", produces = "application/json;charset=UTF-8")
-    public HttpStatus changeUserRole(@PathVariable(name = "userid") Long userid,
-                                     @RequestParam Long roleId,
+    @PostMapping(value = "/{username}", produces = "application/json;charset=UTF-8")
+    public HttpStatus changeUserRole(@PathVariable(name = "username") String username,
+                                     @RequestParam String roleId,
                                      HttpServletRequest request) {
         String roleName = jwtUtil.getRoleNameFromJWT(request);
         if (!roleName.equalsIgnoreCase("Admin")) {
             throw new ResponseStatusException(HttpStatus.FORBIDDEN, "-----------------------------------Người dùng không có quyền truy cập---------------------------");
         }
-        userService.changeUserRole(userid, roleId);
+        userService.changeUserRole(username, roleId);
         return HttpStatus.OK;
 
     }
@@ -320,12 +317,12 @@ public class UserController {
     }
 
     @PostMapping("/deleteFcmToken")
-    public String deleteFcmToken(@RequestParam Long userid) throws InterruptedException, ExecutionException {
-        userService.deleteUserFcmToken(userid);
-        tblAccount user = userRepository.getById(userid);
+    public String deleteFcmToken(@RequestParam String username) throws InterruptedException, ExecutionException {
+        userService.deleteUserFcmToken(username);
+        tblAccount user = userRepository.getByUsername(username);
         UserFCMToken userFCMToken = new UserFCMToken();
         userFCMToken.setFcmToken(null);
-        userFCMToken.setAccountID(user.getId());
+        userFCMToken.setUsername(user.getUsername());
         return CRUDUserFireBaseService.updateUser(userFCMToken);
     }
 

@@ -31,15 +31,9 @@ public class UserServiceImpl implements UserService {
     @Autowired
     private Util util;
 
-
     @Override
     public tblAccount getByUsername(String username) {
         return userRepository.getByUsername(username);
-    }
-
-    @Override
-    public tblAccount getById(Long userID) {
-        return userRepository.getById(userID);
     }
 
     @Override
@@ -99,8 +93,8 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public void changeUserRole(Long userId, Long roleId) {
-        tblAccount user = userRepository.getById(userId);
+    public void changeUserRole(String username, String roleId) {
+        tblAccount user = userRepository.getByUsername(username);
         Role role = roleRepository.getById(roleId);
         user.setRole(role);
         userRepository.save(user);
@@ -108,14 +102,14 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public void updateUserFcmToken(UserFCMToken userFCMToken) {
-        tblAccount user = userRepository.getById(userFCMToken.getAccountID());
+        tblAccount user = userRepository.getByUsername(userFCMToken.getUsername());
         user.setFcmToken(userFCMToken.getFcmToken());
         userRepository.saveAndFlush(user);
     }
 
     @Override
-    public void deleteUserFcmToken(Long userId) {
-        tblAccount user = userRepository.getById(userId);
+    public void deleteUserFcmToken(String username) {
+        tblAccount user = userRepository.getByUsername(username);
         user.setFcmToken(null);
         userRepository.saveAndFlush(user);
     }
@@ -128,6 +122,9 @@ public class UserServiceImpl implements UserService {
         Role role = roleRepository.getRoleByRoleName(roleName);
         if (role == null) {
             return "Sai tên Role.";
+        }
+        if(!role.getRoleName().equals("Owner") || !role.getRoleName().equals("Manager") || !role.getRoleName().equals("Staff")){
+            return "Tên Role phải là Owner hoặc Manager hoặc Staff";
         }
         tblAccount user = new tblAccount();
         user.setUsername(registerStaffModel.getUsername());

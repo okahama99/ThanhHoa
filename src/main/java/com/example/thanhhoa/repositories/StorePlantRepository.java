@@ -12,5 +12,5 @@ import java.util.List;
 public interface StorePlantRepository extends JpaRepository<StorePlant, Long> {
     StorePlant findByPlantAndStore(Plant plant, Store store);
 
-    List<StorePlant> findByPlantId(Long plantID);
+    List<StorePlant> findByPlantId(String plantID);
 }
