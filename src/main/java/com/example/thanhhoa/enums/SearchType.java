@@ -29,4 +29,23 @@ public class SearchType {
         CREATEDDATE,
         STATUS
     }
+
+    public enum SERVICE{
+        ID,
+        NAME,
+        DESCRIPTION,
+        PRICE,
+        STATUS
+    }
+
+    public enum CONTRACT{
+        ID,
+        TITLE,
+        STATUS
+    }
+
+    public enum ORDER{
+        ID,
+        STATUS
+    }
 }

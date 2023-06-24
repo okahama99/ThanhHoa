@@ -33,7 +33,7 @@ public class Plant implements Serializable {
     @Column
     private Boolean withPot = false;
 
-    @Enumerated(EnumType.ORDINAL)
+    @Enumerated(EnumType.STRING)
     private Status status;
 
     @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY, mappedBy = "plant")

@@ -47,7 +47,7 @@ public class tblAccount implements Serializable {
     @Column(nullable = false)
     private String avatar;
 
-    @Enumerated(EnumType.ORDINAL)
+    @Enumerated(EnumType.STRING)
     private Status status;
 
     @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY, mappedBy = "tblAccount")

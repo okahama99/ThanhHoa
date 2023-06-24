@@ -8,7 +8,7 @@ import org.springframework.data.repository.PagingAndSortingRepository;
 import org.springframework.stereotype.Repository;
 
 @Repository
-public interface OrderFeedbackPagingRepository extends PagingAndSortingRepository<OrderFeedback, Long> {
+public interface OrderFeedbackPagingRepository extends PagingAndSortingRepository<OrderFeedback, String> {
     Page<OrderFeedback> findAllByStatus(Status status, Pageable pageable);
 
     Page<OrderFeedback> findByPlantId(String plantID, Pageable pageable);

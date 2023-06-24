@@ -8,7 +8,7 @@ import org.springframework.data.repository.PagingAndSortingRepository;
 import org.springframework.stereotype.Repository;
 
 @Repository
-public interface UserPagingRepository extends PagingAndSortingRepository<tblAccount, Long> {
+public interface UserPagingRepository extends PagingAndSortingRepository<tblAccount, String> {
 
     Page<tblAccount> findAllByStatus(Pageable pageable, Status status);
 

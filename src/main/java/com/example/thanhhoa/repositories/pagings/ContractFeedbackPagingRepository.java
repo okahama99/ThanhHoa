@@ -8,6 +8,6 @@ import org.springframework.data.repository.PagingAndSortingRepository;
 import org.springframework.stereotype.Repository;
 
 @Repository
-public interface ContractFeedbackPagingRepository extends PagingAndSortingRepository<ContractFeedback, Long> {
+public interface ContractFeedbackPagingRepository extends PagingAndSortingRepository<ContractFeedback, String> {
     Page<ContractFeedback> findAllByStatus(Status status, Pageable pageable);
 }

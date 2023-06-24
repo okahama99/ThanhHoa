@@ -7,6 +7,6 @@ import org.springframework.stereotype.Repository;
 import java.util.Optional;
 
 @Repository
-public interface PlantPriceRepository extends JpaRepository<PlantPrice, Long> {
+public interface PlantPriceRepository extends JpaRepository<PlantPrice, String> {
     Optional<PlantPrice> findById(String plantPriceID);
 }

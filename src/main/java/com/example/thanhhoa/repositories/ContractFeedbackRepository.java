@@ -8,7 +8,7 @@ import org.springframework.stereotype.Repository;
 import java.util.Optional;
 
 @Repository
-public interface ContractFeedbackRepository extends JpaRepository<ContractFeedback, Long> {
+public interface ContractFeedbackRepository extends JpaRepository<ContractFeedback, String> {
     Optional<ContractFeedback> findByContract_Customer_UsernameAndStatus(String username, Status status);
 
     Optional<ContractFeedback> findById(String contractFeedbackID);

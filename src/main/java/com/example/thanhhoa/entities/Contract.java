@@ -68,7 +68,7 @@ public class Contract implements Serializable {
     @Column
     private Boolean isSigned = false;
 
-    @Enumerated(EnumType.ORDINAL)
+    @Enumerated(EnumType.STRING)
     private Status status;
 
     @ManyToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)

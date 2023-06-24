@@ -26,7 +26,7 @@ public class OrderFeedback implements Serializable {
     @Column(nullable = false)
     private LocalDateTime createdDate;
 
-    @Enumerated(EnumType.ORDINAL)
+    @Enumerated(EnumType.STRING)
     private Status status;
 
     @ManyToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)

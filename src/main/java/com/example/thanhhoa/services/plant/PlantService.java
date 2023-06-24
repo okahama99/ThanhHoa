@@ -1,5 +1,6 @@
 package com.example.thanhhoa.services.plant;
 
+import com.example.thanhhoa.dtos.PlantModels.AddStorePlantModel;
 import com.example.thanhhoa.dtos.PlantModels.CreatePlantModel;
 import com.example.thanhhoa.dtos.PlantModels.ShowPlantModel;
 import com.example.thanhhoa.dtos.PlantModels.UpdatePlantModel;
@@ -16,6 +17,8 @@ public interface PlantService {
     ShowPlantModel getPlantByID(String plantID);
 
     String createPlant(CreatePlantModel createPlantModel) throws Exception;
+
+    String addStorePlant(AddStorePlantModel addStorePlantModel) throws Exception;
 
     String updatePlant(UpdatePlantModel updatePlantModel, List<MultipartFile> files) throws Exception;
 

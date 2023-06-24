@@ -27,10 +27,6 @@ public class StorePlantRecord implements Serializable {
     private LocalDateTime importDate;
 
     @ManyToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-    @JoinColumn(name = "plant_id")
-    private Plant plant;
-
-    @ManyToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     @JoinColumn(name = "store_plant_id")
     private StorePlant storePlant;
 }

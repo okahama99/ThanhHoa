@@ -7,7 +7,7 @@ import org.springframework.stereotype.Repository;
 import java.util.List;
 
 @Repository
-public interface PlantIMGRepository extends JpaRepository<PlantIMG, Long> {
+public interface PlantIMGRepository extends JpaRepository<PlantIMG, String> {
     PlantIMG findByImgURL(String imgName);
 
     List<PlantIMG> findByPlantId(String plantId);

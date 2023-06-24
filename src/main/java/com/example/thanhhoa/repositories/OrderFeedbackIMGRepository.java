@@ -8,5 +8,5 @@ import org.springframework.stereotype.Repository;
 import java.util.List;
 
 @Repository
-public interface OrderFeedbackIMGRepository extends JpaRepository<OrderFeedbackIMG, Long> {
+public interface OrderFeedbackIMGRepository extends JpaRepository<OrderFeedbackIMG, String> {
 }

@@ -23,7 +23,7 @@ public class ContractFeedback implements Serializable {
     @Column(nullable = false)
     private LocalDateTime date;
 
-    @Enumerated(EnumType.ORDINAL)
+    @Enumerated(EnumType.STRING)
     private Status status;
 
     @ManyToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)

@@ -8,7 +8,7 @@ import org.springframework.stereotype.Repository;
 import java.util.List;
 
 @Repository
-public interface PlantCategoryRepository extends JpaRepository<PlantCategory, Long> {
+public interface PlantCategoryRepository extends JpaRepository<PlantCategory, String> {
     List<PlantCategory> findAllByPlant_Id(String plantID);
 
     List<PlantCategory> findByPlant(Plant plant);

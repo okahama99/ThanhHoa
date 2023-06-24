@@ -8,7 +8,7 @@ import org.springframework.stereotype.Repository;
 import java.util.Optional;
 
 @Repository
-public interface OrderFeedbackRepository extends JpaRepository<OrderFeedback, Long> {
+public interface OrderFeedbackRepository extends JpaRepository<OrderFeedback, String> {
 
     Optional<OrderFeedback> findByCustomer_UsernameAndStatus(String userID, Status status);
 

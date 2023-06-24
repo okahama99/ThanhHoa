@@ -1,5 +1,6 @@
 package com.example.thanhhoa.services.plant;
 
+import com.example.thanhhoa.dtos.PlantModels.AddStorePlantModel;
 import com.example.thanhhoa.dtos.PlantModels.CreatePlantModel;
 import com.example.thanhhoa.dtos.PlantModels.ShowPlantCategory;
 import com.example.thanhhoa.dtos.PlantModels.ShowPlantModel;
@@ -14,6 +15,7 @@ import com.example.thanhhoa.entities.PlantPrice;
 import com.example.thanhhoa.entities.PlantShipPrice;
 import com.example.thanhhoa.entities.Store;
 import com.example.thanhhoa.entities.StorePlant;
+import com.example.thanhhoa.entities.StorePlantRecord;
 import com.example.thanhhoa.enums.Status;
 import com.example.thanhhoa.repositories.CategoryRepository;
 import com.example.thanhhoa.repositories.PlantCategoryRepository;
@@ -21,6 +23,7 @@ import com.example.thanhhoa.repositories.PlantIMGRepository;
 import com.example.thanhhoa.repositories.PlantPriceRepository;
 import com.example.thanhhoa.repositories.PlantRepository;
 import com.example.thanhhoa.repositories.PlantShipPriceRepository;
+import com.example.thanhhoa.repositories.StorePlantRecordRepository;
 import com.example.thanhhoa.repositories.StorePlantRepository;
 import com.example.thanhhoa.repositories.StoreRepository;
 import com.example.thanhhoa.repositories.pagings.PlantPagingRepository;
@@ -33,7 +36,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.io.IOException;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
@@ -54,6 +57,8 @@ public class PlantServiceImpl implements PlantService {
     private PlantCategoryRepository plantCategoryRepository;
     @Autowired
     private StorePlantRepository storePlantRepository;
+    @Autowired
+    private StorePlantRecordRepository storePlantRecordRepository;
     @Autowired
     private PlantPagingRepository plantPagingRepository;
     @Autowired
@@ -110,36 +115,26 @@ public class PlantServiceImpl implements PlantService {
     @Override
     public String createPlant(CreatePlantModel createPlantModel) throws Exception {
         Optional<PlantShipPrice> plantShipPrice = plantShipPriceRepository.findById(createPlantModel.getShipPriceID());
-        if(plantShipPrice == null){
-            return "Không tìm thấy dữ liệu với ShipPriceID = "+createPlantModel.getShipPriceID()+".";
+        if (plantShipPrice == null) {
+            return "Không tìm thấy dữ liệu với ShipPriceID = " + createPlantModel.getShipPriceID() + ".";
         }
 
         Optional<PlantPrice> plantPrice = plantPriceRepository.findById(createPlantModel.getPlantPriceID());
-        if(plantPrice == null){
-            return "Không tìm thấy dữ liệu với PlantPriceID = "+createPlantModel.getPlantPriceID()+".";
+        if (plantPrice == null) {
+            return "Không tìm thấy dữ liệu với PlantPriceID = " + createPlantModel.getPlantPriceID() + ".";
         }
 
         if (createPlantModel.getCategoryIDList() == null) {
             return "Danh sách Category không được để trống.";
         }
 
-        String plantID = null;
-        if(plantRepository.count() == 0){
-            plantID = "P-1";
-        }else{
-            plantID = plantRepository.findFirstByStatusOrderByIdDesc(Status.ONSALE).getId();
-        }
-
-        if(!plantID.equals(null)){
-            String[] idArr;
-            idArr = plantID.split("-");
-            int idNumber = Integer.parseInt(idArr[1]);
-            idNumber++;
-            plantID = idArr[0] + "-" + idNumber;
-        }
-
         Plant plant = new Plant();
-        plant.setId(plantID);
+        Plant lastPlant = plantRepository.findFirstByOrderByIdDesc();
+        if (lastPlant == null) {
+            plant.setId(util.createNewID("SP"));
+        } else {
+            plant.setId(util.createIDFromLastID("SP", 2, lastPlant.getId()));
+        }
         plant.setName(createPlantModel.getName());
         plant.setDescription(createPlantModel.getDescription());
         plant.setHeight(createPlantModel.getHeight());
@@ -162,7 +157,7 @@ public class PlantServiceImpl implements PlantService {
             return "Không tìm thấy Category với CategoryID = " + categoryID + ".";
         }
 
-        if(createPlantModel.getFiles() != null){
+        if (createPlantModel.getFiles() != null) {
             for (MultipartFile file : createPlantModel.getFiles()) {
                 String fileName = imageService.save(file);
                 String imgName = imageService.getImageUrl(fileName);
@@ -176,17 +171,61 @@ public class PlantServiceImpl implements PlantService {
     }
 
     @Override
+    public String addStorePlant(AddStorePlantModel addStorePlantModel) {
+        Optional<Store> store = storeRepository.findById(addStorePlantModel.getStoreID());
+        if (store == null) {
+            return "Không tồn tại Store với ID là " + addStorePlantModel.getStoreID() + "";
+        }
+        Optional<Plant> plant = plantRepository.findById(addStorePlantModel.getPlantID());
+        if (plant == null) {
+            return "Không tồn tại Plant với ID là " + addStorePlantModel.getPlantID() + "";
+        }
+        StorePlant storePlant = storePlantRepository.findByPlantIdAndStoreId(addStorePlantModel.getPlantID(), addStorePlantModel.getStoreID());
+        if (storePlant == null) {
+            StorePlant newPlant = new StorePlant();
+            StorePlant lastStorePlant = storePlantRepository.findFirstByOrderByIdDesc();
+            if (lastStorePlant == null) {
+                newPlant.setId(util.createNewID("SP"));
+            } else {
+                newPlant.setId(util.createIDFromLastID("SP", 2, lastStorePlant.getId()));
+            }
+            newPlant.setQuantity(addStorePlantModel.getQuantity());
+            newPlant.setStore(store.get());
+            newPlant.setPlant(plant.get());
+            storePlantRepository.save(newPlant);
+
+            StorePlantRecord storePlantRecord = new StorePlantRecord();
+            storePlantRecord.setId(util.createNewID("PR"));
+            storePlantRecord.setAmount(addStorePlantModel.getQuantity());
+            storePlantRecord.setImportDate(LocalDateTime.now());
+            storePlantRecord.setStorePlant(newPlant);
+            storePlantRecordRepository.save(storePlantRecord);
+            return "Thêm thành công";
+        }
+        storePlant.setQuantity(storePlant.getQuantity() + addStorePlantModel.getQuantity());
+        storePlantRepository.save(storePlant);
+
+        StorePlantRecord storePlantRecord = new StorePlantRecord();
+        storePlantRecord.setId(util.createNewID("PR"));
+        storePlantRecord.setAmount(addStorePlantModel.getQuantity());
+        storePlantRecord.setImportDate(LocalDateTime.now());
+        storePlantRecord.setStorePlant(storePlant);
+        storePlantRecordRepository.save(storePlantRecord);
+        return "Thêm thành công";
+    }
+
+    @Override
     public String updatePlant(UpdatePlantModel updatePlantModel, List<MultipartFile> files) throws Exception {
         Optional<Plant> checkPlant = plantRepository.findById(updatePlantModel.getPlantID());
         if (checkPlant != null) {
             Optional<PlantShipPrice> plantShipPrice = plantShipPriceRepository.findById(updatePlantModel.getShipPriceID());
-            if(plantShipPrice == null){
-                return "Không tìm thấy dữ liệu với ShipPriceID = "+updatePlantModel.getShipPriceID()+".";
+            if (plantShipPrice == null) {
+                return "Không tìm thấy dữ liệu với ShipPriceID = " + updatePlantModel.getShipPriceID() + ".";
             }
 
             Optional<PlantPrice> plantPrice = plantPriceRepository.findById(updatePlantModel.getPlantPriceID());
-            if(plantPrice == null){
-                return "Không tìm thấy dữ liệu với PlantPriceID = "+updatePlantModel.getPlantPriceID()+".";
+            if (plantPrice == null) {
+                return "Không tìm thấy dữ liệu với PlantPriceID = " + updatePlantModel.getPlantPriceID() + ".";
             }
 
             Plant plant = checkPlant.get();
@@ -247,8 +286,7 @@ public class PlantServiceImpl implements PlantService {
                 }
             }
 
-            if(updatePlantModel.getFiles() != null)
-            {
+            if (updatePlantModel.getFiles() != null) {
                 for (PlantIMG image : plant.getPlantIMGList()) {
                     String imgNameString = image.getImgURL();
                     PlantIMG plantImage = plantIMGRepository.findByImgURL(imgNameString);
@@ -274,7 +312,7 @@ public class PlantServiceImpl implements PlantService {
     }
 
     @Override
-    public Boolean deletePlant(String plantID){
+    public Boolean deletePlant(String plantID) {
         Optional<Plant> checkingPlant = plantRepository.findById(plantID);
         if (checkingPlant != null) {
             checkingPlant.get().setStatus(Status.INACTIVE);

@@ -9,12 +9,12 @@ import java.util.List;
 import java.util.Optional;
 
 @Repository
-public interface PlantRepository extends JpaRepository<Plant, Long> {
+public interface PlantRepository extends JpaRepository<Plant, String> {
     Plant findByName(String plantName);
 
     Optional<Plant> findById(String plantID);
 
-    Plant findFirstByStatusOrderByIdDesc(Status status);
+    Plant findFirstByOrderByIdDesc();
 
     List<Plant> findByPlantPrice_PriceBetweenAndStatus(Double fromPrice, Double toPrice, Status status);
 

@@ -27,7 +27,7 @@ public class FeedbackController {
     @Autowired
     private FeedbackService feedbackService;
 
-    @GetMapping(value = "orderFeedback", produces = "application/json;charset=UTF-8")
+    @GetMapping(value = "/orderFeedback", produces = "application/json;charset=UTF-8")
     public @ResponseBody
     List<ShowOrderFeedbackModel> getAllOrderFeedback(@RequestParam int pageNo,
                                                      @RequestParam int pageSize,
@@ -36,7 +36,7 @@ public class FeedbackController {
         return feedbackService.getAllOrderFeedback(util.makePaging(pageNo, pageSize, sortBy.toLowerCase(), sortAsc));
     }
 
-    @GetMapping(value = "orderFeedback/{orderFeedbackID}", produces = "application/json;charset=UTF-8")
+    @GetMapping(value = "/orderFeedback/{orderFeedbackID}", produces = "application/json;charset=UTF-8")
     public @ResponseBody
     ResponseEntity<Object> getOrderFeedbackByID(@PathVariable("orderFeedbackID") String orderFeedbackID) {
         ShowOrderFeedbackModel model = feedbackService.getOrderFeedbackByID(orderFeedbackID);
@@ -46,7 +46,7 @@ public class FeedbackController {
         return ResponseEntity.badRequest().body("Feedback không tồn tại.");
     }
 
-    @GetMapping(value = "orderFeedback/{username}", produces = "application/json;charset=UTF-8")
+    @GetMapping(value = "/orderFeedback/{username}", produces = "application/json;charset=UTF-8")
     public @ResponseBody
     ResponseEntity<Object> getOrderFeedbackByUsername(@PathVariable("username") String username) {
         ShowOrderFeedbackModel model = feedbackService.getOrderFeedbackByUsername(username);
@@ -56,7 +56,7 @@ public class FeedbackController {
         return ResponseEntity.badRequest().body("Feedback không tồn tại.");
     }
 
-    @GetMapping(value = "orderFeedback/{plantID}", produces = "application/json;charset=UTF-8")
+    @GetMapping(value = "/orderFeedback/{plantID}", produces = "application/json;charset=UTF-8")
     public @ResponseBody
     List<ShowOrderFeedbackModel> getOrderFeedbackByPlantID(@PathVariable("plantID") String plantID,
                                                            @RequestParam int pageNo,
@@ -66,7 +66,7 @@ public class FeedbackController {
         return feedbackService.getOrderFeedbackByPlantID(plantID, util.makePaging(pageNo, pageSize, sortBy.toLowerCase(), sortAsc));
     }
 
-    @GetMapping(value = "orderFeedback/{orderID}", produces = "application/json;charset=UTF-8")
+    @GetMapping(value = "/orderFeedback/{orderID}", produces = "application/json;charset=UTF-8")
     public @ResponseBody
     ResponseEntity<Object> getOrderFeedbackByOrderID(@PathVariable("orderID") String orderID) {
         ShowOrderFeedbackModel model = feedbackService.getOrderFeedbackByOrderID(orderID);
@@ -78,7 +78,7 @@ public class FeedbackController {
 
     // ------------------------------------- CONTRACT ------------------------------------------------------------
 
-    @GetMapping(value = "contractFeedback", produces = "application/json;charset=UTF-8")
+    @GetMapping(value = "/contractFeedback", produces = "application/json;charset=UTF-8")
     public @ResponseBody
     List<ShowContractFeedbackModel> getAllContractFeedback(@RequestParam int pageNo,
                                                            @RequestParam int pageSize,
@@ -87,7 +87,7 @@ public class FeedbackController {
         return feedbackService.getAllContractFeedback(util.makePaging(pageNo, pageSize, sortBy.toLowerCase(), sortAsc));
     }
 
-    @GetMapping(value = "contractFeedback/{contractFeedbackID}", produces = "application/json;charset=UTF-8")
+    @GetMapping(value = "/contractFeedback/{contractFeedbackID}", produces = "application/json;charset=UTF-8")
     public @ResponseBody
     ResponseEntity<Object> getContractFeedbackByID(@PathVariable("contractFeedbackID") String contractFeedbackID) {
         ShowContractFeedbackModel model = feedbackService.getContractFeedbackByID(contractFeedbackID);
@@ -97,7 +97,7 @@ public class FeedbackController {
         return ResponseEntity.badRequest().body("Contract không tồn tại.");
     }
 
-    @GetMapping(value = "contractFeedback/{contractID}", produces = "application/json;charset=UTF-8")
+    @GetMapping(value = "/contractFeedback/{contractID}", produces = "application/json;charset=UTF-8")
     public @ResponseBody
     ResponseEntity<Object> getContractFeedbackByContractID(@PathVariable("contractID") String contractID) {
         ShowContractFeedbackModel model = feedbackService.getContractFeedbackByContractID(contractID);

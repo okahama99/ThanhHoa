@@ -1,9 +1,9 @@
 package com.example.thanhhoa.repositories;
 
-import com.example.thanhhoa.entities.Service;
+import com.example.thanhhoa.entities.StorePlantRecord;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
 @Repository
-public interface ServiceRepository extends JpaRepository<Service, String> {
+public interface StorePlantRecordRepository extends JpaRepository<StorePlantRecord, String> {
 }

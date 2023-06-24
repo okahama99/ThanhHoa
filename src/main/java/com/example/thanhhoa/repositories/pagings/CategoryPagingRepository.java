@@ -7,6 +7,6 @@ import org.springframework.data.repository.PagingAndSortingRepository;
 import org.springframework.stereotype.Repository;
 
 @Repository
-public interface CategoryPagingRepository  extends PagingAndSortingRepository<Category, Long> {
+public interface CategoryPagingRepository  extends PagingAndSortingRepository<Category, String> {
     Page<Category> findAll(Pageable paging);
 }

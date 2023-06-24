@@ -9,6 +9,8 @@ import com.example.thanhhoa.dtos.PlantModels.ShowPlantCategory;
 import com.example.thanhhoa.dtos.PlantModels.ShowPlantModel;
 import com.example.thanhhoa.dtos.PlantPriceModels.ShowPlantPriceModel;
 import com.example.thanhhoa.dtos.PlantShipPriceModels.ShowPlantShipPriceModel;
+import com.example.thanhhoa.dtos.ServiceModels.ShowServiceModel;
+import com.example.thanhhoa.dtos.ServiceModels.ShowServiceTypeModel;
 import com.example.thanhhoa.dtos.UserModels.ShowUserModel;
 import com.example.thanhhoa.entities.Category;
 import com.example.thanhhoa.entities.ContractFeedback;
@@ -16,8 +18,11 @@ import com.example.thanhhoa.entities.OrderFeedback;
 import com.example.thanhhoa.entities.OrderFeedbackIMG;
 import com.example.thanhhoa.entities.Plant;
 import com.example.thanhhoa.entities.PlantCategory;
+import com.example.thanhhoa.entities.Service;
+import com.example.thanhhoa.entities.ServiceType;
 import com.example.thanhhoa.entities.tblAccount;
 import com.example.thanhhoa.repositories.PlantCategoryRepository;
+import com.example.thanhhoa.repositories.ServiceTypeRepository;
 import com.google.common.base.Converter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -32,6 +37,9 @@ public class Util {
 
     @Autowired
     private PlantCategoryRepository plantCategoryRepository;
+    @Autowired
+    private ServiceTypeRepository serviceTypeRepository;
+
     /**
      * Small Util to return {@link Pageable} to replace dup code in serviceImpl
      */
@@ -43,7 +51,7 @@ public class Util {
         }
     }
 
-    public List<ShowUserModel> userPagingConverter(Page<tblAccount> pagingResult, Pageable paging){
+    public List<ShowUserModel> userPagingConverter(Page<tblAccount> pagingResult, Pageable paging) {
         if (pagingResult.hasContent()) {
             double totalPage = Math.ceil((double) pagingResult.getTotalElements() / paging.getPageSize());
             Page<ShowUserModel> modelResult = pagingResult.map(new Converter<tblAccount, ShowUserModel>() {
@@ -65,7 +73,7 @@ public class Util {
                 }
 
                 @Override
-                protected tblAccount doBackward(ShowUserModel ShowUserModel) {
+                protected tblAccount doBackward(ShowUserModel showUserModel) {
                     return null;
                 }
             });
@@ -75,7 +83,7 @@ public class Util {
         }
     }
 
-    public List<ShowPlantModel> plantPagingConverter(Page<Plant> pagingResult, Pageable paging){
+    public List<ShowPlantModel> plantPagingConverter(Page<Plant> pagingResult, Pageable paging) {
         if (pagingResult.hasContent()) {
             double totalPage = Math.ceil((double) pagingResult.getTotalElements() / paging.getPageSize());
             Page<ShowPlantModel> modelResult = pagingResult.map(new Converter<Plant, ShowPlantModel>() {
@@ -122,7 +130,7 @@ public class Util {
         }
     }
 
-    public List<ShowCategoryModel> categoryPagingConverter(Page<Category> pagingResult, Pageable paging){
+    public List<ShowCategoryModel> categoryPagingConverter(Page<Category> pagingResult, Pageable paging) {
         if (pagingResult.hasContent()) {
             double totalPage = Math.ceil((double) pagingResult.getTotalElements() / paging.getPageSize());
             Page<ShowCategoryModel> modelResult = pagingResult.map(new Converter<Category, ShowCategoryModel>() {
@@ -146,7 +154,7 @@ public class Util {
         }
     }
 
-    public List<ShowOrderFeedbackModel> orderFeedbackPagingConverter(Page<OrderFeedback> pagingResult, Pageable paging){
+    public List<ShowOrderFeedbackModel> orderFeedbackPagingConverter(Page<OrderFeedback> pagingResult, Pageable paging) {
         if (pagingResult.hasContent()) {
             double totalPage = Math.ceil((double) pagingResult.getTotalElements() / paging.getPageSize());
             Page<ShowOrderFeedbackModel> modelResult = pagingResult.map(new Converter<OrderFeedback, ShowOrderFeedbackModel>() {
@@ -185,7 +193,7 @@ public class Util {
         }
     }
 
-    public List<ShowContractFeedbackModel> contractFeedbackPagingConverter(Page<ContractFeedback> pagingResult, Pageable paging){
+    public List<ShowContractFeedbackModel> contractFeedbackPagingConverter(Page<ContractFeedback> pagingResult, Pageable paging) {
         if (pagingResult.hasContent()) {
             double totalPage = Math.ceil((double) pagingResult.getTotalElements() / paging.getPageSize());
             Page<ShowContractFeedbackModel> modelResult = pagingResult.map(new Converter<ContractFeedback, ShowContractFeedbackModel>() {
@@ -214,4 +222,63 @@ public class Util {
             return new ArrayList<>();
         }
     }
+
+    public List<ShowServiceModel> servicePagingConverter(Page<Service> pagingResult, Pageable paging) {
+        if (pagingResult.hasContent()) {
+            double totalPage = Math.ceil((double) pagingResult.getTotalElements() / paging.getPageSize());
+            Page<ShowServiceModel> modelResult = pagingResult.map(new Converter<Service, ShowServiceModel>() {
+                @Override
+                protected ShowServiceModel doForward(Service service) {
+                    List<ShowServiceTypeModel> typeList = new ArrayList<>();
+                    List<ServiceType> serviceTypeList = serviceTypeRepository.findByService_Id(service.getId());
+                    if(serviceTypeList != null){
+                        for (ServiceType serviceType : serviceTypeList) {
+                            ShowServiceTypeModel typeModel = new ShowServiceTypeModel();
+                            typeModel.setId(serviceType.getId());
+                            typeModel.setName(serviceType.getName());
+                            typeModel.setApplyDate(serviceType.getApplyDate());
+                            typeModel.setSize(serviceType.getSize());
+                            typeModel.setPercentage(serviceType.getPercentage());
+                            typeModel.setServiceID(service.getId());
+                            typeList.add(typeModel);
+                        }
+                    }
+
+                    ShowServiceModel model = new ShowServiceModel();
+                    model.setServiceID(service.getId());
+                    model.setName(service.getName());
+                    model.setPrice(service.getPrice());
+                    model.setDescription(service.getDescription());
+                    model.setTypeList(typeList);
+                    model.setTotalPage(totalPage);
+                    return model;
+                }
+
+                @Override
+                protected Service doBackward(ShowServiceModel showServiceModel) {
+                    return null;
+                }
+            });
+            return modelResult.getContent();
+        } else {
+            return new ArrayList<>();
+        }
+    }
+
+    public String createNewID(String chars) {
+        return chars + String.format("%03d", 1);
+    }
+
+    public String createIDFromLastID(String chars, Integer index, String lastID){
+        Integer IDNumber = Integer.parseInt(lastID.substring(index));
+        IDNumber++;
+        String newID = chars + String.format("%03d", IDNumber);
+        return newID;
+    }
+
+//    class InvalidInput extends Exception {
+//        public InvalidInput(String input) {
+//            super(input);
+//        }
+//    }
 }
