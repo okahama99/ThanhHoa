@@ -1,6 +1,5 @@
 package com.example.thanhhoa.controllers;
 
-import com.example.thanhhoa.dtos.PlantModels.AddStorePlantModel;
 import com.example.thanhhoa.dtos.PlantModels.CreatePlantModel;
 import com.example.thanhhoa.dtos.PlantModels.ShowPlantModel;
 import com.example.thanhhoa.dtos.PlantModels.UpdatePlantModel;
@@ -57,20 +56,6 @@ public class PlantController {
             }
             return ResponseEntity.badRequest().body(result);
         }
-    }
-
-    @PostMapping(value = "/addStorePlant", produces = "application/json;charset=UTF-8")
-    public ResponseEntity<Object> addStorePlant(@RequestBody AddStorePlantModel addStorePlantModel,
-                                                HttpServletRequest request) throws Exception {
-        String roleName = jwtUtil.getRoleNameFromJWT(request);
-        if (!roleName.equalsIgnoreCase("Manager")) {
-            throw new ResponseStatusException(HttpStatus.FORBIDDEN, "-----------------------------------Người dùng không có quyền truy cập---------------------------");
-        }
-        String result = plantService.addStorePlant(addStorePlantModel);
-        if (result.equals("Thêm thành công.")) {
-            return ResponseEntity.ok().body(result);
-        }
-        return ResponseEntity.badRequest().body(result);
     }
 
     @PutMapping(produces = "application/json;charset=UTF-8")

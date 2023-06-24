@@ -18,8 +18,6 @@ public interface PlantService {
 
     String createPlant(CreatePlantModel createPlantModel) throws Exception;
 
-    String addStorePlant(AddStorePlantModel addStorePlantModel) throws Exception;
-
     String updatePlant(UpdatePlantModel updatePlantModel, List<MultipartFile> files) throws Exception;
 
     Boolean deletePlant(String plantID);

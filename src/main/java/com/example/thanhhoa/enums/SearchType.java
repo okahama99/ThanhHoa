@@ -19,7 +19,6 @@ public class SearchType {
     }
 
     public enum USER{
-        ID,
         USERNAME,
         FULLNAME,
         EMAIL,
@@ -41,11 +40,21 @@ public class SearchType {
     public enum CONTRACT{
         ID,
         TITLE,
+        CREATEDDATE,
+        ENDEDDATE,
         STATUS
     }
 
     public enum ORDER{
         ID,
+        CREATEDDATE,
+        RECEIVEDDATE,
         STATUS
+    }
+
+    public enum STORE{
+        ID,
+        STORENAME,
+        ADDRESS
     }
 }

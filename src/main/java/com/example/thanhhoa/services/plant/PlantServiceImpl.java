@@ -1,6 +1,5 @@
 package com.example.thanhhoa.services.plant;
 
-import com.example.thanhhoa.dtos.PlantModels.AddStorePlantModel;
 import com.example.thanhhoa.dtos.PlantModels.CreatePlantModel;
 import com.example.thanhhoa.dtos.PlantModels.ShowPlantCategory;
 import com.example.thanhhoa.dtos.PlantModels.ShowPlantModel;
@@ -13,9 +12,6 @@ import com.example.thanhhoa.entities.PlantCategory;
 import com.example.thanhhoa.entities.PlantIMG;
 import com.example.thanhhoa.entities.PlantPrice;
 import com.example.thanhhoa.entities.PlantShipPrice;
-import com.example.thanhhoa.entities.Store;
-import com.example.thanhhoa.entities.StorePlant;
-import com.example.thanhhoa.entities.StorePlantRecord;
 import com.example.thanhhoa.enums.Status;
 import com.example.thanhhoa.repositories.CategoryRepository;
 import com.example.thanhhoa.repositories.PlantCategoryRepository;
@@ -36,7 +32,6 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
@@ -168,50 +163,6 @@ public class PlantServiceImpl implements PlantService {
             }
         }
         return "Tạo thành công.";
-    }
-
-    @Override
-    public String addStorePlant(AddStorePlantModel addStorePlantModel) {
-        Optional<Store> store = storeRepository.findById(addStorePlantModel.getStoreID());
-        if (store == null) {
-            return "Không tồn tại Store với ID là " + addStorePlantModel.getStoreID() + "";
-        }
-        Optional<Plant> plant = plantRepository.findById(addStorePlantModel.getPlantID());
-        if (plant == null) {
-            return "Không tồn tại Plant với ID là " + addStorePlantModel.getPlantID() + "";
-        }
-        StorePlant storePlant = storePlantRepository.findByPlantIdAndStoreId(addStorePlantModel.getPlantID(), addStorePlantModel.getStoreID());
-        if (storePlant == null) {
-            StorePlant newPlant = new StorePlant();
-            StorePlant lastStorePlant = storePlantRepository.findFirstByOrderByIdDesc();
-            if (lastStorePlant == null) {
-                newPlant.setId(util.createNewID("SP"));
-            } else {
-                newPlant.setId(util.createIDFromLastID("SP", 2, lastStorePlant.getId()));
-            }
-            newPlant.setQuantity(addStorePlantModel.getQuantity());
-            newPlant.setStore(store.get());
-            newPlant.setPlant(plant.get());
-            storePlantRepository.save(newPlant);
-
-            StorePlantRecord storePlantRecord = new StorePlantRecord();
-            storePlantRecord.setId(util.createNewID("PR"));
-            storePlantRecord.setAmount(addStorePlantModel.getQuantity());
-            storePlantRecord.setImportDate(LocalDateTime.now());
-            storePlantRecord.setStorePlant(newPlant);
-            storePlantRecordRepository.save(storePlantRecord);
-            return "Thêm thành công";
-        }
-        storePlant.setQuantity(storePlant.getQuantity() + addStorePlantModel.getQuantity());
-        storePlantRepository.save(storePlant);
-
-        StorePlantRecord storePlantRecord = new StorePlantRecord();
-        storePlantRecord.setId(util.createNewID("PR"));
-        storePlantRecord.setAmount(addStorePlantModel.getQuantity());
-        storePlantRecord.setImportDate(LocalDateTime.now());
-        storePlantRecord.setStorePlant(storePlant);
-        storePlantRecordRepository.save(storePlantRecord);
-        return "Thêm thành công";
     }
 
     @Override

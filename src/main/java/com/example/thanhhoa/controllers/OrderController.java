@@ -7,6 +7,7 @@ import com.example.thanhhoa.services.order.OrderService;
 import com.example.thanhhoa.utils.JwtUtil;
 import com.example.thanhhoa.utils.Util;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -42,7 +43,17 @@ public class OrderController {
         }
         String authTokenHeader = request.getHeader("Authorization");
         String token = authTokenHeader.substring(7);
-        return orderService.getAllOrderByUsername(jwtUtil.getUserNameFromJWT(token), util.makePaging(pageNo, pageSize, sortBy.toString().toLowerCase(), sortAsc));
+
+        Pageable paging;
+        if (sortBy.equals("CREATEDDATE")) {
+            paging = util.makePaging(pageNo, pageSize, "createdDate", sortAsc);
+        }else if (sortBy.equals("RECEIVEDDATE")) {
+            paging = util.makePaging(pageNo, pageSize, "receivedDate", sortAsc);
+        } else {
+            paging = util.makePaging(pageNo, pageSize, sortBy.toString().toLowerCase(), sortAsc);
+        }
+
+        return orderService.getAllOrderByUsername(jwtUtil.getUserNameFromJWT(token), paging);
     }
 
     @GetMapping(value = "/orderDetail/{orderID}", produces = "application/json;charset=UTF-8")
