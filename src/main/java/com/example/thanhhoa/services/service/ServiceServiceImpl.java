@@ -30,7 +30,7 @@ public class ServiceServiceImpl implements ServiceService{
 
     @Override
     public List<ShowServiceModel> getAllService(Pageable pageable) {
-        Page<Service> pagingResult = servicePagingRepository.findAllByStatus(Status.ACTIVE);
+        Page<Service> pagingResult = servicePagingRepository.findAllByStatus(Status.ACTIVE, pageable);
         return util.servicePagingConverter(pagingResult, pageable);
     }
 
