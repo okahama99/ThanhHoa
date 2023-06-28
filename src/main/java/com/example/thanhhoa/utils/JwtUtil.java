@@ -3,7 +3,6 @@ package com.example.thanhhoa.utils;
 import com.example.thanhhoa.configs.UserDetailsImpl;
 import com.example.thanhhoa.dtos.UserModels.AuthorizeModel;
 import com.example.thanhhoa.entities.tblAccount;
-import com.example.thanhhoa.enums.Status;
 import com.example.thanhhoa.repositories.UserRepository;
 import com.example.thanhhoa.services.role.RoleService;
 import com.example.thanhhoa.services.user.UserService;
@@ -42,23 +41,23 @@ public class JwtUtil {
     @Autowired
     private UserRepository userRepository;
 
-    public String generateTokenEmail(String email) {
-        Date now = new Date();
-        Date expiryDate = new Date(now.getTime() + JWT_EXPIRATION);
-        tblAccount user = userRepository.findByEmailAndStatus(email, Status.ACTIVE);
-        return Jwts.builder()
-                .setSubject(user.getUsername())
-                .setIssuedAt(now)
-                .setExpiration(expiryDate)
-                .signWith(SignatureAlgorithm.HS512, JWT_SECRET)
-                .claim("role", user.getRole().getRoleName())
-                .claim("id", user.getId())
-                .claim("username", user.getUsername())
-                .claim("email", user.getEmail())
-                .claim("phone", user.getPhone())
-                .claim("avatar", user.getAvatar())
-                .compact();
-    }
+//    public String generateTokenEmail(String email) {
+//        Date now = new Date();
+//        Date expiryDate = new Date(now.getTime() + JWT_EXPIRATION);
+//        tblAccount user = userRepository.findByEmailAndStatus(email, Status.ACTIVE);
+//        return Jwts.builder()
+//                .setSubject(user.getUsername())
+//                .setIssuedAt(now)
+//                .setExpiration(expiryDate)
+//                .signWith(SignatureAlgorithm.HS512, JWT_SECRET)
+//                .claim("role", user.getRole().getRoleName())
+//                .claim("id", user.getId())
+//                .claim("username", user.getUsername())
+//                .claim("email", user.getEmail())
+//                .claim("phone", user.getPhone())
+//                .claim("avatar", user.getAvatar())
+//                .compact();
+//    }
 
     public String generateToken(Authentication authentication) throws Exception {
         Date now = new Date();
@@ -81,7 +80,8 @@ public class JwtUtil {
                 .claim("id", user.getUserID())
                 .claim("username", user.getUsername())
                 .claim("fullName", user.getFullName())
-                .claim("role", userPrincipal.getAuthorities())
+                .claim("role", user.getRoleID())
+                .claim("roleName", user.getRoleName())
                 .claim("email", user.getEmail())
                 .claim("phone", user.getPhone())
                 .claim("avatarLink", avatarLink)
@@ -108,7 +108,8 @@ public class JwtUtil {
                 .claim("id", user.getUserID())
                 .claim("username", user.getUsername())
                 .claim("fullName", user.getFullName())
-                .claim("role", user.getRoleName())
+                .claim("role", user.getRoleID())
+                .claim("roleName", user.getRoleName())
                 .claim("email", user.getEmail())
                 .claim("phone", user.getPhone())
                 .claim("avatarLink", avatarLink)
@@ -144,7 +145,7 @@ public class JwtUtil {
                 .parseClaimsJws(token)
                 .getBody();
 
-        return claims.get("role", String.class);
+        return claims.get("roleName", String.class);
     }
 
     public boolean validateToken(String authToken) {

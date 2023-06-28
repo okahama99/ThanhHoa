@@ -328,9 +328,8 @@ public class UserController {
         return CRUDUserFireBaseService.updateUser(userFCMToken);
     }
 
-    @GetMapping(value = "/tempPassword", produces = "application/json;charset=UTF-8")
+    @PostMapping(value = "/tempPassword", produces = "application/json;charset=UTF-8")
     public String getTempPassword(@RequestBody RegisterStaffModel registerStaffModel,
-                                  @RequestParam(value = "Must be Owner or Manager or Staff") String role,
                                   HttpServletRequest request) {
         String roleName = jwtUtil.getRoleNameFromJWT(request);
         if (!roleName.equalsIgnoreCase("Admin")) {
@@ -339,6 +338,6 @@ public class UserController {
         Random random = new Random();
         int randomNum = 100000 + random.nextInt(900000);
         registerStaffModel.setPassword(randomNum + (""));
-        return userService.generateTempPassword(registerStaffModel, role);
+        return userService.generateTempPassword(registerStaffModel, registerStaffModel.getRoleName());
     }
 }

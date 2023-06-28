@@ -39,6 +39,9 @@ public class UserServiceImpl implements UserService {
         model.setUserID(user.getId());
         model.setUsername(user.getUsername());
         model.setPassword(user.getPassword());
+        model.setFullName(user.getFullName());
+        model.setEmail(user.getEmail());
+        model.setPhone(user.getPhone());
         model.setRoleID(user.getRole().getId());
         model.setRoleName(user.getRole().getRoleName());
         model.setAvatar(user.getAvatar());
@@ -148,7 +151,7 @@ public class UserServiceImpl implements UserService {
         if (role == null) {
             return "Sai tên Role.";
         }
-        if(!role.getRoleName().equals("Owner") || !role.getRoleName().equals("Manager") || !role.getRoleName().equals("Staff")){
+        if(!role.getRoleName().equals("Owner") && !role.getRoleName().equals("Manager") && !role.getRoleName().equals("Staff")){
             return "Tên Role phải là Owner hoặc Manager hoặc Staff";
         }
         tblAccount user = new tblAccount();

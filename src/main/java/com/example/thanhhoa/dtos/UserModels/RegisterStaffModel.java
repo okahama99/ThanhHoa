@@ -30,4 +30,7 @@ public class RegisterStaffModel implements Serializable {
     private Boolean gender;
 
     private String avatar;
+
+    @Schema(example = "Must be Owner or Manager or Staff")
+    private String roleName;
 }
