@@ -1,5 +1,7 @@
 package com.example.thanhhoa.configs;
 
+import com.example.thanhhoa.dtos.UserModels.AuthorizeModel;
+import com.example.thanhhoa.dtos.UserModels.ShowUserModel;
 import com.example.thanhhoa.entities.tblAccount;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import org.springframework.security.core.GrantedAuthority;
@@ -13,25 +15,28 @@ import java.util.Objects;
 public class UserDetailsImpl implements org.springframework.security.core.userdetails.UserDetails {
     private static final long serialVersionUID = 1L;
 
+    private Long userID;
     private Collection<? extends GrantedAuthority> authorities;
     @JsonIgnore
     private String username;
     private String password;
 
-    public UserDetailsImpl(String username, String password,
+    public UserDetailsImpl(Long id, String username, String password,
                            Collection<? extends GrantedAuthority> authorities) {
+        this.userID = id;
         this.username = username;
         this.password = password;
         this.authorities = authorities;
 
     }
 
-    public static UserDetailsImpl build(tblAccount user) {
+    public static UserDetailsImpl build(AuthorizeModel user) {
         List<GrantedAuthority> authorities = new ArrayList<>();
 
-        authorities.add(new SimpleGrantedAuthority(String.valueOf(user.getRole().getId())));
+        authorities.add(new SimpleGrantedAuthority(String.valueOf(user.getRoleID())));
 
         return new UserDetailsImpl(
+                user.getUserID(),
                 user.getUsername(),
                 user.getPassword(),
                 authorities);
@@ -70,6 +75,14 @@ public class UserDetailsImpl implements org.springframework.security.core.userde
     @Override
     public boolean isEnabled() {
         return true;
+    }
+
+    public Long getUserID() {
+        return userID;
+    }
+
+    public void setUserID(Long userID) {
+        this.userID = userID;
     }
 
     public void setUsername(String username) {

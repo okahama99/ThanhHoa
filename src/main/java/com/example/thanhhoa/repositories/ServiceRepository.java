@@ -6,4 +6,7 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 public interface ServiceRepository extends JpaRepository<Service, String> {
+    Service findByName(String name);
+
+    Service findFirstByOrderByIdDesc();
 }

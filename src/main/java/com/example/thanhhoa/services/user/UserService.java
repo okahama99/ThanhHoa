@@ -1,5 +1,6 @@
 package com.example.thanhhoa.services.user;
 
+import com.example.thanhhoa.dtos.UserModels.AuthorizeModel;
 import com.example.thanhhoa.dtos.UserModels.RegisterStaffModel;
 import com.example.thanhhoa.dtos.UserModels.RegisterUserModel;
 import com.example.thanhhoa.dtos.UserModels.ShowUserModel;
@@ -10,7 +11,10 @@ import org.springframework.data.domain.Pageable;
 import java.util.List;
 
 public interface UserService {
-    tblAccount getByUsername(String username);
+
+    AuthorizeModel getById(Long userID);
+
+    AuthorizeModel getByUsername(String username);
 
     void resetPasswordUser(String email, String password);
 

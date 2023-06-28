@@ -126,9 +126,9 @@ public class PlantServiceImpl implements PlantService {
         Plant plant = new Plant();
         Plant lastPlant = plantRepository.findFirstByOrderByIdDesc();
         if (lastPlant == null) {
-            plant.setId(util.createNewID("SP"));
+            plant.setId(util.createNewID("P"));
         } else {
-            plant.setId(util.createIDFromLastID("SP", 2, lastPlant.getId()));
+            plant.setId(util.createIDFromLastID("P", 1, lastPlant.getId()));
         }
         plant.setName(createPlantModel.getName());
         plant.setDescription(createPlantModel.getDescription());
@@ -157,6 +157,7 @@ public class PlantServiceImpl implements PlantService {
                 String fileName = imageService.save(file);
                 String imgName = imageService.getImageUrl(fileName);
                 PlantIMG plantIMG = new PlantIMG();
+                plantIMG.setId(util.createNewID("PI"));
                 plantIMG.setPlant(plantWithID);
                 plantIMG.setImgURL(imgName);
                 plantIMGRepository.save(plantIMG);
@@ -166,7 +167,7 @@ public class PlantServiceImpl implements PlantService {
     }
 
     @Override
-    public String updatePlant(UpdatePlantModel updatePlantModel, List<MultipartFile> files) throws Exception {
+    public String updatePlant(UpdatePlantModel updatePlantModel) throws Exception {
         Optional<Plant> checkPlant = plantRepository.findById(updatePlantModel.getPlantID());
         if (checkPlant != null) {
             Optional<PlantShipPrice> plantShipPrice = plantShipPriceRepository.findById(updatePlantModel.getShipPriceID());
@@ -231,6 +232,7 @@ public class PlantServiceImpl implements PlantService {
                 // Tao ra cac relationship tu list da duoc chinh sua
                 for (Category category : plantCate) {
                     PlantCategory plantCategory = new PlantCategory();
+                    plantCategory.setId(util.createNewID("PC"));
                     plantCategory.setPlant(plant);
                     plantCategory.setCategory(category);
                     plantCategoryRepository.save(plantCategory);
@@ -248,10 +250,11 @@ public class PlantServiceImpl implements PlantService {
                     strArr = imgNameString.split("[/;?]");
                     imageService.delete(strArr[7]);
                 }
-                for (MultipartFile file : files) {
+                for (MultipartFile file : updatePlantModel.getFiles()) {
                     String fileName = imageService.save(file);
                     String imgName = imageService.getImageUrl(fileName);
                     PlantIMG plantIMG = new PlantIMG();
+                    plantIMG.setId(util.createNewID("PI"));
                     plantIMG.setPlant(plant);
                     plantIMG.setImgURL(imgName);
                     plantIMGRepository.save(plantIMG);

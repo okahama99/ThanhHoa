@@ -20,10 +20,8 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RequestPart;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
-import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.server.ResponseStatusException;
 
 import javax.servlet.http.HttpServletRequest;
@@ -60,7 +58,6 @@ public class PlantController {
 
     @PutMapping(produces = "application/json;charset=UTF-8")
     public ResponseEntity<Object> updatePlant(@RequestBody UpdatePlantModel updatePlantModel,
-                                              @RequestPart(required = false) List<MultipartFile> files,
                                               HttpServletRequest request) throws Exception {
         String roleName = jwtUtil.getRoleNameFromJWT(request);
         if (!roleName.equalsIgnoreCase("Owner") || !roleName.equalsIgnoreCase("Manager")) {
@@ -69,7 +66,7 @@ public class PlantController {
         if (plantService.checkDuplicate(updatePlantModel.getName()) != null) {
             return ResponseEntity.badRequest().body("Cây cùng tên đã tồn tại.");
         } else {
-            String result = plantService.updatePlant(updatePlantModel, files);
+            String result = plantService.updatePlant(updatePlantModel);
             if (result.equals("Chỉnh sửa thành công.")) {
                 return ResponseEntity.ok().body(result);
             }

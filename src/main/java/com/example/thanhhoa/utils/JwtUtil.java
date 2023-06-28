@@ -1,12 +1,18 @@
 package com.example.thanhhoa.utils;
 
 import com.example.thanhhoa.configs.UserDetailsImpl;
+import com.example.thanhhoa.dtos.UserModels.AuthorizeModel;
 import com.example.thanhhoa.entities.tblAccount;
 import com.example.thanhhoa.enums.Status;
 import com.example.thanhhoa.repositories.UserRepository;
 import com.example.thanhhoa.services.role.RoleService;
 import com.example.thanhhoa.services.user.UserService;
-import io.jsonwebtoken.*;
+import io.jsonwebtoken.Claims;
+import io.jsonwebtoken.ExpiredJwtException;
+import io.jsonwebtoken.Jwts;
+import io.jsonwebtoken.MalformedJwtException;
+import io.jsonwebtoken.SignatureAlgorithm;
+import io.jsonwebtoken.UnsupportedJwtException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -21,13 +27,6 @@ import java.util.Date;
 @Component
 @Slf4j
 public class JwtUtil {
-    @Autowired
-    private UserService userService;
-    @Autowired
-    private RoleService roleService;
-    @Autowired
-    private UserRepository userRepository;
-
     /**
      * Đoạn JWT_SECRET này là bí mật, chỉ có phía server biết
      */
@@ -36,6 +35,12 @@ public class JwtUtil {
      * Thời gian có hiệu lực của chuỗi jwt
      */
     private final long JWT_EXPIRATION = 10800000L;
+    @Autowired
+    private UserService userService;
+    @Autowired
+    private RoleService roleService;
+    @Autowired
+    private UserRepository userRepository;
 
     public String generateTokenEmail(String email) {
         Date now = new Date();
@@ -47,6 +52,7 @@ public class JwtUtil {
                 .setExpiration(expiryDate)
                 .signWith(SignatureAlgorithm.HS512, JWT_SECRET)
                 .claim("role", user.getRole().getRoleName())
+                .claim("id", user.getId())
                 .claim("username", user.getUsername())
                 .claim("email", user.getEmail())
                 .claim("phone", user.getPhone())
@@ -59,7 +65,7 @@ public class JwtUtil {
         Date expiryDate = new Date(now.getTime() + JWT_EXPIRATION);
 
         UserDetailsImpl userPrincipal = (UserDetailsImpl) authentication.getPrincipal();
-        tblAccount user = userService.getByUsername(userPrincipal.getUsername());
+        AuthorizeModel user = userService.getById(userPrincipal.getUserID());
 
         String avatarLink = "Không có avatar";
 
@@ -72,6 +78,7 @@ public class JwtUtil {
                 .setIssuedAt(now)
                 .setExpiration(expiryDate)
                 .signWith(SignatureAlgorithm.HS512, JWT_SECRET)
+                .claim("id", user.getUserID())
                 .claim("username", user.getUsername())
                 .claim("fullName", user.getFullName())
                 .claim("role", userPrincipal.getAuthorities())
@@ -85,7 +92,7 @@ public class JwtUtil {
         Date now = new Date();
         Date expiryDate = new Date(now.getTime() + JWT_EXPIRATION);
 
-        tblAccount user = userService.getByUsername(account.getUsername());
+        AuthorizeModel user = userService.getById(account.getId());
 
         String avatarLink = "Không có avatar";
 
@@ -98,23 +105,24 @@ public class JwtUtil {
                 .setIssuedAt(now)
                 .setExpiration(expiryDate)
                 .signWith(SignatureAlgorithm.HS512, JWT_SECRET)
+                .claim("id", user.getUserID())
                 .claim("username", user.getUsername())
                 .claim("fullName", user.getFullName())
-                .claim("role", user.getRole().getRoleName())
+                .claim("role", user.getRoleName())
                 .claim("email", user.getEmail())
                 .claim("phone", user.getPhone())
                 .claim("avatarLink", avatarLink)
                 .compact();
     }
 
-//    public Long getUserIdFromJWT(String token) {
-//        Claims claims = Jwts.parser()
-//                .setSigningKey(JWT_SECRET)
-//                .parseClaimsJws(token)
-//                .getBody();
-//
-//        return claims.get("id", Long.class);
-//    }
+    public Long getUserIdFromJWT(String token) {
+        Claims claims = Jwts.parser()
+                .setSigningKey(JWT_SECRET)
+                .parseClaimsJws(token)
+                .getBody();
+
+        return claims.get("id", Long.class);
+    }
 
     public String getUserNameFromJWT(String token) {
         Claims claims = Jwts.parser()
@@ -127,8 +135,8 @@ public class JwtUtil {
 
     public String getRoleNameFromJWT(HttpServletRequest request) {
         String authTokenHeader = request.getHeader("Authorization");
-        if(authTokenHeader==null){
-            throw new ResponseStatusException(HttpStatus.FORBIDDEN,"-----------------------------------Người dùng không có quyền truy cập---------------------------");
+        if (authTokenHeader == null) {
+            throw new ResponseStatusException(HttpStatus.FORBIDDEN, "-----------------------------------Người dùng không có quyền truy cập---------------------------");
         }
         String token = authTokenHeader.substring(7);
         Claims claims = Jwts.parser()

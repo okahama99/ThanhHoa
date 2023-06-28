@@ -1,12 +1,10 @@
 package com.example.thanhhoa.services.plant;
 
-import com.example.thanhhoa.dtos.PlantModels.AddStorePlantModel;
 import com.example.thanhhoa.dtos.PlantModels.CreatePlantModel;
 import com.example.thanhhoa.dtos.PlantModels.ShowPlantModel;
 import com.example.thanhhoa.dtos.PlantModels.UpdatePlantModel;
 import com.example.thanhhoa.entities.Plant;
 import org.springframework.data.domain.Pageable;
-import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
 import java.util.List;
@@ -18,7 +16,7 @@ public interface PlantService {
 
     String createPlant(CreatePlantModel createPlantModel) throws Exception;
 
-    String updatePlant(UpdatePlantModel updatePlantModel, List<MultipartFile> files) throws Exception;
+    String updatePlant(UpdatePlantModel updatePlantModel) throws Exception;
 
     Boolean deletePlant(String plantID);
 

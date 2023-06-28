@@ -9,7 +9,7 @@ import java.util.List;
 import java.util.Optional;
 
 @Repository
-public interface UserRepository extends JpaRepository<tblAccount, String> {
+public interface UserRepository extends JpaRepository<tblAccount, Long> {
     List<tblAccount> findByFullNameContaining(String fullName);
 
     tblAccount findByEmailAndStatus(String email, Status status);

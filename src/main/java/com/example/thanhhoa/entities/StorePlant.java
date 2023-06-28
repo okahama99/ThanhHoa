@@ -18,6 +18,9 @@ public class StorePlant implements Serializable {
     @Column(nullable = false)
     private Integer quantity;
 
+    @Column
+    private String reason;
+
     @ManyToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     @JoinColumn(name = "store_id")
     private Store store;

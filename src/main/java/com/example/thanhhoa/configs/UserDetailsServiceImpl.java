@@ -1,5 +1,7 @@
 package com.example.thanhhoa.configs;
 
+import com.example.thanhhoa.dtos.UserModels.AuthorizeModel;
+import com.example.thanhhoa.dtos.UserModels.ShowUserModel;
 import com.example.thanhhoa.entities.tblAccount;
 import com.example.thanhhoa.services.user.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,7 +22,7 @@ public class UserDetailsServiceImpl implements UserDetailsService {
     @Override
     @Transactional
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        tblAccount user = null;
+        AuthorizeModel user = null;
 
         try {
             user = userService.getByUsername(username);

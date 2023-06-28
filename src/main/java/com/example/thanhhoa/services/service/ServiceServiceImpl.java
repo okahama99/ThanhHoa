@@ -1,20 +1,27 @@
 package com.example.thanhhoa.services.service;
 
+import com.example.thanhhoa.dtos.ServiceModels.CreateServiceModel;
 import com.example.thanhhoa.dtos.ServiceModels.ShowServiceModel;
 import com.example.thanhhoa.dtos.ServiceModels.ShowServiceTypeModel;
+import com.example.thanhhoa.dtos.ServiceModels.UpdateServiceModel;
 import com.example.thanhhoa.entities.Service;
+import com.example.thanhhoa.entities.ServiceIMG;
 import com.example.thanhhoa.entities.ServiceType;
 import com.example.thanhhoa.enums.Status;
+import com.example.thanhhoa.repositories.ServiceIMGRepository;
 import com.example.thanhhoa.repositories.ServiceRepository;
 import com.example.thanhhoa.repositories.ServiceTypeRepository;
 import com.example.thanhhoa.repositories.pagings.ServicePagingRepository;
+import com.example.thanhhoa.services.firebaseIMG.ImageService;
 import com.example.thanhhoa.utils.Util;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 @org.springframework.stereotype.Service
 public class ServiceServiceImpl implements ServiceService{
@@ -27,6 +34,110 @@ public class ServiceServiceImpl implements ServiceService{
     private ServiceTypeRepository serviceTypeRepository;
     @Autowired
     private Util util;
+    @Autowired
+    private ImageService imageService;
+    @Autowired
+    private ServiceIMGRepository serviceIMGRepository;
+
+    @Override
+    public String createService(CreateServiceModel createServiceModel) throws Exception{
+        Service checkExisted = serviceRepository.findByName(createServiceModel.getName());
+        if(checkExisted != null){
+            return "Service với tên là " + createServiceModel.getName() + " đã tồn tại.";
+        }
+        if(createServiceModel.getTypeIDList() == null){
+            return "Service phải có ít nhất 1 ServiceType.";
+        }
+
+        Service service = new Service();
+        Service getLastService = serviceRepository.findFirstByOrderByIdDesc();
+        if(getLastService != null){
+            service.setId(util.createIDFromLastID("SE",1,getLastService.getId()));
+        }else{
+            service.setId(util.createNewID("SE"));
+        }
+        List<ServiceType> serviceTypeList = new ArrayList<>();
+        for (String serviceTypeID : createServiceModel.getTypeIDList()) {
+            ServiceType serviceType = serviceTypeRepository.getById(serviceTypeID);
+            serviceTypeList.add(serviceType);
+        }
+
+        service.setName(createServiceModel.getName());
+        service.setDescription(createServiceModel.getDescription());
+        service.setPrice(createServiceModel.getPrice());
+        service.setServiceTypeList(serviceTypeList);
+        service.setStatus(Status.ACTIVE);
+        Service serviceWithID = serviceRepository.saveAndFlush(service);
+
+        if (createServiceModel.getFiles() != null) {
+            for (MultipartFile file : createServiceModel.getFiles()) {
+                String fileName = imageService.save(file);
+                String imgName = imageService.getImageUrl(fileName);
+                ServiceIMG serviceIMG = new ServiceIMG();
+                serviceIMG.setId(util.createNewID("SI"));
+                serviceIMG.setService(serviceWithID);
+                serviceIMG.setImgURL(imgName);
+                serviceIMGRepository.save(serviceIMG);
+            }
+        }
+        return "Tạo thành công.";
+    }
+
+    @Override
+    public String updateService(UpdateServiceModel updateServiceModel) throws Exception{
+        Optional<Service> checkExisted = serviceRepository.findById(updateServiceModel.getServiceID());
+        if(checkExisted == null){
+            return "Không tìm thấy dữ liệu với ServiceID = " + updateServiceModel.getServiceID() + ".";
+        }
+        if(updateServiceModel.getTypeIDList() == null){
+            return "Service phải có ít nhất 1 ServiceType.";
+        }
+        List<ServiceType> serviceTypeList = new ArrayList<>();
+        for (String serviceTypeID : updateServiceModel.getTypeIDList()) {
+            ServiceType serviceType = serviceTypeRepository.getById(serviceTypeID);
+            serviceTypeList.add(serviceType);
+        }
+        Service service = checkExisted.get();
+        service.setName(updateServiceModel.getName());
+        service.setPrice(updateServiceModel.getPrice());
+        service.setDescription(updateServiceModel.getDescription());
+        service.setServiceTypeList(serviceTypeList);
+        serviceRepository.save(service);
+
+        if (updateServiceModel.getFiles() != null) {
+            for (ServiceIMG image : service.getServiceIMGList()) {
+                String imgNameString = image.getImgURL();
+                ServiceIMG serviceIMG = serviceIMGRepository.findByImgURL(imgNameString);
+                serviceIMG.setService(null);
+                serviceIMG.setImgURL(null);
+                serviceIMGRepository.save(serviceIMG);
+                String[] strArr;
+                strArr = imgNameString.split("[/;?]");
+                imageService.delete(strArr[7]);
+            }
+            for (MultipartFile file : updateServiceModel.getFiles()) {
+                String fileName = imageService.save(file);
+                String imgName = imageService.getImageUrl(fileName);
+                ServiceIMG serviceIMG = new ServiceIMG();
+                serviceIMG.setId(util.createNewID("SI"));
+                serviceIMG.setService(service);
+                serviceIMG.setImgURL(imgName);
+                serviceIMGRepository.save(serviceIMG);
+            }
+        }
+        return "Chỉnh sửa thành công.";
+    }
+
+    @Override
+    public Boolean deleteService(String serviceID) {
+        Optional<Service> service = serviceRepository.findById(serviceID);
+        if (service != null) {
+            service.get().setStatus(Status.INACTIVE);
+            serviceRepository.save(service.get());
+            return true;
+        }
+        return false;
+    }
 
     @Override
     public List<ShowServiceModel> getAllService(Pageable pageable) {

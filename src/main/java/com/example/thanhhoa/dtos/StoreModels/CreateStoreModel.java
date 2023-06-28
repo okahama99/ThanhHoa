@@ -7,11 +7,9 @@ import java.io.Serializable;
 
 @Getter
 @Setter
-public class ShowStoreModel implements Serializable {
-    private String id;
+public class CreateStoreModel implements Serializable {
     private String storeName;
-    private String address;
     private String phone;
-    private String district;
-    private Double totalPage;
+    private String address;
+    private String districtID;
 }

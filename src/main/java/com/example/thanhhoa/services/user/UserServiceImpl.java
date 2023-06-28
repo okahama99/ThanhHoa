@@ -1,5 +1,6 @@
 package com.example.thanhhoa.services.user;
 
+import com.example.thanhhoa.dtos.UserModels.AuthorizeModel;
 import com.example.thanhhoa.dtos.UserModels.RegisterStaffModel;
 import com.example.thanhhoa.dtos.UserModels.RegisterUserModel;
 import com.example.thanhhoa.dtos.UserModels.ShowUserModel;
@@ -32,8 +33,32 @@ public class UserServiceImpl implements UserService {
     private Util util;
 
     @Override
-    public tblAccount getByUsername(String username) {
-        return userRepository.getByUsername(username);
+    public AuthorizeModel getById(Long userID) {
+        tblAccount user = userRepository.findById(userID).get();
+        AuthorizeModel model = new AuthorizeModel();
+        model.setUserID(user.getId());
+        model.setUsername(user.getUsername());
+        model.setPassword(user.getPassword());
+        model.setRoleID(user.getRole().getId());
+        model.setRoleName(user.getRole().getRoleName());
+        model.setAvatar(user.getAvatar());
+        return model;
+    }
+
+    @Override
+    public AuthorizeModel getByUsername(String username) {
+        tblAccount user = userRepository.getByUsername(username);
+        AuthorizeModel model = new AuthorizeModel();
+        model.setUserID(user.getId());
+        model.setUsername(user.getUsername());
+        model.setPassword(user.getPassword());
+        model.setFullName(user.getFullName());
+        model.setEmail(user.getEmail());
+        model.setPhone(user.getPhone());
+        model.setRoleID(user.getRole().getId());
+        model.setRoleName(user.getRole().getRoleName());
+        model.setAvatar(user.getAvatar());
+        return model;
     }
 
     @Override

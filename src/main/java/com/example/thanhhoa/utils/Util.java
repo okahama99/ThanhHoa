@@ -58,6 +58,7 @@ public class Util {
                 @Override
                 protected ShowUserModel doForward(tblAccount user) {
                     ShowUserModel model = new ShowUserModel();
+                    model.setUserID(user.getId());
                     model.setUserName(user.getUsername());
                     model.setFullName(user.getFullName());
                     model.setEmail(user.getEmail());

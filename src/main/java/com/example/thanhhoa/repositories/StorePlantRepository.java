@@ -10,7 +10,7 @@ import java.util.List;
 public interface StorePlantRepository extends JpaRepository<StorePlant, String> {
     StorePlant findByPlantIdAndStoreId(String plantID, String storeID);
 
-    List<StorePlant> findByPlantId(String plantID);
+    List<StorePlant> findByStore_Id(String storeID);
 
     StorePlant findFirstByOrderByIdDesc();
 }

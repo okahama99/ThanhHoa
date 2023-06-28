@@ -1,7 +1,6 @@
 package com.example.thanhhoa.controllers;
 
 import com.example.thanhhoa.dtos.PlantModels.AddStorePlantModel;
-import com.example.thanhhoa.dtos.PlantModels.ShowPlantModel;
 import com.example.thanhhoa.dtos.StoreModels.AddStoreEmployeeModel;
 import com.example.thanhhoa.dtos.StoreModels.ShowStoreModel;
 import com.example.thanhhoa.enums.SearchType;

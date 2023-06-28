@@ -31,4 +31,7 @@ public class Service implements Serializable {
 
     @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY, mappedBy = "service")
     private List<ServiceType> serviceTypeList;
+
+    @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY, mappedBy = "service")
+    private List<ServiceIMG> serviceIMGList;
 }
