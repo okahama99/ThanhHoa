@@ -134,7 +134,21 @@ public class JwtUtil {
         return claims.get("username", String.class);
     }
 
-    public String getRoleNameFromJWT(HttpServletRequest request) {
+    public Long getUserIDFromRequest(HttpServletRequest request) {
+        String authTokenHeader = request.getHeader("Authorization");
+        if (authTokenHeader == null) {
+            throw new ResponseStatusException(HttpStatus.FORBIDDEN, "-----------------------------------Người dùng không có quyền truy cập---------------------------");
+        }
+        String token = authTokenHeader.substring(7);
+        Claims claims = Jwts.parser()
+                .setSigningKey(JWT_SECRET)
+                .parseClaimsJws(token)
+                .getBody();
+
+        return claims.get("id", Long.class);
+    }
+
+    public String getRoleNameFromRequest(HttpServletRequest request) {
         String authTokenHeader = request.getHeader("Authorization");
         if (authTokenHeader == null) {
             throw new ResponseStatusException(HttpStatus.FORBIDDEN, "-----------------------------------Người dùng không có quyền truy cập---------------------------");

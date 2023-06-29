@@ -39,7 +39,7 @@ public class ServiceController {
     @PostMapping(produces = "application/json;charset=UTF-8")
     public ResponseEntity<Object> createService(@RequestBody CreateServiceModel createServiceModel,
                                                 HttpServletRequest request) throws Exception {
-        String roleName = jwtUtil.getRoleNameFromJWT(request);
+        String roleName = jwtUtil.getRoleNameFromRequest(request);
         if (!roleName.equalsIgnoreCase("Owner")) {
             throw new ResponseStatusException(HttpStatus.FORBIDDEN, "-----------------------------------Người dùng không có quyền truy cập---------------------------");
         }
@@ -53,7 +53,7 @@ public class ServiceController {
     @PutMapping(produces = "application/json;charset=UTF-8")
     public ResponseEntity<Object> updateService(@RequestBody UpdateServiceModel updateServiceModel,
                                               HttpServletRequest request) throws Exception {
-        String roleName = jwtUtil.getRoleNameFromJWT(request);
+        String roleName = jwtUtil.getRoleNameFromRequest(request);
         if (!roleName.equalsIgnoreCase("Owner") || !roleName.equalsIgnoreCase("Manager")) {
             throw new ResponseStatusException(HttpStatus.FORBIDDEN, "-----------------------------------Người dùng không có quyền truy cập---------------------------");
         }
@@ -67,7 +67,7 @@ public class ServiceController {
     @DeleteMapping(value = "/{serviceID}", produces = "application/json;charset=UTF-8")
     public ResponseEntity<Object> deleteService(@PathVariable(name = "serviceID") String serviceID,
                                               HttpServletRequest request) {
-        String roleName = jwtUtil.getRoleNameFromJWT(request);
+        String roleName = jwtUtil.getRoleNameFromRequest(request);
         if (!roleName.equalsIgnoreCase("Owner")) {
             throw new ResponseStatusException(HttpStatus.FORBIDDEN, "-----------------------------------Người dùng không có quyền truy cập---------------------------");
         }

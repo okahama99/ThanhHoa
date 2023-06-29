@@ -37,7 +37,7 @@ public class ContractController {
                                                      @RequestParam(required = false, defaultValue = "ID") SearchType.CONTRACT sortBy,
                                                      @RequestParam(required = false, defaultValue = "true") Boolean sortAsc,
                                                      HttpServletRequest request) {
-        String roleName = jwtUtil.getRoleNameFromJWT(request);
+        String roleName = jwtUtil.getRoleNameFromRequest(request);
         if (!roleName.equalsIgnoreCase("Customer")) {
             throw new ResponseStatusException(HttpStatus.FORBIDDEN, "-----------------------------------Người dùng không có quyền truy cập---------------------------");
         }

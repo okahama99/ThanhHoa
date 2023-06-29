@@ -22,4 +22,6 @@ public interface UserRepository extends JpaRepository<tblAccount, Long> {
 
     Optional<tblAccount> findByUsernameOrEmailOrPhone(String username, String email, String password);
 
+    List<tblAccount> findByStatusAndRole_RoleName(Status status, String roleName);
+
 }

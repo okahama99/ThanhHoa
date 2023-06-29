@@ -31,32 +31,32 @@ public class tblOrder implements Serializable {
     private String address;
 
     @Lob
-    @Column(nullable = false)
+    @Column
     private String reason;
 
     @Column(nullable = false, length = 50)
     private String paymentMethod;
 
-    @Column(nullable = false)
-    private String progressStatus;
+    @Enumerated(EnumType.STRING)
+    private Status progressStatus;
 
     @CreatedDate
     @Column(nullable = false)
     private LocalDateTime createdDate;
 
-    @Column(nullable = false)
+    @Column
     private LocalDateTime approveDate;
 
-    @Column(nullable = false)
+    @Column
     private LocalDateTime packageDate;
 
-    @Column(nullable = false)
+    @Column
     private LocalDateTime deliveryDate;
 
-    @Column(nullable = false)
+    @Column
     private LocalDateTime receivedDate;
 
-    @Column(nullable = false)
+    @Column
     private LocalDateTime rejectDate;
 
     @Column

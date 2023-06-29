@@ -57,4 +57,10 @@ public class SearchType {
         STORENAME,
         ADDRESS
     }
+
+    public enum ORDER_STATUS{
+        PACKAGING,
+        DELIVERING,
+        RECEIVED
+    }
 }

@@ -1,6 +1,6 @@
 package com.example.thanhhoa.dtos.OrderModels;
 
-import com.example.thanhhoa.dtos.FeedbackModels.ShowOrderFeedbackModel;
+import com.example.thanhhoa.enums.Status;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -17,7 +17,7 @@ public class ShowOrderModel implements Serializable {
     private String phone;
     private String address;
     private String paymentMethod;
-    private String progressStatus;
+    private Status progressStatus;
     private String reason;
     private LocalDateTime createdDate;
     private LocalDateTime packageDate;
@@ -29,8 +29,8 @@ public class ShowOrderModel implements Serializable {
     private Double totalShipCost;
     private Double total;
     private String storeID;
-    private String staffID;
-    private String customerID;
+    private Long staffID;
+    private Long customerID;
     private String distancePriceID;
-    private List<ShowOrderDetailModel> detailList;
+    private Double totalPage;
 }

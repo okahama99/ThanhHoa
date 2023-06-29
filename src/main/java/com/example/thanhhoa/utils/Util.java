@@ -5,6 +5,7 @@ import com.example.thanhhoa.dtos.FeedbackModels.ShowContractFeedbackModel;
 import com.example.thanhhoa.dtos.FeedbackModels.ShowOrderFeedbackIMGModel;
 import com.example.thanhhoa.dtos.FeedbackModels.ShowOrderFeedbackModel;
 import com.example.thanhhoa.dtos.FeedbackModels.ShowRatingModel;
+import com.example.thanhhoa.dtos.OrderModels.ShowOrderModel;
 import com.example.thanhhoa.dtos.PlantModels.ShowPlantCategory;
 import com.example.thanhhoa.dtos.PlantModels.ShowPlantModel;
 import com.example.thanhhoa.dtos.PlantPriceModels.ShowPlantPriceModel;
@@ -21,6 +22,7 @@ import com.example.thanhhoa.entities.PlantCategory;
 import com.example.thanhhoa.entities.Service;
 import com.example.thanhhoa.entities.ServiceType;
 import com.example.thanhhoa.entities.tblAccount;
+import com.example.thanhhoa.entities.tblOrder;
 import com.example.thanhhoa.repositories.PlantCategoryRepository;
 import com.example.thanhhoa.repositories.ServiceTypeRepository;
 import com.google.common.base.Converter;
@@ -257,6 +259,49 @@ public class Util {
 
                 @Override
                 protected Service doBackward(ShowServiceModel showServiceModel) {
+                    return null;
+                }
+            });
+            return modelResult.getContent();
+        } else {
+            return new ArrayList<>();
+        }
+    }
+
+    public List<ShowOrderModel> orderPagingConverter(Page<tblOrder> pagingResult, Pageable paging) {
+        if (pagingResult.hasContent()) {
+            double totalPage = Math.ceil((double) pagingResult.getTotalElements() / paging.getPageSize());
+            Page<ShowOrderModel> modelResult = pagingResult.map(new Converter<tblOrder, ShowOrderModel>() {
+                @Override
+                protected ShowOrderModel doForward(tblOrder order) {
+                    ShowOrderModel model = new ShowOrderModel();
+                    model.setId(order.getId());
+                    model.setFullName(order.getFullName());
+                    model.setAddress(order.getAddress());
+                    model.setEmail(order.getEmail());
+                    model.setPhone(order.getPhone());
+                    model.setCreatedDate(order.getCreatedDate());
+                    model.setPackageDate(order.getPackageDate());
+                    model.setDeliveryDate(order.getDeliveryDate());
+                    model.setReceivedDate(order.getReceivedDate());
+                    model.setApproveDate(order.getApproveDate());
+                    model.setRejectDate(order.getRejectDate());
+                    model.setPaymentMethod(order.getPaymentMethod());
+                    model.setProgressStatus(order.getProgressStatus());
+                    model.setReason(order.getReason());
+                    model.setStoreID(order.getStore().getId());
+                    model.setStaffID(order.getStaff().getId());
+                    model.setCustomerID(order.getCustomer().getId());
+                    model.setDistancePriceID(order.getDistancePrice().getId());
+                    model.setDistance(order.getDistance());
+                    model.setTotalShipCost(order.getTotalShipCost());
+                    model.setTotal(order.getTotal());
+                    model.setTotalPage(totalPage);
+                    return model;
+                }
+
+                @Override
+                protected tblOrder doBackward(ShowOrderModel showOrderModel) {
                     return null;
                 }
             });

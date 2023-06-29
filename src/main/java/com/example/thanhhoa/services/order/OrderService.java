@@ -1,13 +1,34 @@
 package com.example.thanhhoa.services.order;
 
+import com.example.thanhhoa.dtos.OrderModels.CreateOrderModel;
+import com.example.thanhhoa.dtos.OrderModels.GetStaffModel;
 import com.example.thanhhoa.dtos.OrderModels.ShowOrderDetailModel;
 import com.example.thanhhoa.dtos.OrderModels.ShowOrderModel;
+import com.example.thanhhoa.dtos.OrderModels.UpdateOrderModel;
+import com.example.thanhhoa.enums.Status;
 import org.springframework.data.domain.Pageable;
 
 import java.util.List;
 
 public interface OrderService {
+
+    String createOrder(CreateOrderModel createOrderModel, Long customerID);
+
+    String updateOrder(UpdateOrderModel updateOrderModel, Long customerID);
+
+    String deleteOrder(String orderID);
+
+    String approveOrder(String orderID);
+
+    Boolean rejectOrder(String orderID, String reason);
+
+    Boolean changeOrderStatus(String orderID, String status);
+
     List<ShowOrderModel> getAllOrderByUsername(String username, Pageable pageable);
 
+    List<ShowOrderModel> getWaitingOrder(Pageable pageable);
+
     List<ShowOrderDetailModel> getOrderDetailByOrderID(String orderID);
+
+    List<GetStaffModel> getStaffForOrder();
 }

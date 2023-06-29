@@ -38,22 +38,22 @@ public class Contract implements Serializable {
     private String paymentMethod;
 
     @Lob
-    @Column(nullable = false)
+    @Column
     private String reason;
 
     @Column(nullable = false)
     private LocalDateTime createdDate;
 
-    @Column(nullable = false)
+    @Column
     private LocalDateTime startedDate;
 
-    @Column(nullable = false)
+    @Column
     private LocalDateTime endedDate;
 
-    @Column(nullable = false)
+    @Column
     private LocalDateTime approvedDate;
 
-    @Column(nullable = false)
+    @Column
     private LocalDateTime rejectedDate;
 
     @Column

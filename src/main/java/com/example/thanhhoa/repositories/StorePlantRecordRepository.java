@@ -6,4 +6,5 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 public interface StorePlantRecordRepository extends JpaRepository<StorePlantRecord, String> {
+    StorePlantRecord findFirstByOrderByIdDesc();
 }

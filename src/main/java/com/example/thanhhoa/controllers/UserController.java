@@ -242,7 +242,7 @@ public class UserController {
                                              @RequestParam SearchType.USER sortBy,
                                              @RequestParam(required = false, defaultValue = "true") Boolean sortTypeAsc,
                                              HttpServletRequest request) {
-        String roleName = jwtUtil.getRoleNameFromJWT(request);
+        String roleName = jwtUtil.getRoleNameFromRequest(request);
         if (!roleName.equalsIgnoreCase("Admin")) {
             throw new ResponseStatusException(HttpStatus.FORBIDDEN, "-----------------------------------Người dùng không có quyền truy cập---------------------------");
         }
@@ -303,7 +303,7 @@ public class UserController {
     public HttpStatus changeUserRole(@PathVariable(name = "username") String username,
                                      @RequestParam String roleId,
                                      HttpServletRequest request) {
-        String roleName = jwtUtil.getRoleNameFromJWT(request);
+        String roleName = jwtUtil.getRoleNameFromRequest(request);
         if (!roleName.equalsIgnoreCase("Admin")) {
             throw new ResponseStatusException(HttpStatus.FORBIDDEN, "-----------------------------------Người dùng không có quyền truy cập---------------------------");
         }
@@ -331,13 +331,18 @@ public class UserController {
     @PostMapping(value = "/tempPassword", produces = "application/json;charset=UTF-8")
     public String getTempPassword(@RequestBody RegisterStaffModel registerStaffModel,
                                   HttpServletRequest request) {
-        String roleName = jwtUtil.getRoleNameFromJWT(request);
+        String roleName = jwtUtil.getRoleNameFromRequest(request);
         if (!roleName.equalsIgnoreCase("Admin")) {
             throw new ResponseStatusException(HttpStatus.FORBIDDEN, "-----------------------------------Người dùng không có quyền truy cập---------------------------");
         }
         Random random = new Random();
         int randomNum = 100000 + random.nextInt(900000);
-        registerStaffModel.setPassword(randomNum + (""));
-        return userService.generateTempPassword(registerStaffModel, registerStaffModel.getRoleName());
+        registerStaffModel.setPassword(passwordEncoder.encode(randomNum + ("")));
+        String result = userService.generateTempPassword(registerStaffModel, registerStaffModel.getRoleName());
+        if(result.equals("Tạo User thành công.")){
+            return randomNum + "";
+        }else{
+            return result;
+        }
     }
 }

@@ -41,7 +41,7 @@ public class PlantController {
     @PostMapping(produces = "application/json;charset=UTF-8")
     public ResponseEntity<Object> createPlant(@RequestBody CreatePlantModel createPlantModel,
                                               HttpServletRequest request) throws Exception {
-        String roleName = jwtUtil.getRoleNameFromJWT(request);
+        String roleName = jwtUtil.getRoleNameFromRequest(request);
         if (!roleName.equalsIgnoreCase("Owner")) {
             throw new ResponseStatusException(HttpStatus.FORBIDDEN, "-----------------------------------Người dùng không có quyền truy cập---------------------------");
         }
@@ -59,7 +59,7 @@ public class PlantController {
     @PutMapping(produces = "application/json;charset=UTF-8")
     public ResponseEntity<Object> updatePlant(@RequestBody UpdatePlantModel updatePlantModel,
                                               HttpServletRequest request) throws Exception {
-        String roleName = jwtUtil.getRoleNameFromJWT(request);
+        String roleName = jwtUtil.getRoleNameFromRequest(request);
         if (!roleName.equalsIgnoreCase("Owner") || !roleName.equalsIgnoreCase("Manager")) {
             throw new ResponseStatusException(HttpStatus.FORBIDDEN, "-----------------------------------Người dùng không có quyền truy cập---------------------------");
         }
@@ -77,7 +77,7 @@ public class PlantController {
     @DeleteMapping(value = "/{plantID}", produces = "application/json;charset=UTF-8")
     public ResponseEntity<Object> deletePlant(@PathVariable(name = "plantID") String plantID,
                                               HttpServletRequest request) {
-        String roleName = jwtUtil.getRoleNameFromJWT(request);
+        String roleName = jwtUtil.getRoleNameFromRequest(request);
         if (!roleName.equalsIgnoreCase("Owner")) {
             throw new ResponseStatusException(HttpStatus.FORBIDDEN, "-----------------------------------Người dùng không có quyền truy cập---------------------------");
         }

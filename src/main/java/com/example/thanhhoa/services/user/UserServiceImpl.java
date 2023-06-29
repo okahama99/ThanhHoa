@@ -161,8 +161,13 @@ public class UserServiceImpl implements UserService {
         user.setFullName(registerStaffModel.getFullName());
         user.setGender(registerStaffModel.getGender());
         user.setAvatar(registerStaffModel.getAvatar());
-        user.setStatus(Status.ACTIVE);
         user.setRole(role);
+        if(role.getRoleName().equals("Staff")){
+            user.setStatus(Status.AVAILABLE);
+        }else{
+            user.setStatus(Status.ACTIVE);
+        }
+
         if (userRepository.saveAndFlush(user) != null) {
             return "Tạo User thành công.";
         } else {

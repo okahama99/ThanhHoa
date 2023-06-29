@@ -84,28 +84,39 @@ public class StoreServiceImpl implements StoreService{
                 newPlant.setId(util.createIDFromLastID("SP", 2, lastStorePlant.getId()));
             }
             newPlant.setQuantity(addStorePlantModel.getQuantity());
-            newPlant.setReason("Nhập thêm cây");
             newPlant.setStore(store.get());
             newPlant.setPlant(plant.get());
             storePlantRepository.save(newPlant);
 
             StorePlantRecord storePlantRecord = new StorePlantRecord();
-            storePlantRecord.setId(util.createNewID("SPR"));
+            StorePlantRecord lastRecord = storePlantRecordRepository.findFirstByOrderByIdDesc();
+            if (lastRecord == null) {
+                storePlantRecord.setId(util.createNewID("SPR"));
+            } else {
+                storePlantRecord.setId(util.createIDFromLastID("SPR",3,lastRecord.getId()));
+            }
             storePlantRecord.setAmount(addStorePlantModel.getQuantity());
             storePlantRecord.setImportDate(LocalDateTime.now());
             storePlantRecord.setStorePlant(newPlant);
+            storePlantRecord.setReason("Nhập thêm cây");
             storePlantRecordRepository.save(storePlantRecord);
             return "Thêm thành công.";
         }
         storePlant.setQuantity(storePlant.getQuantity() + addStorePlantModel.getQuantity());
-        storePlant.setReason("Nhập thêm cây");
+
         storePlantRepository.save(storePlant);
 
         StorePlantRecord storePlantRecord = new StorePlantRecord();
-        storePlantRecord.setId(util.createNewID("SPR"));
+        StorePlantRecord lastRecord = storePlantRecordRepository.findFirstByOrderByIdDesc();
+        if (lastRecord == null) {
+            storePlantRecord.setId(util.createNewID("SPR"));
+        } else {
+            storePlantRecord.setId(util.createIDFromLastID("SPR",3,lastRecord.getId()));
+        }
         storePlantRecord.setAmount(addStorePlantModel.getQuantity());
         storePlantRecord.setImportDate(LocalDateTime.now());
         storePlantRecord.setStorePlant(storePlant);
+        storePlantRecord.setReason("Nhập thêm cây");
         storePlantRecordRepository.save(storePlantRecord);
         return "Thêm thành công.";
     }

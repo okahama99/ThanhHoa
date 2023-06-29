@@ -36,7 +36,7 @@ public class CartController {
     @GetMapping(produces = "application/json;charset=UTF-8")
     public @ResponseBody
     List<ShowCartModel> getCart(HttpServletRequest request) {
-        String roleName = jwtUtil.getRoleNameFromJWT(request);
+        String roleName = jwtUtil.getRoleNameFromRequest(request);
         if (!roleName.equalsIgnoreCase("Customer")) {
             throw new ResponseStatusException(HttpStatus.FORBIDDEN, "-----------------------------------Người dùng không có quyền truy cập---------------------------");
         }
@@ -50,7 +50,7 @@ public class CartController {
     @PostMapping(produces = "application/json;charset=UTF-8")
     public ResponseEntity<Object> addToCart(@RequestBody AddCartModel addCartModel,
                                             HttpServletRequest request) {
-        String roleName = jwtUtil.getRoleNameFromJWT(request);
+        String roleName = jwtUtil.getRoleNameFromRequest(request);
         if (!roleName.equalsIgnoreCase("Customer")) {
             throw new ResponseStatusException(HttpStatus.FORBIDDEN, "-----------------------------------Người dùng không có quyền truy cập---------------------------");
         }
@@ -66,7 +66,7 @@ public class CartController {
     @PutMapping(produces = "application/json;charset=UTF-8")
     public ResponseEntity<Object> updateCart(@RequestBody UpdateCartModel updateCartModel,
                                             HttpServletRequest request) {
-        String roleName = jwtUtil.getRoleNameFromJWT(request);
+        String roleName = jwtUtil.getRoleNameFromRequest(request);
         if (!roleName.equalsIgnoreCase("Customer")) {
             throw new ResponseStatusException(HttpStatus.FORBIDDEN, "-----------------------------------Người dùng không có quyền truy cập---------------------------");
         }
@@ -82,7 +82,7 @@ public class CartController {
     @DeleteMapping(value = "/{cartID}",produces = "application/json;charset=UTF-8")
     public ResponseEntity<Object> deleteCart(@PathVariable(name = "cartID") String cartID,
                                              HttpServletRequest request) {
-        String roleName = jwtUtil.getRoleNameFromJWT(request);
+        String roleName = jwtUtil.getRoleNameFromRequest(request);
         if (!roleName.equalsIgnoreCase("Customer")) {
             throw new ResponseStatusException(HttpStatus.FORBIDDEN, "-----------------------------------Người dùng không có quyền truy cập---------------------------");
         }
