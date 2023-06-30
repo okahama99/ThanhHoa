@@ -1,5 +1,6 @@
 package com.example.thanhhoa.dtos.UserModels;
 
+import com.example.thanhhoa.enums.Status;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -17,4 +18,7 @@ public class AuthorizeModel implements Serializable {
     private String roleID;
     private String roleName;
     private String avatar;
+    private String address;
+    private Boolean gender;
+    private Status status;
 }

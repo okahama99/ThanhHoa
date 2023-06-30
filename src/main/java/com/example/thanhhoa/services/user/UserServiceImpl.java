@@ -45,6 +45,9 @@ public class UserServiceImpl implements UserService {
         model.setRoleID(user.getRole().getId());
         model.setRoleName(user.getRole().getRoleName());
         model.setAvatar(user.getAvatar());
+        model.setAddress(user.getAddress());
+        model.setGender(user.getGender());
+        model.setStatus(user.getStatus());
         return model;
     }
 
@@ -61,6 +64,9 @@ public class UserServiceImpl implements UserService {
         model.setRoleID(user.getRole().getId());
         model.setRoleName(user.getRole().getRoleName());
         model.setAvatar(user.getAvatar());
+        model.setAddress(user.getAddress());
+        model.setGender(user.getGender());
+        model.setStatus(user.getStatus());
         return model;
     }
 

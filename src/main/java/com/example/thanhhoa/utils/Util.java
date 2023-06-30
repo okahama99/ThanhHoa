@@ -71,6 +71,7 @@ public class Util {
                     model.setGender(user.getGender());
                     model.setRoleID(user.getRole().getId());
                     model.setRoleName(user.getRole().getRoleName());
+                    model.setStatus(user.getStatus());
                     model.setTotalPage(totalPage);
                     return model;
                 }

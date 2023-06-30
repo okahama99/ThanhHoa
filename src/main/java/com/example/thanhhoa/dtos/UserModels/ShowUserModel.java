@@ -1,5 +1,6 @@
 package com.example.thanhhoa.dtos.UserModels;
 
+import com.example.thanhhoa.enums.Status;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -17,6 +18,7 @@ public class ShowUserModel implements Serializable {
     private String avatar;
     private String address;
     private Boolean gender;
+    private Status status;
     private LocalDateTime createdDate;
 
     private String roleID;
