@@ -50,9 +50,9 @@ public class CartServiceImpl implements CartService {
 
     @Override
     public String addToCart(AddCartModel addCartModel, Long userID) {
-        Cart checkExisted = cartRepository.findByPlant_Id(addCartModel.getPlantID());
+        Cart checkExisted = cartRepository.findByPlant_IdAndAccount_Id(addCartModel.getPlantID(), userID);
         if(checkExisted != null){
-            checkExisted.setQuantity(checkExisted.getQuantity()+addCartModel.getQuantity());
+            checkExisted.setQuantity(addCartModel.getQuantity());
             cartRepository.save(checkExisted);
             return "Thêm thành công.";
         }
