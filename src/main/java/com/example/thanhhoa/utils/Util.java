@@ -7,9 +7,11 @@ import com.example.thanhhoa.dtos.FeedbackModels.ShowOrderFeedbackModel;
 import com.example.thanhhoa.dtos.FeedbackModels.ShowRatingModel;
 import com.example.thanhhoa.dtos.OrderModels.ShowOrderModel;
 import com.example.thanhhoa.dtos.PlantModels.ShowPlantCategory;
+import com.example.thanhhoa.dtos.PlantModels.ShowPlantIMGModel;
 import com.example.thanhhoa.dtos.PlantModels.ShowPlantModel;
 import com.example.thanhhoa.dtos.PlantPriceModels.ShowPlantPriceModel;
 import com.example.thanhhoa.dtos.PlantShipPriceModels.ShowPlantShipPriceModel;
+import com.example.thanhhoa.dtos.ServiceModels.ShowServiceIMGModel;
 import com.example.thanhhoa.dtos.ServiceModels.ShowServiceModel;
 import com.example.thanhhoa.dtos.ServiceModels.ShowServiceTypeModel;
 import com.example.thanhhoa.dtos.UserModels.ShowUserModel;
@@ -19,11 +21,15 @@ import com.example.thanhhoa.entities.OrderFeedback;
 import com.example.thanhhoa.entities.OrderFeedbackIMG;
 import com.example.thanhhoa.entities.Plant;
 import com.example.thanhhoa.entities.PlantCategory;
+import com.example.thanhhoa.entities.PlantIMG;
 import com.example.thanhhoa.entities.Service;
+import com.example.thanhhoa.entities.ServiceIMG;
 import com.example.thanhhoa.entities.ServiceType;
 import com.example.thanhhoa.entities.tblAccount;
 import com.example.thanhhoa.entities.tblOrder;
 import com.example.thanhhoa.repositories.PlantCategoryRepository;
+import com.example.thanhhoa.repositories.PlantIMGRepository;
+import com.example.thanhhoa.repositories.ServiceIMGRepository;
 import com.example.thanhhoa.repositories.ServiceTypeRepository;
 import com.google.common.base.Converter;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -41,6 +47,10 @@ public class Util {
     private PlantCategoryRepository plantCategoryRepository;
     @Autowired
     private ServiceTypeRepository serviceTypeRepository;
+    @Autowired
+    private ServiceIMGRepository serviceIMGRepository;
+    @Autowired
+    private PlantIMGRepository plantIMGRepository;
 
     /**
      * Small Util to return {@link Pageable} to replace dup code in serviceImpl
@@ -101,6 +111,18 @@ public class Util {
                         showPlantCategory.setCategoryName(plantCategory.getCategory().getName());
                         showPlantCategoryList.add(showPlantCategory);
                     }
+
+                    List<ShowPlantIMGModel> showPlantIMGList = new ArrayList<>();
+                    List<PlantIMG> plantIMGList = plantIMGRepository.findByPlant_Id(plant.getId());
+                    if(plantIMGList != null){
+                        for(PlantIMG img : plantIMGList) {
+                            ShowPlantIMGModel model = new ShowPlantIMGModel();
+                            model.setId(img.getId());
+                            model.setUrl(img.getImgURL());
+                            showPlantIMGList.add(model);
+                        }
+                    }
+
                     ShowPlantShipPriceModel showPlantShipPriceModel = new ShowPlantShipPriceModel();
                     showPlantShipPriceModel.setId(plant.getPlantShipPrice().getId());
                     showPlantShipPriceModel.setPotSize(plant.getPlantShipPrice().getPotSize());
@@ -119,6 +141,7 @@ public class Util {
                     model.setShowPlantShipPriceModel(showPlantShipPriceModel);
                     model.setPlantCategoryList(showPlantCategoryList);
                     model.setShowPlantPriceModel(showPlantPriceModel);
+                    model.setPlantIMGList(showPlantIMGList);
                     model.setTotalPage(totalPage);
                     return model;
                 }
@@ -248,12 +271,24 @@ public class Util {
                         }
                     }
 
+                    List<ShowServiceIMGModel> imgList = new ArrayList<>();
+                    List<ServiceIMG> serviceIMGList = serviceIMGRepository.findByService_Id(service.getId());
+                    if(serviceIMGList != null){
+                        for(ServiceIMG img : serviceIMGList) {
+                            ShowServiceIMGModel imgModel = new ShowServiceIMGModel();
+                            imgModel.setId(img.getId());
+                            imgModel.setUrl(img.getImgURL());
+                            imgList.add(imgModel);
+                        }
+                    }
+
                     ShowServiceModel model = new ShowServiceModel();
                     model.setServiceID(service.getId());
                     model.setName(service.getName());
                     model.setPrice(service.getPrice());
                     model.setDescription(service.getDescription());
                     model.setTypeList(typeList);
+                    model.setImgList(imgList);
                     model.setTotalPage(totalPage);
                     return model;
                 }

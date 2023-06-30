@@ -18,6 +18,6 @@ public class ShowPlantModel {
 
     private ShowPlantShipPriceModel showPlantShipPriceModel;
     private ShowPlantPriceModel showPlantPriceModel;
-
+    private List<ShowPlantIMGModel> plantIMGList;
     private List<ShowPlantCategory> plantCategoryList;
 }

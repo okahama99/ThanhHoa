@@ -283,6 +283,16 @@ public class PlantServiceImpl implements PlantService {
     }
 
     @Override
+    public List<String> getPlantIMGByPlantID(String plantID) {
+        List<PlantIMG> imgList = plantIMGRepository.findByPlant_Id(plantID);
+        List<String> imgURL = new ArrayList<>();
+        for (PlantIMG plantIMG : imgList) {
+            imgURL.add(imageService.getImageUrl(plantIMG.getImgURL()));
+        }
+        return imgURL;
+    }
+
+    @Override
     public List<ShowPlantModel> getPlantByCategory(String categoryID, Pageable paging) {
         List<PlantCategory> plantCategoryList = plantCategoryRepository.findByCategory_Id(categoryID);
 

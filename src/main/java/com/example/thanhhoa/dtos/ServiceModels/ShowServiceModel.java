@@ -15,4 +15,5 @@ public class ShowServiceModel implements Serializable {
     private String description;
     private List<ShowServiceTypeModel> typeList;
     private Double totalPage;
+    private List<ShowServiceIMGModel> imgList;
 }

@@ -107,6 +107,12 @@ public class PlantController {
         return ResponseEntity.badRequest().body("Cây không tồn tại.");
     }
 
+    @GetMapping(value = "/getIMGByPlantID", produces = "application/json;charset=UTF-8")
+    public @ResponseBody
+    List<String> getIMGByPlantID(@RequestParam String plantID) {
+        return plantService.getPlantIMGByPlantID(plantID);
+    }
+
     @GetMapping(value = "/plantFilter", produces = "application/json;charset=UTF-8")
     public @ResponseBody
     ResponseEntity<Object> searchPlant(@RequestParam(required = false) String plantName,

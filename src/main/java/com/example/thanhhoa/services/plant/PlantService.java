@@ -22,6 +22,8 @@ public interface PlantService {
 
     Plant checkDuplicate(String plantName);
 
+    List<String> getPlantIMGByPlantID(String plantID);
+
     List<ShowPlantModel> getPlantByCategory(String categoryID, Pageable paging);
 
     List<ShowPlantModel> getPlantByName(String name, Pageable paging);

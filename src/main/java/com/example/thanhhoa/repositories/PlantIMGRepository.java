@@ -10,5 +10,5 @@ import java.util.List;
 public interface PlantIMGRepository extends JpaRepository<PlantIMG, String> {
     PlantIMG findByImgURL(String imgName);
 
-    List<PlantIMG> findByPlantId(String plantId);
+    List<PlantIMG> findByPlant_Id(String plantId);
 }
