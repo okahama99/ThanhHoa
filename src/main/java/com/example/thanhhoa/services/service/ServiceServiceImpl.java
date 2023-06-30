@@ -74,7 +74,12 @@ public class ServiceServiceImpl implements ServiceService{
                 String fileName = imageService.save(file);
                 String imgName = imageService.getImageUrl(fileName);
                 ServiceIMG serviceIMG = new ServiceIMG();
-                serviceIMG.setId(util.createNewID("SI"));
+                ServiceIMG getLastServiceIMG = serviceIMGRepository.findFirstByOrderByIdDesc();
+                if(getLastServiceIMG != null){
+                    serviceIMG.setId(util.createIDFromLastID("SIMG",4,getLastServiceIMG.getId()));
+                }else{
+                    serviceIMG.setId(util.createNewID("SIMG"));
+                }
                 serviceIMG.setService(serviceWithID);
                 serviceIMG.setImgURL(imgName);
                 serviceIMGRepository.save(serviceIMG);
@@ -119,7 +124,12 @@ public class ServiceServiceImpl implements ServiceService{
                 String fileName = imageService.save(file);
                 String imgName = imageService.getImageUrl(fileName);
                 ServiceIMG serviceIMG = new ServiceIMG();
-                serviceIMG.setId(util.createNewID("SI"));
+                ServiceIMG getLastServiceIMG = serviceIMGRepository.findFirstByOrderByIdDesc();
+                if(getLastServiceIMG != null){
+                    serviceIMG.setId(util.createIDFromLastID("SIMG",4,getLastServiceIMG.getId()));
+                }else{
+                    serviceIMG.setId(util.createNewID("SIMG"));
+                }
                 serviceIMG.setService(service);
                 serviceIMG.setImgURL(imgName);
                 serviceIMGRepository.save(serviceIMG);

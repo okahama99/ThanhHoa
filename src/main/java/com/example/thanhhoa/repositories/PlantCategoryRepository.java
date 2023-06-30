@@ -16,4 +16,6 @@ public interface PlantCategoryRepository extends JpaRepository<PlantCategory, St
     List<PlantCategory> findByCategory_Id(String categoryID);
 
     List<PlantCategory> findByCategory_IdAndPlant_NameContaining(String categoryID, String plantName);
+
+    PlantCategory findFirstByOrderByIdDesc();
 }

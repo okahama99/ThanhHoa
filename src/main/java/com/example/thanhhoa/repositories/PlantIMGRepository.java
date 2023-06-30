@@ -11,4 +11,6 @@ public interface PlantIMGRepository extends JpaRepository<PlantIMG, String> {
     PlantIMG findByImgURL(String imgName);
 
     List<PlantIMG> findByPlant_Id(String plantId);
+
+    PlantIMG findFirstByOrderByIdDesc();
 }

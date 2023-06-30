@@ -12,5 +12,5 @@ public interface ServiceIMGRepository extends JpaRepository<ServiceIMG, String> 
 
     List<ServiceIMG> findByService_Id(String serviceID);
 
-
+    ServiceIMG findFirstByOrderByIdDesc();
 }
