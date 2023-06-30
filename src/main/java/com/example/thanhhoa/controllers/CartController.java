@@ -40,10 +40,8 @@ public class CartController {
         if (!roleName.equalsIgnoreCase("Customer")) {
             throw new ResponseStatusException(HttpStatus.FORBIDDEN, "-----------------------------------Người dùng không có quyền truy cập---------------------------");
         }
-        String authTokenHeader = request.getHeader("Authorization");
-        String token = authTokenHeader.substring(7);
 
-        List<ShowCartModel> list = cartService.getCartByUsername(jwtUtil.getUserNameFromJWT(token));
+        List<ShowCartModel> list = cartService.getCartByUserID(jwtUtil.getUserIDFromRequest(request));
         return list;
     }
 
@@ -54,9 +52,7 @@ public class CartController {
         if (!roleName.equalsIgnoreCase("Customer")) {
             throw new ResponseStatusException(HttpStatus.FORBIDDEN, "-----------------------------------Người dùng không có quyền truy cập---------------------------");
         }
-        String authTokenHeader = request.getHeader("Authorization");
-        String token = authTokenHeader.substring(7);
-        String result = cartService.addToCart(addCartModel, jwtUtil.getUserNameFromJWT(token));
+        String result = cartService.addToCart(addCartModel, jwtUtil.getUserIDFromRequest(request));
         if (result.equals("Thêm thành công.")) {
             return ResponseEntity.ok().body(result);
         }
@@ -70,9 +66,7 @@ public class CartController {
         if (!roleName.equalsIgnoreCase("Customer")) {
             throw new ResponseStatusException(HttpStatus.FORBIDDEN, "-----------------------------------Người dùng không có quyền truy cập---------------------------");
         }
-        String authTokenHeader = request.getHeader("Authorization");
-        String token = authTokenHeader.substring(7);
-        String result = cartService.updateItem(updateCartModel, jwtUtil.getUserNameFromJWT(token));
+        String result = cartService.updateItem(updateCartModel, jwtUtil.getUserIDFromRequest(request));
         if (result.equals("Chỉnh sửa thành công.")) {
             return ResponseEntity.ok().body(result);
         }
@@ -86,9 +80,7 @@ public class CartController {
         if (!roleName.equalsIgnoreCase("Customer")) {
             throw new ResponseStatusException(HttpStatus.FORBIDDEN, "-----------------------------------Người dùng không có quyền truy cập---------------------------");
         }
-        String authTokenHeader = request.getHeader("Authorization");
-        String token = authTokenHeader.substring(7);
-        String result = cartService.deleteItem(cartID, jwtUtil.getUserNameFromJWT(token));
+        String result = cartService.deleteItem(cartID,jwtUtil.getUserIDFromRequest(request));
         if (result.equals("Xóa thành công.")) {
             return ResponseEntity.ok().body(result);
         }

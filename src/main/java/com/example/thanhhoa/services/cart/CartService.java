@@ -7,13 +7,13 @@ import com.example.thanhhoa.dtos.CartModels.UpdateCartModel;
 import java.util.List;
 
 public interface CartService {
-    List<ShowCartModel> getCartByUsername(String username);
+    List<ShowCartModel> getCartByUserID(Long userID);
 
-    String addToCart(AddCartModel addCartModel, String username);
+    String addToCart(AddCartModel addCartModel, Long userID);
 
-    String deleteItem(String cartID, String username);
+    String deleteItem(String cartID, Long userID);
 
-    String updateItem(UpdateCartModel updateCartModel, String username);
+    String updateItem(UpdateCartModel updateCartModel, Long userID);
 
 
 }
