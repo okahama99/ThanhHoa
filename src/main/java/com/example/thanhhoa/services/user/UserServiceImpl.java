@@ -38,7 +38,6 @@ public class UserServiceImpl implements UserService {
         AuthorizeModel model = new AuthorizeModel();
         model.setUserID(user.getId());
         model.setUsername(user.getUsername());
-        model.setPassword(user.getPassword());
         model.setFullName(user.getFullName());
         model.setEmail(user.getEmail());
         model.setPhone(user.getPhone());
@@ -57,7 +56,6 @@ public class UserServiceImpl implements UserService {
         AuthorizeModel model = new AuthorizeModel();
         model.setUserID(user.getId());
         model.setUsername(user.getUsername());
-        model.setPassword(user.getPassword());
         model.setFullName(user.getFullName());
         model.setEmail(user.getEmail());
         model.setPhone(user.getPhone());

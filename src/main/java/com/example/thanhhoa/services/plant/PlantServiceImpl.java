@@ -338,13 +338,13 @@ public class PlantServiceImpl implements PlantService {
 
     @Override
     public List<ShowPlantModel> getNameByPriceMin(Double minPrice, Pageable paging) {
-        Page<Plant> pagingResult = plantPagingRepository.findByPlantPrice_PriceGreaterThan(minPrice, Status.ONSALE, paging);
+        Page<Plant> pagingResult = plantPagingRepository.findByPlantPrice_PriceGreaterThanAndStatus(minPrice, Status.ONSALE, paging);
         return util.plantPagingConverter(pagingResult, paging);
     }
 
     @Override
     public List<ShowPlantModel> getNameByPriceMax(Double maxPrice, Pageable paging) {
-        Page<Plant> pagingResult = plantPagingRepository.findByPlantPrice_PriceLessThan(maxPrice, Status.ONSALE, paging);
+        Page<Plant> pagingResult = plantPagingRepository.findByPlantPrice_PriceLessThanAndStatus(maxPrice, Status.ONSALE, paging);
         return util.plantPagingConverter(pagingResult, paging);
     }
 

@@ -153,7 +153,7 @@ public class PlantController {
                 && fromPrice != null && toPrice != null) {
             return ResponseEntity.ok().body(plantService.getPlantByCategoryAndNameAndPrice(categoryID, plantName, fromPrice, toPrice, paging));
         } else {
-            return ResponseEntity.badRequest().body("Không thể tìm cây với giá trị đã nhập.");
+            return ResponseEntity.ok().body(plantService.getAllPlant(util.makePaging(pageNo, pageSize, sortBy.toString().toLowerCase(), sortAsc)));
         }
     }
 }
