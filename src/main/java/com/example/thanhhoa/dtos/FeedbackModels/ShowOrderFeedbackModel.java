@@ -1,5 +1,6 @@
 package com.example.thanhhoa.dtos.FeedbackModels;
 
+import com.example.thanhhoa.enums.Status;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -12,6 +13,7 @@ import java.util.List;
 public class ShowOrderFeedbackModel implements Serializable {
     private String orderFeedbackID;
     private String description;
+    private Status status;
     private LocalDateTime createdDate;
 
     private List<ShowOrderFeedbackIMGModel> imgList;

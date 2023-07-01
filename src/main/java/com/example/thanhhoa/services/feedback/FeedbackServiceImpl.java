@@ -68,6 +68,7 @@ public class FeedbackServiceImpl implements FeedbackService {
         model.setCreatedDate(orderFeedback.getCreatedDate());
         model.setRatingModel(ratingModel);
         model.setImgList(imgModelList);
+        model.setStatus(orderFeedback.getStatus());
         return model;
     }
 
@@ -96,6 +97,7 @@ public class FeedbackServiceImpl implements FeedbackService {
         model.setCreatedDate(orderFeedback.getCreatedDate());
         model.setRatingModel(ratingModel);
         model.setImgList(imgModelList);
+        model.setStatus(orderFeedback.getStatus());
         return model;
     }
 
@@ -131,6 +133,7 @@ public class FeedbackServiceImpl implements FeedbackService {
         model.setCreatedDate(orderFeedback.getCreatedDate());
         model.setRatingModel(ratingModel);
         model.setImgList(imgModelList);
+        model.setStatus(orderFeedback.getStatus());
         return model;
     }
 
@@ -158,6 +161,7 @@ public class FeedbackServiceImpl implements FeedbackService {
         model.setDescription(contractFeedback.getDescription());
         model.setCreatedDate(contractFeedback.getDate());
         model.setRatingModel(ratingModel);
+        model.setStatus(contractFeedback.getStatus());
         return model;
     }
 
@@ -177,6 +181,7 @@ public class FeedbackServiceImpl implements FeedbackService {
         model.setDescription(contractFeedback.getDescription());
         model.setCreatedDate(contractFeedback.getDate());
         model.setRatingModel(ratingModel);
+        model.setStatus(contractFeedback.getStatus());
         return model;
     }
 }

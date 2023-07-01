@@ -9,4 +9,6 @@ public interface CategoryService {
     List<ShowCategoryModel> getAllCategory(Pageable paging);
 
     ShowCategoryModel getCategoryByID(String categoryID);
+
+    List<ShowCategoryModel> getCategory();
 }

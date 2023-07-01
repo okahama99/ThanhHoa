@@ -1,5 +1,6 @@
 package com.example.thanhhoa.dtos.ServiceModels;
 
+import com.example.thanhhoa.enums.Status;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -13,6 +14,7 @@ public class ShowServiceModel implements Serializable {
     private String name;
     private Double price;
     private String description;
+    private Status status;
     private List<ShowServiceTypeModel> typeList;
     private Double totalPage;
     private List<ShowServiceIMGModel> imgList;

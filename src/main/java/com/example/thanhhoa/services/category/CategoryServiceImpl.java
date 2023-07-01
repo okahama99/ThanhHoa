@@ -10,6 +10,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -40,5 +41,21 @@ public class CategoryServiceImpl implements CategoryService{
         model.setCategoryID(category.getId());
         model.setCategoryName(category.getName());
         return model;
+    }
+
+    @Override
+    public List<ShowCategoryModel> getCategory() {
+        List<Category> list = categoryRepository.findAll();
+        if(list == null){
+            return null;
+        }
+        List<ShowCategoryModel> listModel = new ArrayList<>();
+        for(Category category : list) {
+            ShowCategoryModel model = new ShowCategoryModel();
+            model.setCategoryID(category.getId());
+            model.setCategoryName(category.getName());
+            listModel.add(model);
+        }
+        return listModel;
     }
 }

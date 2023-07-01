@@ -142,6 +142,9 @@ public class Util {
                     model.setPlantCategoryList(showPlantCategoryList);
                     model.setShowPlantPriceModel(showPlantPriceModel);
                     model.setPlantIMGList(showPlantIMGList);
+                    model.setDescription(plant.getDescription());
+                    model.setCareNote(plant.getCareNote());
+                    model.setStatus(plant.getStatus());
                     model.setTotalPage(totalPage);
                     return model;
                 }
@@ -205,6 +208,7 @@ public class Util {
                     model.setCreatedDate(orderFeedback.getCreatedDate());
                     model.setRatingModel(ratingModel);
                     model.setImgList(imgModelList);
+                    model.setStatus(orderFeedback.getStatus());
                     model.setTotalPage(totalPage);
                     return model;
                 }
@@ -235,6 +239,7 @@ public class Util {
                     model.setDescription(contractFeedback.getDescription());
                     model.setCreatedDate(contractFeedback.getDate());
                     model.setRatingModel(ratingModel);
+                    model.setStatus(contractFeedback.getStatus());
                     model.setTotalPage(totalPage);
                     return model;
                 }
@@ -289,6 +294,7 @@ public class Util {
                     model.setDescription(service.getDescription());
                     model.setTypeList(typeList);
                     model.setImgList(imgList);
+                    model.setStatus(service.getStatus());
                     model.setTotalPage(totalPage);
                     return model;
                 }
@@ -332,6 +338,7 @@ public class Util {
                     model.setDistance(order.getDistance());
                     model.setTotalShipCost(order.getTotalShipCost());
                     model.setTotal(order.getTotal());
+                    model.setStatus(order.getStatus());
                     model.setTotalPage(totalPage);
                     return model;
                 }

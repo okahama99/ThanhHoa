@@ -2,6 +2,7 @@ package com.example.thanhhoa.dtos.PlantModels;
 
 import com.example.thanhhoa.dtos.PlantPriceModels.ShowPlantPriceModel;
 import com.example.thanhhoa.dtos.PlantShipPriceModels.ShowPlantShipPriceModel;
+import com.example.thanhhoa.enums.Status;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -15,6 +16,9 @@ public class ShowPlantModel {
     private Double height;
     private Boolean withPot;
     private Double totalPage;
+    private String description;
+    private String careNote;
+    private Status status;
 
     private ShowPlantShipPriceModel showPlantShipPriceModel;
     private ShowPlantPriceModel showPlantPriceModel;

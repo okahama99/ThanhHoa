@@ -1,5 +1,6 @@
 package com.example.thanhhoa.dtos.FeedbackModels;
 
+import com.example.thanhhoa.enums.Status;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -11,6 +12,7 @@ import java.time.LocalDateTime;
 public class ShowContractFeedbackModel implements Serializable {
     private String contractFeedbackID;
     private String description;
+    private Status status;
     private LocalDateTime createdDate;
 
     private ShowRatingModel ratingModel;

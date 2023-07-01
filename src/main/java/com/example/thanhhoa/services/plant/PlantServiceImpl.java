@@ -109,6 +109,9 @@ public class PlantServiceImpl implements PlantService {
         model.setPlantCategoryList(showPlantCategoryList);
         model.setShowPlantPriceModel(showPlantPriceModel);
         model.setPlantIMGList(showPlantIMGList);
+        model.setDescription(plant.getDescription());
+        model.setCareNote(plant.getCareNote());
+        model.setStatus(plant.getStatus());
         return model;
     }
 
@@ -360,22 +363,6 @@ public class PlantServiceImpl implements PlantService {
         }
         Page<Plant> pagingResult = new PageImpl<>(catePlantList);
         return util.plantPagingConverter(pagingResult, paging);
-//        List<PlantCategory> plantCategoryList = plantCategoryRepository.findByCategory_Id(categoryID);
-//
-//        List<Plant> catePlantList = new ArrayList<>();
-//        for (PlantCategory plantCategory : plantCategoryList) {
-//            catePlantList.add(plantCategory.getPlant());
-//        }
-//
-//        List<Plant> plantList = plantRepository.findByNameContainingAndStatus(name, Status.ONSELL);
-//        if (plantList != null) {
-//            plantList.addAll(catePlantList);
-//            List<Plant> noDuplicatePlantList = new ArrayList<>(new HashSet<>(plantList));
-//
-//            Page<Plant> pagingResult = new PageImpl<>(noDuplicatePlantList);
-//            return util.plantPagingConverter(pagingResult, paging);
-//        }
-//        return null;
     }
 
     @Override

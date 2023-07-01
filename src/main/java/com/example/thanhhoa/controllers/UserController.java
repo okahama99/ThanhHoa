@@ -1,5 +1,6 @@
 package com.example.thanhhoa.controllers;
 
+import com.example.thanhhoa.dtos.UserModels.LoginModel;
 import com.example.thanhhoa.dtos.UserModels.RegisterStaffModel;
 import com.example.thanhhoa.dtos.UserModels.RegisterUserModel;
 import com.example.thanhhoa.dtos.UserModels.ShowUserModel;
@@ -73,12 +74,11 @@ public class UserController {
     private UserRepository userRepository;
 
     @PostMapping(value = "/login", produces = "application/json;charset=UTF-8")
-    public ResponseEntity<Object> login(@RequestParam String username,
-                                        @RequestParam String password) {
+    public ResponseEntity<Object> login(@RequestBody LoginModel loginModel) {
         try {
             Authentication authentication =
                     authenticationManager.authenticate(
-                            new UsernamePasswordAuthenticationToken(username, password));
+                            new UsernamePasswordAuthenticationToken(loginModel.getUsername(), loginModel.getPassword()));
 
             SecurityContextHolder.getContext().setAuthentication(authentication);
 
