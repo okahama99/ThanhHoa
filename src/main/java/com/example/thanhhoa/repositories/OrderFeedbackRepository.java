@@ -14,5 +14,5 @@ public interface OrderFeedbackRepository extends JpaRepository<OrderFeedback, St
 
     Optional<OrderFeedback> findById(String orderFeedbackID);
 
-    Optional<OrderFeedback> findByTblOrder_Id(String orderID);
+    Optional<OrderFeedback> findByOrderDetail_Id(String orderDetailID);
 }

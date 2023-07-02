@@ -37,9 +37,9 @@ public class OrderFeedback implements Serializable {
     @JoinColumn(name = "rating_id")
     private Rating rating;
 
-    @ManyToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-    @JoinColumn(name = "order_id")
-    private tblOrder tblOrder;
+    @OneToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @JoinColumn(name = "order_detail_id")
+    private OrderDetail orderDetail;
 
     @ManyToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     @JoinColumn(name = "customer_id")

@@ -88,9 +88,6 @@ public class tblOrder implements Serializable {
     private DistancePrice distancePrice;
 
     @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY, mappedBy = "tblOrder")
-    private List<OrderFeedback> orderFeedbackList;
-
-    @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY, mappedBy = "tblOrder")
     private List<OrderDetail> orderDetailList;
 
 

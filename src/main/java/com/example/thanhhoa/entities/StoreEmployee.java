@@ -1,5 +1,6 @@
 package com.example.thanhhoa.entities;
 
+import com.example.thanhhoa.enums.Status;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -9,6 +10,8 @@ import javax.persistence.Embeddable;
 import javax.persistence.Embedded;
 import javax.persistence.EmbeddedId;
 import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
 import javax.persistence.FetchType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
@@ -24,6 +27,9 @@ public class StoreEmployee implements Serializable {
 
     @EmbeddedId
     private StoreEmployeeId id;
+
+    @Enumerated(EnumType.STRING)
+    private Status status;
 
     @ManyToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     @JoinColumn(name = "store_id")

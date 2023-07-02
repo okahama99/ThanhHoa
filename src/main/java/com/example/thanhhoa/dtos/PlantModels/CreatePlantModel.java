@@ -5,6 +5,7 @@ import lombok.Setter;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.Serializable;
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Getter
@@ -17,7 +18,9 @@ public class CreatePlantModel implements Serializable {
     private Boolean withPot;
 
     private String shipPriceID;
-    private String plantPriceID;
     private List<String> categoryIDList;
-    private List<MultipartFile> files;
+    private MultipartFile[] files;
+
+    private Double price;
+    private LocalDateTime applyDate;
 }

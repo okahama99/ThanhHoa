@@ -16,7 +16,7 @@ public interface PlantRepository extends JpaRepository<Plant, String> {
 
     Plant findFirstByOrderByIdDesc();
 
-    List<Plant> findByPlantPrice_PriceBetweenAndStatus(Double fromPrice, Double toPrice, Status status);
+    List<Plant> findAllByStatus(Status status);
 
-    List<Plant> findByPlantPrice_PriceBetweenAndNameAndStatus(Double fromPrice, Double toPrice, String name, Status status);
+    List<Plant> findAllByNameContainingAndStatus(String name, Status status);
 }

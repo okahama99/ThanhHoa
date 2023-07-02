@@ -28,11 +28,11 @@ public interface PlantService {
 
     List<ShowPlantModel> getPlantByName(String name, Pageable paging);
 
-    List<ShowPlantModel> getNameByPriceMin(Double minPrice, Pageable paging);
+    List<ShowPlantModel> getPlantByPriceMin(Double minPrice, Pageable paging);
 
-    List<ShowPlantModel> getNameByPriceMax(Double maxPrice, Pageable paging);
+    List<ShowPlantModel> getPlantByPriceMax(Double maxPrice, Pageable paging);
 
-    List<ShowPlantModel> getNameByPriceInRange(Double fromPrice, Double toPrice, Pageable paging);
+    List<ShowPlantModel> getPlantByPriceInRange(Double fromPrice, Double toPrice, Pageable paging);
 
     List<ShowPlantModel> getPlantByCategoryAndName(String categoryID, String name, Pageable paging);
 

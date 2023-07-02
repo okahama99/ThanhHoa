@@ -10,7 +10,7 @@ import java.util.List;
 public interface CartRepository extends JpaRepository<Cart, String> {
     Cart findByAccount_IdAndId(Long accountID, String cartID);
 
-    List<Cart> findByAccount_Id(Long accountID);
+    List<Cart> findByAccount_IdAndQuantityGreaterThan(Long accountID, Integer quantity);
 
     Cart findFirstByOrderByIdDesc();
 

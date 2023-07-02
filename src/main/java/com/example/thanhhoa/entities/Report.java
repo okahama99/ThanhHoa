@@ -1,5 +1,6 @@
 package com.example.thanhhoa.entities;
 
+import com.example.thanhhoa.enums.Status;
 import lombok.Getter;
 import lombok.Setter;
 import org.springframework.data.annotation.CreatedDate;
@@ -23,6 +24,9 @@ public class Report implements Serializable {
     @CreatedDate
     @Column(nullable = false)
     private LocalDateTime createdDate;
+
+    @Enumerated(EnumType.STRING)
+    private Status status;
 
     @ManyToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     @JoinColumn(name = "contract_detail_id")

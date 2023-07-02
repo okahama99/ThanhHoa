@@ -66,10 +66,10 @@ public class FeedbackController {
         return feedbackService.getOrderFeedbackByPlantID(plantID, util.makePaging(pageNo, pageSize, sortBy.toLowerCase(), sortAsc));
     }
 
-    @GetMapping(value = "/orderFeedback/{orderID}", produces = "application/json;charset=UTF-8")
+    @GetMapping(value = "/orderFeedback/{orderDetailID}", produces = "application/json;charset=UTF-8")
     public @ResponseBody
-    ResponseEntity<Object> getOrderFeedbackByOrderID(@PathVariable("orderID") String orderID) {
-        ShowOrderFeedbackModel model = feedbackService.getOrderFeedbackByOrderID(orderID);
+    ResponseEntity<Object> getOrderFeedbackByOrderDetailID(@PathVariable("orderID") String orderDetailID) {
+        ShowOrderFeedbackModel model = feedbackService.getOrderFeedbackByOrderDetailID(orderDetailID);
         if (model != null) {
             return ResponseEntity.ok().body(model);
         }

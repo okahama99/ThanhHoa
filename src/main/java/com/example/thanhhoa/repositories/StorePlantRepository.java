@@ -1,6 +1,7 @@
 package com.example.thanhhoa.repositories;
 
 import com.example.thanhhoa.entities.StorePlant;
+import com.example.thanhhoa.enums.Status;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
@@ -8,9 +9,9 @@ import java.util.List;
 
 @Repository
 public interface StorePlantRepository extends JpaRepository<StorePlant, String> {
-    StorePlant findByPlantIdAndStoreId(String plantID, String storeID);
+    StorePlant findByPlantIdAndStoreIdAndPlant_Status(String plantID, String storeID, Status status);
 
-    List<StorePlant> findByStore_Id(String storeID);
+    List<StorePlant> findByStore_IdAndPlant_Status(String storeID, Status status);
 
     StorePlant findFirstByOrderByIdDesc();
 }

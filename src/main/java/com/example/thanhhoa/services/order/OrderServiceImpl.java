@@ -9,6 +9,7 @@ import com.example.thanhhoa.dtos.OrderModels.UpdateOrderModel;
 import com.example.thanhhoa.entities.DistancePrice;
 import com.example.thanhhoa.entities.OrderDetail;
 import com.example.thanhhoa.entities.Plant;
+import com.example.thanhhoa.entities.PlantPrice;
 import com.example.thanhhoa.entities.StorePlant;
 import com.example.thanhhoa.entities.StorePlantRecord;
 import com.example.thanhhoa.entities.tblAccount;
@@ -17,6 +18,7 @@ import com.example.thanhhoa.enums.Status;
 import com.example.thanhhoa.repositories.DistancePriceRepository;
 import com.example.thanhhoa.repositories.OrderDetailRepository;
 import com.example.thanhhoa.repositories.OrderRepository;
+import com.example.thanhhoa.repositories.PlantPriceRepository;
 import com.example.thanhhoa.repositories.PlantRepository;
 import com.example.thanhhoa.repositories.StorePlantRecordRepository;
 import com.example.thanhhoa.repositories.StorePlantRepository;
@@ -49,6 +51,8 @@ public class OrderServiceImpl implements OrderService{
     private DistancePriceRepository distancePriceRepository;
     @Autowired
     private PlantRepository plantRepository;
+    @Autowired
+    private PlantPriceRepository plantPriceRepository;
     @Autowired
     private OrderPagingRepository orderPagingRepository;
     @Autowired
@@ -97,7 +101,8 @@ public class OrderServiceImpl implements OrderService{
         OrderDetail lastDetailRecord = orderDetailRepository.findFirstByOrderByIdDesc();
         for(OrderDetailModel model : createOrderModel.getDetailList()){
             Plant plant = plantRepository.getById(model.getPlantID());
-            totalPriceOfAPlant += plant.getPlantPrice().getPrice() * model.getQuantity();
+            PlantPrice newestPrice = plantPriceRepository.findFirstByPlant_IdOrderByApplyDateDesc(plant.getId());
+            totalPriceOfAPlant += newestPrice.getPrice() * model.getQuantity();
             totalShipCost += plant.getPlantShipPrice().getPricePerPlant() * model.getQuantity();
 
             OrderDetail detail = new OrderDetail();
@@ -165,7 +170,8 @@ public class OrderServiceImpl implements OrderService{
         OrderDetail lastDetailRecord = orderDetailRepository.findFirstByOrderByIdDesc();
         for(OrderDetailModel model : updateOrderModel.getDetailList()){
             Plant plant = plantRepository.getById(model.getPlantID());
-            totalPriceOfAPlant += plant.getPlantPrice().getPrice() * model.getQuantity();
+            PlantPrice newestPrice = plantPriceRepository.findFirstByPlant_IdOrderByApplyDateDesc(plant.getId());
+            totalPriceOfAPlant += newestPrice.getPrice() * model.getQuantity();
             totalShipCost += plant.getPlantShipPrice().getPricePerPlant() * model.getQuantity();
 
             OrderDetail detail = new OrderDetail();
@@ -205,7 +211,7 @@ public class OrderServiceImpl implements OrderService{
             List<OrderDetail> orderDetailList = order.getOrderDetailList();
             for(OrderDetail orderDetail : orderDetailList){
                 StorePlant storePlant = storePlantRepository.
-                        findByPlantIdAndStoreId(orderDetail.getPlant().getId(), order.getStore().getId());
+                        findByPlantIdAndStoreIdAndPlant_Status(orderDetail.getPlant().getId(), order.getStore().getId(), Status.ONSALE);
                 storePlant.setQuantity(storePlant.getQuantity()+orderDetail.getQuantity());
                 storePlantRepository.save(storePlant);
 
@@ -241,7 +247,7 @@ public class OrderServiceImpl implements OrderService{
             List<OrderDetail> orderDetailList = order.getOrderDetailList();
             for(OrderDetail orderDetail : orderDetailList){
                 StorePlant storePlant = storePlantRepository.
-                        findByPlantIdAndStoreId(orderDetail.getPlant().getId(), order.getStore().getId());
+                        findByPlantIdAndStoreIdAndPlant_Status(orderDetail.getPlant().getId(), order.getStore().getId(), Status.ONSALE);
                 storePlant.setQuantity(storePlant.getQuantity()-orderDetail.getQuantity());
                 storePlantRepository.save(storePlant);
 

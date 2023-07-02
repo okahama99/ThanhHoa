@@ -11,6 +11,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -20,8 +21,10 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RequestPart;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.server.ResponseStatusException;
 
 import javax.servlet.http.HttpServletRequest;
@@ -38,13 +41,49 @@ public class PlantController {
     @Autowired
     private JwtUtil jwtUtil;
 
-    @PostMapping(produces = "application/json;charset=UTF-8")
-    public ResponseEntity<Object> createPlant(@RequestBody CreatePlantModel createPlantModel,
+//    @PostMapping(produces = "application/json;charset=UTF-8")
+//    public ResponseEntity<Object> createPlant(@RequestBody CreatePlantModel createPlantModel,
+//                                              HttpServletRequest request) throws Exception {
+//        String roleName = jwtUtil.getRoleNameFromRequest(request);
+//        if (!roleName.equalsIgnoreCase("Owner")) {
+//            throw new ResponseStatusException(HttpStatus.FORBIDDEN, "-----------------------------------Người dùng không có quyền truy cập---------------------------");
+//        }
+//        if (plantService.checkDuplicate(createPlantModel.getName()) != null) {
+//            return ResponseEntity.badRequest().body("Cây cùng tên đã tồn tại.");
+//        } else {
+//            String result = plantService.createPlant(createPlantModel);
+//            if (result.equals("Tạo thành công.")) {
+//                return ResponseEntity.ok().body(result);
+//            }
+//            return ResponseEntity.badRequest().body(result);
+//        }
+//    }
+
+    @PostMapping(produces = "application/json;charset=UTF-8", consumes= MediaType.MULTIPART_FORM_DATA_VALUE)
+    public ResponseEntity<Object> createPlant(@RequestParam String name,
+                                              @RequestParam String description,
+                                              @RequestParam String careNote,
+                                              @RequestParam Double height,
+                                              @RequestParam Boolean withPot,
+                                              @RequestParam String shipPriceID,
+                                              @RequestParam Double price,
+                                              @RequestParam List<String> categoryIDList,
+                                              @RequestPart(name = "file") MultipartFile[] files,
                                               HttpServletRequest request) throws Exception {
         String roleName = jwtUtil.getRoleNameFromRequest(request);
         if (!roleName.equalsIgnoreCase("Owner")) {
             throw new ResponseStatusException(HttpStatus.FORBIDDEN, "-----------------------------------Người dùng không có quyền truy cập---------------------------");
         }
+        CreatePlantModel createPlantModel = new CreatePlantModel();
+        createPlantModel.setName(name);
+        createPlantModel.setDescription(description);
+        createPlantModel.setCareNote(careNote);
+        createPlantModel.setHeight(height);
+        createPlantModel.setWithPot(withPot);
+        createPlantModel.setShipPriceID(shipPriceID);
+        createPlantModel.setPrice(price);
+        createPlantModel.setCategoryIDList(categoryIDList);
+        createPlantModel.setFiles(files);
         if (plantService.checkDuplicate(createPlantModel.getName()) != null) {
             return ResponseEntity.badRequest().body("Cây cùng tên đã tồn tại.");
         } else {
@@ -133,13 +172,13 @@ public class PlantController {
             return ResponseEntity.ok().body(plantService.getPlantByCategory(categoryID, paging));
         } else if (StringUtils.isEmpty(plantName) && categoryID == null
                 && fromPrice != null && toPrice == null) {
-            return ResponseEntity.ok().body(plantService.getNameByPriceMin(fromPrice, paging));
+            return ResponseEntity.ok().body(plantService.getPlantByPriceMin(fromPrice, paging));
         } else if (StringUtils.isEmpty(plantName) && categoryID == null
                 && fromPrice == null && toPrice != null) {
-            return ResponseEntity.ok().body(plantService.getNameByPriceMax(toPrice, paging));
+            return ResponseEntity.ok().body(plantService.getPlantByPriceMax(toPrice, paging));
         } else if (StringUtils.isEmpty(plantName) && categoryID == null
                 && fromPrice != null && toPrice != null) {
-            return ResponseEntity.ok().body(plantService.getNameByPriceInRange(fromPrice, toPrice, paging));
+            return ResponseEntity.ok().body(plantService.getPlantByPriceInRange(fromPrice, toPrice, paging));
         } else if (!StringUtils.isEmpty(plantName) && categoryID != null
                 && fromPrice == null && toPrice == null) {
             return ResponseEntity.ok().body(plantService.getPlantByCategoryAndName(categoryID, plantName, paging));

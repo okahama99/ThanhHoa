@@ -1,5 +1,6 @@
 package com.example.thanhhoa.entities;
 
+import com.example.thanhhoa.enums.Status;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -23,6 +24,9 @@ public class Store implements Serializable {
 
     @Column(nullable = false, length = 20)
     private String phone;
+
+    @Enumerated(EnumType.STRING)
+    private Status status;
 
     @OneToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     @JoinColumn(name = "district_id")

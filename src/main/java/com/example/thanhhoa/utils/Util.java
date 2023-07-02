@@ -22,13 +22,16 @@ import com.example.thanhhoa.entities.OrderFeedbackIMG;
 import com.example.thanhhoa.entities.Plant;
 import com.example.thanhhoa.entities.PlantCategory;
 import com.example.thanhhoa.entities.PlantIMG;
+import com.example.thanhhoa.entities.PlantPrice;
 import com.example.thanhhoa.entities.Service;
 import com.example.thanhhoa.entities.ServiceIMG;
 import com.example.thanhhoa.entities.ServiceType;
 import com.example.thanhhoa.entities.tblAccount;
 import com.example.thanhhoa.entities.tblOrder;
+import com.example.thanhhoa.enums.Status;
 import com.example.thanhhoa.repositories.PlantCategoryRepository;
 import com.example.thanhhoa.repositories.PlantIMGRepository;
+import com.example.thanhhoa.repositories.PlantPriceRepository;
 import com.example.thanhhoa.repositories.ServiceIMGRepository;
 import com.example.thanhhoa.repositories.ServiceTypeRepository;
 import com.google.common.base.Converter;
@@ -51,6 +54,8 @@ public class Util {
     private ServiceIMGRepository serviceIMGRepository;
     @Autowired
     private PlantIMGRepository plantIMGRepository;
+    @Autowired
+    private PlantPriceRepository plantPriceRepository;
 
     /**
      * Small Util to return {@link Pageable} to replace dup code in serviceImpl
@@ -103,7 +108,7 @@ public class Util {
             Page<ShowPlantModel> modelResult = pagingResult.map(new Converter<Plant, ShowPlantModel>() {
                 @Override
                 protected ShowPlantModel doForward(Plant plant) {
-                    List<PlantCategory> plantCategoryList = plantCategoryRepository.findAllByPlant_Id(plant.getId());
+                    List<PlantCategory> plantCategoryList = plantCategoryRepository.findAllByPlant_IdAndStatus(plant.getId(), Status.ACTIVE);
                     List<ShowPlantCategory> showPlantCategoryList = new ArrayList<>();
                     for (PlantCategory plantCategory : plantCategoryList) {
                         ShowPlantCategory showPlantCategory = new ShowPlantCategory();
@@ -128,10 +133,11 @@ public class Util {
                     showPlantShipPriceModel.setPotSize(plant.getPlantShipPrice().getPotSize());
                     showPlantShipPriceModel.setPricePerPlant(plant.getPlantShipPrice().getPricePerPlant());
 
+                    PlantPrice newestPrice = plantPriceRepository.findFirstByPlant_IdOrderByApplyDateDesc(plant.getId());
                     ShowPlantPriceModel showPlantPriceModel = new ShowPlantPriceModel();
-                    showPlantPriceModel.setId(plant.getPlantPrice().getId());
-                    showPlantPriceModel.setPrice(plant.getPlantPrice().getPrice());
-                    showPlantPriceModel.setApplyDate(plant.getPlantPrice().getApplyDate());
+                    showPlantPriceModel.setId(newestPrice.getId());
+                    showPlantPriceModel.setPrice(newestPrice.getPrice());
+                    showPlantPriceModel.setApplyDate(newestPrice.getApplyDate());
 
                     ShowPlantModel model = new ShowPlantModel();
                     model.setPlantID(plant.getId());

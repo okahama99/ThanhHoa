@@ -5,8 +5,10 @@ import com.example.thanhhoa.dtos.CartModels.ShowCartModel;
 import com.example.thanhhoa.dtos.CartModels.UpdateCartModel;
 import com.example.thanhhoa.entities.Cart;
 import com.example.thanhhoa.entities.Plant;
+import com.example.thanhhoa.entities.PlantPrice;
 import com.example.thanhhoa.entities.tblAccount;
 import com.example.thanhhoa.repositories.CartRepository;
+import com.example.thanhhoa.repositories.PlantPriceRepository;
 import com.example.thanhhoa.repositories.PlantRepository;
 import com.example.thanhhoa.repositories.UserRepository;
 import com.example.thanhhoa.utils.Util;
@@ -26,23 +28,26 @@ public class CartServiceImpl implements CartService {
     @Autowired
     private PlantRepository plantRepository;
     @Autowired
+    private PlantPriceRepository plantPriceRepository;
+    @Autowired
     private Util util;
 
 
     @Override
     public List<ShowCartModel> getCartByUserID(Long userID) {
-        List<Cart> cartList = cartRepository.findByAccount_Id(userID);
+        List<Cart> cartList = cartRepository.findByAccount_IdAndQuantityGreaterThan(userID, 0);
         if(cartList == null) {
             return null;
         }
         List<ShowCartModel> modelList = new ArrayList<>();
         for(Cart cart : cartList) {
+            PlantPrice newestPrice = plantPriceRepository.findFirstByPlant_IdOrderByApplyDateDesc(cart.getPlant().getId());
             ShowCartModel model = new ShowCartModel();
             model.setId(cart.getId());
             model.setPlantID(cart.getPlant().getId());
             model.setPlantName(cart.getPlant().getName());
             model.setQuantity(cart.getQuantity());
-            model.setPlantPrice(cart.getPlant().getPlantPrice().getPrice());
+            model.setPlantPrice(newestPrice.getPrice());
             model.setImage(cart.getPlant().getPlantIMGList().get(0).getImgURL());
             modelList.add(model);
         }
@@ -89,6 +94,9 @@ public class CartServiceImpl implements CartService {
         Cart cart = cartRepository.findByAccount_IdAndId(userID, updateCartModel.getCartID());
         if(cart == null){
             return "Không tồn tại Cart nào với UserID " + userID + " và CartID " + updateCartModel.getCartID() + ".";
+        }
+        if(updateCartModel.getQuantity() <= 0){
+            return "Quantity phải lớn hơn 0.";
         }
         cart.setQuantity(updateCartModel.getQuantity());
         cartRepository.save(cart);

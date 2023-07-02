@@ -1,5 +1,6 @@
 package com.example.thanhhoa.entities;
 
+import com.example.thanhhoa.enums.Status;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -14,6 +15,9 @@ public class Rating implements Serializable {
 
     @Id
     private String id;
+
+    @Enumerated(EnumType.STRING)
+    private Status status;
 
     @Lob
     @Column(nullable = false)

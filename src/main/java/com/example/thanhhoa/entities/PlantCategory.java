@@ -1,5 +1,6 @@
 package com.example.thanhhoa.entities;
 
+import com.example.thanhhoa.enums.Status;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -12,6 +13,9 @@ import java.io.Serializable;
 public class PlantCategory implements Serializable {
     @Id
     private String id;
+
+    @Enumerated(EnumType.STRING)
+    private Status status;
 
     @ManyToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     @JoinColumn(name = "plant_id")

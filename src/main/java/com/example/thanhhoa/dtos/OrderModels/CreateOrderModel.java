@@ -3,6 +3,7 @@ package com.example.thanhhoa.dtos.OrderModels;
 import lombok.Getter;
 import lombok.Setter;
 
+import javax.annotation.Nullable;
 import java.io.Serializable;
 import java.util.List;
 
@@ -16,8 +17,9 @@ public class CreateOrderModel implements Serializable {
     private String paymentMethod;
     private Double distance;
     private String storeID;
-    private Long staffID;
     private String distancePriceID;
-
     private List<OrderDetailModel> detailList;
+
+    @Nullable
+    private Long staffID;
 }

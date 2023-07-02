@@ -108,8 +108,8 @@ public class FeedbackServiceImpl implements FeedbackService {
     }
 
     @Override
-    public ShowOrderFeedbackModel getOrderFeedbackByOrderID(String orderID) {
-        Optional<OrderFeedback> checkOrderFeedback = orderFeedbackRepository.findByTblOrder_Id(orderID);
+    public ShowOrderFeedbackModel getOrderFeedbackByOrderDetailID(String orderDetailID) {
+        Optional<OrderFeedback> checkOrderFeedback = orderFeedbackRepository.findByOrderDetail_Id(orderDetailID);
         if(checkOrderFeedback == null){
             return null;
         }

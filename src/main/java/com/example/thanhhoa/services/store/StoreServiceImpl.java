@@ -13,6 +13,7 @@ import com.example.thanhhoa.entities.StoreEmployeeId;
 import com.example.thanhhoa.entities.StorePlant;
 import com.example.thanhhoa.entities.StorePlantRecord;
 import com.example.thanhhoa.entities.tblAccount;
+import com.example.thanhhoa.enums.Status;
 import com.example.thanhhoa.repositories.PlantRepository;
 import com.example.thanhhoa.repositories.StoreEmployeeRepository;
 import com.example.thanhhoa.repositories.StorePlantRecordRepository;
@@ -74,7 +75,8 @@ public class StoreServiceImpl implements StoreService{
         if (plant == null) {
             return "Không tồn tại Plant với ID là " + addStorePlantModel.getPlantID() + ".";
         }
-        StorePlant storePlant = storePlantRepository.findByPlantIdAndStoreId(addStorePlantModel.getPlantID(), addStorePlantModel.getStoreID());
+        StorePlant storePlant = storePlantRepository.findByPlantIdAndStoreIdAndPlant_Status
+                (addStorePlantModel.getPlantID(), addStorePlantModel.getStoreID(), Status.ONSALE);
         if (storePlant == null) {
             StorePlant newPlant = new StorePlant();
             StorePlant lastStorePlant = storePlantRepository.findFirstByOrderByIdDesc();
@@ -139,7 +141,7 @@ public class StoreServiceImpl implements StoreService{
 
     @Override
     public List<ShowPlantModel> getStorePlantByStoreID(String storeID, Pageable pageable) {
-        List<StorePlant> listPlant = storePlantRepository.findByStore_Id(storeID);
+        List<StorePlant> listPlant = storePlantRepository.findByStore_IdAndPlant_Status(storeID, Status.ONSALE);
         if(listPlant==null){
             return null;
         }

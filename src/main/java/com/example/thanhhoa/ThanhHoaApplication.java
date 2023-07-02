@@ -1,5 +1,6 @@
 package com.example.thanhhoa;
 
+import com.example.thanhhoa.services.firebase.FirebaseResource;
 import com.example.thanhhoa.utils.Util;
 import com.google.auth.oauth2.GoogleCredentials;
 import com.google.firebase.FirebaseApp;
@@ -56,6 +57,7 @@ public class ThanhHoaApplication {
 
 		FirebaseOptions options = new FirebaseOptions.Builder()
 				.setCredentials(GoogleCredentials.fromStream(serviceAccount))
+				.setStorageBucket(FirebaseResource.BUCKET_NAME)
 				.build();
 
 		FirebaseApp.initializeApp(options);
