@@ -1,5 +1,6 @@
 package com.example.thanhhoa.entities;
 
+import com.example.thanhhoa.enums.Status;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -24,6 +25,9 @@ public class PlantShipPrice implements Serializable {
 
     @Column(nullable = false)
     private LocalDateTime applyDate;
+
+    @Enumerated(EnumType.STRING)
+    private Status status;
 
     @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY, mappedBy = "plantShipPrice")
     private List<Plant> plantList;

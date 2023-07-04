@@ -8,6 +8,7 @@ import com.example.thanhhoa.dtos.PlantModels.UpdatePlantModel;
 import com.example.thanhhoa.dtos.PlantPriceModels.ShowPlantPriceModel;
 import com.example.thanhhoa.dtos.PlantShipPriceModels.ShowPlantShipPriceModel;
 import com.example.thanhhoa.entities.Category;
+import com.example.thanhhoa.entities.OrderDetail;
 import com.example.thanhhoa.entities.Plant;
 import com.example.thanhhoa.entities.PlantCategory;
 import com.example.thanhhoa.entities.PlantIMG;
@@ -15,6 +16,7 @@ import com.example.thanhhoa.entities.PlantPrice;
 import com.example.thanhhoa.entities.PlantShipPrice;
 import com.example.thanhhoa.enums.Status;
 import com.example.thanhhoa.repositories.CategoryRepository;
+import com.example.thanhhoa.repositories.OrderDetailRepository;
 import com.example.thanhhoa.repositories.PlantCategoryRepository;
 import com.example.thanhhoa.repositories.PlantIMGRepository;
 import com.example.thanhhoa.repositories.PlantPriceRepository;
@@ -55,6 +57,8 @@ public class PlantServiceImpl implements PlantService {
     private CategoryRepository categoryRepository;
     @Autowired
     private ImageService imageService;
+    @Autowired
+    private OrderDetailRepository orderDetailRepository;
     @Autowired
     private Util util;
 
@@ -322,14 +326,20 @@ public class PlantServiceImpl implements PlantService {
     }
 
     @Override
-    public Boolean deletePlant(String plantID) {
+    public String deletePlant(String plantID) {
         Optional<Plant> checkingPlant = plantRepository.findById(plantID);
         if(checkingPlant != null) {
-            checkingPlant.get().setStatus(Status.INACTIVE);
+            Plant plant = checkingPlant.get();
+
+            if(orderDetailRepository.findByPlant_IdAndTblOrder_ProgressStatus(plantID, Status.WAITING) != null){
+                return "Không thể xóa cây đang được sử dụng.";
+            }
+
+            plant.setStatus(Status.INACTIVE);
             plantRepository.save(checkingPlant.get());
-            return true;
+            return "Xóa cây thành công.";
         }
-        return false;
+        return "Không tìm thấy cây với ID là " + plantID + ".";
     }
 
     @Override

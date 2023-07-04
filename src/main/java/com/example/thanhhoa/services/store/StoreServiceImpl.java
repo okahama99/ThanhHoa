@@ -4,9 +4,13 @@ import com.example.thanhhoa.dtos.PlantModels.AddStorePlantModel;
 import com.example.thanhhoa.dtos.PlantModels.ShowPlantModel;
 import com.example.thanhhoa.dtos.StoreModels.AddStoreEmployeeModel;
 import com.example.thanhhoa.dtos.StoreModels.CreateStoreModel;
+import com.example.thanhhoa.dtos.StoreModels.ShowDistrictModel;
+import com.example.thanhhoa.dtos.StoreModels.ShowProvinceModel;
 import com.example.thanhhoa.dtos.StoreModels.ShowStoreModel;
 import com.example.thanhhoa.dtos.StoreModels.UpdateStoreModel;
+import com.example.thanhhoa.entities.District;
 import com.example.thanhhoa.entities.Plant;
+import com.example.thanhhoa.entities.Province;
 import com.example.thanhhoa.entities.Store;
 import com.example.thanhhoa.entities.StoreEmployee;
 import com.example.thanhhoa.entities.StoreEmployeeId;
@@ -14,7 +18,9 @@ import com.example.thanhhoa.entities.StorePlant;
 import com.example.thanhhoa.entities.StorePlantRecord;
 import com.example.thanhhoa.entities.tblAccount;
 import com.example.thanhhoa.enums.Status;
+import com.example.thanhhoa.repositories.DistrictRepository;
 import com.example.thanhhoa.repositories.PlantRepository;
+import com.example.thanhhoa.repositories.ProvinceRepository;
 import com.example.thanhhoa.repositories.StoreEmployeeRepository;
 import com.example.thanhhoa.repositories.StorePlantRecordRepository;
 import com.example.thanhhoa.repositories.StorePlantRepository;
@@ -49,6 +55,10 @@ public class StoreServiceImpl implements StoreService{
     private UserRepository userRepository;
     @Autowired
     private StoreEmployeeRepository storeEmployeeRepository;
+    @Autowired
+    private DistrictRepository districtRepository;
+    @Autowired
+    private ProvinceRepository provinceRepository;
 
     @Override
     public String createStore(CreateStoreModel createStoreModel) {
@@ -128,12 +138,15 @@ public class StoreServiceImpl implements StoreService{
         List<Store> getListStore = storeRepository.findAll();
         List<ShowStoreModel> storeModelList = new ArrayList<>();
         for (Store store : getListStore) {
+            StoreEmployee manager = storeEmployeeRepository.findByStore_IdAndAccount_Role_RoleName(store.getId(), "Manager");
             ShowStoreModel model = new ShowStoreModel();
             model.setId(store.getId());
             model.setStoreName(store.getStoreName());
             model.setAddress(store.getAddress());
             model.setDistrict(store.getDistrict().getDistrictName());
             model.setPhone(store.getPhone());
+            model.setManagerID(manager.getAccount().getId());
+            model.setManagerName(manager.getAccount().getFullName());
             storeModelList.add(model);
         }
         return storeModelList;
@@ -176,5 +189,37 @@ public class StoreServiceImpl implements StoreService{
             storeEmployeeRepository.save(storeEmployee);
         }
         return "Thêm thành công.";
+    }
+
+    @Override
+    public List<ShowDistrictModel> getDistrictByProvinceID(String provinceID) {
+        List<District> districtList = districtRepository.findByProvince_Id(provinceID);
+        if(districtList == null){
+            return null;
+        }
+        List<ShowDistrictModel> modelList = new ArrayList<>();
+        for(District district : districtList) {
+            ShowDistrictModel model = new ShowDistrictModel();
+            model.setId(district.getId());
+            model.setName(district.getDistrictName());
+            modelList.add(model);
+        }
+        return modelList;
+    }
+
+    @Override
+    public List<ShowProvinceModel> getAllProvince() {
+        List<Province> provinceList = provinceRepository.findAll();
+        if(provinceList == null){
+            return null;
+        }
+        List<ShowProvinceModel> modelList = new ArrayList<>();
+        for(Province province : provinceList) {
+            ShowProvinceModel model = new ShowProvinceModel();
+            model.setId(province.getId());
+            model.setName(province.getProvinceName());
+            modelList.add(model);
+        }
+        return modelList;
     }
 }

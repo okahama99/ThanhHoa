@@ -1,7 +1,5 @@
 package com.example.thanhhoa.dtos.ContractModels;
 
-import com.example.thanhhoa.dtos.ReportModels.ShowReportModel;
-import com.example.thanhhoa.dtos.ServiceModels.ShowServiceTypeModel;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -20,6 +18,6 @@ public class ShowContractDetailModel implements Serializable {
     private Double totalPrice;
     private String contractID;
     private String serviceTypeID;
-    private List<ShowReportModel> reportList;
-    private List<ShowServiceTypeModel> serviceTypeList;
+    private String servicePackID;
+    private List<ShowWorkingDateModel> workingDateList;
 }

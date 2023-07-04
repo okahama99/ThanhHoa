@@ -1,11 +1,14 @@
 package com.example.thanhhoa.entities;
 
+import com.example.thanhhoa.enums.Status;
 import lombok.Getter;
 import lombok.Setter;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
 import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -30,6 +33,9 @@ public class ServicePack implements Serializable {
 
     @Column(nullable = false)
     private LocalDateTime applyDate;
+
+    @Enumerated(EnumType.STRING)
+    private Status status;
 
     @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY, mappedBy = "servicePack")
     private List<ContractDetail> contractDetailList;

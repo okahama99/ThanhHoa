@@ -6,6 +6,7 @@ import com.example.thanhhoa.dtos.OrderModels.ShowOrderDetailModel;
 import com.example.thanhhoa.dtos.OrderModels.ShowOrderModel;
 import com.example.thanhhoa.dtos.OrderModels.UpdateOrderModel;
 import com.example.thanhhoa.enums.SearchType;
+import com.example.thanhhoa.enums.Status;
 import com.example.thanhhoa.services.order.OrderService;
 import com.example.thanhhoa.utils.JwtUtil;
 import com.example.thanhhoa.utils.Util;
@@ -65,12 +66,15 @@ public class OrderController {
     }
 
     @DeleteMapping(value = "/{orderID}", produces = "application/json;charset=UTF-8")
-    public ResponseEntity<Object> deleteOrder(@PathVariable(name = "orderID") String orderID, HttpServletRequest request) {
+    public ResponseEntity<Object> deleteOrder(@PathVariable(name = "orderID") String orderID,
+                                              @RequestParam String reason,
+                                              @RequestParam String status,
+                                              HttpServletRequest request) {
         String roleName = jwtUtil.getRoleNameFromRequest(request);
         if(!roleName.equalsIgnoreCase("Customer")) {
             throw new ResponseStatusException(HttpStatus.FORBIDDEN, "-----------------------------------Người dùng không có quyền truy cập---------------------------");
         }
-        String result = orderService.deleteOrder(orderID);
+        String result = orderService.deleteOrder(orderID, reason, Status.valueOf(status));
         if(result.equals("Xóa thành công.")) {
             return ResponseEntity.ok().body(result);
         }
@@ -90,21 +94,9 @@ public class OrderController {
         return ResponseEntity.badRequest().body(result);
     }
 
-    @PutMapping(value = "/rejectOrder", produces = "application/json;charset=UTF-8")
-    public ResponseEntity<Object> rejectOrder(@RequestParam String orderID, @RequestParam String reason, HttpServletRequest request) throws Exception {
-        String roleName = jwtUtil.getRoleNameFromRequest(request);
-        if(!roleName.equalsIgnoreCase("Manager")) {
-            throw new ResponseStatusException(HttpStatus.FORBIDDEN, "-----------------------------------Người dùng không có quyền truy cập---------------------------");
-        }
-        if(orderService.rejectOrder(orderID, reason)) {
-            return ResponseEntity.ok().body("Từ chối thành công.");
-        } else {
-            return ResponseEntity.badRequest().body("Từ chối thất bại.");
-        }
-    }
-
     @PutMapping(value = "/changeOrderStatus", produces = "application/json;charset=UTF-8")
-    public ResponseEntity<Object> changeOrderStatus(@RequestParam String orderID, @RequestParam SearchType.ORDER_STATUS status, HttpServletRequest request) throws Exception {
+    public ResponseEntity<Object> changeOrderStatus(@RequestParam String orderID,
+                                                    @RequestParam SearchType.ORDER_STATUS status, HttpServletRequest request) throws Exception {
         String roleName = jwtUtil.getRoleNameFromRequest(request);
         if(!roleName.equalsIgnoreCase("Manager")) {
             throw new ResponseStatusException(HttpStatus.FORBIDDEN, "-----------------------------------Người dùng không có quyền truy cập---------------------------");
@@ -142,7 +134,8 @@ public class OrderController {
     public @ResponseBody
     List<ShowOrderModel> getWaitingOrder(@RequestParam int pageNo,
                                          @RequestParam int pageSize,
-                                         @RequestParam(required = false, defaultValue = "ID") SearchType.ORDER sortBy, @RequestParam(required = false, defaultValue = "true") Boolean sortAsc, HttpServletRequest request) {
+                                         @RequestParam(required = false, defaultValue = "ID") SearchType.ORDER sortBy,
+                                         @RequestParam(required = false, defaultValue = "true") Boolean sortAsc, HttpServletRequest request) {
         String roleName = jwtUtil.getRoleNameFromRequest(request);
         if(!roleName.equalsIgnoreCase("Manager")) {
             throw new ResponseStatusException(HttpStatus.FORBIDDEN, "-----------------------------------Người dùng không có quyền truy cập---------------------------");

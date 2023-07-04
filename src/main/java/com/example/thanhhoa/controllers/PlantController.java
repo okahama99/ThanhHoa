@@ -99,7 +99,7 @@ public class PlantController {
     public ResponseEntity<Object> updatePlant(@RequestBody UpdatePlantModel updatePlantModel,
                                               HttpServletRequest request) throws Exception {
         String roleName = jwtUtil.getRoleNameFromRequest(request);
-        if (!roleName.equalsIgnoreCase("Owner") || !roleName.equalsIgnoreCase("Manager")) {
+        if (!roleName.equalsIgnoreCase("Owner") && !roleName.equalsIgnoreCase("Manager")) {
             throw new ResponseStatusException(HttpStatus.FORBIDDEN, "-----------------------------------Người dùng không có quyền truy cập---------------------------");
         }
         if (plantService.checkDuplicate(updatePlantModel.getName()) != null) {
@@ -120,10 +120,11 @@ public class PlantController {
         if (!roleName.equalsIgnoreCase("Owner")) {
             throw new ResponseStatusException(HttpStatus.FORBIDDEN, "-----------------------------------Người dùng không có quyền truy cập---------------------------");
         }
-        if (plantService.deletePlant(plantID)) {
-            return ResponseEntity.ok().body("Xóa cây thành công.");
+        String result = plantService.deletePlant(plantID);
+        if (result.equals("Xóa cây thành công.")) {
+            return ResponseEntity.ok().body(result);
         } else {
-            return ResponseEntity.badRequest().body("Xóa cây thất bại.");
+            return ResponseEntity.badRequest().body(result);
         }
     }
 

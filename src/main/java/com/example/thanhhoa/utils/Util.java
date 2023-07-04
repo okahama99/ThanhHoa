@@ -1,6 +1,8 @@
 package com.example.thanhhoa.utils;
 
 import com.example.thanhhoa.dtos.CategoryModels.ShowCategoryModel;
+import com.example.thanhhoa.dtos.ContractModels.ShowContractDetailModel;
+import com.example.thanhhoa.dtos.ContractModels.ShowContractModel;
 import com.example.thanhhoa.dtos.FeedbackModels.ShowContractFeedbackModel;
 import com.example.thanhhoa.dtos.FeedbackModels.ShowOrderFeedbackIMGModel;
 import com.example.thanhhoa.dtos.FeedbackModels.ShowOrderFeedbackModel;
@@ -16,6 +18,8 @@ import com.example.thanhhoa.dtos.ServiceModels.ShowServiceModel;
 import com.example.thanhhoa.dtos.ServiceModels.ShowServiceTypeModel;
 import com.example.thanhhoa.dtos.UserModels.ShowUserModel;
 import com.example.thanhhoa.entities.Category;
+import com.example.thanhhoa.entities.Contract;
+import com.example.thanhhoa.entities.ContractDetail;
 import com.example.thanhhoa.entities.ContractFeedback;
 import com.example.thanhhoa.entities.OrderFeedback;
 import com.example.thanhhoa.entities.OrderFeedbackIMG;
@@ -29,6 +33,7 @@ import com.example.thanhhoa.entities.ServiceType;
 import com.example.thanhhoa.entities.tblAccount;
 import com.example.thanhhoa.entities.tblOrder;
 import com.example.thanhhoa.enums.Status;
+import com.example.thanhhoa.repositories.ContractDetailRepository;
 import com.example.thanhhoa.repositories.PlantCategoryRepository;
 import com.example.thanhhoa.repositories.PlantIMGRepository;
 import com.example.thanhhoa.repositories.PlantPriceRepository;
@@ -56,6 +61,8 @@ public class Util {
     private PlantIMGRepository plantIMGRepository;
     @Autowired
     private PlantPriceRepository plantPriceRepository;
+    @Autowired
+    private ContractDetailRepository contractDetailRepository;
 
     /**
      * Small Util to return {@link Pageable} to replace dup code in serviceImpl
@@ -351,6 +358,52 @@ public class Util {
 
                 @Override
                 protected tblOrder doBackward(ShowOrderModel showOrderModel) {
+                    return null;
+                }
+            });
+            return modelResult.getContent();
+        } else {
+            return new ArrayList<>();
+        }
+    }
+
+    public List<ShowContractModel> contractPagingConverter(Page<Contract> pagingResult, Pageable paging) {
+        if (pagingResult.hasContent()) {
+            double totalPage = Math.ceil((double) pagingResult.getTotalElements() / paging.getPageSize());
+            Page<ShowContractModel> modelResult = pagingResult.map(new Converter<Contract, ShowContractModel>() {
+                @Override
+                protected ShowContractModel doForward(Contract contract) {
+                    ShowContractModel model = new ShowContractModel();
+                    model.setId(contract.getId());
+                    model.setFullName(contract.getFullName());
+                    model.setAddress(contract.getAddress());
+                    model.setEmail(contract.getEmail());
+                    model.setPhone(contract.getPhone());
+                    model.setTitle(contract.getTitle());
+                    model.setPaymentMethod(contract.getPaymentMethod());
+                    model.setReason(contract.getReason());
+                    model.setCreatedDate(contract.getCreatedDate());
+                    model.setApprovedDate(contract.getApprovedDate());
+                    model.setRejectedDate(contract.getRejectedDate());
+                    model.setStartedDate(contract.getStartedDate());
+                    model.setEndedDate(contract.getEndedDate());
+                    model.setDeposit(contract.getDeposit());
+                    model.setTotal(contract.getTotal());
+                    model.setIsFeedback(contract.getIsFeedback());
+                    model.setIsSigned(contract.getIsSigned());
+                    model.setStoreID(contract.getStore().getId());
+                    model.setStoreName(contract.getStore().getStoreName());
+                    model.setStaffID(contract.getStaff().getId());
+                    model.setStaffName(contract.getStaff().getFullName());
+                    model.setCustomerID(contract.getCustomer().getId());
+                    model.setPaymentTypeID(contract.getPaymentType().getId());
+                    model.setStatus(contract.getStatus());
+                    model.setTotalPage(totalPage);
+                    return model;
+                }
+
+                @Override
+                protected Contract doBackward(ShowContractModel showContractModel) {
                     return null;
                 }
             });

@@ -4,7 +4,8 @@ public class SearchType {
     public enum PLANT{
         ID,
         NAME,
-        HEIGHT
+        HEIGHT,
+        PRICE
     }
 
     public enum STATUS{

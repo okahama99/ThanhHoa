@@ -6,4 +6,5 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 public interface StoreEmployeeRepository extends JpaRepository<StoreEmployee, String> {
+    StoreEmployee findByStore_IdAndAccount_Role_RoleName(String storeID, String roleName);
 }

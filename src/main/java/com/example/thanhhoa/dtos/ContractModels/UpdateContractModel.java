@@ -15,11 +15,7 @@ public class UpdateContractModel implements Serializable {
     private String email;
     private String phone;
     private String address;
-    private String paymentMethod;
-    private LocalDateTime startedDate;
-    private LocalDateTime endedDate;
     private Double total;
     private String storeID;
-    private String staffID;
-    private String paymentTypeID;
+    private Long staffID;
 }

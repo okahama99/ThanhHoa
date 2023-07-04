@@ -16,11 +16,9 @@ public interface OrderService {
 
     String updateOrder(UpdateOrderModel updateOrderModel, Long customerID);
 
-    String deleteOrder(String orderID);
+    String deleteOrder(String orderID, String reason, Status status);
 
     String approveOrder(String orderID);
-
-    Boolean rejectOrder(String orderID, String reason);
 
     Boolean changeOrderStatus(String orderID, String status);
 

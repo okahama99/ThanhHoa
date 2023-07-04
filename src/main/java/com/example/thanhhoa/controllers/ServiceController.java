@@ -54,7 +54,7 @@ public class ServiceController {
     public ResponseEntity<Object> updateService(@RequestBody UpdateServiceModel updateServiceModel,
                                               HttpServletRequest request) throws Exception {
         String roleName = jwtUtil.getRoleNameFromRequest(request);
-        if (!roleName.equalsIgnoreCase("Owner") || !roleName.equalsIgnoreCase("Manager")) {
+        if (!roleName.equalsIgnoreCase("Owner") && !roleName.equalsIgnoreCase("Manager")) {
             throw new ResponseStatusException(HttpStatus.FORBIDDEN, "-----------------------------------Người dùng không có quyền truy cập---------------------------");
         }
         String result = serviceService.updateService(updateServiceModel);
@@ -71,10 +71,11 @@ public class ServiceController {
         if (!roleName.equalsIgnoreCase("Owner")) {
             throw new ResponseStatusException(HttpStatus.FORBIDDEN, "-----------------------------------Người dùng không có quyền truy cập---------------------------");
         }
-        if (serviceService.deleteService(serviceID)) {
-            return ResponseEntity.ok().body("Xóa dịch vụ thành công.");
+        String result = serviceService.deleteService(serviceID);
+        if (!result.equals("Xóa thành công.")) {
+            return ResponseEntity.ok().body(result);
         } else {
-            return ResponseEntity.badRequest().body("Xóa dịch vụ thất bại.");
+            return ResponseEntity.badRequest().body(result);
         }
     }
 

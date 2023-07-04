@@ -5,6 +5,7 @@ import lombok.Setter;
 
 import java.io.Serializable;
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Getter
 @Setter
@@ -14,13 +15,7 @@ public class CreateContractModel implements Serializable {
     private String email;
     private String phone;
     private String address;
-    private String paymentMethod;
-    private LocalDateTime createdDate;
-    private LocalDateTime startedDate;
-    private LocalDateTime endedDate;
-    private Double total;
     private String storeID;
-    private String staffID;
     private String customerID;
-    private String paymentTypeID;
+    private List<CreateContractDetailModel> detailModelList;
 }

@@ -13,5 +13,7 @@ public class ShowStoreModel implements Serializable {
     private String address;
     private String phone;
     private String district;
+    private Long managerID;
+    private String managerName;
     private Double totalPage;
 }

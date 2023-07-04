@@ -1,5 +1,6 @@
 package com.example.thanhhoa.dtos.ContractModels;
 
+import com.example.thanhhoa.enums.Status;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -28,8 +29,12 @@ public class ShowContractModel implements Serializable {
     private Boolean isFeedback;
     private Boolean isSigned;
     private String storeID;
-    private String staffID;
-    private String customerID;
+    private String storeName;
+    private Long staffID;
+    private String staffName;
+    private Long customerID;
     private String paymentTypeID;
-    private List<ShowContractDetailModel> contractDetailList;
+    private Status status;
+    private List<ShowContractIMGModel> imgList;
+    private Double totalPage;
 }

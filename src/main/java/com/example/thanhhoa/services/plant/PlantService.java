@@ -18,7 +18,7 @@ public interface PlantService {
 
     String updatePlant(UpdatePlantModel updatePlantModel) throws Exception;
 
-    Boolean deletePlant(String plantID);
+    String deletePlant(String plantID);
 
     Plant checkDuplicate(String plantName);
 

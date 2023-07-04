@@ -8,6 +8,7 @@ import com.example.thanhhoa.entities.Service;
 import com.example.thanhhoa.entities.ServiceIMG;
 import com.example.thanhhoa.entities.ServiceType;
 import com.example.thanhhoa.enums.Status;
+import com.example.thanhhoa.repositories.ContractDetailRepository;
 import com.example.thanhhoa.repositories.ServiceIMGRepository;
 import com.example.thanhhoa.repositories.ServiceRepository;
 import com.example.thanhhoa.repositories.ServiceTypeRepository;
@@ -38,6 +39,8 @@ public class ServiceServiceImpl implements ServiceService{
     private ImageService imageService;
     @Autowired
     private ServiceIMGRepository serviceIMGRepository;
+    @Autowired
+    private ContractDetailRepository contractDetailRepository;
 
     @Override
     public String createService(CreateServiceModel createServiceModel) throws Exception{
@@ -52,7 +55,7 @@ public class ServiceServiceImpl implements ServiceService{
         Service service = new Service();
         Service getLastService = serviceRepository.findFirstByOrderByIdDesc();
         if(getLastService != null){
-            service.setId(util.createIDFromLastID("SE",1,getLastService.getId()));
+            service.setId(util.createIDFromLastID("SE",2,getLastService.getId()));
         }else{
             service.setId(util.createNewID("SE"));
         }
@@ -139,14 +142,27 @@ public class ServiceServiceImpl implements ServiceService{
     }
 
     @Override
-    public Boolean deleteService(String serviceID) {
-        Optional<Service> service = serviceRepository.findById(serviceID);
-        if (service != null) {
-            service.get().setStatus(Status.INACTIVE);
-            serviceRepository.save(service.get());
-            return true;
+    public String deleteService(String serviceID) {
+        Optional<Service> checkExisted = serviceRepository.findById(serviceID);
+        if (checkExisted != null) {
+            Service service = checkExisted.get();
+
+            for(ServiceType type : service.getServiceTypeList()){
+                if(contractDetailRepository.findByServiceType_IdAndContract_Status(type.getId(), Status.WAITING) != null){
+                    return "Không thể xóa dịch vụ đang được sử dụng.";
+                }
+            }
+
+            for(ServiceType type : service.getServiceTypeList()){
+                type.setStatus(Status.INACTIVE);
+                serviceTypeRepository.save(type);
+            }
+
+            service.setStatus(Status.INACTIVE);
+            serviceRepository.save(service);
+            return "Xóa thành công.";
         }
-        return false;
+        return "Không tìm thấy dịch vụ có ID là " + serviceID + ".";
     }
 
     @Override

@@ -6,6 +6,7 @@ import com.example.thanhhoa.dtos.OrderModels.OrderDetailModel;
 import com.example.thanhhoa.dtos.OrderModels.ShowOrderDetailModel;
 import com.example.thanhhoa.dtos.OrderModels.ShowOrderModel;
 import com.example.thanhhoa.dtos.OrderModels.UpdateOrderModel;
+import com.example.thanhhoa.entities.Cart;
 import com.example.thanhhoa.entities.DistancePrice;
 import com.example.thanhhoa.entities.OrderDetail;
 import com.example.thanhhoa.entities.Plant;
@@ -15,6 +16,7 @@ import com.example.thanhhoa.entities.StorePlantRecord;
 import com.example.thanhhoa.entities.tblAccount;
 import com.example.thanhhoa.entities.tblOrder;
 import com.example.thanhhoa.enums.Status;
+import com.example.thanhhoa.repositories.CartRepository;
 import com.example.thanhhoa.repositories.DistancePriceRepository;
 import com.example.thanhhoa.repositories.OrderDetailRepository;
 import com.example.thanhhoa.repositories.OrderRepository;
@@ -59,6 +61,8 @@ public class OrderServiceImpl implements OrderService{
     private StorePlantRepository storePlantRepository;
     @Autowired
     private StorePlantRecordRepository storePlantRecordRepository;
+    @Autowired
+    private CartRepository cartRepository;
     @Autowired
     private Util util;
 
@@ -109,13 +113,17 @@ public class OrderServiceImpl implements OrderService{
             if(lastDetailRecord == null){
                 detail.setId(util.createNewID("OD"));
             }else{
-                detail.setId(util.createIDFromLastID("OD", 1, lastDetailRecord.getId()));
+                detail.setId(util.createIDFromLastID("OD", 2, lastDetailRecord.getId()));
             }
             detail.setPrice(totalPriceOfAPlant);
             detail.setQuantity(model.getQuantity());
             detail.setTblOrder(order);
             detail.setPlant(plant);
             orderDetailRepository.save(detail);
+
+            Cart cart = cartRepository.findByPlant_Id(model.getPlantID());
+            cart.setQuantity(0);
+            cartRepository.save(cart);
         }
         Double totalDistancePrice = distancePrice.getPricePerKm()*createOrderModel.getDistance();
         total += totalPriceOfAPlant + totalShipCost + totalDistancePrice;
@@ -178,7 +186,7 @@ public class OrderServiceImpl implements OrderService{
             if(lastDetailRecord == null){
                 detail.setId(util.createNewID("OD"));
             }else{
-                detail.setId(util.createIDFromLastID("OD", 1, lastDetailRecord.getId()));
+                detail.setId(util.createIDFromLastID("OD", 2, lastDetailRecord.getId()));
             }
             detail.setPrice(totalPriceOfAPlant);
             detail.setQuantity(model.getQuantity());
@@ -197,14 +205,16 @@ public class OrderServiceImpl implements OrderService{
     }
 
     @Override
-    public String deleteOrder(String orderID){
+    public String deleteOrder(String orderID, String reason, Status status){
         Optional<tblOrder> checkExistedOrder = orderRepository.findById(orderID);
         if(checkExistedOrder != null){
             tblOrder order = checkExistedOrder.get();
-            if(order.getStatus().equals("RECEIVED") || order.getStatus().equals("DELIVERING")){
-                return "Không thể hủy !! Đơn hàng đã bắt đầu được giao.";
+            if(!order.getProgressStatus().equals("WAITING")){
+                return "Chỉ được hủy đơn hàng có trạng thái là WAITING.";
             }
-            order.setStatus(Status.INACTIVE);
+            order.setReason(reason);
+            order.setStatus(status);
+            order.setRejectDate(LocalDateTime.now());
             order.getStaff().setStatus(Status.AVAILABLE);
             orderRepository.save(checkExistedOrder.get());
 
@@ -267,17 +277,6 @@ public class OrderServiceImpl implements OrderService{
             return "Chấp nhận thành công.";
         }
         return "Không tồn tại Order với ID là : " + orderID +".";
-    }
-
-    @Override
-    public Boolean rejectOrder(String orderID, String reason){
-        Optional<tblOrder> checkExistedOrder = orderRepository.findById(orderID);
-        if(checkExistedOrder != null){
-            checkExistedOrder.get().setStatus(Status.DENIED);
-            orderRepository.save(checkExistedOrder.get());
-            return true;
-        }
-        return false;
     }
 
     @Override
