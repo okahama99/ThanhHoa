@@ -7,6 +7,7 @@ import com.example.thanhhoa.entities.Cart;
 import com.example.thanhhoa.entities.Plant;
 import com.example.thanhhoa.entities.PlantPrice;
 import com.example.thanhhoa.entities.tblAccount;
+import com.example.thanhhoa.enums.Status;
 import com.example.thanhhoa.repositories.CartRepository;
 import com.example.thanhhoa.repositories.PlantPriceRepository;
 import com.example.thanhhoa.repositories.PlantRepository;
@@ -41,7 +42,7 @@ public class CartServiceImpl implements CartService {
         }
         List<ShowCartModel> modelList = new ArrayList<>();
         for(Cart cart : cartList) {
-            PlantPrice newestPrice = plantPriceRepository.findFirstByPlant_IdOrderByApplyDateDesc(cart.getPlant().getId());
+            PlantPrice newestPrice = plantPriceRepository.findFirstByPlant_IdAndStatusOrderByApplyDateDesc(cart.getPlant().getId(), Status.ACTIVE);
             ShowCartModel model = new ShowCartModel();
             model.setId(cart.getId());
             model.setPlantID(cart.getPlant().getId());

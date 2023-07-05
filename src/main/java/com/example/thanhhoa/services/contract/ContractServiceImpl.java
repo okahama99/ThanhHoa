@@ -178,9 +178,15 @@ public class ContractServiceImpl implements ContractService {
         for(CreateContractDetailModel model : createContractModel.getDetailModelList()) {
             ServicePack servicePack = new ServicePack();
             if(model.getServicePackID() != null) {
-                servicePack = servicePackRepository.getById(model.getServicePackID());
+                servicePack = servicePackRepository.findByIdAndStatus(model.getServicePackID(), Status.ACTIVE);
+                if(servicePack == null){
+                    return "Không tìm thấy ServicePack với ID là " + model.getServicePackID() + ".";
+                }
             }
-            ServiceType serviceType = serviceTypeRepository.getById(model.getServiceTypeID());
+            ServiceType serviceType = serviceTypeRepository.findByIdAndStatus(model.getServiceTypeID(), Status.ACTIVE);
+            if(serviceType == null){
+                return "Không tìm thấy ServiceType với ID là " + model.getServiceTypeID() + ".";
+            }
 
             Double total = 0.0;
             ContractDetail detail = new ContractDetail();

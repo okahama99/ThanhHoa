@@ -140,7 +140,7 @@ public class Util {
                     showPlantShipPriceModel.setPotSize(plant.getPlantShipPrice().getPotSize());
                     showPlantShipPriceModel.setPricePerPlant(plant.getPlantShipPrice().getPricePerPlant());
 
-                    PlantPrice newestPrice = plantPriceRepository.findFirstByPlant_IdOrderByApplyDateDesc(plant.getId());
+                    PlantPrice newestPrice = plantPriceRepository.findFirstByPlant_IdAndStatusOrderByApplyDateDesc(plant.getId(), Status.ACTIVE);
                     ShowPlantPriceModel showPlantPriceModel = new ShowPlantPriceModel();
                     showPlantPriceModel.setId(newestPrice.getId());
                     showPlantPriceModel.setPrice(newestPrice.getPrice());
@@ -160,6 +160,73 @@ public class Util {
                     model.setStatus(plant.getStatus());
                     model.setTotalPage(totalPage);
                     return model;
+                }
+
+                @Override
+                protected Plant doBackward(ShowPlantModel showPlantModel) {
+                    return null;
+                }
+            });
+            return modelResult.getContent();
+        } else {
+            return new ArrayList<>();
+        }
+    }
+
+    public List<ShowPlantModel> plantPricePagingConverter(Double fromPrice, Double toPrice,Page<Plant> pagingResult, Pageable paging) {
+        if (pagingResult.hasContent()) {
+            double totalPage = Math.ceil((double) pagingResult.getTotalElements() / paging.getPageSize());
+            Page<ShowPlantModel> modelResult = pagingResult.map(new Converter<Plant, ShowPlantModel>() {
+                @Override
+                protected ShowPlantModel doForward(Plant resultPlant) {
+                    PlantPrice plant = plantPriceRepository.findByPlant_IdAndPriceBetweenAndStatus(resultPlant.getId(), fromPrice, toPrice, Status.ACTIVE);
+                    if(plant != null){
+                        List<PlantCategory> plantCategoryList = plantCategoryRepository.findAllByPlant_IdAndStatus(plant.getPlant().getId(), Status.ACTIVE);
+                        List<ShowPlantCategory> showPlantCategoryList = new ArrayList<>();
+                        for (PlantCategory plantCategory : plantCategoryList) {
+                            ShowPlantCategory showPlantCategory = new ShowPlantCategory();
+                            showPlantCategory.setCategoryID(plantCategory.getCategory().getId());
+                            showPlantCategory.setCategoryName(plantCategory.getCategory().getName());
+                            showPlantCategoryList.add(showPlantCategory);
+                        }
+
+                        List<ShowPlantIMGModel> showPlantIMGList = new ArrayList<>();
+                        List<PlantIMG> plantIMGList = plantIMGRepository.findByPlant_Id(plant.getPlant().getId());
+                        if(plantIMGList != null){
+                            for(PlantIMG img : plantIMGList) {
+                                ShowPlantIMGModel model = new ShowPlantIMGModel();
+                                model.setId(img.getId());
+                                model.setUrl(img.getImgURL());
+                                showPlantIMGList.add(model);
+                            }
+                        }
+
+                        ShowPlantShipPriceModel showPlantShipPriceModel = new ShowPlantShipPriceModel();
+                        showPlantShipPriceModel.setId(plant.getPlant().getPlantShipPrice().getId());
+                        showPlantShipPriceModel.setPotSize(plant.getPlant().getPlantShipPrice().getPotSize());
+                        showPlantShipPriceModel.setPricePerPlant(plant.getPlant().getPlantShipPrice().getPricePerPlant());
+
+                        ShowPlantPriceModel showPlantPriceModel = new ShowPlantPriceModel();
+                        showPlantPriceModel.setId(plant.getId());
+                        showPlantPriceModel.setPrice(plant.getPrice());
+                        showPlantPriceModel.setApplyDate(plant.getApplyDate());
+
+                        ShowPlantModel model = new ShowPlantModel();
+                        model.setPlantID(plant.getPlant().getId());
+                        model.setName(plant.getPlant().getName());
+                        model.setHeight(plant.getPlant().getHeight());
+                        model.setWithPot(plant.getPlant().getWithPot());
+                        model.setShowPlantShipPriceModel(showPlantShipPriceModel);
+                        model.setPlantCategoryList(showPlantCategoryList);
+                        model.setShowPlantPriceModel(showPlantPriceModel);
+                        model.setPlantIMGList(showPlantIMGList);
+                        model.setDescription(plant.getPlant().getDescription());
+                        model.setCareNote(plant.getPlant().getCareNote());
+                        model.setStatus(plant.getPlant().getStatus());
+                        model.setTotalPage(totalPage);
+                        return model;
+                    }
+                    return null;
                 }
 
                 @Override
@@ -275,7 +342,7 @@ public class Util {
                 @Override
                 protected ShowServiceModel doForward(Service service) {
                     List<ShowServiceTypeModel> typeList = new ArrayList<>();
-                    List<ServiceType> serviceTypeList = serviceTypeRepository.findByService_Id(service.getId());
+                    List<ServiceType> serviceTypeList = serviceTypeRepository.findByService_IdAndStatus(service.getId(), Status.ACTIVE);
                     if(serviceTypeList != null){
                         for (ServiceType serviceType : serviceTypeList) {
                             ShowServiceTypeModel typeModel = new ShowServiceTypeModel();

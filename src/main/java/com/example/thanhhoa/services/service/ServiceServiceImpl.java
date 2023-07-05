@@ -61,7 +61,10 @@ public class ServiceServiceImpl implements ServiceService{
         }
         List<ServiceType> serviceTypeList = new ArrayList<>();
         for (String serviceTypeID : createServiceModel.getTypeIDList()) {
-            ServiceType serviceType = serviceTypeRepository.getById(serviceTypeID);
+            ServiceType serviceType = serviceTypeRepository.findByIdAndStatus(serviceTypeID, Status.ACTIVE);
+            if(serviceType == null){
+                return "Không tìm thấy ServiceType với ID là " + serviceTypeID + ".";
+            }
             serviceTypeList.add(serviceType);
         }
 
@@ -102,7 +105,10 @@ public class ServiceServiceImpl implements ServiceService{
         }
         List<ServiceType> serviceTypeList = new ArrayList<>();
         for (String serviceTypeID : updateServiceModel.getTypeIDList()) {
-            ServiceType serviceType = serviceTypeRepository.getById(serviceTypeID);
+            ServiceType serviceType = serviceTypeRepository.findByIdAndStatus(serviceTypeID, Status.ACTIVE);
+            if(serviceType == null){
+                return "Không tìm thấy ServiceType với ID là " + serviceTypeID + ".";
+            }
             serviceTypeList.add(serviceType);
         }
         Service service = checkExisted.get();
@@ -173,7 +179,7 @@ public class ServiceServiceImpl implements ServiceService{
 
     @Override
     public List<ShowServiceTypeModel> getServiceTypeByServiceID(String serviceID) {
-        List<ServiceType> serviceTypeList = serviceTypeRepository.findByService_Id(serviceID);
+        List<ServiceType> serviceTypeList = serviceTypeRepository.findByService_IdAndStatus(serviceID, Status.ACTIVE);
         if(serviceTypeList == null){
             return null;
         }

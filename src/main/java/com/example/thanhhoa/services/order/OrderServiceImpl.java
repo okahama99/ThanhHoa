@@ -105,7 +105,7 @@ public class OrderServiceImpl implements OrderService{
         OrderDetail lastDetailRecord = orderDetailRepository.findFirstByOrderByIdDesc();
         for(OrderDetailModel model : createOrderModel.getDetailList()){
             Plant plant = plantRepository.getById(model.getPlantID());
-            PlantPrice newestPrice = plantPriceRepository.findFirstByPlant_IdOrderByApplyDateDesc(plant.getId());
+            PlantPrice newestPrice = plantPriceRepository.findFirstByPlant_IdAndStatusOrderByApplyDateDesc(plant.getId(), Status.ACTIVE);
             totalPriceOfAPlant += newestPrice.getPrice() * model.getQuantity();
             totalShipCost += plant.getPlantShipPrice().getPricePerPlant() * model.getQuantity();
 
@@ -178,7 +178,7 @@ public class OrderServiceImpl implements OrderService{
         OrderDetail lastDetailRecord = orderDetailRepository.findFirstByOrderByIdDesc();
         for(OrderDetailModel model : updateOrderModel.getDetailList()){
             Plant plant = plantRepository.getById(model.getPlantID());
-            PlantPrice newestPrice = plantPriceRepository.findFirstByPlant_IdOrderByApplyDateDesc(plant.getId());
+            PlantPrice newestPrice = plantPriceRepository.findFirstByPlant_IdAndStatusOrderByApplyDateDesc(plant.getId(), Status.ACTIVE);
             totalPriceOfAPlant += newestPrice.getPrice() * model.getQuantity();
             totalShipCost += plant.getPlantShipPrice().getPricePerPlant() * model.getQuantity();
 
