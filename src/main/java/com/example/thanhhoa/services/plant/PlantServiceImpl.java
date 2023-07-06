@@ -413,14 +413,14 @@ public class PlantServiceImpl implements PlantService {
 
     @Override
     public List<ShowPlantModel> getPlantByCategoryAndName(String categoryID, String name, Pageable paging) {
-        Page<PlantCategory> plantCategoryPage = plantCategoryPagingRepository.findByCategory_IdAndPlant_Name(categoryID, name, paging);
+        Page<PlantCategory> plantCategoryPage = plantCategoryPagingRepository.findByCategory_IdAndPlant_NameContaining(categoryID, name, paging);
         Page<Plant> pagingResult = plantCategoryPage.map(plantCategory -> plantRepository.getById(plantCategory.getPlant().getId()));
         return util.plantPagingConverter(pagingResult, paging);
     }
 
     @Override
     public List<ShowPlantModel> getPlantByNameAndPrice(String name, Double fromPrice, Double toPrice, Pageable paging) {
-        Page<PlantPrice> plantPricePage = plantPricePagingRepository.findByPlant_NameAndPriceBetweenAndStatus(name, fromPrice, toPrice, Status.ACTIVE, paging);
+        Page<PlantPrice> plantPricePage = plantPricePagingRepository.findByPlant_NameContainingAndPriceBetweenAndStatus(name, fromPrice, toPrice, Status.ACTIVE, paging);
         Page<Plant> pagingResult = plantPricePage.map(plantPrice -> plantRepository.getById(plantPrice.getPlant().getId()));
         return util.plantPagingConverter(pagingResult, paging);
     }
@@ -434,7 +434,7 @@ public class PlantServiceImpl implements PlantService {
 
     @Override
     public List<ShowPlantModel> getPlantByCategoryAndNameAndPrice(String categoryID, String name, Double fromPrice, Double toPrice, Pageable paging) {
-        Page<PlantCategory> plantCategoryPage = plantCategoryPagingRepository.findByCategory_IdAndPlant_Name(categoryID, name, paging);
+        Page<PlantCategory> plantCategoryPage = plantCategoryPagingRepository.findByCategory_IdAndPlant_NameContaining(categoryID, name, paging);
         Page<Plant> pagingResult = plantCategoryPage.map(plantCategory -> plantRepository.getById(plantCategory.getPlant().getId()));
         return util.plantPricePagingConverter(fromPrice, toPrice, pagingResult, paging);
     }

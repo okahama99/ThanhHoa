@@ -10,5 +10,5 @@ import org.springframework.stereotype.Repository;
 public interface PlantCategoryPagingRepository extends PagingAndSortingRepository<PlantCategory, String> {
     Page<PlantCategory> findByCategory_Id(String categoryID, Pageable pageable);
 
-    Page<PlantCategory> findByCategory_IdAndPlant_Name(String categoryID, String plantName, Pageable pageable);
+    Page<PlantCategory> findByCategory_IdAndPlant_NameContaining(String categoryID, String plantName, Pageable pageable);
 }
