@@ -231,7 +231,7 @@ public class PlantServiceImpl implements PlantService {
         plantPriceList.add(plantPrice);
         plant.setPlantPriceList(plantPriceList);
         plantRepository.save(plant);
-        return "Tạo thành công.";
+        return plant.getId();
     }
 
     @Override

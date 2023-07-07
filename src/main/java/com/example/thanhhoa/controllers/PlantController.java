@@ -91,11 +91,7 @@ public class PlantController {
         if(plantService.checkDuplicate(createPlantModel.getName()) != null) {
             return ResponseEntity.badRequest().body("Cây cùng tên đã tồn tại.");
         } else {
-            String result = plantService.createPlant(createPlantModel);
-            if(result.equals("Tạo thành công.")) {
-                return ResponseEntity.ok().body(result);
-            }
-            return ResponseEntity.badRequest().body(result);
+            return ResponseEntity.ok().body(plantService.createPlant(createPlantModel));
         }
     }
 

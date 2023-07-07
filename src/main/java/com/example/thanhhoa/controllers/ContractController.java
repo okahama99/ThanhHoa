@@ -1,7 +1,6 @@
 package com.example.thanhhoa.controllers;
 
 import com.example.thanhhoa.dtos.ContractModels.ApproveContractModel;
-import com.example.thanhhoa.dtos.ContractModels.CreateContractDetailModel;
 import com.example.thanhhoa.dtos.ContractModels.CreateCustomerContractModel;
 import com.example.thanhhoa.dtos.ContractModels.CreateManagerContractModel;
 import com.example.thanhhoa.dtos.ContractModels.GetStaffModel;
@@ -117,12 +116,7 @@ public class ContractController {
         if(!roleName.equalsIgnoreCase("Manager")) {
             throw new ResponseStatusException(HttpStatus.FORBIDDEN, "-----------------------------------Người dùng không có quyền truy cập---------------------------");
         }
-
-        String result = contractService.createContractManager(createManagerContractModel);
-        if(result.equals("Tạo thành công.")) {
-            return ResponseEntity.ok().body(result);
-        }
-        return ResponseEntity.badRequest().body(result);
+        return ResponseEntity.ok().body(contractService.createContractManager(createManagerContractModel));
     }
 
     @PutMapping(produces = "application/json;charset=UTF-8")
@@ -161,12 +155,7 @@ public class ContractController {
         if(!roleName.equalsIgnoreCase("Manager")) {
             throw new ResponseStatusException(HttpStatus.FORBIDDEN, "-----------------------------------Người dùng không có quyền truy cập---------------------------");
         }
-
-        String result = contractService.approveContract(approveContractModel);
-        if(result.equals("Duyệt thành công.")) {
-            return ResponseEntity.ok().body(result);
-        }
-        return ResponseEntity.badRequest().body(result);
+        return ResponseEntity.ok().body(contractService.approveContract(approveContractModel));
     }
 
     @PutMapping(value = "/changeContractStatus", produces = "application/json;charset=UTF-8")

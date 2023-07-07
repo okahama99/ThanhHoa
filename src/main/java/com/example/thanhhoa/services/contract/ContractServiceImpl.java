@@ -300,7 +300,7 @@ public class ContractServiceImpl implements ContractService {
 
         contract.setTotal(totalPrice);
         contractRepository.save(contract);
-        return "Tạo thành công.";
+        return contract.getId();
     }
 
     @Override
