@@ -9,4 +9,8 @@ import java.util.List;
 @Repository
 public interface ContractIMGRepository extends JpaRepository<ContractIMG, String> {
     List<ContractIMG> findByContract_Id(String contractID);
+
+    ContractIMG findFirstByOrderByIdDesc();
+
+    ContractIMG findByImgURL(String imgURL);
 }

@@ -62,4 +62,11 @@ public class SearchType {
         DELIVERING,
         RECEIVED
     }
+
+    public enum PSP{
+        ID,
+        POTSIZE,
+        PRICEPERPLANT,
+        STATUS
+    }
 }

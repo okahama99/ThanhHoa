@@ -1,7 +1,9 @@
 package com.example.thanhhoa.controllers;
 
 import com.example.thanhhoa.dtos.ContractModels.ApproveContractModel;
-import com.example.thanhhoa.dtos.ContractModels.CreateContractModel;
+import com.example.thanhhoa.dtos.ContractModels.CreateContractDetailModel;
+import com.example.thanhhoa.dtos.ContractModels.CreateCustomerContractModel;
+import com.example.thanhhoa.dtos.ContractModels.CreateManagerContractModel;
 import com.example.thanhhoa.dtos.ContractModels.GetStaffModel;
 import com.example.thanhhoa.dtos.ContractModels.ShowContractDetailModel;
 import com.example.thanhhoa.dtos.ContractModels.ShowContractModel;
@@ -23,11 +25,14 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RequestPart;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.server.ResponseStatusException;
 
 import javax.servlet.http.HttpServletRequest;
+import java.io.IOException;
 import java.util.List;
 
 @RestController
@@ -58,13 +63,62 @@ public class ContractController {
         return model;
     }
 
-    @PostMapping(produces = "application/json;charset=UTF-8")
-    public ResponseEntity<Object> createContract(@RequestBody CreateContractModel createContractModel, HttpServletRequest request) throws Exception {
+    @GetMapping(produces = "application/json;charset=UTF-8")
+    public @ResponseBody
+    ResponseEntity<Object> getContractByStoreID(@RequestParam(required = false) String storeID,
+                                                @RequestParam(required = false, value = "WAITING / APPROVE / DENIED / CANCELED / SIGNED / WORKING / DONE") String status,
+                                                @RequestParam int pageNo,
+                                                @RequestParam int pageSize,
+                                                @RequestParam SearchType.CONTRACT sortBy,
+                                                @RequestParam(required = false, defaultValue = "true") boolean sortAsc,
+                                                HttpServletRequest request) {
         String roleName = jwtUtil.getRoleNameFromRequest(request);
-        if(!roleName.equalsIgnoreCase("Customer") && !roleName.equalsIgnoreCase("Staff")) {
+        if(!roleName.equalsIgnoreCase("Manager") && !roleName.equalsIgnoreCase("Owner")) {
             throw new ResponseStatusException(HttpStatus.FORBIDDEN, "-----------------------------------Người dùng không có quyền truy cập---------------------------");
         }
-        String result = contractService.createContract(createContractModel, jwtUtil.getUserIDFromRequest(request));
+
+        Pageable paging;
+        if(sortBy.equals("CREATEDDATE")) {
+            paging = util.makePaging(pageNo, pageSize, "createdDate", sortAsc);
+        } else if(sortBy.equals("ENDEDDATE")) {
+            paging = util.makePaging(pageNo, pageSize, "endedDate", sortAsc);
+        } else {
+            paging = util.makePaging(pageNo, pageSize, sortBy.toString().toLowerCase(), sortAsc);
+        }
+
+        if(storeID == null) {
+            return ResponseEntity.badRequest().body("Phải có StoreID để lấy thông tin.");
+        } else if(storeID != null && status == null) {
+            return ResponseEntity.ok().body(contractService.getContractByStoreID(storeID, paging));
+        } else {
+            return ResponseEntity.badRequest().body(contractService.getContractByStoreIDAndStatus(storeID, Status.valueOf(status.toUpperCase().trim()), paging));
+        }
+    }
+
+    @PostMapping(value = "/createContractCustomer", produces = "application/json;charset=UTF-8")
+    public ResponseEntity<Object> createContractCustomer(@RequestBody CreateCustomerContractModel createCustomerContractModel,
+                                                         HttpServletRequest request) throws Exception {
+        String roleName = jwtUtil.getRoleNameFromRequest(request);
+        if(!roleName.equalsIgnoreCase("Customer")) {
+            throw new ResponseStatusException(HttpStatus.FORBIDDEN, "-----------------------------------Người dùng không có quyền truy cập---------------------------");
+        }
+
+        String result = contractService.createContractCustomer(createCustomerContractModel, jwtUtil.getUserIDFromRequest(request));
+        if(result.equals("Tạo thành công.")) {
+            return ResponseEntity.ok().body(result);
+        }
+        return ResponseEntity.badRequest().body(result);
+    }
+
+    @PostMapping(value = "/createContractManager", produces = "application/json;charset=UTF-8")
+    public ResponseEntity<Object> createContractManager(@RequestBody CreateManagerContractModel createManagerContractModel,
+                                                        HttpServletRequest request) throws Exception {
+        String roleName = jwtUtil.getRoleNameFromRequest(request);
+        if(!roleName.equalsIgnoreCase("Manager")) {
+            throw new ResponseStatusException(HttpStatus.FORBIDDEN, "-----------------------------------Người dùng không có quyền truy cập---------------------------");
+        }
+
+        String result = contractService.createContractManager(createManagerContractModel);
         if(result.equals("Tạo thành công.")) {
             return ResponseEntity.ok().body(result);
         }
@@ -107,6 +161,7 @@ public class ContractController {
         if(!roleName.equalsIgnoreCase("Manager")) {
             throw new ResponseStatusException(HttpStatus.FORBIDDEN, "-----------------------------------Người dùng không có quyền truy cập---------------------------");
         }
+
         String result = contractService.approveContract(approveContractModel);
         if(result.equals("Duyệt thành công.")) {
             return ResponseEntity.ok().body(result);
@@ -144,8 +199,8 @@ public class ContractController {
         Pageable paging;
         if(sortBy.equals("CREATEDDATE")) {
             paging = util.makePaging(pageNo, pageSize, "createdDate", sortAsc);
-        } else if(sortBy.equals("RECEIVEDDATE")) {
-            paging = util.makePaging(pageNo, pageSize, "receivedDate", sortAsc);
+        } else if(sortBy.equals("ENDEDDATE")) {
+            paging = util.makePaging(pageNo, pageSize, "endedDate", sortAsc);
         } else {
             paging = util.makePaging(pageNo, pageSize, sortBy.toString().toLowerCase(), sortAsc);
         }
@@ -172,5 +227,26 @@ public class ContractController {
         } else {
             return ResponseEntity.badRequest().body(result);
         }
+    }
+
+    @PostMapping(value = "/uploadImage", produces = "application/json;charset=UTF-8")
+    public ResponseEntity<Object> uploadImage(@RequestParam String contractID,
+                                              @RequestPart(name = "file") MultipartFile file,
+                                              HttpServletRequest request) throws Exception {
+        String roleName = jwtUtil.getRoleNameFromRequest(request);
+        if(!roleName.equalsIgnoreCase("Customer") && !roleName.equalsIgnoreCase("Staff") && !roleName.equalsIgnoreCase("Manager")) {
+            throw new ResponseStatusException(HttpStatus.FORBIDDEN, "-----------------------------------Người dùng không có quyền truy cập---------------------------");
+        }
+        return ResponseEntity.ok().body(contractService.uploadImage(contractID, file));
+    }
+
+    @DeleteMapping(value = "/deleteImage/{contractID}", produces = "application/json;charset=UTF-8")
+    public ResponseEntity<Object> deleteImage(@PathVariable(name = "contractID") String contractID,
+                                              HttpServletRequest request) throws IOException {
+        String roleName = jwtUtil.getRoleNameFromRequest(request);
+        if(!roleName.equalsIgnoreCase("Customer") && !roleName.equalsIgnoreCase("Staff") && !roleName.equalsIgnoreCase("Manager")) {
+            throw new ResponseStatusException(HttpStatus.FORBIDDEN, "-----------------------------------Người dùng không có quyền truy cập---------------------------");
+        }
+        return ResponseEntity.ok().body(contractService.deleteImage(contractID));
     }
 }

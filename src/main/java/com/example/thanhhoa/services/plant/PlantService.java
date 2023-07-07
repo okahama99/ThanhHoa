@@ -5,6 +5,7 @@ import com.example.thanhhoa.dtos.PlantModels.ShowPlantModel;
 import com.example.thanhhoa.dtos.PlantModels.UpdatePlantModel;
 import com.example.thanhhoa.entities.Plant;
 import org.springframework.data.domain.Pageable;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
 import java.util.List;
@@ -13,6 +14,10 @@ public interface PlantService {
     List<ShowPlantModel> getAllPlant(Pageable paging);
 
     ShowPlantModel getPlantByID(String plantID);
+
+    String uploadImage(String plantID, MultipartFile file) throws IOException;
+
+    String deleteImage(String plantID) throws IOException;
 
     String createPlant(CreatePlantModel createPlantModel) throws Exception;
 

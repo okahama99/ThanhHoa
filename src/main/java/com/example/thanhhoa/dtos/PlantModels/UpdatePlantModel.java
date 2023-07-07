@@ -21,10 +21,7 @@ public class UpdatePlantModel implements Serializable{
 
     private String shipPriceID;
     private List<String> categoryIDList;
-    private List<MultipartFile> files;
 
-    @Nullable
-    private LocalDateTime applyDate;
     @Nullable
     private Double price;
 }

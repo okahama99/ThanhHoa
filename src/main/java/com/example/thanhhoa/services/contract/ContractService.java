@@ -1,28 +1,37 @@
 package com.example.thanhhoa.services.contract;
 
 import com.example.thanhhoa.dtos.ContractModels.ApproveContractModel;
-import com.example.thanhhoa.dtos.ContractModels.CreateContractModel;
+import com.example.thanhhoa.dtos.ContractModels.CreateCustomerContractModel;
+import com.example.thanhhoa.dtos.ContractModels.CreateManagerContractModel;
 import com.example.thanhhoa.dtos.ContractModels.ShowContractDetailModel;
 import com.example.thanhhoa.dtos.ContractModels.ShowContractModel;
 import com.example.thanhhoa.dtos.ContractModels.UpdateContractModel;
 import com.example.thanhhoa.dtos.ContractModels.GetStaffModel;
 import com.example.thanhhoa.enums.Status;
 import org.springframework.data.domain.Pageable;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
 import java.util.List;
 
 public interface ContractService {
+    String uploadImage(String contractID, MultipartFile file) throws IOException;
+
+    String deleteImage(String contractID) throws IOException;
+
     List<ShowContractModel> getAllContractByUserID(Long userID);
 
     List<ShowContractDetailModel> getContractDetailByContractID(String contractID);
 
-    String createContract(CreateContractModel createContractModel, Long userID);
+    String createContractCustomer(CreateCustomerContractModel createCustomerContractModel, Long userID);
+
+    String createContractManager(CreateManagerContractModel createManagerContractModel) throws IOException;
 
     String updateContract(UpdateContractModel updateContractModel, Long userID);
 
     String deleteContract(String contractID, String reason, Status status);
 
-    String approveContract(ApproveContractModel approveContractModel);
+    String approveContract(ApproveContractModel approveContractModel) throws IOException;
 
     String changeContractStatus(String contractID, Status status);
 
@@ -31,4 +40,8 @@ public interface ContractService {
     List<ShowContractModel> getWaitingContract(Pageable pageable);
 
     List<GetStaffModel> getStaffForContract();
+
+    List<ShowContractModel> getContractByStoreID(String storeID, Pageable pageable);
+
+    List<ShowContractModel> getContractByStoreIDAndStatus(String storeID, Status status, Pageable pageable);
 }

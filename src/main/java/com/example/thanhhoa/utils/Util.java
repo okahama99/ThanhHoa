@@ -27,6 +27,7 @@ import com.example.thanhhoa.entities.Plant;
 import com.example.thanhhoa.entities.PlantCategory;
 import com.example.thanhhoa.entities.PlantIMG;
 import com.example.thanhhoa.entities.PlantPrice;
+import com.example.thanhhoa.entities.PlantShipPrice;
 import com.example.thanhhoa.entities.Service;
 import com.example.thanhhoa.entities.ServiceIMG;
 import com.example.thanhhoa.entities.ServiceType;
@@ -100,6 +101,31 @@ public class Util {
 
                 @Override
                 protected tblAccount doBackward(ShowUserModel showUserModel) {
+                    return null;
+                }
+            });
+            return modelResult.getContent();
+        } else {
+            return new ArrayList<>();
+        }
+    }
+
+    public List<ShowPlantShipPriceModel> pspPagingConverter(Page<PlantShipPrice> pagingResult, Pageable paging) {
+        if (pagingResult.hasContent()) {
+            double totalPage = Math.ceil((double) pagingResult.getTotalElements() / paging.getPageSize());
+            Page<ShowPlantShipPriceModel> modelResult = pagingResult.map(new Converter<PlantShipPrice, ShowPlantShipPriceModel>() {
+                @Override
+                protected ShowPlantShipPriceModel doForward(PlantShipPrice plantShipPrice) {
+                    ShowPlantShipPriceModel model = new ShowPlantShipPriceModel();
+                    model.setId(plantShipPrice.getId());
+                    model.setPotSize(plantShipPrice.getPotSize());
+                    model.setPricePerPlant(plantShipPrice.getPricePerPlant());
+                    model.setTotalPage(totalPage);
+                    return model;
+                }
+
+                @Override
+                protected PlantShipPrice doBackward(ShowPlantShipPriceModel showPlantShipPriceModel) {
                     return null;
                 }
             });

@@ -2,7 +2,8 @@ package com.example.thanhhoa.services.contract;
 
 import com.example.thanhhoa.dtos.ContractModels.ApproveContractModel;
 import com.example.thanhhoa.dtos.ContractModels.CreateContractDetailModel;
-import com.example.thanhhoa.dtos.ContractModels.CreateContractModel;
+import com.example.thanhhoa.dtos.ContractModels.CreateCustomerContractModel;
+import com.example.thanhhoa.dtos.ContractModels.CreateManagerContractModel;
 import com.example.thanhhoa.dtos.ContractModels.GetStaffModel;
 import com.example.thanhhoa.dtos.ContractModels.ShowContractDetailModel;
 import com.example.thanhhoa.dtos.ContractModels.ShowContractIMGModel;
@@ -13,6 +14,8 @@ import com.example.thanhhoa.entities.Contract;
 import com.example.thanhhoa.entities.ContractDetail;
 import com.example.thanhhoa.entities.ContractIMG;
 import com.example.thanhhoa.entities.PaymentType;
+import com.example.thanhhoa.entities.Plant;
+import com.example.thanhhoa.entities.PlantIMG;
 import com.example.thanhhoa.entities.ServicePack;
 import com.example.thanhhoa.entities.ServiceType;
 import com.example.thanhhoa.entities.Store;
@@ -29,12 +32,15 @@ import com.example.thanhhoa.repositories.StoreRepository;
 import com.example.thanhhoa.repositories.UserRepository;
 import com.example.thanhhoa.repositories.WorkingDateRepository;
 import com.example.thanhhoa.repositories.pagings.ContractPagingRepository;
+import com.example.thanhhoa.services.firebaseIMG.ImageService;
 import com.example.thanhhoa.utils.Util;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -63,6 +69,8 @@ public class ContractServiceImpl implements ContractService {
     private ServiceTypeRepository serviceTypeRepository;
     @Autowired
     private ContractPagingRepository contractPagingRepository;
+    @Autowired
+    private ImageService imageService;
     @Autowired
     private Util util;
 
@@ -149,10 +157,10 @@ public class ContractServiceImpl implements ContractService {
     }
 
     @Override
-    public String createContract(CreateContractModel createContractModel, Long userID) {
-        Store store = storeRepository.getById(createContractModel.getStoreID());
+    public String createContractCustomer(CreateCustomerContractModel createCustomerContractModel, Long userID) {
+        Store store = storeRepository.getById(createCustomerContractModel.getStoreID());
         tblAccount customer = userRepository.getById(userID);
-        if(createContractModel.getDetailModelList() == null) {
+        if(createCustomerContractModel.getDetailModelList() == null) {
             return "Phải chọn ít nhất một dịch vụ để tạo hợp đồng.";
         }
 
@@ -163,11 +171,11 @@ public class ContractServiceImpl implements ContractService {
         } else {
             contract.setId(util.createIDFromLastID("CT", 2, lastContract.getId()));
         }
-        contract.setAddress(createContractModel.getAddress());
-        contract.setTitle(createContractModel.getTitle());
-        contract.setFullName(createContractModel.getFullName());
-        contract.setEmail(createContractModel.getEmail());
-        contract.setPhone(createContractModel.getPhone());
+        contract.setAddress(createCustomerContractModel.getAddress());
+        contract.setTitle(createCustomerContractModel.getTitle());
+        contract.setFullName(createCustomerContractModel.getFullName());
+        contract.setEmail(createCustomerContractModel.getEmail());
+        contract.setPhone(createCustomerContractModel.getPhone());
 
         contract.setStore(store);
         contract.setCustomer(customer);
@@ -175,7 +183,87 @@ public class ContractServiceImpl implements ContractService {
         contract.setCreatedDate(LocalDateTime.now());
 
         Double totalPrice = 0.0;
-        for(CreateContractDetailModel model : createContractModel.getDetailModelList()) {
+        for(CreateContractDetailModel model : createCustomerContractModel.getDetailModelList()) {
+            ServicePack servicePack = new ServicePack();
+            if(model.getServicePackID() != null) {
+                servicePack = servicePackRepository.findByIdAndStatus(model.getServicePackID(), Status.ACTIVE);
+                if(servicePack == null){
+                    return "Không tìm thấy ServicePack với ID là " + model.getServicePackID() + ".";
+                }
+            }
+            ServiceType serviceType = serviceTypeRepository.findByIdAndStatus(model.getServiceTypeID(), Status.ACTIVE);
+            if(serviceType == null){
+                return "Không tìm thấy ServiceType với ID là " + model.getServiceTypeID() + ".";
+            }
+
+            Double total = 0.0;
+            ContractDetail detail = new ContractDetail();
+            ContractDetail lastContractDetail = contractDetailRepository.findFirstByOrderByIdDesc();
+            if(lastContractDetail == null) {
+                detail.setId(util.createNewID("CTD"));
+            } else {
+                detail.setId(util.createIDFromLastID("CTD", 3, lastContractDetail.getId()));
+            }
+
+            total += servicePack.getPercentage() * (serviceType.getService().getPrice() + (serviceType.getPercentage() * serviceType.getService().getPrice()));
+            totalPrice += total;
+
+            detail.setNote(model.getNote());
+            detail.setTimeWorking(model.getTimeWorking());
+            detail.setTotalPrice(model.getTotalPrice());
+            detail.setContract(contract);
+            detail.setServicePack(servicePack);
+            detail.setServiceType(serviceType);
+            detail.setTotalPrice(total);
+            contractDetailRepository.save(detail);
+        }
+
+        contract.setTotal(totalPrice);
+        contractRepository.save(contract);
+        return "Tạo thành công.";
+    }
+
+    @Override
+    public String createContractManager(CreateManagerContractModel createManagerContractModel) throws IOException {
+        Contract contract = new Contract();
+        tblAccount customer;
+        if(createManagerContractModel.getCustomerID() != null){
+            customer = userRepository.getById(createManagerContractModel.getCustomerID());
+            contract.setCustomer(customer);
+
+        }
+        Store store = storeRepository.getById(createManagerContractModel.getStoreID());
+        tblAccount staff = userRepository.getById(createManagerContractModel.getStaffID());
+        if(createManagerContractModel.getDetailModelList() == null) {
+            return "Phải chọn ít nhất một dịch vụ để tạo hợp đồng.";
+        }
+
+
+        Contract lastContract = contractRepository.findFirstByOrderByIdDesc();
+        if(lastContract == null) {
+            contract.setId(util.createNewID("CT"));
+        } else {
+            contract.setId(util.createIDFromLastID("CT", 2, lastContract.getId()));
+        }
+        contract.setAddress(createManagerContractModel.getAddress());
+        contract.setTitle(createManagerContractModel.getTitle());
+        contract.setFullName(createManagerContractModel.getFullName());
+        contract.setEmail(createManagerContractModel.getEmail());
+        contract.setPhone(createManagerContractModel.getPhone());
+
+        PaymentType paymentType = paymentTypeRepository.getById(createManagerContractModel.getPaymentTypeID());
+        contract.setDeposit(createManagerContractModel.getDeposit());
+        contract.setPaymentMethod(createManagerContractModel.getPaymentMethod());
+        contract.setPaymentType(paymentType);
+        contract.setStaff(staff);
+        contract.setStartedDate(LocalDateTime.now());
+        contract.setStatus(Status.SIGNED);
+
+        contract.setStore(store);
+        contract.setCreatedDate(LocalDateTime.now());
+
+        Double totalPrice = 0.0;
+        for(CreateContractDetailModel model : createManagerContractModel.getDetailModelList()) {
             ServicePack servicePack = new ServicePack();
             if(model.getServicePackID() != null) {
                 servicePack = servicePackRepository.findByIdAndStatus(model.getServicePackID(), Status.ACTIVE);
@@ -249,22 +337,23 @@ public class ContractServiceImpl implements ContractService {
     }
 
     @Override
-    public String approveContract(ApproveContractModel approveContractModel) {
+    public String approveContract(ApproveContractModel approveContractModel) throws IOException {
         Contract contract = contractRepository.findByIdAndStatus(approveContractModel.getContractID(), Status.WAITING);
         if(contract == null) {
             return "Không thể tìm thấy Hợp đồng có trạng thái WAITING với ID là " + approveContractModel.getContractID() + ".";
         }
         tblAccount staff = userRepository.getById(approveContractModel.getStaffID());
+
         PaymentType paymentType = paymentTypeRepository.getById(approveContractModel.getPaymentTypeID());
         contract.setDeposit(approveContractModel.getDeposit());
         contract.setPaymentMethod(approveContractModel.getPaymentMethod());
         contract.setPaymentType(paymentType);
         contract.setStaff(staff);
         contract.setStartedDate(LocalDateTime.now());
-        contract.setRejectedDate(LocalDateTime.now());
+        contract.setApprovedDate(LocalDateTime.now());
         contract.setStatus(Status.SIGNED);
         contractRepository.save(contract);
-        return "Duyệt thành công.";
+        return contract.getId();
     }
 
     @Override
@@ -321,5 +410,56 @@ public class ContractServiceImpl implements ContractService {
             modelList.add(model);
         }
         return modelList;
+    }
+
+    @Override
+    public List<ShowContractModel> getContractByStoreID(String storeID, Pageable pageable) {
+        Page<Contract> pagingResult = contractPagingRepository.findByStore_Id(storeID, pageable);
+        return util.contractPagingConverter(pagingResult, pageable);
+    }
+
+    @Override
+    public List<ShowContractModel> getContractByStoreIDAndStatus(String storeID, Status status, Pageable pageable) {
+        Page<Contract> pagingResult = contractPagingRepository.findByStore_IdAndStatus(storeID, status, pageable);
+        return util.contractPagingConverter(pagingResult, pageable);
+    }
+
+    @Override
+    public String uploadImage(String contractID, MultipartFile file) throws IOException {
+        Optional<Contract> checkExisted = contractRepository.findById(contractID);
+        if(checkExisted == null) {
+            return "Không tìm thấy Hợp đồng với ID là " + contractID + ".";
+        }
+        Contract contract = checkExisted.get();
+        String fileName = imageService.save(file);
+        String imgName = imageService.getImageUrl(fileName);
+        ContractIMG contractIMG = new ContractIMG();
+        ContractIMG lastContractIMG = contractIMGRepository.findFirstByOrderByIdDesc();
+        if(lastContractIMG == null) {
+            contractIMG.setId(util.createNewID("CIMG"));
+        } else {
+            contractIMG.setId(util.createIDFromLastID("CIMG", 4, lastContractIMG.getId()));
+        }
+        contractIMG.setContract(contract);
+        contractIMG.setImgURL(imgName);
+        contractIMGRepository.save(contractIMG);
+        return "Tạo thành công.";
+    }
+
+    @Override
+    public String deleteImage(String contractID) throws IOException {
+        List<ContractIMG> imgList = contractIMGRepository.findByContract_Id(contractID);
+        if(imgList == null){
+            return "Không có hình nào thuộc Hợp đồng có ID là " + contractID + " để xóa.";
+        }
+        for(ContractIMG contractIMG : imgList) {
+            contractIMG.setContract(null);
+            contractIMG.setImgURL(null);
+            contractIMGRepository.save(contractIMG);
+            String[] strArr;
+            strArr = contractIMG.getImgURL().split("[/;?]");
+            imageService.delete(strArr[7]);
+        }
+        return "Xóa thành công.";
     }
 }

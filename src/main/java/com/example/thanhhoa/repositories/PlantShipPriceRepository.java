@@ -10,4 +10,6 @@ import java.util.Optional;
 @Repository
 public interface PlantShipPriceRepository extends JpaRepository<PlantShipPrice, String> {
     Optional<PlantShipPrice> findByIdAndStatus(String plantShipPriceID, Status status);
+
+    PlantShipPrice findFirstByOrderByIdDesc();
 }

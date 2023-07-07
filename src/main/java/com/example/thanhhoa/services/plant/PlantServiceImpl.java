@@ -32,6 +32,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -89,7 +90,7 @@ public class PlantServiceImpl implements PlantService {
 
         List<ShowPlantIMGModel> showPlantIMGList = new ArrayList<>();
         List<PlantIMG> plantIMGList = plantIMGRepository.findByPlant_Id(plant.getId());
-        if(plantIMGList != null){
+        if(plantIMGList != null) {
             for(PlantIMG img : plantIMGList) {
                 ShowPlantIMGModel model = new ShowPlantIMGModel();
                 model.setId(img.getId());
@@ -122,6 +123,45 @@ public class PlantServiceImpl implements PlantService {
         model.setCareNote(plant.getCareNote());
         model.setStatus(plant.getStatus());
         return model;
+    }
+
+    @Override
+    public String uploadImage(String plantID, MultipartFile file) throws IOException {
+        Optional<Plant> checkExisted = plantRepository.findById(plantID);
+        if(checkExisted == null) {
+            return "Không tìm thấy Cây với ID là " + plantID + ".";
+        }
+        Plant plant = checkExisted.get();
+        String fileName = imageService.save(file);
+        String imgName = imageService.getImageUrl(fileName);
+        PlantIMG plantIMG = new PlantIMG();
+        PlantIMG lastPlantIMG = plantIMGRepository.findFirstByOrderByIdDesc();
+        if(lastPlantIMG == null) {
+            plantIMG.setId(util.createNewID("PIMG"));
+        } else {
+            plantIMG.setId(util.createIDFromLastID("PIMG", 4, lastPlantIMG.getId()));
+        }
+        plantIMG.setPlant(plant);
+        plantIMG.setImgURL(imgName);
+        plantIMGRepository.save(plantIMG);
+        return "Tạo thành công.";
+    }
+
+    @Override
+    public String deleteImage(String plantID) throws IOException {
+        List<PlantIMG> imgList = plantIMGRepository.findByPlant_Id(plantID);
+        if(imgList == null){
+            return "Không có hình nào thuộc Cây có ID là " + plantID + " để xóa.";
+        }
+        for(PlantIMG plantImage : imgList) {
+            plantImage.setPlant(null);
+            plantImage.setImgURL(null);
+            plantIMGRepository.save(plantImage);
+            String[] strArr;
+            strArr = plantImage.getImgURL().split("[/;?]");
+            imageService.delete(strArr[7]);
+        }
+        return "Xóa thành công.";
     }
 
     @Override
@@ -167,26 +207,9 @@ public class PlantServiceImpl implements PlantService {
             plantCategoryRepository.save(plantCategory);
         }
 
-        if(createPlantModel.getFiles() != null) {
-            for(MultipartFile file : createPlantModel.getFiles()) {
-                String fileName = imageService.save(file);
-                String imgName = imageService.getImageUrl(fileName);
-                PlantIMG plantIMG = new PlantIMG();
-                PlantIMG lastPlantIMG = plantIMGRepository.findFirstByOrderByIdDesc();
-                if(lastPlantIMG == null) {
-                    plantIMG.setId(util.createNewID("PIMG"));
-                } else {
-                    plantIMG.setId(util.createIDFromLastID("PIMG", 4, lastPlantIMG.getId()));
-                }
-                plantIMG.setPlant(plant);
-                plantIMG.setImgURL(imgName);
-                plantIMGRepository.save(plantIMG);
-            }
-        }
-
         PlantPrice plantPrice = new PlantPrice();
         List<PlantPrice> checkExistedPrice = plantPriceRepository.findByPlant_IdAndStatus(plant.getId(), Status.ACTIVE);
-        if(checkExistedPrice != null){
+        if(checkExistedPrice != null) {
             for(PlantPrice pPrice : checkExistedPrice) {
                 pPrice.setStatus(Status.INACTIVE);
                 plantPriceRepository.save(pPrice);
@@ -283,40 +306,12 @@ public class PlantServiceImpl implements PlantService {
                 }
             }
 
-            if(updatePlantModel.getFiles() != null) {
-                for(PlantIMG image : plant.getPlantIMGList()) {
-                    String imgNameString = image.getImgURL();
-                    PlantIMG plantImage = plantIMGRepository.findByImgURL(imgNameString);
-                    plantImage.setPlant(null);
-                    plantImage.setImgURL(null);
-                    plantIMGRepository.save(plantImage);
-                    String[] strArr;
-                    strArr = imgNameString.split("[/;?]");
-                    imageService.delete(strArr[7]);
-                }
-                for(MultipartFile file : updatePlantModel.getFiles()) {
-                    String fileName = imageService.save(file);
-                    String imgName = imageService.getImageUrl(fileName);
-                    PlantIMG plantIMG = new PlantIMG();
-                    PlantIMG lastPlantIMG = plantIMGRepository.findFirstByOrderByIdDesc();
-                    if(lastPlantIMG == null) {
-                        plantIMG.setId(util.createNewID("PIMG"));
-                    } else {
-                        plantIMG.setId(util.createIDFromLastID("PIMG", 4, lastPlantIMG.getId()));
-                    }
-                    plantIMG.setPlant(plant);
-                    plantIMG.setImgURL(imgName);
-                    plantIMGRepository.save(plantIMG);
-                }
-            }
-
-            if(updatePlantModel.getPrice() != null && updatePlantModel.getApplyDate() != null){
-                PlantPrice checkExisted = plantPriceRepository.findByPriceAndApplyDateAndStatus
-                        (updatePlantModel.getPrice(), updatePlantModel.getApplyDate(), Status.ACTIVE);
-                if(checkExisted == null){
+            if(updatePlantModel.getPrice() != null) {
+                PlantPrice checkExisted = plantPriceRepository.findByPriceAndStatus(updatePlantModel.getPrice(), Status.ACTIVE);
+                if(checkExisted == null) {
                     PlantPrice plantPrice = new PlantPrice();
                     List<PlantPrice> checkExistedPrice = plantPriceRepository.findByPlant_IdAndStatus(plant.getId(), Status.ACTIVE);
-                    if(checkExistedPrice != null){
+                    if(checkExistedPrice != null) {
                         for(PlantPrice pPrice : checkExistedPrice) {
                             pPrice.setStatus(Status.INACTIVE);
                             plantPriceRepository.save(pPrice);
@@ -350,7 +345,7 @@ public class PlantServiceImpl implements PlantService {
         if(checkingPlant != null) {
             Plant plant = checkingPlant.get();
 
-            if(orderDetailRepository.findByPlant_IdAndTblOrder_ProgressStatus(plantID, Status.WAITING) != null){
+            if(orderDetailRepository.findByPlant_IdAndTblOrder_ProgressStatus(plantID, Status.WAITING) != null) {
                 return "Không thể xóa cây đang được sử dụng.";
             }
 
