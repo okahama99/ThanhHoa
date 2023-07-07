@@ -19,6 +19,7 @@ public class CreatePlantModel implements Serializable {
 
     private String shipPriceID;
     private List<String> categoryIDList;
+    private List<String> imageUrlList;
 
     private Double price;
     private LocalDateTime applyDate;

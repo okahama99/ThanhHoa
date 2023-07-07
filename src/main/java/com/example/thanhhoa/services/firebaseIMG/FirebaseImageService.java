@@ -9,7 +9,7 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.util.UUID;
 
-public interface ImageService {
+public interface FirebaseImageService {
     String getImageUrl(String name);
 
     String save(MultipartFile file) throws IOException;

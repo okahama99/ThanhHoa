@@ -69,5 +69,14 @@ public class EnumController {
         return list;
     }
 
-
+    @GetMapping(value = "/imgEntity", produces = "application/json;charset=UTF-8")
+    public @ResponseBody
+    List<String> imgEntity() {
+        List<String> list = new ArrayList<>();
+        list.add("CONTRACT");
+        list.add("SERVICE");
+        list.add("PLANT");
+        list.add("ORDERFEEDBACK");
+        return list;
+    }
 }

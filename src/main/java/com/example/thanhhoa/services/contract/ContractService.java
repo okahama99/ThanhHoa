@@ -15,9 +15,6 @@ import java.io.IOException;
 import java.util.List;
 
 public interface ContractService {
-    String uploadImage(String contractID, MultipartFile file) throws IOException;
-
-    String deleteImage(String contractID) throws IOException;
 
     List<ShowContractModel> getAllContractByUserID(Long userID);
 

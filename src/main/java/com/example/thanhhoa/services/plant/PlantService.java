@@ -15,10 +15,6 @@ public interface PlantService {
 
     ShowPlantModel getPlantByID(String plantID);
 
-    String uploadImage(String plantID, MultipartFile file) throws IOException;
-
-    String deleteImage(String plantID) throws IOException;
-
     String createPlant(CreatePlantModel createPlantModel) throws Exception;
 
     String updatePlant(UpdatePlantModel updatePlantModel) throws Exception;

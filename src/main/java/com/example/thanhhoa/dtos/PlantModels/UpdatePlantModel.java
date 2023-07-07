@@ -21,6 +21,7 @@ public class UpdatePlantModel implements Serializable{
 
     private String shipPriceID;
     private List<String> categoryIDList;
+    private List<String> imageUrlList;
 
     @Nullable
     private Double price;

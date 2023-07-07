@@ -13,7 +13,7 @@ import com.example.thanhhoa.repositories.ServiceIMGRepository;
 import com.example.thanhhoa.repositories.ServiceRepository;
 import com.example.thanhhoa.repositories.ServiceTypeRepository;
 import com.example.thanhhoa.repositories.pagings.ServicePagingRepository;
-import com.example.thanhhoa.services.firebaseIMG.ImageService;
+import com.example.thanhhoa.services.firebaseIMG.FirebaseImageService;
 import com.example.thanhhoa.utils.Util;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -36,7 +36,7 @@ public class ServiceServiceImpl implements ServiceService{
     @Autowired
     private Util util;
     @Autowired
-    private ImageService imageService;
+    private FirebaseImageService firebaseImageService;
     @Autowired
     private ServiceIMGRepository serviceIMGRepository;
     @Autowired
@@ -77,8 +77,8 @@ public class ServiceServiceImpl implements ServiceService{
 
         if (createServiceModel.getFiles() != null) {
             for (MultipartFile file : createServiceModel.getFiles()) {
-                String fileName = imageService.save(file);
-                String imgName = imageService.getImageUrl(fileName);
+                String fileName = firebaseImageService.save(file);
+                String imgName = firebaseImageService.getImageUrl(fileName);
                 ServiceIMG serviceIMG = new ServiceIMG();
                 ServiceIMG getLastServiceIMG = serviceIMGRepository.findFirstByOrderByIdDesc();
                 if(getLastServiceIMG != null){
@@ -127,11 +127,11 @@ public class ServiceServiceImpl implements ServiceService{
                 serviceIMGRepository.save(serviceIMG);
                 String[] strArr;
                 strArr = imgNameString.split("[/;?]");
-                imageService.delete(strArr[7]);
+                firebaseImageService.delete(strArr[7]);
             }
             for (MultipartFile file : updateServiceModel.getFiles()) {
-                String fileName = imageService.save(file);
-                String imgName = imageService.getImageUrl(fileName);
+                String fileName = firebaseImageService.save(file);
+                String imgName = firebaseImageService.getImageUrl(fileName);
                 ServiceIMG serviceIMG = new ServiceIMG();
                 ServiceIMG getLastServiceIMG = serviceIMGRepository.findFirstByOrderByIdDesc();
                 if(getLastServiceIMG != null){

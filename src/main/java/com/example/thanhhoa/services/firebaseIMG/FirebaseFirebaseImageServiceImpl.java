@@ -12,7 +12,7 @@ import java.awt.image.BufferedImage;
 import java.io.IOException;
 
 @Service
-public class FirebaseImageServiceImpl implements ImageService {
+public class FirebaseFirebaseImageServiceImpl implements FirebaseImageService {
 
     @Override
     public String getImageUrl(String name) {

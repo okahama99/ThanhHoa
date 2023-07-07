@@ -217,25 +217,4 @@ public class ContractController {
             return ResponseEntity.badRequest().body(result);
         }
     }
-
-    @PostMapping(value = "/uploadImage", produces = "application/json;charset=UTF-8")
-    public ResponseEntity<Object> uploadImage(@RequestParam String contractID,
-                                              @RequestPart(name = "file") MultipartFile file,
-                                              HttpServletRequest request) throws Exception {
-        String roleName = jwtUtil.getRoleNameFromRequest(request);
-        if(!roleName.equalsIgnoreCase("Customer") && !roleName.equalsIgnoreCase("Staff") && !roleName.equalsIgnoreCase("Manager")) {
-            throw new ResponseStatusException(HttpStatus.FORBIDDEN, "-----------------------------------Người dùng không có quyền truy cập---------------------------");
-        }
-        return ResponseEntity.ok().body(contractService.uploadImage(contractID, file));
-    }
-
-    @DeleteMapping(value = "/deleteImage/{contractID}", produces = "application/json;charset=UTF-8")
-    public ResponseEntity<Object> deleteImage(@PathVariable(name = "contractID") String contractID,
-                                              HttpServletRequest request) throws IOException {
-        String roleName = jwtUtil.getRoleNameFromRequest(request);
-        if(!roleName.equalsIgnoreCase("Customer") && !roleName.equalsIgnoreCase("Staff") && !roleName.equalsIgnoreCase("Manager")) {
-            throw new ResponseStatusException(HttpStatus.FORBIDDEN, "-----------------------------------Người dùng không có quyền truy cập---------------------------");
-        }
-        return ResponseEntity.ok().body(contractService.deleteImage(contractID));
-    }
 }

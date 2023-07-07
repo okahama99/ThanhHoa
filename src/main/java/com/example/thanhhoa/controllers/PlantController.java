@@ -60,27 +60,6 @@ public class PlantController {
 //        }
 //    }
 
-    @PostMapping(value = "/uploadImage", produces = "application/json;charset=UTF-8")
-    public ResponseEntity<Object> uploadImage(@RequestParam String plantID,
-                                              @RequestPart(name = "file") MultipartFile file,
-                                              HttpServletRequest request) throws Exception {
-        String roleName = jwtUtil.getRoleNameFromRequest(request);
-        if(!roleName.equalsIgnoreCase("Owner") && !roleName.equalsIgnoreCase("Manager")) {
-            throw new ResponseStatusException(HttpStatus.FORBIDDEN, "-----------------------------------Người dùng không có quyền truy cập---------------------------");
-        }
-        return ResponseEntity.ok().body(plantService.uploadImage(plantID, file));
-    }
-
-    @DeleteMapping(value = "/deleteImage/{plantID}", produces = "application/json;charset=UTF-8")
-    public ResponseEntity<Object> deleteImage(@PathVariable(name = "plantID") String plantID,
-                                              HttpServletRequest request) throws IOException {
-        String roleName = jwtUtil.getRoleNameFromRequest(request);
-        if(!roleName.equalsIgnoreCase("Owner") && !roleName.equalsIgnoreCase("Manager")) {
-            throw new ResponseStatusException(HttpStatus.FORBIDDEN, "-----------------------------------Người dùng không có quyền truy cập---------------------------");
-        }
-        return ResponseEntity.ok().body(plantService.deleteImage(plantID));
-    }
-
     @PostMapping(produces = "application/json;charset=UTF-8", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public ResponseEntity<Object> createPlant(@RequestBody CreatePlantModel createPlantModel,
                                               HttpServletRequest request) throws Exception {

@@ -14,8 +14,6 @@ import com.example.thanhhoa.entities.Contract;
 import com.example.thanhhoa.entities.ContractDetail;
 import com.example.thanhhoa.entities.ContractIMG;
 import com.example.thanhhoa.entities.PaymentType;
-import com.example.thanhhoa.entities.Plant;
-import com.example.thanhhoa.entities.PlantIMG;
 import com.example.thanhhoa.entities.ServicePack;
 import com.example.thanhhoa.entities.ServiceType;
 import com.example.thanhhoa.entities.Store;
@@ -32,7 +30,7 @@ import com.example.thanhhoa.repositories.StoreRepository;
 import com.example.thanhhoa.repositories.UserRepository;
 import com.example.thanhhoa.repositories.WorkingDateRepository;
 import com.example.thanhhoa.repositories.pagings.ContractPagingRepository;
-import com.example.thanhhoa.services.firebaseIMG.ImageService;
+import com.example.thanhhoa.services.firebaseIMG.FirebaseImageService;
 import com.example.thanhhoa.utils.Util;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -70,7 +68,7 @@ public class ContractServiceImpl implements ContractService {
     @Autowired
     private ContractPagingRepository contractPagingRepository;
     @Autowired
-    private ImageService imageService;
+    private FirebaseImageService firebaseImageService;
     @Autowired
     private Util util;
 
@@ -422,44 +420,5 @@ public class ContractServiceImpl implements ContractService {
     public List<ShowContractModel> getContractByStoreIDAndStatus(String storeID, Status status, Pageable pageable) {
         Page<Contract> pagingResult = contractPagingRepository.findByStore_IdAndStatus(storeID, status, pageable);
         return util.contractPagingConverter(pagingResult, pageable);
-    }
-
-    @Override
-    public String uploadImage(String contractID, MultipartFile file) throws IOException {
-        Optional<Contract> checkExisted = contractRepository.findById(contractID);
-        if(checkExisted == null) {
-            return "Không tìm thấy Hợp đồng với ID là " + contractID + ".";
-        }
-        Contract contract = checkExisted.get();
-        String fileName = imageService.save(file);
-        String imgName = imageService.getImageUrl(fileName);
-        ContractIMG contractIMG = new ContractIMG();
-        ContractIMG lastContractIMG = contractIMGRepository.findFirstByOrderByIdDesc();
-        if(lastContractIMG == null) {
-            contractIMG.setId(util.createNewID("CIMG"));
-        } else {
-            contractIMG.setId(util.createIDFromLastID("CIMG", 4, lastContractIMG.getId()));
-        }
-        contractIMG.setContract(contract);
-        contractIMG.setImgURL(imgName);
-        contractIMGRepository.save(contractIMG);
-        return "Tạo thành công.";
-    }
-
-    @Override
-    public String deleteImage(String contractID) throws IOException {
-        List<ContractIMG> imgList = contractIMGRepository.findByContract_Id(contractID);
-        if(imgList == null){
-            return "Không có hình nào thuộc Hợp đồng có ID là " + contractID + " để xóa.";
-        }
-        for(ContractIMG contractIMG : imgList) {
-            contractIMG.setContract(null);
-            contractIMG.setImgURL(null);
-            contractIMGRepository.save(contractIMG);
-            String[] strArr;
-            strArr = contractIMG.getImgURL().split("[/;?]");
-            imageService.delete(strArr[7]);
-        }
-        return "Xóa thành công.";
     }
 }

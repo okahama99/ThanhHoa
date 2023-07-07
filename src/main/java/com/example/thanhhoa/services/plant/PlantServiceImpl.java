@@ -24,7 +24,7 @@ import com.example.thanhhoa.repositories.PlantShipPriceRepository;
 import com.example.thanhhoa.repositories.pagings.PlantCategoryPagingRepository;
 import com.example.thanhhoa.repositories.pagings.PlantPagingRepository;
 import com.example.thanhhoa.repositories.pagings.PlantPricePagingRepository;
-import com.example.thanhhoa.services.firebaseIMG.ImageService;
+import com.example.thanhhoa.services.firebaseIMG.FirebaseImageService;
 import com.example.thanhhoa.utils.Util;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -56,7 +56,7 @@ public class PlantServiceImpl implements PlantService {
     @Autowired
     private CategoryRepository categoryRepository;
     @Autowired
-    private ImageService imageService;
+    private FirebaseImageService firebaseImageService;
     @Autowired
     private OrderDetailRepository orderDetailRepository;
     @Autowired
@@ -126,45 +126,6 @@ public class PlantServiceImpl implements PlantService {
     }
 
     @Override
-    public String uploadImage(String plantID, MultipartFile file) throws IOException {
-        Optional<Plant> checkExisted = plantRepository.findById(plantID);
-        if(checkExisted == null) {
-            return "Không tìm thấy Cây với ID là " + plantID + ".";
-        }
-        Plant plant = checkExisted.get();
-        String fileName = imageService.save(file);
-        String imgName = imageService.getImageUrl(fileName);
-        PlantIMG plantIMG = new PlantIMG();
-        PlantIMG lastPlantIMG = plantIMGRepository.findFirstByOrderByIdDesc();
-        if(lastPlantIMG == null) {
-            plantIMG.setId(util.createNewID("PIMG"));
-        } else {
-            plantIMG.setId(util.createIDFromLastID("PIMG", 4, lastPlantIMG.getId()));
-        }
-        plantIMG.setPlant(plant);
-        plantIMG.setImgURL(imgName);
-        plantIMGRepository.save(plantIMG);
-        return "Tạo thành công.";
-    }
-
-    @Override
-    public String deleteImage(String plantID) throws IOException {
-        List<PlantIMG> imgList = plantIMGRepository.findByPlant_Id(plantID);
-        if(imgList == null){
-            return "Không có hình nào thuộc Cây có ID là " + plantID + " để xóa.";
-        }
-        for(PlantIMG plantImage : imgList) {
-            plantImage.setPlant(null);
-            plantImage.setImgURL(null);
-            plantIMGRepository.save(plantImage);
-            String[] strArr;
-            strArr = plantImage.getImgURL().split("[/;?]");
-            imageService.delete(strArr[7]);
-        }
-        return "Xóa thành công.";
-    }
-
-    @Override
     public String createPlant(CreatePlantModel createPlantModel) throws Exception {
         Optional<PlantShipPrice> plantShipPrice = plantShipPriceRepository.findByIdAndStatus(createPlantModel.getShipPriceID(), Status.ACTIVE);
         if(plantShipPrice == null) {
@@ -205,6 +166,21 @@ public class PlantServiceImpl implements PlantService {
             plantCategory.setCategory(category.get());
             plantCategory.setPlant(plant);
             plantCategoryRepository.save(plantCategory);
+        }
+
+        if(createPlantModel.getImageUrlList() != null) {
+            for(String imgName : createPlantModel.getImageUrlList()) {
+                PlantIMG plantIMG = new PlantIMG();
+                PlantIMG lastPlantIMG = plantIMGRepository.findFirstByOrderByIdDesc();
+                if(lastPlantIMG == null) {
+                    plantIMG.setId(util.createNewID("PIMG"));
+                } else {
+                    plantIMG.setId(util.createIDFromLastID("PIMG", 4, lastPlantIMG.getId()));
+                }
+                plantIMG.setPlant(plant);
+                plantIMG.setImgURL(imgName);
+                plantIMGRepository.save(plantIMG);
+            }
         }
 
         PlantPrice plantPrice = new PlantPrice();
@@ -367,7 +343,7 @@ public class PlantServiceImpl implements PlantService {
         List<PlantIMG> imgList = plantIMGRepository.findByPlant_Id(plantID);
         List<String> imgURL = new ArrayList<>();
         for(PlantIMG plantIMG : imgList) {
-            imgURL.add(imageService.getImageUrl(plantIMG.getImgURL()));
+            imgURL.add(firebaseImageService.getImageUrl(plantIMG.getImgURL()));
         }
         return imgURL;
     }
