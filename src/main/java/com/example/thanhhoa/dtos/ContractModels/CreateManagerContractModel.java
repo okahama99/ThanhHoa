@@ -20,7 +20,6 @@ public class CreateManagerContractModel implements Serializable {
     private Long staffID;
     private String paymentTypeID;
     private List<CreateContractDetailModel> detailModelList;
-    private List<String> imageUrlList;
     @Nullable
     private Long customerID;
     private String email;

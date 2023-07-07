@@ -153,7 +153,8 @@ public class ImageServiceImpl implements ImageService {
                 plantArr = plantIMG.get().getImgURL().split("[/;?]");
                 firebaseImageService.delete(plantArr[7]);
 
-                plantIMGRepository.delete(plantIMG.get());
+                plantIMG.get().setPlant(null);
+                plantIMGRepository.save(plantIMG.get());
                 return "Xóa thành công.";
             case "CONTRACT":
                 Optional<Contract> contract = contractRepository.findById(entityID);
@@ -169,7 +170,8 @@ public class ImageServiceImpl implements ImageService {
                 contractArr = contractIMG.get().getImgURL().split("[/;?]");
                 firebaseImageService.delete(contractArr[7]);
 
-                contractIMGRepository.delete(contractIMG.get());
+                contractIMG.get().setContract(null);
+                contractIMGRepository.save(contractIMG.get());
                 return "Xóa thành công.";
             case "SERVICE":
                 Optional<Service> entity = serviceRepository.findById(entityID);
@@ -185,7 +187,8 @@ public class ImageServiceImpl implements ImageService {
                 serviceArr = serviceIMG.get().getImgURL().split("[/;?]");
                 firebaseImageService.delete(serviceArr[7]);
 
-                serviceIMGRepository.delete(serviceIMG.get());
+                serviceIMG.get().setService(null);
+                serviceIMGRepository.save(serviceIMG.get());
                 return "Xóa thành công.";
             case "ORDERFEEDBACK":
                 Optional<OrderFeedback> orderFeedback = orderFeedbackRepository.findById(entityID);
@@ -201,7 +204,8 @@ public class ImageServiceImpl implements ImageService {
                 orderFbArr = orderFeedbackIMG.get().getImgURL().split("[/;?]");
                 firebaseImageService.delete(orderFbArr[7]);
 
-                orderFeedbackIMGRepository.delete(orderFeedbackIMG.get());
+                orderFeedbackIMG.get().setOrderFeedback(null);
+                orderFeedbackIMGRepository.save(orderFeedbackIMG.get());
                 return "Xóa thành công.";
         }
         return "Xóa thất bại, kiểm tra lại EntityName và ImageID.";

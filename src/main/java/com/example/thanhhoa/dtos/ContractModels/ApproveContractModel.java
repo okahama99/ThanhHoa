@@ -16,5 +16,4 @@ public class ApproveContractModel implements Serializable {
     private String paymentMethod;
     private Long staffID;
     private String paymentTypeID;
-    private List<String> imageUrlList;
 }

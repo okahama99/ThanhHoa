@@ -30,9 +30,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
-import org.springframework.web.multipart.MultipartFile;
-
-import java.io.IOException;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -166,21 +163,6 @@ public class PlantServiceImpl implements PlantService {
             plantCategory.setCategory(category.get());
             plantCategory.setPlant(plant);
             plantCategoryRepository.save(plantCategory);
-        }
-
-        if(createPlantModel.getImageUrlList() != null) {
-            for(String imgName : createPlantModel.getImageUrlList()) {
-                PlantIMG plantIMG = new PlantIMG();
-                PlantIMG lastPlantIMG = plantIMGRepository.findFirstByOrderByIdDesc();
-                if(lastPlantIMG == null) {
-                    plantIMG.setId(util.createNewID("PIMG"));
-                } else {
-                    plantIMG.setId(util.createIDFromLastID("PIMG", 4, lastPlantIMG.getId()));
-                }
-                plantIMG.setPlant(plant);
-                plantIMG.setImgURL(imgName);
-                plantIMGRepository.save(plantIMG);
-            }
         }
 
         PlantPrice plantPrice = new PlantPrice();
