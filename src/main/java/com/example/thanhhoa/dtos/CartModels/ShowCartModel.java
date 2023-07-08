@@ -14,4 +14,5 @@ public class ShowCartModel implements Serializable {
     private String plantName;
     private Double plantPrice;
     private String image;
+    private Double shipPrice;
 }
