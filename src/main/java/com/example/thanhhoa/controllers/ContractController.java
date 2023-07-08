@@ -6,6 +6,7 @@ import com.example.thanhhoa.dtos.ContractModels.CreateManagerContractModel;
 import com.example.thanhhoa.dtos.ContractModels.GetStaffModel;
 import com.example.thanhhoa.dtos.ContractModels.ShowContractDetailModel;
 import com.example.thanhhoa.dtos.ContractModels.ShowContractModel;
+import com.example.thanhhoa.dtos.ContractModels.ShowPaymentTypeModel;
 import com.example.thanhhoa.dtos.ContractModels.UpdateContractModel;
 import com.example.thanhhoa.enums.SearchType;
 import com.example.thanhhoa.enums.Status;
@@ -24,14 +25,11 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RequestPart;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
-import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.server.ResponseStatusException;
 
 import javax.servlet.http.HttpServletRequest;
-import java.io.IOException;
 import java.util.List;
 
 @RestController
@@ -203,18 +201,10 @@ public class ContractController {
         return contractService.getStaffForContract();
     }
 
-    @PostMapping(value = "/addWorkingDate", produces = "application/json;charset=UTF-8")
-    public ResponseEntity<Object> addWorkingDate(@RequestParam String contractDetailID,
-                                                 HttpServletRequest request) throws Exception {
-        String roleName = jwtUtil.getRoleNameFromRequest(request);
-        if(!roleName.equalsIgnoreCase("Staff")) {
-            throw new ResponseStatusException(HttpStatus.FORBIDDEN, "-----------------------------------Người dùng không có quyền truy cập---------------------------");
-        }
-        String result = contractService.addWorkingDate(contractDetailID);
-        if(result.equals("Thêm thành công.")) {
-            return ResponseEntity.ok().body(result);
-        } else {
-            return ResponseEntity.badRequest().body(result);
-        }
+
+    @GetMapping(value = "/getPaymentType", produces = "application/json;charset=UTF-8")
+    public @ResponseBody
+    List<ShowPaymentTypeModel> getPaymentType() {
+        return contractService.getPaymentType();
     }
 }

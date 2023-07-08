@@ -7,6 +7,7 @@ import com.example.thanhhoa.dtos.StoreModels.CreateStoreModel;
 import com.example.thanhhoa.dtos.StoreModels.ShowDistrictModel;
 import com.example.thanhhoa.dtos.StoreModels.ShowProvinceModel;
 import com.example.thanhhoa.dtos.StoreModels.ShowStoreModel;
+import com.example.thanhhoa.dtos.StoreModels.ShowStorePlantRecordModel;
 import com.example.thanhhoa.dtos.StoreModels.UpdateStoreModel;
 import org.springframework.data.domain.Pageable;
 
@@ -31,4 +32,8 @@ public interface StoreService {
     List<ShowDistrictModel> getDistrictByProvinceID(String provinceID);
 
     List<ShowProvinceModel> getAllProvince();
+
+    List<ShowStorePlantRecordModel> getStorePlantRecordByStorePlantID(String storePlantID);
+
+
 }

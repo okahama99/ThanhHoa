@@ -8,6 +8,7 @@ import com.example.thanhhoa.dtos.ContractModels.GetStaffModel;
 import com.example.thanhhoa.dtos.ContractModels.ShowContractDetailModel;
 import com.example.thanhhoa.dtos.ContractModels.ShowContractIMGModel;
 import com.example.thanhhoa.dtos.ContractModels.ShowContractModel;
+import com.example.thanhhoa.dtos.ContractModels.ShowPaymentTypeModel;
 import com.example.thanhhoa.dtos.ContractModels.ShowWorkingDateModel;
 import com.example.thanhhoa.dtos.ContractModels.UpdateContractModel;
 import com.example.thanhhoa.entities.Contract;
@@ -184,12 +185,12 @@ public class ContractServiceImpl implements ContractService {
             ServicePack servicePack = new ServicePack();
             if(model.getServicePackID() != null) {
                 servicePack = servicePackRepository.findByIdAndStatus(model.getServicePackID(), Status.ACTIVE);
-                if(servicePack == null){
+                if(servicePack == null) {
                     return "Không tìm thấy ServicePack với ID là " + model.getServicePackID() + ".";
                 }
             }
             ServiceType serviceType = serviceTypeRepository.findByIdAndStatus(model.getServiceTypeID(), Status.ACTIVE);
-            if(serviceType == null){
+            if(serviceType == null) {
                 return "Không tìm thấy ServiceType với ID là " + model.getServiceTypeID() + ".";
             }
 
@@ -224,7 +225,7 @@ public class ContractServiceImpl implements ContractService {
     public String createContractManager(CreateManagerContractModel createManagerContractModel) throws IOException {
         Contract contract = new Contract();
         tblAccount customer;
-        if(createManagerContractModel.getCustomerID() != null){
+        if(createManagerContractModel.getCustomerID() != null) {
             customer = userRepository.getById(createManagerContractModel.getCustomerID());
             contract.setCustomer(customer);
 
@@ -264,12 +265,12 @@ public class ContractServiceImpl implements ContractService {
             ServicePack servicePack = new ServicePack();
             if(model.getServicePackID() != null) {
                 servicePack = servicePackRepository.findByIdAndStatus(model.getServicePackID(), Status.ACTIVE);
-                if(servicePack == null){
+                if(servicePack == null) {
                     return "Không tìm thấy ServicePack với ID là " + model.getServicePackID() + ".";
                 }
             }
             ServiceType serviceType = serviceTypeRepository.findByIdAndStatus(model.getServiceTypeID(), Status.ACTIVE);
-            if(serviceType == null){
+            if(serviceType == null) {
                 return "Không tìm thấy ServiceType với ID là " + model.getServiceTypeID() + ".";
             }
 
@@ -365,30 +366,6 @@ public class ContractServiceImpl implements ContractService {
         return "Chỉnh sửa thành công.";
     }
 
-    @Override
-    public String addWorkingDate(String contractDetailID) {
-        Optional<ContractDetail> checkExisted = contractDetailRepository.findById(contractDetailID);
-        if(checkExisted == null) {
-            return "Không tìm thấy Chi tiết hợp đồng với ID là " + contractDetailID + ".";
-        }
-        WorkingDate check = workingDateRepository.findFirstByOrderByWorkingDateDesc();
-        if((LocalDateTime.now().getDayOfMonth() == check.getWorkingDate().getDayOfMonth()) &&
-                (LocalDateTime.now().getMonth() == check.getWorkingDate().getMonth()) &&
-                (LocalDateTime.now().getYear() == check.getWorkingDate().getYear())){
-            return "Mỗi ngày chỉ được điểm danh 1 lần.";
-        }
-        WorkingDate workingDate = new WorkingDate();
-        WorkingDate lastWorkingDate = workingDateRepository.findFirstByOrderByIdDesc();
-        if(lastWorkingDate == null) {
-            workingDate.setId(util.createNewID("WD"));
-        } else {
-            workingDate.setId(util.createIDFromLastID("WD", 2, lastWorkingDate.getId()));
-        }
-        workingDate.setWorkingDate(LocalDateTime.now());
-        workingDate.setContractDetail(checkExisted.get());
-        workingDateRepository.save(workingDate);
-        return "Thêm thành công.";
-    }
 
     @Override
     public List<ShowContractModel> getWaitingContract(Pageable pageable) {
@@ -419,5 +396,22 @@ public class ContractServiceImpl implements ContractService {
     public List<ShowContractModel> getContractByStoreIDAndStatus(String storeID, Status status, Pageable pageable) {
         Page<Contract> pagingResult = contractPagingRepository.findByStore_IdAndStatus(storeID, status, pageable);
         return util.contractPagingConverter(pagingResult, pageable);
+    }
+
+    @Override
+    public List<ShowPaymentTypeModel> getPaymentType() {
+        List<PaymentType> paymentTypeList = paymentTypeRepository.findAll();
+        if(paymentTypeList == null) {
+            return null;
+        }
+        List<ShowPaymentTypeModel> listModel = new ArrayList<>();
+        for(PaymentType paymentType : paymentTypeList) {
+            ShowPaymentTypeModel model = new ShowPaymentTypeModel();
+            model.setId(paymentType.getId());
+            model.setName(paymentType.getName());
+            model.setValue(paymentType.getValue());
+            listModel.add(model);
+        }
+        return listModel;
     }
 }

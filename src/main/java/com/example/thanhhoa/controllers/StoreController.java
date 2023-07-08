@@ -1,8 +1,10 @@
 package com.example.thanhhoa.controllers;
 
+import com.example.thanhhoa.dtos.ContractModels.ShowPaymentTypeModel;
 import com.example.thanhhoa.dtos.PlantModels.AddStorePlantModel;
 import com.example.thanhhoa.dtos.StoreModels.AddStoreEmployeeModel;
 import com.example.thanhhoa.dtos.StoreModels.ShowStoreModel;
+import com.example.thanhhoa.dtos.StoreModels.ShowStorePlantRecordModel;
 import com.example.thanhhoa.enums.SearchType;
 import com.example.thanhhoa.services.store.StoreService;
 import com.example.thanhhoa.utils.JwtUtil;
@@ -84,5 +86,14 @@ public class StoreController {
         return ResponseEntity.badRequest().body(result);
     }
 
-
+    @GetMapping(value = "/getStorePlantRecord/{storePlantID}", produces = "application/json;charset=UTF-8")
+    public @ResponseBody
+    List<ShowStorePlantRecordModel> getStorePlantRecordByStorePlantID(@PathVariable("storePlantID") String storePlantID,
+                                                            HttpServletRequest request) {
+        String roleName = jwtUtil.getRoleNameFromRequest(request);
+        if (!roleName.equalsIgnoreCase("Manager") && !roleName.equalsIgnoreCase("Owner")) {
+            throw new ResponseStatusException(HttpStatus.FORBIDDEN, "-----------------------------------Người dùng không có quyền truy cập---------------------------");
+        }
+        return storeService.getStorePlantRecordByStorePlantID(storePlantID);
+    }
 }

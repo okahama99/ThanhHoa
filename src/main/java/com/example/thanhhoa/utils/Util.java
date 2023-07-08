@@ -17,6 +17,7 @@ import com.example.thanhhoa.dtos.ServiceModels.ShowServiceIMGModel;
 import com.example.thanhhoa.dtos.ServiceModels.ShowServiceModel;
 import com.example.thanhhoa.dtos.ServiceModels.ShowServiceTypeModel;
 import com.example.thanhhoa.dtos.UserModels.ShowUserModel;
+import com.example.thanhhoa.dtos.WorkingDateModels.ShowWorkingDateModel;
 import com.example.thanhhoa.entities.Category;
 import com.example.thanhhoa.entities.Contract;
 import com.example.thanhhoa.entities.ContractDetail;
@@ -31,6 +32,7 @@ import com.example.thanhhoa.entities.PlantShipPrice;
 import com.example.thanhhoa.entities.Service;
 import com.example.thanhhoa.entities.ServiceIMG;
 import com.example.thanhhoa.entities.ServiceType;
+import com.example.thanhhoa.entities.WorkingDate;
 import com.example.thanhhoa.entities.tblAccount;
 import com.example.thanhhoa.entities.tblOrder;
 import com.example.thanhhoa.enums.Status;
@@ -101,6 +103,30 @@ public class Util {
 
                 @Override
                 protected tblAccount doBackward(ShowUserModel showUserModel) {
+                    return null;
+                }
+            });
+            return modelResult.getContent();
+        } else {
+            return new ArrayList<>();
+        }
+    }
+
+    public List<ShowWorkingDateModel> workingDatePagingConverter(Page<WorkingDate> pagingResult, Pageable paging) {
+        if (pagingResult.hasContent()) {
+            double totalPage = Math.ceil((double) pagingResult.getTotalElements() / paging.getPageSize());
+            Page<ShowWorkingDateModel> modelResult = pagingResult.map(new Converter<WorkingDate, ShowWorkingDateModel>() {
+                @Override
+                protected ShowWorkingDateModel doForward(WorkingDate workingDate) {
+                    ShowWorkingDateModel model = new ShowWorkingDateModel();
+                    model.setId(workingDate.getId());
+                    model.setWorkingDate(workingDate.getWorkingDate());
+                    model.setTotalPage(totalPage);
+                    return model;
+                }
+
+                @Override
+                protected WorkingDate doBackward(ShowWorkingDateModel showWorkingDateModel) {
                     return null;
                 }
             });

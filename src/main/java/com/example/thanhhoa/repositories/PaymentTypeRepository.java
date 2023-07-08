@@ -6,4 +6,5 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 public interface PaymentTypeRepository extends JpaRepository<PaymentType, String> {
+    PaymentType findFirstByOrderByIdDesc();
 }

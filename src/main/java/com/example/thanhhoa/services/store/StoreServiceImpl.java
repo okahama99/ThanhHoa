@@ -7,6 +7,7 @@ import com.example.thanhhoa.dtos.StoreModels.CreateStoreModel;
 import com.example.thanhhoa.dtos.StoreModels.ShowDistrictModel;
 import com.example.thanhhoa.dtos.StoreModels.ShowProvinceModel;
 import com.example.thanhhoa.dtos.StoreModels.ShowStoreModel;
+import com.example.thanhhoa.dtos.StoreModels.ShowStorePlantRecordModel;
 import com.example.thanhhoa.dtos.StoreModels.UpdateStoreModel;
 import com.example.thanhhoa.entities.District;
 import com.example.thanhhoa.entities.Plant;
@@ -221,5 +222,23 @@ public class StoreServiceImpl implements StoreService{
             modelList.add(model);
         }
         return modelList;
+    }
+
+    @Override
+    public List<ShowStorePlantRecordModel> getStorePlantRecordByStorePlantID(String storePlantID) {
+        Optional<StorePlant> storePlant = storePlantRepository.findById(storePlantID);
+        if(storePlant == null){
+            return null;
+        }
+        List<ShowStorePlantRecordModel> listModel = new ArrayList<>();
+        for(StorePlantRecord record : storePlant.get().getRecordList()) {
+            ShowStorePlantRecordModel model = new ShowStorePlantRecordModel();
+            model.setId(record.getId());
+            model.setAmount(record.getAmount());
+            model.setImportDate(record.getImportDate());
+            model.setReason(record.getReason());
+            listModel.add(model);
+        }
+        return listModel;
     }
 }

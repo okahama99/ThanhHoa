@@ -69,4 +69,9 @@ public class SearchType {
         PRICEPERPLANT,
         STATUS
     }
+
+    public enum WORKING_DATE{
+        ID,
+        WORKINGDATE
+    }
 }

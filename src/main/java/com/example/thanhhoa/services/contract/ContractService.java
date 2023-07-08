@@ -3,13 +3,13 @@ package com.example.thanhhoa.services.contract;
 import com.example.thanhhoa.dtos.ContractModels.ApproveContractModel;
 import com.example.thanhhoa.dtos.ContractModels.CreateCustomerContractModel;
 import com.example.thanhhoa.dtos.ContractModels.CreateManagerContractModel;
+import com.example.thanhhoa.dtos.ContractModels.GetStaffModel;
 import com.example.thanhhoa.dtos.ContractModels.ShowContractDetailModel;
 import com.example.thanhhoa.dtos.ContractModels.ShowContractModel;
+import com.example.thanhhoa.dtos.ContractModels.ShowPaymentTypeModel;
 import com.example.thanhhoa.dtos.ContractModels.UpdateContractModel;
-import com.example.thanhhoa.dtos.ContractModels.GetStaffModel;
 import com.example.thanhhoa.enums.Status;
 import org.springframework.data.domain.Pageable;
-import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
 import java.util.List;
@@ -32,8 +32,6 @@ public interface ContractService {
 
     String changeContractStatus(String contractID, Status status);
 
-    String addWorkingDate(String contractDetailID);
-
     List<ShowContractModel> getWaitingContract(Pageable pageable);
 
     List<GetStaffModel> getStaffForContract();
@@ -41,4 +39,6 @@ public interface ContractService {
     List<ShowContractModel> getContractByStoreID(String storeID, Pageable pageable);
 
     List<ShowContractModel> getContractByStoreIDAndStatus(String storeID, Status status, Pageable pageable);
+
+    List<ShowPaymentTypeModel> getPaymentType();
 }
