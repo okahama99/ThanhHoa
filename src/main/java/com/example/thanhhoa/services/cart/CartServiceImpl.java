@@ -57,7 +57,7 @@ public class CartServiceImpl implements CartService {
 
     @Override
     public String addToCart(AddCartModel addCartModel, Long userID) {
-        if(addCartModel.getQuantity() <= 0){
+        if(addCartModel.getQuantity() < 0){
             return "Quantity phải lớn hơn 0.";
         }
         Cart checkExisted = cartRepository.findByPlant_IdAndAccount_Id(addCartModel.getPlantID(), userID);
@@ -99,7 +99,7 @@ public class CartServiceImpl implements CartService {
         if(cart == null){
             return "Không tồn tại Cart nào với UserID " + userID + " và CartID " + updateCartModel.getCartID() + ".";
         }
-        if(updateCartModel.getQuantity() <= 0){
+        if(updateCartModel.getQuantity() < 0){
             return "Quantity phải lớn hơn 0.";
         }
         cart.setQuantity(updateCartModel.getQuantity());
