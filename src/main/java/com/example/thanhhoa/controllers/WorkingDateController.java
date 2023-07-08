@@ -50,9 +50,9 @@ public class WorkingDateController {
         }
     }
 
-    @GetMapping(value = "/getWorkingDate/{contractDetailID}", produces = "application/json;charset=UTF-8")
+    @GetMapping(value = "/getWorkingDateByContractDetailID", produces = "application/json;charset=UTF-8")
     public @ResponseBody
-    List<ShowWorkingDateModel> getByContractDetailID(@PathVariable(name = "contractDetailID") String contractDetailID,
+    List<ShowWorkingDateModel> getByContractDetailID(@RequestParam String contractDetailID,
                                                      @RequestParam int pageNo,
                                                      @RequestParam int pageSize,
                                                      @RequestParam(required = false, defaultValue = "ID") SearchType.WORKING_DATE sortBy,
@@ -66,9 +66,9 @@ public class WorkingDateController {
         return workingDateService.getAllByContractDetailID(contractDetailID, paging);
     }
 
-    @GetMapping(value = "/getWorkingDate/{workingDateID}", produces = "application/json;charset=UTF-8")
+    @GetMapping(value = "/getWorkingDateByID", produces = "application/json;charset=UTF-8")
     public @ResponseBody
-    ResponseEntity<Object> getByID(@PathVariable("workingDateID") String workingDateID) {
+    ResponseEntity<Object> getByID(@RequestParam String workingDateID) {
         WorkingDate result = workingDateService.getByID(workingDateID);
         if(result == null){
             return ResponseEntity.badRequest().body(result);

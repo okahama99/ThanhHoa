@@ -49,7 +49,9 @@ public class CartServiceImpl implements CartService {
             model.setPlantName(cart.getPlant().getName());
             model.setQuantity(cart.getQuantity());
             model.setPlantPrice(newestPrice.getPrice());
-            model.setImage(cart.getPlant().getPlantIMGList().get(0).getImgURL());
+            if(cart.getPlant().getPlantIMGList().size() != 0){
+                model.setImage(cart.getPlant().getPlantIMGList().get(0).getImgURL());
+            }
             modelList.add(model);
         }
         return modelList;
