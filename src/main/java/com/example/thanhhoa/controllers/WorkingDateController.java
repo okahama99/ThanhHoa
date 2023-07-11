@@ -75,4 +75,9 @@ public class WorkingDateController {
         }
         return ResponseEntity.ok().body(result);
     }
+
+    @GetMapping(value = "/getByStaffToken", produces = "application/json;charset=UTF-8")
+    public ResponseEntity<Object> getByStaffToken(HttpServletRequest request) {
+        return ResponseEntity.ok().body(workingDateService.getWorkingDateByStaffID(jwtUtil.getUserIDFromRequest(request)));
+    }
 }

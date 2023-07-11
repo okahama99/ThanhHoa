@@ -22,4 +22,6 @@ public class UpdateOrderModel implements Serializable {
     private List<OrderDetailModel> detailList;
     @Nullable
     private Long staffID;
+    @Nullable
+    private String latLong;
 }

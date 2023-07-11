@@ -22,4 +22,6 @@ public class CreateOrderModel implements Serializable {
 
     @Nullable
     private Long staffID;
+    @Nullable
+    private String latLong;
 }

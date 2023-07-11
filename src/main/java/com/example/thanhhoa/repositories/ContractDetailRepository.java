@@ -14,4 +14,6 @@ public interface ContractDetailRepository extends JpaRepository<ContractDetail, 
     ContractDetail findFirstByOrderByIdDesc();
 
     List<ContractDetail> findByServiceType_IdAndContract_Status(String serviceTypeID, Status status);
+
+    List<ContractDetail> findByContract_Staff_Id(Long staffID);
 }

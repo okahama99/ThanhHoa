@@ -11,7 +11,7 @@ import java.util.List;
 public interface StorePlantRepository extends JpaRepository<StorePlant, String> {
     StorePlant findByPlantIdAndStoreIdAndPlant_Status(String plantID, String storeID, Status status);
 
-    List<StorePlant> findByStore_IdAndPlant_Status(String storeID, Status status);
+    List<StorePlant> findByStore_IdAndPlant_StatusAndStore_Status(String storeID, Status plantStatus, Status storeStatus);
 
     List<StorePlant> findByStore_Id(String storeID);
 

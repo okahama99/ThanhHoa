@@ -19,7 +19,9 @@ public interface StoreService {
 
     String updateStore(UpdateStoreModel updateStoremodel);
 
-    Boolean deleteStore(String storeID);
+    String deleteStore(String storeID);
+
+    ShowStoreModel getByID(String storeID);
 
     String addStorePlant(AddStorePlantModel addStorePlantModel) throws Exception;
 

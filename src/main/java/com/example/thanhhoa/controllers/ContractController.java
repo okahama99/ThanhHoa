@@ -46,7 +46,7 @@ public class ContractController {
     public @ResponseBody
     List<ShowContractModel> getAllContractByUserID(HttpServletRequest request) {
         String roleName = jwtUtil.getRoleNameFromRequest(request);
-        if(!roleName.equalsIgnoreCase("Customer")) {
+        if(!roleName.equalsIgnoreCase("Customer") && !roleName.equalsIgnoreCase("Staff")) {
             throw new ResponseStatusException(HttpStatus.FORBIDDEN, "-----------------------------------Người dùng không có quyền truy cập---------------------------");
         }
 

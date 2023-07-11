@@ -86,6 +86,7 @@ public class OrderServiceImpl implements OrderService{
         order.setPaymentMethod(createOrderModel.getFullName());
         order.setCreatedDate(LocalDateTime.now());
         order.setDistance(createOrderModel.getDistance());
+        order.setLatLong(createOrderModel.getLatLong());
         order.setProgressStatus(Status.WAITING);
         order.setStatus(Status.ACTIVE);
 
@@ -159,6 +160,7 @@ public class OrderServiceImpl implements OrderService{
         order.setPaymentMethod(updateOrderModel.getFullName());
         order.setCreatedDate(LocalDateTime.now());
         order.setDistance(updateOrderModel.getDistance());
+        order.setLatLong(updateOrderModel.getLatLong());
         order.setProgressStatus(Status.WAITING);
         order.setStatus(Status.ACTIVE);
 

@@ -60,6 +60,9 @@ public class tblOrder implements Serializable {
     private LocalDateTime rejectDate;
 
     @Column
+    private String latLong;
+
+    @Column
     private Double distance = 0.0;
 
     @Column

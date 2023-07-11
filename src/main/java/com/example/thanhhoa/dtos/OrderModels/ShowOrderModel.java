@@ -25,6 +25,7 @@ public class ShowOrderModel implements Serializable {
     private LocalDateTime receivedDate;
     private LocalDateTime approveDate;
     private LocalDateTime rejectDate;
+    private String latLong;
     private Double distance;
     private Double totalShipCost;
     private Double total;

@@ -13,6 +13,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -66,5 +67,24 @@ public class WorkingDateServiceImpl implements WorkingDateService{
             return null;
         }
         return workingDate.get();
+    }
+
+    @Override
+    public List<ShowWorkingDateModel> getWorkingDateByStaffID(Long staffID) {
+        List<ContractDetail> contractDetailList = contractDetailRepository.findByContract_Staff_Id(staffID);
+        if(contractDetailList == null){
+            return null;
+        }
+        List<ShowWorkingDateModel> modelList = new ArrayList<>();
+        for(ContractDetail detail : contractDetailList) {
+            List<WorkingDate> workingDateList = workingDateRepository.findByContractDetail_Id(detail.getId());
+            for(WorkingDate workingDate : workingDateList) {
+                ShowWorkingDateModel model = new ShowWorkingDateModel();
+                model.setId(workingDate.getId());
+                model.setWorkingDate(workingDate.getWorkingDate());
+                modelList.add(model);
+            }
+        }
+        return modelList;
     }
 }

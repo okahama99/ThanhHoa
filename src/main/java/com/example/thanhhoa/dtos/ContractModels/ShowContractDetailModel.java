@@ -18,6 +18,13 @@ public class ShowContractDetailModel implements Serializable {
     private Double totalPrice;
     private String contractID;
     private String serviceTypeID;
+    private String typeName;
+    private Integer typePercentage;
+    private String typeSize;
+    private LocalDateTime typeApplyDate;
     private String servicePackID;
+    private String packRange;
+    private Integer packPercentage;
+    private LocalDateTime packApplyDate;
     private List<ShowWorkingDateModel> workingDateList;
 }

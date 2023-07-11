@@ -13,4 +13,6 @@ public interface WorkingDateService {
     List<ShowWorkingDateModel> getAllByContractDetailID(String contractDetailID, Pageable pageable);
 
     WorkingDate getByID(String workingDateID);
+
+    List<ShowWorkingDateModel> getWorkingDateByStaffID(Long staffID);
 }

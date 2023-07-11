@@ -147,7 +147,14 @@ public class ContractServiceImpl implements ContractService {
             model.setTotalPrice(detail.getTotalPrice());
             model.setContractID(detail.getId());
             model.setServiceTypeID(detail.getServiceType().getId());
+            model.setTypeName(detail.getServiceType().getName());
+            model.setTypeSize(detail.getServiceType().getSize());
+            model.setTypePercentage(detail.getServiceType().getPercentage());
+            model.setTypeApplyDate(detail.getServiceType().getApplyDate());
             model.setServicePackID(detail.getServicePack().getId());
+            model.setPackRange(detail.getServicePack().getRange());
+            model.setPackPercentage(detail.getServicePack().getPercentage());
+            model.setPackApplyDate(detail.getServicePack().getApplyDate());
             model.setWorkingDateList(dateModelList);
             modelList.add(model);
         }

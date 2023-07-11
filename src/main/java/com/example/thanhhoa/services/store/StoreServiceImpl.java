@@ -63,17 +63,70 @@ public class StoreServiceImpl implements StoreService{
 
     @Override
     public String createStore(CreateStoreModel createStoreModel) {
-        return null;
+        Store checkDuplicate = storeRepository.findByStoreName(createStoreModel.getStoreName());
+        if(checkDuplicate != null){
+            return "Đã tồn tại Cửa hàng với tên là " + createStoreModel.getStoreName() + ".";
+        }
+        Store store = new Store();
+        Store lastStore = storeRepository.findFirstByOrderByIdDesc();
+        if (lastStore == null) {
+            store.setId(util.createNewID("S"));
+        } else {
+            store.setId(util.createIDFromLastID("S", 1, lastStore.getId()));
+        }
+        store.setStoreName(createStoreModel.getStoreName());
+        store.setAddress(createStoreModel.getAddress());
+        store.setDistrict(districtRepository.getById(createStoreModel.getDistrictID()));
+        store.setStatus(Status.ACTIVE);
+        store.setPhone(createStoreModel.getPhone());
+        storeRepository.save(store);
+        return "Tạo thành công.";
     }
 
     @Override
     public String updateStore(UpdateStoreModel updateStoremodel) {
-        return null;
+        Optional<Store> checkExisted = storeRepository.findById(updateStoremodel.getStoreID());
+        if(checkExisted == null){
+            return "Không tìm thấy Cửa hàng với tên là " + updateStoremodel.getStoreName() + ".";
+        }
+        Store store = checkExisted.get();
+        store.setStoreName(updateStoremodel.getStoreName());
+        store.setAddress(updateStoremodel.getAddress());
+        store.setPhone(updateStoremodel.getPhone());
+        store.setDistrict(districtRepository.getById(updateStoremodel.getDistrictID()));
+        storeRepository.save(store);
+        return "Cập nhật thành công.";
     }
 
     @Override
-    public Boolean deleteStore(String storeID) {
-        return null;
+    public String deleteStore(String storeID) {
+        Optional<Store> checkExisted = storeRepository.findById(storeID);
+        if(checkExisted == null){
+            return "Không tìm thấy Cửa hàng với tên là " + storeID + ".";
+        }
+        Store store = checkExisted.get();
+        store.setStatus(Status.INACTIVE);
+        storeRepository.save(store);
+        return "Xóa thành công.";
+    }
+
+    @Override
+    public ShowStoreModel getByID(String storeID) {
+        Optional<Store> checkExisted = storeRepository.findById(storeID);
+        if(checkExisted == null){
+            return null;
+        }
+        Store store = checkExisted.get();
+        StoreEmployee manager = storeEmployeeRepository.findByStore_IdAndAccount_Role_RoleName(store.getId(), "Manager");
+        ShowStoreModel model = new ShowStoreModel();
+        model.setId(store.getId());
+        model.setStoreName(store.getStoreName());
+        model.setAddress(store.getAddress());
+        model.setDistrict(store.getDistrict().getDistrictName());
+        model.setPhone(store.getPhone());
+        model.setManagerID(manager.getAccount().getId());
+        model.setManagerName(manager.getAccount().getFullName());
+        return model;
     }
 
     @Override
@@ -155,7 +208,7 @@ public class StoreServiceImpl implements StoreService{
 
     @Override
     public List<ShowPlantModel> getStorePlantByStoreID(String storeID, Pageable pageable) {
-        List<StorePlant> listPlant = storePlantRepository.findByStore_IdAndPlant_Status(storeID, Status.ONSALE);
+        List<StorePlant> listPlant = storePlantRepository.findByStore_IdAndPlant_StatusAndStore_Status(storeID, Status.ONSALE, Status.ACTIVE);
         if(listPlant==null){
             return null;
         }
