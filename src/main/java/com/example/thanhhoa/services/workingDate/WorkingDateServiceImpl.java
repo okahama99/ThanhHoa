@@ -82,6 +82,22 @@ public class WorkingDateServiceImpl implements WorkingDateService{
                 ShowWorkingDateModel model = new ShowWorkingDateModel();
                 model.setId(workingDate.getId());
                 model.setWorkingDate(workingDate.getWorkingDate());
+                model.setContractDetailID(detail.getId());
+                model.setNote(detail.getNote());
+                model.setTimeWorking(detail.getTimeWorking());
+                model.setEndDate(detail.getEndDate());
+                model.setStartDate(detail.getStartDate());
+                model.setTotalPrice(detail.getTotalPrice());
+                model.setContractID(detail.getId());
+                model.setServiceTypeID(detail.getServiceType().getId());
+                model.setTypeName(detail.getServiceType().getName());
+                model.setTypeSize(detail.getServiceType().getSize());
+                model.setTypePercentage(detail.getServiceType().getPercentage());
+                model.setTypeApplyDate(detail.getServiceType().getApplyDate());
+                model.setServicePackID(detail.getServicePack().getId());
+                model.setPackRange(detail.getServicePack().getRange());
+                model.setPackPercentage(detail.getServicePack().getPercentage());
+                model.setPackApplyDate(detail.getServicePack().getApplyDate());
                 modelList.add(model);
             }
         }

@@ -30,6 +30,7 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.server.ResponseStatusException;
 
 import javax.servlet.http.HttpServletRequest;
+import java.util.InputMismatchException;
 import java.util.List;
 
 @RestController
@@ -44,13 +45,19 @@ public class ContractController {
 
     @GetMapping(value = "/byCustomerToken", produces = "application/json;charset=UTF-8")
     public @ResponseBody
-    List<ShowContractModel> getAllContractByUserID(HttpServletRequest request) {
+    ResponseEntity<Object> getAllContractByUserID(@RequestParam(value = "Staff / Customer") String role,
+                                                   HttpServletRequest request) {
         String roleName = jwtUtil.getRoleNameFromRequest(request);
         if(!roleName.equalsIgnoreCase("Customer") && !roleName.equalsIgnoreCase("Staff")) {
             throw new ResponseStatusException(HttpStatus.FORBIDDEN, "-----------------------------------Người dùng không có quyền truy cập---------------------------");
         }
-
-        return contractService.getAllContractByUserID(jwtUtil.getUserIDFromRequest(request));
+        if(role.equalsIgnoreCase("staff")){
+            return ResponseEntity.ok().body(contractService.getAllContractByUserID(jwtUtil.getUserIDFromRequest(request), "Staff"));
+        }else if(role.equalsIgnoreCase("customer")){
+            return ResponseEntity.ok().body(contractService.getAllContractByUserID(jwtUtil.getUserIDFromRequest(request), "Customer"));
+        }else{
+            return ResponseEntity.badRequest().body("Nhập dữ liệu sai, Role phải là Staff hoặc Customer ( Không phân biệt hoa thường ).");
+        }
     }
 
     @GetMapping(value = "/contractDetail/{contractID}", produces = "application/json;charset=UTF-8")

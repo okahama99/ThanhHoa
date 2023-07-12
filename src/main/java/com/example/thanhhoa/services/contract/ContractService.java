@@ -16,7 +16,7 @@ import java.util.List;
 
 public interface ContractService {
 
-    List<ShowContractModel> getAllContractByUserID(Long userID);
+    List<ShowContractModel> getAllContractByUserID(Long userID,String role);
 
     List<ShowContractDetailModel> getContractDetailByContractID(String contractID);
 

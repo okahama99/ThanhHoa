@@ -73,8 +73,14 @@ public class ContractServiceImpl implements ContractService {
     private Util util;
 
     @Override
-    public List<ShowContractModel> getAllContractByUserID(Long customerID) {
-        List<Contract> contractList = contractRepository.findByCustomer_Id(customerID);
+    public List<ShowContractModel> getAllContractByUserID(Long userID, String role) {
+        List<Contract> contractList;
+        if(role.equalsIgnoreCase("Staff")){
+            contractList = contractRepository.findByStaff_Id(userID);
+        }else{
+            contractList = contractRepository.findByCustomer_Id(userID);
+        }
+
         if(contractList == null) {
             return null;
         }
