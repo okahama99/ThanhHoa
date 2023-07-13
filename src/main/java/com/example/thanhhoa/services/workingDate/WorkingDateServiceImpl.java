@@ -18,7 +18,7 @@ import java.util.List;
 import java.util.Optional;
 
 @Service
-public class WorkingDateServiceImpl implements WorkingDateService{
+public class WorkingDateServiceImpl implements WorkingDateService {
 
     @Autowired
     private Util util;
@@ -38,7 +38,7 @@ public class WorkingDateServiceImpl implements WorkingDateService{
         WorkingDate check = workingDateRepository.findFirstByOrderByWorkingDateDesc();
         if((LocalDateTime.now().getDayOfMonth() == check.getWorkingDate().getDayOfMonth()) &&
                 (LocalDateTime.now().getMonth() == check.getWorkingDate().getMonth()) &&
-                (LocalDateTime.now().getYear() == check.getWorkingDate().getYear())){
+                (LocalDateTime.now().getYear() == check.getWorkingDate().getYear())) {
             return "Mỗi ngày chỉ được điểm danh 1 lần.";
         }
         WorkingDate workingDate = new WorkingDate();
@@ -63,7 +63,7 @@ public class WorkingDateServiceImpl implements WorkingDateService{
     @Override
     public WorkingDate getByID(String workingDateID) {
         Optional<WorkingDate> workingDate = workingDateRepository.findById(workingDateID);
-        if(workingDate == null){
+        if(workingDate == null) {
             return null;
         }
         return workingDate.get();
@@ -72,7 +72,7 @@ public class WorkingDateServiceImpl implements WorkingDateService{
     @Override
     public List<ShowWorkingDateModel> getWorkingDateByStaffID(Long staffID) {
         List<ContractDetail> contractDetailList = contractDetailRepository.findByContract_Staff_Id(staffID);
-        if(contractDetailList == null){
+        if(contractDetailList == null) {
             return null;
         }
         List<ShowWorkingDateModel> modelList = new ArrayList<>();
@@ -102,5 +102,38 @@ public class WorkingDateServiceImpl implements WorkingDateService{
             }
         }
         return modelList;
+    }
+
+    @Override
+    public ShowWorkingDateModel getByWorkingDate(String contractDetailID, LocalDateTime date) {
+        Optional<ContractDetail> checkExisted = contractDetailRepository.findById(contractDetailID);
+        if(checkExisted == null){
+            return null;
+        }
+        ContractDetail detail = checkExisted.get();
+        WorkingDate workingDate = workingDateRepository.findByContractDetail_IdAndWorkingDateBetween(contractDetailID, date, date.plusDays(1L));
+        if(workingDate == null) {
+            return null;
+        }
+        ShowWorkingDateModel model = new ShowWorkingDateModel();
+        model.setId(workingDate.getId());
+        model.setWorkingDate(workingDate.getWorkingDate());
+        model.setContractDetailID(detail.getId());
+        model.setNote(detail.getNote());
+        model.setTimeWorking(detail.getTimeWorking());
+        model.setEndDate(detail.getEndDate());
+        model.setStartDate(detail.getStartDate());
+        model.setTotalPrice(detail.getTotalPrice());
+        model.setContractID(detail.getId());
+        model.setServiceTypeID(detail.getServiceType().getId());
+        model.setTypeName(detail.getServiceType().getName());
+        model.setTypeSize(detail.getServiceType().getSize());
+        model.setTypePercentage(detail.getServiceType().getPercentage());
+        model.setTypeApplyDate(detail.getServiceType().getApplyDate());
+        model.setServicePackID(detail.getServicePack().getId());
+        model.setPackRange(detail.getServicePack().getRange());
+        model.setPackPercentage(detail.getServicePack().getPercentage());
+        model.setPackApplyDate(detail.getServicePack().getApplyDate());
+        return model;
     }
 }

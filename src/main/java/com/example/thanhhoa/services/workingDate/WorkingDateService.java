@@ -4,6 +4,7 @@ import com.example.thanhhoa.dtos.WorkingDateModels.ShowWorkingDateModel;
 import com.example.thanhhoa.entities.WorkingDate;
 import org.springframework.data.domain.Pageable;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 public interface WorkingDateService {
@@ -15,4 +16,6 @@ public interface WorkingDateService {
     WorkingDate getByID(String workingDateID);
 
     List<ShowWorkingDateModel> getWorkingDateByStaffID(Long staffID);
+
+    ShowWorkingDateModel getByWorkingDate(String contractDetailID, LocalDateTime date);
 }
