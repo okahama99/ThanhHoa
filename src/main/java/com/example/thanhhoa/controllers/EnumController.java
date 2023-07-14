@@ -49,6 +49,16 @@ public class EnumController {
         return list;
     }
 
+    @GetMapping(value = "/report", produces = "application/json;charset=UTF-8")
+    public @ResponseBody
+    List<String> report() {
+        List<String> list = new ArrayList<>();
+        list.add(Status.ACTIVE.toString());
+        list.add(Status.INACTIVE.toString());
+        list.add(Status.DONE.toString());
+        return list;
+    }
+
     @GetMapping(value = "/user", produces = "application/json;charset=UTF-8")
     public @ResponseBody
     List<String> user() {

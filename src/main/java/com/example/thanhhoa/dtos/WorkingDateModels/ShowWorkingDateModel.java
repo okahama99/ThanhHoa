@@ -12,6 +12,10 @@ public class ShowWorkingDateModel implements Serializable {
     private String id;
     private LocalDateTime workingDate;
     private String contractID;
+    private String fullName;
+    private String address;
+    private String phone;
+    private String email;
     private String contractDetailID;
     private String timeWorking;
     private String note;

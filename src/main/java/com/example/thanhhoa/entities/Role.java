@@ -1,5 +1,6 @@
 package com.example.thanhhoa.entities;
 
+import com.example.thanhhoa.enums.Status;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -16,4 +17,7 @@ public class Role implements Serializable {
 
     @Column(nullable = false, length = 20)
     private String roleName;
+
+    @Enumerated(EnumType.STRING)
+    private Status status;
 }

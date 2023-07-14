@@ -1,6 +1,7 @@
 package com.example.thanhhoa.repositories;
 
 import com.example.thanhhoa.entities.Role;
+import com.example.thanhhoa.enums.Status;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
@@ -8,5 +9,7 @@ import org.springframework.stereotype.Repository;
 public interface RoleRepository  extends JpaRepository<Role, String> {
     Role getRoleByRoleName(String roleName);
 
-    Role getById(String roleID);
+    Role findByIdAndStatus(String id, Status status);
+
+    Role findFirstByOrderByIdDesc();
 }

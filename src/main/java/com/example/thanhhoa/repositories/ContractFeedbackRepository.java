@@ -14,4 +14,6 @@ public interface ContractFeedbackRepository extends JpaRepository<ContractFeedba
     Optional<ContractFeedback> findById(String contractFeedbackID);
 
     Optional<ContractFeedback> findByContract_Id(String contractID);
+
+    ContractFeedback findFirstByOrderByIdDesc();
 }
