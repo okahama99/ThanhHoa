@@ -34,5 +34,7 @@ public class ShowOrderModel implements Serializable {
     private Long staffID;
     private Long customerID;
     private String distancePriceID;
+    private LocalDateTime dpApplyDate;
+    private Double dpPricePerKm;
     private Double totalPage;
 }

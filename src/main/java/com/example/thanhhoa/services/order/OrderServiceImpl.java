@@ -11,6 +11,7 @@ import com.example.thanhhoa.entities.DistancePrice;
 import com.example.thanhhoa.entities.OrderDetail;
 import com.example.thanhhoa.entities.Plant;
 import com.example.thanhhoa.entities.PlantPrice;
+import com.example.thanhhoa.entities.Store;
 import com.example.thanhhoa.entities.StorePlant;
 import com.example.thanhhoa.entities.StorePlantRecord;
 import com.example.thanhhoa.entities.tblAccount;
@@ -327,11 +328,57 @@ public class OrderServiceImpl implements OrderService{
         List<ShowOrderDetailModel> modelList = new ArrayList<>();
         for(OrderDetail orderDetail : orderDetailList){
             ShowOrderDetailModel model = new ShowOrderDetailModel();
+            //detail
             model.setId(orderDetail.getId());
             model.setPrice(orderDetail.getPrice());
             model.setQuantity(orderDetail.getQuantity());
-            model.setPlantID(orderDetail.getPlant().getId());
+
+            //order
             model.setOrderID(orderDetail.getTblOrder().getId());
+            model.setFullName(orderDetail.getTblOrder().getFullName());
+            model.setAddress(orderDetail.getTblOrder().getAddress());
+            model.setEmail(orderDetail.getTblOrder().getEmail());
+            model.setPhone(orderDetail.getTblOrder().getPhone());
+            model.setCreatedDate(orderDetail.getTblOrder().getCreatedDate());
+            model.setPackageDate(orderDetail.getTblOrder().getPackageDate());
+            model.setDeliveryDate(orderDetail.getTblOrder().getDeliveryDate());
+            model.setReceivedDate(orderDetail.getTblOrder().getReceivedDate());
+            model.setApproveDate(orderDetail.getTblOrder().getApproveDate());
+            model.setRejectDate(orderDetail.getTblOrder().getRejectDate());
+            model.setPaymentMethod(orderDetail.getTblOrder().getPaymentMethod());
+            model.setProgressStatus(orderDetail.getTblOrder().getProgressStatus());
+            model.setReason(orderDetail.getTblOrder().getReason());
+            model.setStoreID(orderDetail.getTblOrder().getStore().getId());
+            if(orderDetail.getTblOrder().getStaff() != null){
+                model.setStaffID(orderDetail.getTblOrder().getStaff().getId());
+            }
+            model.setCustomerID(orderDetail.getTblOrder().getCustomer().getId());
+            model.setDistancePriceID(orderDetail.getTblOrder().getDistancePrice().getId());
+            model.setDpApplyDate(orderDetail.getTblOrder().getDistancePrice().getApplyDate());
+            model.setDpPricePerKm(orderDetail.getTblOrder().getDistancePrice().getPricePerKm());
+            model.setLatLong(orderDetail.getTblOrder().getLatLong());
+            model.setDistance(orderDetail.getTblOrder().getDistance());
+            model.setTotalShipCost(orderDetail.getTblOrder().getTotalShipCost());
+            model.setTotal(orderDetail.getTblOrder().getTotal());
+            model.setStatus(orderDetail.getTblOrder().getStatus());
+
+            //plant
+            PlantPrice newestPrice = plantPriceRepository.findFirstByPlant_IdAndStatusOrderByApplyDateDesc(orderDetail.getPlant().getId(), Status.ACTIVE);
+            model.setPlantID(orderDetail.getPlant().getId());
+            if(orderDetail.getPlant().getPlantIMGList() != null){
+                model.setPlantImage(orderDetail.getPlant().getPlantIMGList().get(0).getImgURL());
+            }
+            model.setPlantName(orderDetail.getPlant().getName());
+            model.setPlantPrice(newestPrice.getPrice());
+            model.setPlantShipPrice(orderDetail.getPlant().getPlantShipPrice().getPricePerPlant());
+
+            //store
+            Store store = storeRepository.getById(orderDetail.getTblOrder().getStore().getId());
+            model.setStoreID(store.getId());
+            model.setStoreName(store.getStoreName());
+            model.setStoreAddress(store.getAddress());
+            model.setStorePhone(store.getPhone());
+
             modelList.add(model);
         }
         return modelList;

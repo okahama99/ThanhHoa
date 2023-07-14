@@ -469,6 +469,8 @@ public class Util {
                     }
                     model.setCustomerID(order.getCustomer().getId());
                     model.setDistancePriceID(order.getDistancePrice().getId());
+                    model.setDpApplyDate(order.getDistancePrice().getApplyDate());
+                    model.setDpPricePerKm(order.getDistancePrice().getPricePerKm());
                     model.setLatLong(order.getLatLong());
                     model.setDistance(order.getDistance());
                     model.setTotalShipCost(order.getTotalShipCost());
