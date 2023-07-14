@@ -93,6 +93,8 @@ public class WorkingDateServiceImpl implements WorkingDateService {
                 model.setEmail(detail.getContract().getEmail());
                 model.setPhone(detail.getContract().getPhone());
                 model.setFullName(detail.getContract().getFullName());
+                model.setServiceID(detail.getServiceType().getService().getId());
+                model.setServiceName(detail.getServiceType().getService().getName());
                 model.setServiceTypeID(detail.getServiceType().getId());
                 model.setTypeName(detail.getServiceType().getName());
                 model.setTypeSize(detail.getServiceType().getSize());
@@ -133,6 +135,8 @@ public class WorkingDateServiceImpl implements WorkingDateService {
         model.setEmail(detail.getContract().getEmail());
         model.setPhone(detail.getContract().getPhone());
         model.setFullName(detail.getContract().getFullName());
+        model.setServiceID(detail.getServiceType().getService().getId());
+        model.setServiceName(detail.getServiceType().getService().getName());
         model.setServiceTypeID(detail.getServiceType().getId());
         model.setTypeName(detail.getServiceType().getName());
         model.setTypeSize(detail.getServiceType().getSize());

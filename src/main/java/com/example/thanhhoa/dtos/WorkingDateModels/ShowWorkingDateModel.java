@@ -22,6 +22,8 @@ public class ShowWorkingDateModel implements Serializable {
     private LocalDateTime startDate;
     private LocalDateTime endDate;
     private Double totalPrice;
+    private String serviceID;
+    private String serviceName;
     private String serviceTypeID;
     private String typeName;
     private Integer typePercentage;
