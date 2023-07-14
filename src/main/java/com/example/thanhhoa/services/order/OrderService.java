@@ -24,6 +24,8 @@ public interface OrderService {
 
     List<ShowOrderModel> getAllOrderByUsername(String username, Pageable pageable);
 
+    List<ShowOrderModel> getAllByStatusOrderByUsername(Status status, String username, Pageable pageable);
+
     List<ShowOrderModel> getWaitingOrder(Pageable pageable);
 
     List<ShowOrderDetailModel> getOrderDetailByOrderID(String orderID);

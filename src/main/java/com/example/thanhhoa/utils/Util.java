@@ -464,7 +464,9 @@ public class Util {
                     model.setProgressStatus(order.getProgressStatus());
                     model.setReason(order.getReason());
                     model.setStoreID(order.getStore().getId());
-                    model.setStaffID(order.getStaff().getId());
+                    if(order.getStaff() != null){
+                        model.setStaffID(order.getStaff().getId());
+                    }
                     model.setCustomerID(order.getCustomer().getId());
                     model.setDistancePriceID(order.getDistancePrice().getId());
                     model.setLatLong(order.getLatLong());

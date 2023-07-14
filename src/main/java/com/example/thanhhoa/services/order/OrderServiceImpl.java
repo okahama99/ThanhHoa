@@ -90,11 +90,13 @@ public class OrderServiceImpl implements OrderService{
         order.setProgressStatus(Status.WAITING);
         order.setStatus(Status.ACTIVE);
 
-        tblAccount staff = userRepository.getById(createOrderModel.getStaffID());
-        staff.setStatus(Status.UNAVAILABLE);
-        userRepository.save(staff);
+        if(createOrderModel.getStaffID() != null){
+            tblAccount staff = userRepository.getById(createOrderModel.getStaffID());
+            staff.setStatus(Status.UNAVAILABLE);
+            userRepository.save(staff);
+            order.setStaff(staff);
+        }
 
-        order.setStaff(staff);
         order.setCustomer(userRepository.getById(customerID));
         order.setStore(storeRepository.getById(createOrderModel.getStoreID()));
         orderRepository.save(order);
@@ -133,7 +135,7 @@ public class OrderServiceImpl implements OrderService{
         order.setTotalShipCost(totalShipCost);
         order.setTotal(total);
         orderRepository.save(order);
-        return "Tạo thành công.";
+        return order.getId();
     }
 
     @Override
@@ -301,6 +303,12 @@ public class OrderServiceImpl implements OrderService{
     @Override
     public List<ShowOrderModel> getAllOrderByUsername(String username, Pageable pageable){
         Page<tblOrder> pagingResult = orderPagingRepository.findByCustomer_UsernameAndStatus(username, Status.ACTIVE, pageable);
+        return util.orderPagingConverter(pagingResult, pageable);
+    }
+
+    @Override
+    public List<ShowOrderModel> getAllByStatusOrderByUsername(Status status, String username, Pageable pageable) {
+        Page<tblOrder> pagingResult = orderPagingRepository.findByCustomer_UsernameAndStatus(username, status, pageable);
         return util.orderPagingConverter(pagingResult, pageable);
     }
 

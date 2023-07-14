@@ -46,10 +46,7 @@ public class OrderController {
             throw new ResponseStatusException(HttpStatus.FORBIDDEN, "-----------------------------------Người dùng không có quyền truy cập---------------------------");
         }
         String result = orderService.createOrder(createOrderModel, jwtUtil.getUserIDFromRequest(request));
-        if(result.equals("Tạo thành công.")) {
-            return ResponseEntity.ok().body(result);
-        }
-        return ResponseEntity.badRequest().body(result);
+        return ResponseEntity.ok().body(result);
     }
 
     @PutMapping(produces = "application/json;charset=UTF-8")
@@ -110,7 +107,12 @@ public class OrderController {
 
     @GetMapping(value = "/getAllOrderByUsername", produces = "application/json;charset=UTF-8")
     public @ResponseBody
-    List<ShowOrderModel> getAllOrderByUsername(@RequestParam int pageNo, @RequestParam int pageSize, @RequestParam(required = false, defaultValue = "ID") SearchType.ORDER sortBy, @RequestParam(required = false, defaultValue = "true") Boolean sortAsc, HttpServletRequest request) {
+    List<ShowOrderModel> getAllOrderByUsername(@RequestParam(required = false) String status,
+                                               @RequestParam int pageNo,
+                                               @RequestParam int pageSize,
+                                               @RequestParam(required = false, defaultValue = "ID") SearchType.ORDER sortBy,
+                                               @RequestParam(required = false, defaultValue = "true") Boolean sortAsc,
+                                               HttpServletRequest request) {
         String roleName = jwtUtil.getRoleNameFromRequest(request);
         if(!roleName.equalsIgnoreCase("Customer")) {
             throw new ResponseStatusException(HttpStatus.FORBIDDEN, "-----------------------------------Người dùng không có quyền truy cập---------------------------");
@@ -127,7 +129,12 @@ public class OrderController {
             paging = util.makePaging(pageNo, pageSize, sortBy.toString().toLowerCase(), sortAsc);
         }
 
-        return orderService.getAllOrderByUsername(jwtUtil.getUserNameFromJWT(token), paging);
+        if(status != null){
+            return orderService.getAllByStatusOrderByUsername(Status.valueOf(status), jwtUtil.getUserNameFromJWT(token), paging);
+        }else{
+            return orderService.getAllOrderByUsername(jwtUtil.getUserNameFromJWT(token), paging);
+        }
+
     }
 
     @GetMapping(value = "/getWaitingOrder", produces = "application/json;charset=UTF-8")
