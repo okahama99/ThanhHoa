@@ -474,8 +474,8 @@ public class Util {
                     ShowStoreModel storeModel = new ShowStoreModel();
                     storeModel.setId(order.getStore().getId());
                     storeModel.setStoreName(order.getStore().getStoreName());
-                    storeModel.setStoreAddress(order.getStore().getAddress());
-                    storeModel.setStorePhone(order.getStore().getPhone());
+                    storeModel.setAddress(order.getStore().getAddress());
+                    storeModel.setPhone(order.getStore().getPhone());
 
                     //staff
                     ShowStaffModel staffModel = new ShowStaffModel();
@@ -497,7 +497,7 @@ public class Util {
 
                     //distance price
                     ShowDistancePriceModel distancePriceModel = new ShowDistancePriceModel();
-                    distancePriceModel.setId(order.getDistancePrice().getId());
+                    distancePriceModel.setDistancePriceID(order.getDistancePrice().getId());
                     distancePriceModel.setDpApplyDate(order.getDistancePrice().getApplyDate());
                     distancePriceModel.setDpPricePerKm(order.getDistancePrice().getPricePerKm());
 
@@ -566,8 +566,8 @@ public class Util {
                     ShowStoreModel storeModel = new ShowStoreModel();
                     storeModel.setId(contract.getStore().getId());
                     storeModel.setStoreName(contract.getStore().getStoreName());
-                    storeModel.setStoreAddress(contract.getStore().getAddress());
-                    storeModel.setStorePhone(contract.getStore().getPhone());
+                    storeModel.setAddress(contract.getStore().getAddress());
+                    storeModel.setPhone(contract.getStore().getPhone());
 
                     //staff
                     ShowStaffModel staffModel = new ShowStaffModel();

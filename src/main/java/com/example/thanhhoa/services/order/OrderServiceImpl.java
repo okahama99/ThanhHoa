@@ -318,7 +318,7 @@ public class OrderServiceImpl implements OrderService {
 
     @Override
     public List<ShowOrderModel> getAllByStatusOrderByUsername(Status status, String username, Pageable pageable) {
-        Page<tblOrder> pagingResult = orderPagingRepository.findByCustomer_UsernameAndStatus(username, status, pageable);
+        Page<tblOrder> pagingResult = orderPagingRepository.findByCustomer_UsernameAndProgressStatus(username, status, pageable);
         return util.orderPagingConverter(pagingResult, pageable);
     }
 
@@ -388,7 +388,7 @@ public class OrderServiceImpl implements OrderService {
 
             //distance price
             ShowDistancePriceModel distancePriceModel = new ShowDistancePriceModel();
-            distancePriceModel.setId(orderDetail.getTblOrder().getDistancePrice().getId());
+            distancePriceModel.setDistancePriceID(orderDetail.getTblOrder().getDistancePrice().getId());
             distancePriceModel.setDpApplyDate(orderDetail.getTblOrder().getDistancePrice().getApplyDate());
             distancePriceModel.setDpPricePerKm(orderDetail.getTblOrder().getDistancePrice().getPricePerKm());
 
@@ -407,8 +407,8 @@ public class OrderServiceImpl implements OrderService {
             ShowStoreModel storeModel = new ShowStoreModel();
             storeModel.setId(orderDetail.getTblOrder().getStore().getId());
             storeModel.setStoreName(orderDetail.getTblOrder().getStore().getStoreName());
-            storeModel.setStoreAddress(orderDetail.getTblOrder().getStore().getAddress());
-            storeModel.setStorePhone(orderDetail.getTblOrder().getStore().getPhone());
+            storeModel.setAddress(orderDetail.getTblOrder().getStore().getAddress());
+            storeModel.setPhone(orderDetail.getTblOrder().getStore().getPhone());
 
             model.setShowOrderModel(orderModel);
             model.setShowCustomerModel(customerModel);

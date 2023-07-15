@@ -9,6 +9,6 @@ import java.io.Serializable;
 public class ShowStoreModel implements Serializable {
     private String id;
     private String storeName;
-    private String storeAddress;
-    private String storePhone;
+    private String address;
+    private String phone;
 }

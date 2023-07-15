@@ -127,8 +127,8 @@ public class ContractServiceImpl implements ContractService {
             ShowStoreModel storeModel = new ShowStoreModel();
             storeModel.setId(contract.getStore().getId());
             storeModel.setStoreName(contract.getStore().getStoreName());
-            storeModel.setStoreAddress(contract.getStore().getAddress());
-            storeModel.setStorePhone(contract.getStore().getPhone());
+            storeModel.setAddress(contract.getStore().getAddress());
+            storeModel.setPhone(contract.getStore().getPhone());
 
             //staff
             ShowStaffModel staffModel = new ShowStaffModel();

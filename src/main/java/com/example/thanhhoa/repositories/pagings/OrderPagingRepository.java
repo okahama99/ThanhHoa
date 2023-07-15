@@ -11,5 +11,7 @@ import org.springframework.stereotype.Repository;
 public interface OrderPagingRepository extends PagingAndSortingRepository<tblOrder, String>{
     Page<tblOrder> findByCustomer_UsernameAndStatus(String username, Status status, Pageable pageable);
 
+    Page<tblOrder> findByCustomer_UsernameAndProgressStatus(String username, Status status, Pageable pageable);
+
     Page<tblOrder> findByProgressStatus(Status status, Pageable pageable);
 }
