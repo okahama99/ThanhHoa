@@ -191,6 +191,16 @@ public class ContractServiceImpl implements ContractService {
                 model.setTotalPrice(detail.getTotalPrice());
 
                 //contract
+                List<ContractIMG> imgList = contractIMGRepository.findByContract_Id(detail.getContract().getId());
+                List<ShowContractIMGModel> imgModelList = new ArrayList<>();
+                if(imgList != null) {
+                    for(ContractIMG img : imgList) {
+                        ShowContractIMGModel imgModel = new ShowContractIMGModel();
+                        imgModel.setId(img.getId());
+                        imgModel.setImgUrl(img.getImgURL());
+                        imgModelList.add(imgModel);
+                    }
+                }
                 ShowContractModel contractModel = new ShowContractModel();
                 contractModel.setId(detail.getContract().getId());
                 contractModel.setAddress(detail.getContract().getAddress());
@@ -198,6 +208,19 @@ public class ContractServiceImpl implements ContractService {
                 contractModel.setFullName(detail.getContract().getFullName());
                 contractModel.setEmail(detail.getContract().getEmail());
                 contractModel.setTitle(detail.getContract().getTitle());
+                contractModel.setPaymentMethod(detail.getContract().getPaymentMethod());
+                contractModel.setCreatedDate(detail.getContract().getCreatedDate());
+                contractModel.setStartedDate(detail.getContract().getStartedDate());
+                contractModel.setApprovedDate(detail.getContract().getApprovedDate());
+                contractModel.setRejectedDate(detail.getContract().getRejectedDate());
+                contractModel.setEndedDate(detail.getContract().getEndedDate());
+                contractModel.setDeposit(detail.getContract().getDeposit());
+                contractModel.setTotal(detail.getContract().getTotal());
+                contractModel.setIsFeedback(detail.getContract().getIsFeedback());
+                contractModel.setIsSigned(detail.getContract().getIsSigned());
+                contractModel.setStatus(detail.getContract().getStatus());
+                contractModel.setReason(detail.getContract().getReason());
+                contractModel.setImgList(imgModelList);
 
                 //service type
                 ShowServiceTypeModel serviceTypeModel = new ShowServiceTypeModel();
@@ -258,6 +281,16 @@ public class ContractServiceImpl implements ContractService {
             model.setTotalPrice(detail.getTotalPrice());
 
             //contract
+            List<ContractIMG> imgList = contractIMGRepository.findByContract_Id(detail.getContract().getId());
+            List<ShowContractIMGModel> imgModelList = new ArrayList<>();
+            if(imgList != null) {
+                for(ContractIMG img : imgList) {
+                    ShowContractIMGModel imgModel = new ShowContractIMGModel();
+                    imgModel.setId(img.getId());
+                    imgModel.setImgUrl(img.getImgURL());
+                    imgModelList.add(imgModel);
+                }
+            }
             ShowContractModel contractModel = new ShowContractModel();
             contractModel.setId(detail.getContract().getId());
             contractModel.setAddress(detail.getContract().getAddress());
@@ -265,6 +298,19 @@ public class ContractServiceImpl implements ContractService {
             contractModel.setFullName(detail.getContract().getFullName());
             contractModel.setEmail(detail.getContract().getEmail());
             contractModel.setTitle(detail.getContract().getTitle());
+            contractModel.setPaymentMethod(detail.getContract().getPaymentMethod());
+            contractModel.setCreatedDate(detail.getContract().getCreatedDate());
+            contractModel.setStartedDate(detail.getContract().getStartedDate());
+            contractModel.setApprovedDate(detail.getContract().getApprovedDate());
+            contractModel.setRejectedDate(detail.getContract().getRejectedDate());
+            contractModel.setEndedDate(detail.getContract().getEndedDate());
+            contractModel.setDeposit(detail.getContract().getDeposit());
+            contractModel.setTotal(detail.getContract().getTotal());
+            contractModel.setIsFeedback(detail.getContract().getIsFeedback());
+            contractModel.setIsSigned(detail.getContract().getIsSigned());
+            contractModel.setStatus(detail.getContract().getStatus());
+            contractModel.setReason(detail.getContract().getReason());
+            contractModel.setImgList(imgModelList);
 
             //service type
             ShowServiceTypeModel serviceTypeModel = new ShowServiceTypeModel();
@@ -505,9 +551,6 @@ public class ContractServiceImpl implements ContractService {
             return "Không thể tìm thấy Hợp đồng có trạng thái WAITING với ID là " + contractID + ".";
         }
         Contract contract = checkExisted.get();
-        if(status.toString().equalsIgnoreCase("WORKING")){
-            contract.setStartedDate(LocalDateTime.now());
-        }
         contract.setStatus(status);
         contractRepository.save(contract);
         return "Chỉnh sửa thành công.";
