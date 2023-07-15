@@ -60,7 +60,7 @@ public class PlantController {
 //        }
 //    }
 
-    @PostMapping(produces = "application/json;charset=UTF-8", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    @PostMapping(produces = "application/json;charset=UTF-8")
     public ResponseEntity<Object> createPlant(@RequestBody CreatePlantModel createPlantModel,
                                               HttpServletRequest request) throws Exception {
         String roleName = jwtUtil.getRoleNameFromRequest(request);
