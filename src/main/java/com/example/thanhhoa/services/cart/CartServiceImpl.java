@@ -79,8 +79,8 @@ public class CartServiceImpl implements CartService {
             cart.setId(util.createIDFromLastID("CART", 4, lastCart.getId()));
         }
         cart.setQuantity(addCartModel.getQuantity());
-        if(checkExisted.getQuantity()<0){
-            checkExisted.setQuantity(0);
+        if(addCartModel.getQuantity()<0){
+            cart.setQuantity(0);
         }
         cart.setAccount(account);
         cart.setPlant(plant);
