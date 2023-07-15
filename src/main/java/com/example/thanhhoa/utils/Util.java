@@ -2,6 +2,7 @@ package com.example.thanhhoa.utils;
 
 import com.example.thanhhoa.dtos.CategoryModels.ShowCategoryModel;
 import com.example.thanhhoa.dtos.ContractModels.ShowContractModel;
+import com.example.thanhhoa.dtos.ContractModels.ShowPaymentTypeModel;
 import com.example.thanhhoa.dtos.FeedbackModels.ShowContractFeedbackModel;
 import com.example.thanhhoa.dtos.FeedbackModels.ShowOrderFeedbackIMGModel;
 import com.example.thanhhoa.dtos.FeedbackModels.ShowOrderFeedbackModel;
@@ -24,6 +25,7 @@ import com.example.thanhhoa.dtos.WorkingDateModels.ShowWorkingDateModel;
 import com.example.thanhhoa.entities.Category;
 import com.example.thanhhoa.entities.Contract;
 import com.example.thanhhoa.entities.ContractFeedback;
+import com.example.thanhhoa.entities.OrderDetail;
 import com.example.thanhhoa.entities.OrderFeedback;
 import com.example.thanhhoa.entities.OrderFeedbackIMG;
 import com.example.thanhhoa.entities.Plant;
@@ -499,6 +501,19 @@ public class Util {
                     distancePriceModel.setDpApplyDate(order.getDistancePrice().getApplyDate());
                     distancePriceModel.setDpPricePerKm(order.getDistancePrice().getPricePerKm());
 
+                    //plant
+                    for(OrderDetail detail : order.getOrderDetailList()) {
+                        com.example.thanhhoa.dtos.OrderModels.ShowPlantModel plantModel = new com.example.thanhhoa.dtos.OrderModels.ShowPlantModel();
+                        PlantPrice newestPrice = plantPriceRepository.findFirstByPlant_IdAndStatusOrderByApplyDateDesc(detail.getPlant().getId(), Status.ACTIVE);
+                        plantModel.setId(detail.getPlant().getId());
+                        if(detail.getPlant().getPlantIMGList() != null) {
+                            plantModel.setPlantImage(detail.getPlant().getPlantIMGList().get(0).getImgURL());
+                        }
+                        plantModel.setPlantName(detail.getPlant().getName());
+                        plantModel.setPlantPrice(newestPrice.getPrice());
+                        plantModel.setPlantShipPrice(detail.getPlant().getPlantShipPrice().getPricePerPlant());
+                    }
+
                     model.setShowStaffModel(staffModel);
                     model.setShowStoreModel(storeModel);
                     model.setShowCustomerModel(customerModel);
@@ -542,12 +557,42 @@ public class Util {
                     model.setTotal(contract.getTotal());
                     model.setIsFeedback(contract.getIsFeedback());
                     model.setIsSigned(contract.getIsSigned());
-                    model.setStoreID(contract.getStore().getId());
-                    model.setStoreName(contract.getStore().getStoreName());
-                    model.setStaffID(contract.getStaff().getId());
-                    model.setStaffName(contract.getStaff().getFullName());
-                    model.setCustomerID(contract.getCustomer().getId());
-                    model.setPaymentTypeID(contract.getPaymentType().getId());
+
+                    //store
+                    ShowStoreModel storeModel = new ShowStoreModel();
+                    storeModel.setId(contract.getStore().getId());
+                    storeModel.setStoreName(contract.getStore().getStoreName());
+                    storeModel.setStoreAddress(contract.getStore().getAddress());
+                    storeModel.setStorePhone(contract.getStore().getPhone());
+
+                    //staff
+                    ShowStaffModel staffModel = new ShowStaffModel();
+                    if(contract.getStaff() != null) {
+                        staffModel.setId(contract.getStaff().getId());
+                        staffModel.setAddress(contract.getStaff().getAddress());
+                        staffModel.setEmail(contract.getStaff().getEmail());
+                        staffModel.setPhone(contract.getStaff().getPhone());
+                        staffModel.setFullName(contract.getStaff().getFullName());
+                    }
+
+                    //customer
+                    ShowCustomerModel customerModel = new ShowCustomerModel();
+                    customerModel.setId(contract.getCustomer().getId());
+                    customerModel.setAddress(contract.getCustomer().getAddress());
+                    customerModel.setEmail(contract.getCustomer().getEmail());
+                    customerModel.setPhone(contract.getCustomer().getPhone());
+                    customerModel.setFullName(contract.getCustomer().getFullName());
+
+                    //payment type
+                    ShowPaymentTypeModel paymentTypeModel = new ShowPaymentTypeModel();
+                    paymentTypeModel.setId(contract.getPaymentType().getId());
+                    paymentTypeModel.setName(contract.getPaymentType().getName());
+                    paymentTypeModel.setValue(contract.getPaymentType().getValue());
+
+                    model.setShowStaffModel(staffModel);
+                    model.setShowCustomerModel(customerModel);
+                    model.setShowStoreModel(storeModel);
+                    model.setShowPaymentTypeModel(paymentTypeModel);
                     model.setStatus(contract.getStatus());
                     model.setTotalPage(totalPage);
                     return model;

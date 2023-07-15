@@ -1,5 +1,10 @@
 package com.example.thanhhoa.dtos.ContractModels;
 
+import com.example.thanhhoa.dtos.OrderModels.ShowCustomerModel;
+import com.example.thanhhoa.dtos.OrderModels.ShowDistancePriceModel;
+import com.example.thanhhoa.dtos.OrderModels.ShowPlantModel;
+import com.example.thanhhoa.dtos.OrderModels.ShowStaffModel;
+import com.example.thanhhoa.dtos.OrderModels.ShowStoreModel;
 import com.example.thanhhoa.enums.Status;
 import lombok.Getter;
 import lombok.Setter;
@@ -11,6 +16,7 @@ import java.util.List;
 @Getter
 @Setter
 public class ShowContractModel implements Serializable {
+    //contract
     private String id;
     private String title;
     private String fullName;
@@ -28,13 +34,13 @@ public class ShowContractModel implements Serializable {
     private Double total;
     private Boolean isFeedback;
     private Boolean isSigned;
-    private String storeID;
-    private String storeName;
-    private Long staffID;
-    private String staffName;
-    private Long customerID;
-    private String paymentTypeID;
     private Status status;
     private List<ShowContractIMGModel> imgList;
+
+    private ShowStaffModel showStaffModel;
+    private ShowCustomerModel showCustomerModel;
+    private ShowStoreModel showStoreModel;
+    private ShowPaymentTypeModel showPaymentTypeModel;
+
     private Double totalPage;
 }

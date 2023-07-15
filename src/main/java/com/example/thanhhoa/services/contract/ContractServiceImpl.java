@@ -9,8 +9,14 @@ import com.example.thanhhoa.dtos.ContractModels.ShowContractDetailModel;
 import com.example.thanhhoa.dtos.ContractModels.ShowContractIMGModel;
 import com.example.thanhhoa.dtos.ContractModels.ShowContractModel;
 import com.example.thanhhoa.dtos.ContractModels.ShowPaymentTypeModel;
+import com.example.thanhhoa.dtos.ContractModels.ShowServiceModel;
+import com.example.thanhhoa.dtos.ContractModels.ShowServicePackModel;
+import com.example.thanhhoa.dtos.ContractModels.ShowServiceTypeModel;
 import com.example.thanhhoa.dtos.ContractModels.ShowWorkingDateModel;
 import com.example.thanhhoa.dtos.ContractModels.UpdateContractModel;
+import com.example.thanhhoa.dtos.OrderModels.ShowCustomerModel;
+import com.example.thanhhoa.dtos.OrderModels.ShowStaffModel;
+import com.example.thanhhoa.dtos.OrderModels.ShowStoreModel;
 import com.example.thanhhoa.entities.Contract;
 import com.example.thanhhoa.entities.ContractDetail;
 import com.example.thanhhoa.entities.ContractIMG;
@@ -113,15 +119,46 @@ public class ContractServiceImpl implements ContractService {
             model.setTotal(contract.getTotal());
             model.setIsFeedback(contract.getIsFeedback());
             model.setIsSigned(contract.getIsSigned());
-            model.setStoreID(contract.getStore().getId());
-            model.setStoreName(contract.getStore().getStoreName());
-            model.setStaffID(contract.getStaff().getId());
-            model.setStaffName(contract.getStaff().getFullName());
-            model.setCustomerID(contract.getCustomer().getId());
-            model.setPaymentTypeID(contract.getPaymentType().getId());
             model.setStatus(contract.getStatus());
             model.setReason(contract.getReason());
             model.setImgList(imgModelList);
+
+            //store
+            ShowStoreModel storeModel = new ShowStoreModel();
+            storeModel.setId(contract.getStore().getId());
+            storeModel.setStoreName(contract.getStore().getStoreName());
+            storeModel.setStoreAddress(contract.getStore().getAddress());
+            storeModel.setStorePhone(contract.getStore().getPhone());
+
+            //staff
+            ShowStaffModel staffModel = new ShowStaffModel();
+            if(contract.getStaff() != null) {
+                staffModel.setId(contract.getStaff().getId());
+                staffModel.setAddress(contract.getStaff().getAddress());
+                staffModel.setEmail(contract.getStaff().getEmail());
+                staffModel.setPhone(contract.getStaff().getPhone());
+                staffModel.setFullName(contract.getStaff().getFullName());
+            }
+
+            //customer
+            ShowCustomerModel customerModel = new ShowCustomerModel();
+            customerModel.setId(contract.getCustomer().getId());
+            customerModel.setAddress(contract.getCustomer().getAddress());
+            customerModel.setEmail(contract.getCustomer().getEmail());
+            customerModel.setPhone(contract.getCustomer().getPhone());
+            customerModel.setFullName(contract.getCustomer().getFullName());
+
+            //payment type
+            ShowPaymentTypeModel paymentTypeModel = new ShowPaymentTypeModel();
+            paymentTypeModel.setId(contract.getPaymentType().getId());
+            paymentTypeModel.setName(contract.getPaymentType().getName());
+            paymentTypeModel.setValue(contract.getPaymentType().getValue());
+
+            model.setShowStaffModel(staffModel);
+            model.setShowCustomerModel(customerModel);
+            model.setShowStoreModel(storeModel);
+            model.setShowPaymentTypeModel(paymentTypeModel);
+            model.setStatus(contract.getStatus());
             modelList.add(model);
         }
         return modelList;
@@ -152,16 +189,42 @@ public class ContractServiceImpl implements ContractService {
                 model.setEndDate(detail.getEndDate());
                 model.setStartDate(detail.getStartDate());
                 model.setTotalPrice(detail.getTotalPrice());
-                model.setContractID(detail.getId());
-                model.setServiceTypeID(detail.getServiceType().getId());
-                model.setTypeName(detail.getServiceType().getName());
-                model.setTypeSize(detail.getServiceType().getSize());
-                model.setTypePercentage(detail.getServiceType().getPercentage());
-                model.setTypeApplyDate(detail.getServiceType().getApplyDate());
-                model.setServicePackID(detail.getServicePack().getId());
-                model.setPackRange(detail.getServicePack().getRange());
-                model.setPackPercentage(detail.getServicePack().getPercentage());
-                model.setPackApplyDate(detail.getServicePack().getApplyDate());
+
+                //contract
+                ShowContractModel contractModel = new ShowContractModel();
+                contractModel.setId(detail.getContract().getId());
+                contractModel.setAddress(detail.getContract().getAddress());
+                contractModel.setPhone(detail.getContract().getPhone());
+                contractModel.setFullName(detail.getContract().getFullName());
+                contractModel.setEmail(detail.getContract().getEmail());
+                contractModel.setTitle(detail.getContract().getTitle());
+
+                //service type
+                ShowServiceTypeModel serviceTypeModel = new ShowServiceTypeModel();
+                serviceTypeModel.setId(detail.getServiceType().getId());
+                serviceTypeModel.setTypeName(detail.getServiceType().getName());
+                serviceTypeModel.setTypeSize(detail.getServiceType().getSize());
+                serviceTypeModel.setTypePercentage(detail.getServiceType().getPercentage());
+                serviceTypeModel.setTypeApplyDate(detail.getServiceType().getApplyDate());
+
+                //service pack
+                ShowServicePackModel servicePackModel = new ShowServicePackModel();
+                servicePackModel.setId(detail.getServicePack().getId());
+                servicePackModel.setPackPercentage(detail.getServicePack().getPercentage());
+                servicePackModel.setPackRange(detail.getServicePack().getRange());
+                servicePackModel.setPackApplyDate(detail.getServicePack().getApplyDate());
+
+                //service
+                ShowServiceModel serviceModel = new ShowServiceModel();
+                serviceModel.setId(detail.getServiceType().getService().getId());
+                serviceModel.setDescription(detail.getServiceType().getService().getDescription());
+                serviceModel.setPrice(detail.getServiceType().getService().getPrice());
+                serviceModel.setName(detail.getServiceType().getService().getName());
+
+                model.setShowContractModel(contractModel);
+                model.setShowServiceModel(serviceModel);
+                model.setShowServicePackModel(servicePackModel);
+                model.setShowServiceTypeModel(serviceTypeModel);
                 model.setWorkingDateList(dateModelList);
                 modelList.add(model);
             }
@@ -193,16 +256,42 @@ public class ContractServiceImpl implements ContractService {
             model.setEndDate(detail.getEndDate());
             model.setStartDate(detail.getStartDate());
             model.setTotalPrice(detail.getTotalPrice());
-            model.setContractID(detail.getId());
-            model.setServiceTypeID(detail.getServiceType().getId());
-            model.setTypeName(detail.getServiceType().getName());
-            model.setTypeSize(detail.getServiceType().getSize());
-            model.setTypePercentage(detail.getServiceType().getPercentage());
-            model.setTypeApplyDate(detail.getServiceType().getApplyDate());
-            model.setServicePackID(detail.getServicePack().getId());
-            model.setPackRange(detail.getServicePack().getRange());
-            model.setPackPercentage(detail.getServicePack().getPercentage());
-            model.setPackApplyDate(detail.getServicePack().getApplyDate());
+
+            //contract
+            ShowContractModel contractModel = new ShowContractModel();
+            contractModel.setId(detail.getContract().getId());
+            contractModel.setAddress(detail.getContract().getAddress());
+            contractModel.setPhone(detail.getContract().getPhone());
+            contractModel.setFullName(detail.getContract().getFullName());
+            contractModel.setEmail(detail.getContract().getEmail());
+            contractModel.setTitle(detail.getContract().getTitle());
+
+            //service type
+            ShowServiceTypeModel serviceTypeModel = new ShowServiceTypeModel();
+            serviceTypeModel.setId(detail.getServiceType().getId());
+            serviceTypeModel.setTypeName(detail.getServiceType().getName());
+            serviceTypeModel.setTypeSize(detail.getServiceType().getSize());
+            serviceTypeModel.setTypePercentage(detail.getServiceType().getPercentage());
+            serviceTypeModel.setTypeApplyDate(detail.getServiceType().getApplyDate());
+
+            //service pack
+            ShowServicePackModel servicePackModel = new ShowServicePackModel();
+            servicePackModel.setId(detail.getServicePack().getId());
+            servicePackModel.setPackPercentage(detail.getServicePack().getPercentage());
+            servicePackModel.setPackRange(detail.getServicePack().getRange());
+            servicePackModel.setPackApplyDate(detail.getServicePack().getApplyDate());
+
+            //service
+            ShowServiceModel serviceModel = new ShowServiceModel();
+            serviceModel.setId(detail.getServiceType().getService().getId());
+            serviceModel.setDescription(detail.getServiceType().getService().getDescription());
+            serviceModel.setPrice(detail.getServiceType().getService().getPrice());
+            serviceModel.setName(detail.getServiceType().getService().getName());
+
+            model.setShowContractModel(contractModel);
+            model.setShowServiceModel(serviceModel);
+            model.setShowServicePackModel(servicePackModel);
+            model.setShowServiceTypeModel(serviceTypeModel);
             model.setWorkingDateList(dateModelList);
             modelList.add(model);
         }

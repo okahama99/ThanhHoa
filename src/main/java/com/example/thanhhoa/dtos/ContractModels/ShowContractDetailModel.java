@@ -16,15 +16,11 @@ public class ShowContractDetailModel implements Serializable {
     private LocalDateTime startDate;
     private LocalDateTime endDate;
     private Double totalPrice;
-    private String contractID;
-    private String serviceTypeID;
-    private String typeName;
-    private Integer typePercentage;
-    private String typeSize;
-    private LocalDateTime typeApplyDate;
-    private String servicePackID;
-    private String packRange;
-    private Integer packPercentage;
-    private LocalDateTime packApplyDate;
+
+    private ShowContractModel showContractModel;
+    private ShowServiceTypeModel showServiceTypeModel;
+    private ShowServiceModel showServiceModel;
+    private ShowServicePackModel showServicePackModel;
+
     private List<ShowWorkingDateModel> workingDateList;
 }
