@@ -31,6 +31,8 @@ public interface StoreService {
 
     String addStoreEmployee(AddStoreEmployeeModel addStoreEmployeeModel);
 
+    String removeStoreEmployee(Long employeeID);
+
     List<ShowDistrictModel> getDistrictByProvinceID(String provinceID);
 
     List<ShowProvinceModel> getAllProvince();

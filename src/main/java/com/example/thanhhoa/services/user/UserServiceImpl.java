@@ -6,9 +6,13 @@ import com.example.thanhhoa.dtos.UserModels.RegisterUserModel;
 import com.example.thanhhoa.dtos.UserModels.ShowUserModel;
 import com.example.thanhhoa.dtos.UserModels.UserFCMToken;
 import com.example.thanhhoa.entities.Role;
+import com.example.thanhhoa.entities.Store;
+import com.example.thanhhoa.entities.StoreEmployee;
 import com.example.thanhhoa.entities.tblAccount;
 import com.example.thanhhoa.enums.Status;
 import com.example.thanhhoa.repositories.RoleRepository;
+import com.example.thanhhoa.repositories.StoreEmployeeRepository;
+import com.example.thanhhoa.repositories.StoreRepository;
 import com.example.thanhhoa.repositories.UserRepository;
 import com.example.thanhhoa.repositories.pagings.UserPagingRepository;
 import com.example.thanhhoa.utils.Util;
@@ -30,6 +34,10 @@ public class UserServiceImpl implements UserService {
     @Autowired
     private UserPagingRepository userPagingRepository;
     @Autowired
+    private StoreEmployeeRepository storeEmployeeRepository;
+    @Autowired
+    private StoreRepository storeRepository;
+    @Autowired
     private Util util;
 
     @Override
@@ -47,6 +55,11 @@ public class UserServiceImpl implements UserService {
         model.setAddress(user.getAddress());
         model.setGender(user.getGender());
         model.setStatus(user.getStatus());
+        StoreEmployee storeEmployee = storeEmployeeRepository.findByAccount_IdAndStatus(user.getId(), Status.ACTIVE);
+        if((user.getRole().getRoleName().equalsIgnoreCase("Manager") || user.getRole().getRoleName().equalsIgnoreCase("Staff")) && storeEmployee != null){
+            model.setStoreID(storeEmployee.getStore().getId());
+            model.setStoreName(storeEmployee.getStore().getStoreName());
+        }
         return model;
     }
 

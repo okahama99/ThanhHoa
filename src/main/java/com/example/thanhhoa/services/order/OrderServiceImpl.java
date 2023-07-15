@@ -302,6 +302,7 @@ public class OrderServiceImpl implements OrderService {
                 checkExistedOrder.get().setStatus(Status.DELIVERING);
             } else {
                 checkExistedOrder.get().setStatus(Status.RECEIVED);
+                checkExistedOrder.get().getStaff().setStatus(Status.AVAILABLE);
             }
             orderRepository.save(checkExistedOrder.get());
             return true;

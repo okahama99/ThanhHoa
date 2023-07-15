@@ -8,7 +8,6 @@ import java.util.Optional;
 
 @Repository
 public interface StoreRepository extends JpaRepository<Store, String> {
-    Optional<Store> findById(String storeID);
 
     Store findByStoreName(String name);
 

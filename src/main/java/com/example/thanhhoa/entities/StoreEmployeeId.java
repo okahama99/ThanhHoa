@@ -10,5 +10,5 @@ import java.io.Serializable;
 @Setter
 @Embeddable
 public class StoreEmployeeId implements Serializable {
-    private String tblAccount_id;
+    private Long tblAccount_id;
 }

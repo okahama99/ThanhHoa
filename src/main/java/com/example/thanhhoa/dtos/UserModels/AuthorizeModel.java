@@ -21,4 +21,6 @@ public class AuthorizeModel implements Serializable {
     private String address;
     private Boolean gender;
     private Status status;
+    private String storeID;
+    private String storeName;
 }

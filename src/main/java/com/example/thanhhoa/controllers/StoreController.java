@@ -91,6 +91,21 @@ public class StoreController {
         return ResponseEntity.badRequest().body(result);
     }
 
+    @DeleteMapping(value = "/employee/{employeeID}", produces = "application/json;charset=UTF-8")
+    public ResponseEntity<Object> deleteEmployee(@PathVariable(name = "employeeID") Long employeeID,
+                                                 HttpServletRequest request) {
+        String roleName = jwtUtil.getRoleNameFromRequest(request);
+        if(!roleName.equalsIgnoreCase("Manager")) {
+            throw new ResponseStatusException(HttpStatus.FORBIDDEN, "-----------------------------------Người dùng không có quyền truy cập---------------------------");
+        }
+        String result = storeService.removeStoreEmployee(employeeID);
+        if(!result.equals("Xóa thành công.")) {
+            return ResponseEntity.ok().body(result);
+        } else {
+            return ResponseEntity.badRequest().body(result);
+        }
+    }
+
     @GetMapping(value = "/getStorePlantRecord/{storePlantID}", produces = "application/json;charset=UTF-8")
     public @ResponseBody
     List<ShowStorePlantRecordModel> getStorePlantRecordByStorePlantID(@PathVariable("storePlantID") String storePlantID,

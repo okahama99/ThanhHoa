@@ -234,17 +234,37 @@ public class StoreServiceImpl implements StoreService{
         Store store = checkExistedStore.get();
         for (String employeeUsername : addStoreEmployeeModel.getEmployeeIDList()) {
             tblAccount employeeAcc = userRepository.getByUsername(employeeUsername);
+            StoreEmployee check = storeEmployeeRepository.findByStore_IdAndAccount_Role_RoleName(store.getId(), "Manager");
+            if(check != null && employeeAcc.getRole().getRoleName().equalsIgnoreCase("Manager")){
+                return "Store đã có Manager, 1 Store chỉ được 1 Manager quản lý.";
+            }
 
             StoreEmployeeId employeeId = new StoreEmployeeId();
-            employeeId.setTblAccount_id(employeeAcc.getUsername());
+            employeeId.setTblAccount_id(employeeAcc.getId());
 
             StoreEmployee storeEmployee = new StoreEmployee();
             storeEmployee.setId(employeeId);
             storeEmployee.setStore(store);
             storeEmployee.setAccount(employeeAcc);
             storeEmployeeRepository.save(storeEmployee);
+            employeeAcc.setStatus(Status.AVAILABLE);
+            userRepository.save(employeeAcc);
         }
         return "Thêm thành công.";
+    }
+
+    @Override
+    public String removeStoreEmployee(Long employeeID) {
+        StoreEmployee storeEmployee = storeEmployeeRepository.findByAccount_IdAndStatus(employeeID, Status.ACTIVE);
+        if(storeEmployee != null){
+            return "Không tìm thấy Nhân viên với ID là " + employeeID + " còn hoạt động trong cửa hàng.";
+        }
+        storeEmployee.setStatus(Status.INACTIVE);
+        storeEmployeeRepository.save(storeEmployee);
+        tblAccount account = storeEmployee.getAccount();
+        account.setStatus(Status.ACTIVE);
+        userRepository.save(account);
+        return "Xóa thành công.";
     }
 
     @Override
