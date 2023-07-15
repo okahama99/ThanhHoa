@@ -3,15 +3,20 @@ package com.example.thanhhoa.services.order;
 import com.example.thanhhoa.dtos.OrderModels.CreateOrderModel;
 import com.example.thanhhoa.dtos.OrderModels.GetStaffModel;
 import com.example.thanhhoa.dtos.OrderModels.OrderDetailModel;
+import com.example.thanhhoa.dtos.OrderModels.ShowCustomerModel;
+import com.example.thanhhoa.dtos.OrderModels.ShowDistancePriceModel;
 import com.example.thanhhoa.dtos.OrderModels.ShowOrderDetailModel;
 import com.example.thanhhoa.dtos.OrderModels.ShowOrderModel;
+import com.example.thanhhoa.dtos.OrderModels.ShowPlantModel;
+import com.example.thanhhoa.dtos.OrderModels.ShowStaffModel;
+import com.example.thanhhoa.dtos.OrderModels.ShowStoreModel;
 import com.example.thanhhoa.dtos.OrderModels.UpdateOrderModel;
 import com.example.thanhhoa.entities.Cart;
 import com.example.thanhhoa.entities.DistancePrice;
 import com.example.thanhhoa.entities.OrderDetail;
+import com.example.thanhhoa.entities.OrderFeedback;
 import com.example.thanhhoa.entities.Plant;
 import com.example.thanhhoa.entities.PlantPrice;
-import com.example.thanhhoa.entities.Store;
 import com.example.thanhhoa.entities.StorePlant;
 import com.example.thanhhoa.entities.StorePlantRecord;
 import com.example.thanhhoa.entities.tblAccount;
@@ -20,6 +25,7 @@ import com.example.thanhhoa.enums.Status;
 import com.example.thanhhoa.repositories.CartRepository;
 import com.example.thanhhoa.repositories.DistancePriceRepository;
 import com.example.thanhhoa.repositories.OrderDetailRepository;
+import com.example.thanhhoa.repositories.OrderFeedbackRepository;
 import com.example.thanhhoa.repositories.OrderRepository;
 import com.example.thanhhoa.repositories.PlantPriceRepository;
 import com.example.thanhhoa.repositories.PlantRepository;
@@ -40,7 +46,7 @@ import java.util.List;
 import java.util.Optional;
 
 @Service
-public class OrderServiceImpl implements OrderService{
+public class OrderServiceImpl implements OrderService {
 
     @Autowired
     private OrderRepository orderRepository;
@@ -65,19 +71,21 @@ public class OrderServiceImpl implements OrderService{
     @Autowired
     private CartRepository cartRepository;
     @Autowired
+    private OrderFeedbackRepository orderFeedbackRepository;
+    @Autowired
     private Util util;
 
     @Override
-    public String createOrder(CreateOrderModel createOrderModel, Long customerID){
-        if(createOrderModel.getDetailList() == null){
+    public String createOrder(CreateOrderModel createOrderModel, Long customerID) {
+        if(createOrderModel.getDetailList() == null) {
             return "Danh sách cây không được để trống.";
         }
 
         tblOrder order = new tblOrder();
         tblOrder lastOrderRecord = orderRepository.findFirstByOrderByIdDesc();
-        if(lastOrderRecord == null){
+        if(lastOrderRecord == null) {
             order.setId(util.createNewID("O"));
-        }else{
+        } else {
             order.setId(util.createIDFromLastID("O", 1, lastOrderRecord.getId()));
         }
         order.setFullName(createOrderModel.getFullName());
@@ -91,7 +99,7 @@ public class OrderServiceImpl implements OrderService{
         order.setProgressStatus(Status.WAITING);
         order.setStatus(Status.ACTIVE);
 
-        if(createOrderModel.getStaffID() != null){
+        if(createOrderModel.getStaffID() != null) {
             tblAccount staff = userRepository.getById(createOrderModel.getStaffID());
             staff.setStatus(Status.UNAVAILABLE);
             userRepository.save(staff);
@@ -107,16 +115,16 @@ public class OrderServiceImpl implements OrderService{
         Double totalShipCost = 0.0;
         Double total = 0.0;
         OrderDetail lastDetailRecord = orderDetailRepository.findFirstByOrderByIdDesc();
-        for(OrderDetailModel model : createOrderModel.getDetailList()){
+        for(OrderDetailModel model : createOrderModel.getDetailList()) {
             Plant plant = plantRepository.getById(model.getPlantID());
             PlantPrice newestPrice = plantPriceRepository.findFirstByPlant_IdAndStatusOrderByApplyDateDesc(plant.getId(), Status.ACTIVE);
             totalPriceOfAPlant += newestPrice.getPrice() * model.getQuantity();
             totalShipCost += plant.getPlantShipPrice().getPricePerPlant() * model.getQuantity();
 
             OrderDetail detail = new OrderDetail();
-            if(lastDetailRecord == null){
+            if(lastDetailRecord == null) {
                 detail.setId(util.createNewID("OD"));
-            }else{
+            } else {
                 detail.setId(util.createIDFromLastID("OD", 2, lastDetailRecord.getId()));
             }
             detail.setPrice(totalPriceOfAPlant);
@@ -129,7 +137,7 @@ public class OrderServiceImpl implements OrderService{
             cart.setQuantity(0);
             cartRepository.save(cart);
         }
-        Double totalDistancePrice = distancePrice.getPricePerKm()*createOrderModel.getDistance();
+        Double totalDistancePrice = distancePrice.getPricePerKm() * createOrderModel.getDistance();
         total += totalPriceOfAPlant + totalShipCost + totalDistancePrice;
 
         order.setDistancePrice(distancePrice);
@@ -140,20 +148,20 @@ public class OrderServiceImpl implements OrderService{
     }
 
     @Override
-    public String updateOrder(UpdateOrderModel updateOrderModel, Long customerID){
+    public String updateOrder(UpdateOrderModel updateOrderModel, Long customerID) {
         Optional<tblOrder> checkExistedOrder = orderRepository.findById(updateOrderModel.getOrderID());
-        if(checkExistedOrder == null){
+        if(checkExistedOrder == null) {
             return "Không tồn tại Order với ID là " + updateOrderModel.getOrderID() + ".";
         }
-        if(updateOrderModel.getDetailList() == null){
+        if(updateOrderModel.getDetailList() == null) {
             return "Danh sách cây không được để trống.";
         }
 
         tblOrder order = new tblOrder();
         tblOrder lastOrderRecord = orderRepository.findFirstByOrderByIdDesc();
-        if(lastOrderRecord == null){
+        if(lastOrderRecord == null) {
             order.setId(util.createNewID("O"));
-        }else{
+        } else {
             order.setId(util.createIDFromLastID("O", 1, lastOrderRecord.getId()));
         }
         order.setFullName(updateOrderModel.getFullName());
@@ -181,16 +189,16 @@ public class OrderServiceImpl implements OrderService{
         Double totalShipCost = 0.0;
         Double total = 0.0;
         OrderDetail lastDetailRecord = orderDetailRepository.findFirstByOrderByIdDesc();
-        for(OrderDetailModel model : updateOrderModel.getDetailList()){
+        for(OrderDetailModel model : updateOrderModel.getDetailList()) {
             Plant plant = plantRepository.getById(model.getPlantID());
             PlantPrice newestPrice = plantPriceRepository.findFirstByPlant_IdAndStatusOrderByApplyDateDesc(plant.getId(), Status.ACTIVE);
             totalPriceOfAPlant += newestPrice.getPrice() * model.getQuantity();
             totalShipCost += plant.getPlantShipPrice().getPricePerPlant() * model.getQuantity();
 
             OrderDetail detail = new OrderDetail();
-            if(lastDetailRecord == null){
+            if(lastDetailRecord == null) {
                 detail.setId(util.createNewID("OD"));
-            }else{
+            } else {
                 detail.setId(util.createIDFromLastID("OD", 2, lastDetailRecord.getId()));
             }
             detail.setPrice(totalPriceOfAPlant);
@@ -199,7 +207,7 @@ public class OrderServiceImpl implements OrderService{
             detail.setPlant(plant);
             orderDetailRepository.save(detail);
         }
-        Double totalDistancePrice = distancePrice.getPricePerKm()*updateOrderModel.getDistance();
+        Double totalDistancePrice = distancePrice.getPricePerKm() * updateOrderModel.getDistance();
         total += totalPriceOfAPlant + totalShipCost + totalDistancePrice;
 
         order.setDistancePrice(distancePrice);
@@ -210,11 +218,11 @@ public class OrderServiceImpl implements OrderService{
     }
 
     @Override
-    public String deleteOrder(String orderID, String reason, Status status){
+    public String deleteOrder(String orderID, String reason, Status status) {
         Optional<tblOrder> checkExistedOrder = orderRepository.findById(orderID);
-        if(checkExistedOrder != null){
+        if(checkExistedOrder != null) {
             tblOrder order = checkExistedOrder.get();
-            if(!order.getProgressStatus().equals("WAITING")){
+            if(!order.getProgressStatus().equals("WAITING")) {
                 return "Chỉ được hủy đơn hàng có trạng thái là WAITING.";
             }
             order.setReason(reason);
@@ -224,18 +232,18 @@ public class OrderServiceImpl implements OrderService{
             orderRepository.save(checkExistedOrder.get());
 
             List<OrderDetail> orderDetailList = order.getOrderDetailList();
-            for(OrderDetail orderDetail : orderDetailList){
+            for(OrderDetail orderDetail : orderDetailList) {
                 StorePlant storePlant = storePlantRepository.
                         findByPlantIdAndStoreIdAndPlant_Status(orderDetail.getPlant().getId(), order.getStore().getId(), Status.ONSALE);
-                storePlant.setQuantity(storePlant.getQuantity()+orderDetail.getQuantity());
+                storePlant.setQuantity(storePlant.getQuantity() + orderDetail.getQuantity());
                 storePlantRepository.save(storePlant);
 
                 StorePlantRecord storePlantRecord = new StorePlantRecord();
                 StorePlantRecord lastRecord = storePlantRecordRepository.findFirstByOrderByIdDesc();
-                if (lastRecord == null) {
+                if(lastRecord == null) {
                     storePlantRecord.setId(util.createNewID("SPR"));
                 } else {
-                    storePlantRecord.setId(util.createIDFromLastID("SPR",3,lastRecord.getId()));
+                    storePlantRecord.setId(util.createIDFromLastID("SPR", 3, lastRecord.getId()));
                 }
                 storePlantRecord.setImportDate(LocalDateTime.now());
                 storePlantRecord.setAmount(orderDetail.getQuantity());
@@ -247,31 +255,31 @@ public class OrderServiceImpl implements OrderService{
             }
             return "Xóa thành công.";
         }
-        return "Không tồn tại Order với ID là : " + orderID +".";
+        return "Không tồn tại Order với ID là : " + orderID + ".";
     }
 
     @Override
-    public String approveOrder(String orderID){
+    public String approveOrder(String orderID) {
         Optional<tblOrder> checkExistedOrder = orderRepository.findById(orderID);
-        if(checkExistedOrder != null){
+        if(checkExistedOrder != null) {
             tblOrder order = checkExistedOrder.get();
             order.setStatus(Status.APPROVED);
             order.getStaff().setStatus(Status.UNAVAILABLE);
             orderRepository.save(checkExistedOrder.get());
 
             List<OrderDetail> orderDetailList = order.getOrderDetailList();
-            for(OrderDetail orderDetail : orderDetailList){
+            for(OrderDetail orderDetail : orderDetailList) {
                 StorePlant storePlant = storePlantRepository.
                         findByPlantIdAndStoreIdAndPlant_Status(orderDetail.getPlant().getId(), order.getStore().getId(), Status.ONSALE);
-                storePlant.setQuantity(storePlant.getQuantity()-orderDetail.getQuantity());
+                storePlant.setQuantity(storePlant.getQuantity() - orderDetail.getQuantity());
                 storePlantRepository.save(storePlant);
 
                 StorePlantRecord storePlantRecord = new StorePlantRecord();
                 StorePlantRecord lastRecord = storePlantRecordRepository.findFirstByOrderByIdDesc();
-                if (lastRecord == null) {
+                if(lastRecord == null) {
                     storePlantRecord.setId(util.createNewID("SPR"));
                 } else {
-                    storePlantRecord.setId(util.createIDFromLastID("SPR",3,lastRecord.getId()));
+                    storePlantRecord.setId(util.createIDFromLastID("SPR", 3, lastRecord.getId()));
                 }
                 storePlantRecord.setImportDate(LocalDateTime.now());
                 storePlantRecord.setAmount(orderDetail.getQuantity());
@@ -281,18 +289,18 @@ public class OrderServiceImpl implements OrderService{
             }
             return "Chấp nhận thành công.";
         }
-        return "Không tồn tại Order với ID là : " + orderID +".";
+        return "Không tồn tại Order với ID là : " + orderID + ".";
     }
 
     @Override
-    public Boolean changeOrderStatus(String orderID, String status){
+    public Boolean changeOrderStatus(String orderID, String status) {
         Optional<tblOrder> checkExistedOrder = orderRepository.findById(orderID);
-        if(checkExistedOrder != null){
-            if(status.equals("PACKAGING")){
+        if(checkExistedOrder != null) {
+            if(status.equals("PACKAGING")) {
                 checkExistedOrder.get().setStatus(Status.PACKAGING);
-            }else if(status.equals("DELIVERING")){
+            } else if(status.equals("DELIVERING")) {
                 checkExistedOrder.get().setStatus(Status.DELIVERING);
-            }else{
+            } else {
                 checkExistedOrder.get().setStatus(Status.RECEIVED);
             }
             orderRepository.save(checkExistedOrder.get());
@@ -302,7 +310,7 @@ public class OrderServiceImpl implements OrderService{
     }
 
     @Override
-    public List<ShowOrderModel> getAllOrderByUsername(String username, Pageable pageable){
+    public List<ShowOrderModel> getAllOrderByUsername(String username, Pageable pageable) {
         Page<tblOrder> pagingResult = orderPagingRepository.findByCustomer_UsernameAndStatus(username, Status.ACTIVE, pageable);
         return util.orderPagingConverter(pagingResult, pageable);
     }
@@ -314,19 +322,19 @@ public class OrderServiceImpl implements OrderService{
     }
 
     @Override
-    public List<ShowOrderModel> getWaitingOrder(Pageable pageable){
+    public List<ShowOrderModel> getWaitingOrder(Pageable pageable) {
         Page<tblOrder> pagingResult = orderPagingRepository.findByProgressStatus(Status.WAITING, pageable);
         return util.orderPagingConverter(pagingResult, pageable);
     }
 
     @Override
-    public List<ShowOrderDetailModel> getOrderDetailByOrderID(String orderID){
+    public List<ShowOrderDetailModel> getOrderDetailByOrderID(String orderID) {
         List<OrderDetail> orderDetailList = orderDetailRepository.findByTblOrder_Id(orderID);
-        if(orderDetailList == null){
+        if(orderDetailList == null) {
             return null;
         }
         List<ShowOrderDetailModel> modelList = new ArrayList<>();
-        for(OrderDetail orderDetail : orderDetailList){
+        for(OrderDetail orderDetail : orderDetailList) {
             ShowOrderDetailModel model = new ShowOrderDetailModel();
             //detail
             model.setId(orderDetail.getId());
@@ -334,61 +342,89 @@ public class OrderServiceImpl implements OrderService{
             model.setQuantity(orderDetail.getQuantity());
 
             //order
-            model.setOrderID(orderDetail.getTblOrder().getId());
-            model.setFullName(orderDetail.getTblOrder().getFullName());
-            model.setAddress(orderDetail.getTblOrder().getAddress());
-            model.setEmail(orderDetail.getTblOrder().getEmail());
-            model.setPhone(orderDetail.getTblOrder().getPhone());
-            model.setCreatedDate(orderDetail.getTblOrder().getCreatedDate());
-            model.setPackageDate(orderDetail.getTblOrder().getPackageDate());
-            model.setDeliveryDate(orderDetail.getTblOrder().getDeliveryDate());
-            model.setReceivedDate(orderDetail.getTblOrder().getReceivedDate());
-            model.setApproveDate(orderDetail.getTblOrder().getApproveDate());
-            model.setRejectDate(orderDetail.getTblOrder().getRejectDate());
-            model.setPaymentMethod(orderDetail.getTblOrder().getPaymentMethod());
-            model.setProgressStatus(orderDetail.getTblOrder().getProgressStatus());
-            model.setReason(orderDetail.getTblOrder().getReason());
-            model.setStoreID(orderDetail.getTblOrder().getStore().getId());
-            if(orderDetail.getTblOrder().getStaff() != null){
-                model.setStaffID(orderDetail.getTblOrder().getStaff().getId());
+            ShowOrderModel orderModel = new ShowOrderModel();
+            orderModel.setId(orderDetail.getTblOrder().getId());
+            orderModel.setFullName(orderDetail.getTblOrder().getFullName());
+            orderModel.setAddress(orderDetail.getTblOrder().getAddress());
+            orderModel.setEmail(orderDetail.getTblOrder().getEmail());
+            orderModel.setPhone(orderDetail.getTblOrder().getPhone());
+            orderModel.setCreatedDate(orderDetail.getTblOrder().getCreatedDate());
+            orderModel.setPackageDate(orderDetail.getTblOrder().getPackageDate());
+            orderModel.setDeliveryDate(orderDetail.getTblOrder().getDeliveryDate());
+            orderModel.setReceivedDate(orderDetail.getTblOrder().getReceivedDate());
+            orderModel.setApproveDate(orderDetail.getTblOrder().getApproveDate());
+            orderModel.setRejectDate(orderDetail.getTblOrder().getRejectDate());
+            orderModel.setPaymentMethod(orderDetail.getTblOrder().getPaymentMethod());
+            orderModel.setProgressStatus(orderDetail.getTblOrder().getProgressStatus());
+            orderModel.setReason(orderDetail.getTblOrder().getReason());
+            orderModel.setLatLong(orderDetail.getTblOrder().getLatLong());
+            orderModel.setDistance(orderDetail.getTblOrder().getDistance());
+            orderModel.setTotalShipCost(orderDetail.getTblOrder().getTotalShipCost());
+            orderModel.setTotal(orderDetail.getTblOrder().getTotal());
+            orderModel.setStatus(orderDetail.getTblOrder().getStatus());
+            Optional<OrderFeedback> orderFeedback = orderFeedbackRepository.findByOrderDetail_Id(orderDetail.getId());
+            if(orderFeedback != null){
+                model.setIsFeedback(true);
             }
-            model.setCustomerID(orderDetail.getTblOrder().getCustomer().getId());
-            model.setDistancePriceID(orderDetail.getTblOrder().getDistancePrice().getId());
-            model.setDpApplyDate(orderDetail.getTblOrder().getDistancePrice().getApplyDate());
-            model.setDpPricePerKm(orderDetail.getTblOrder().getDistancePrice().getPricePerKm());
-            model.setLatLong(orderDetail.getTblOrder().getLatLong());
-            model.setDistance(orderDetail.getTblOrder().getDistance());
-            model.setTotalShipCost(orderDetail.getTblOrder().getTotalShipCost());
-            model.setTotal(orderDetail.getTblOrder().getTotal());
-            model.setStatus(orderDetail.getTblOrder().getStatus());
+
+            //customer
+            ShowCustomerModel customerModel = new ShowCustomerModel();
+            customerModel.setCustomerID(orderDetail.getTblOrder().getCustomer().getId());
+            customerModel.setAddress(orderDetail.getTblOrder().getCustomer().getAddress());
+            customerModel.setEmail(orderDetail.getTblOrder().getCustomer().getEmail());
+            customerModel.setPhone(orderDetail.getTblOrder().getCustomer().getPhone());
+            customerModel.setFullName(orderDetail.getTblOrder().getCustomer().getFullName());
+
+            //staff
+            ShowStaffModel staffModel = new ShowStaffModel();
+            if(orderDetail.getTblOrder().getStaff() != null) {
+                staffModel.setStaffID(orderDetail.getTblOrder().getStaff().getId());
+                staffModel.setAddress(orderDetail.getTblOrder().getStaff().getAddress());
+                staffModel.setEmail(orderDetail.getTblOrder().getStaff().getEmail());
+                staffModel.setPhone(orderDetail.getTblOrder().getStaff().getPhone());
+                staffModel.setFullName(orderDetail.getTblOrder().getStaff().getFullName());
+            }
+
+            //distance price
+            ShowDistancePriceModel distancePriceModel = new ShowDistancePriceModel();
+            distancePriceModel.setDistancePriceID(orderDetail.getTblOrder().getDistancePrice().getId());
+            distancePriceModel.setDpApplyDate(orderDetail.getTblOrder().getDistancePrice().getApplyDate());
+            distancePriceModel.setDpPricePerKm(orderDetail.getTblOrder().getDistancePrice().getPricePerKm());
 
             //plant
+            ShowPlantModel plantModel = new ShowPlantModel();
             PlantPrice newestPrice = plantPriceRepository.findFirstByPlant_IdAndStatusOrderByApplyDateDesc(orderDetail.getPlant().getId(), Status.ACTIVE);
-            model.setPlantID(orderDetail.getPlant().getId());
-            if(orderDetail.getPlant().getPlantIMGList() != null){
-                model.setPlantImage(orderDetail.getPlant().getPlantIMGList().get(0).getImgURL());
+            plantModel.setPlantID(orderDetail.getPlant().getId());
+            if(orderDetail.getPlant().getPlantIMGList() != null) {
+                plantModel.setPlantImage(orderDetail.getPlant().getPlantIMGList().get(0).getImgURL());
             }
-            model.setPlantName(orderDetail.getPlant().getName());
-            model.setPlantPrice(newestPrice.getPrice());
-            model.setPlantShipPrice(orderDetail.getPlant().getPlantShipPrice().getPricePerPlant());
+            plantModel.setPlantName(orderDetail.getPlant().getName());
+            plantModel.setPlantPrice(newestPrice.getPrice());
+            plantModel.setPlantShipPrice(orderDetail.getPlant().getPlantShipPrice().getPricePerPlant());
 
             //store
-            Store store = storeRepository.getById(orderDetail.getTblOrder().getStore().getId());
-            model.setStoreID(store.getId());
-            model.setStoreName(store.getStoreName());
-            model.setStoreAddress(store.getAddress());
-            model.setStorePhone(store.getPhone());
+            ShowStoreModel storeModel = new ShowStoreModel();
+            storeModel.setStoreID(orderDetail.getTblOrder().getStore().getId());
+            storeModel.setStoreName(orderDetail.getTblOrder().getStore().getStoreName());
+            storeModel.setStoreAddress(orderDetail.getTblOrder().getStore().getAddress());
+            storeModel.setStorePhone(orderDetail.getTblOrder().getStore().getPhone());
 
+            model.setShowOrderModel(orderModel);
+            model.setShowCustomerModel(customerModel);
+            model.setShowPlantModel(plantModel);
+            model.setShowDistancePriceModel(distancePriceModel);
+            model.setShowStaffModel(staffModel);
+            model.setShowStoreModel(storeModel);
             modelList.add(model);
         }
         return modelList;
     }
 
     @Override
-    public List<GetStaffModel> getStaffForOrder(){
+    public List<GetStaffModel> getStaffForOrder() {
         List<tblAccount> listStaff = userRepository.findByStatusAndRole_RoleName(Status.AVAILABLE, "Staff");
         List<GetStaffModel> modelList = new ArrayList<>();
-        for(tblAccount staff : listStaff){
+        for(tblAccount staff : listStaff) {
             GetStaffModel model = new GetStaffModel();
             model.setStaffID(staff.getId());
             model.setStaffName(staff.getFullName());

@@ -1,13 +1,16 @@
 package com.example.thanhhoa.utils;
 
 import com.example.thanhhoa.dtos.CategoryModels.ShowCategoryModel;
-import com.example.thanhhoa.dtos.ContractModels.ShowContractDetailModel;
 import com.example.thanhhoa.dtos.ContractModels.ShowContractModel;
 import com.example.thanhhoa.dtos.FeedbackModels.ShowContractFeedbackModel;
 import com.example.thanhhoa.dtos.FeedbackModels.ShowOrderFeedbackIMGModel;
 import com.example.thanhhoa.dtos.FeedbackModels.ShowOrderFeedbackModel;
 import com.example.thanhhoa.dtos.FeedbackModels.ShowRatingModel;
+import com.example.thanhhoa.dtos.OrderModels.ShowCustomerModel;
+import com.example.thanhhoa.dtos.OrderModels.ShowDistancePriceModel;
 import com.example.thanhhoa.dtos.OrderModels.ShowOrderModel;
+import com.example.thanhhoa.dtos.OrderModels.ShowStaffModel;
+import com.example.thanhhoa.dtos.OrderModels.ShowStoreModel;
 import com.example.thanhhoa.dtos.PlantModels.ShowPlantCategory;
 import com.example.thanhhoa.dtos.PlantModels.ShowPlantIMGModel;
 import com.example.thanhhoa.dtos.PlantModels.ShowPlantModel;
@@ -20,7 +23,6 @@ import com.example.thanhhoa.dtos.UserModels.ShowUserModel;
 import com.example.thanhhoa.dtos.WorkingDateModels.ShowWorkingDateModel;
 import com.example.thanhhoa.entities.Category;
 import com.example.thanhhoa.entities.Contract;
-import com.example.thanhhoa.entities.ContractDetail;
 import com.example.thanhhoa.entities.ContractFeedback;
 import com.example.thanhhoa.entities.OrderFeedback;
 import com.example.thanhhoa.entities.OrderFeedbackIMG;
@@ -36,7 +38,6 @@ import com.example.thanhhoa.entities.WorkingDate;
 import com.example.thanhhoa.entities.tblAccount;
 import com.example.thanhhoa.entities.tblOrder;
 import com.example.thanhhoa.enums.Status;
-import com.example.thanhhoa.repositories.ContractDetailRepository;
 import com.example.thanhhoa.repositories.PlantCategoryRepository;
 import com.example.thanhhoa.repositories.PlantIMGRepository;
 import com.example.thanhhoa.repositories.PlantPriceRepository;
@@ -64,14 +65,12 @@ public class Util {
     private PlantIMGRepository plantIMGRepository;
     @Autowired
     private PlantPriceRepository plantPriceRepository;
-    @Autowired
-    private ContractDetailRepository contractDetailRepository;
 
     /**
      * Small Util to return {@link Pageable} to replace dup code in serviceImpl
      */
     public Pageable makePaging(int pageNo, int pageSize, String sortBy, boolean sortTypeAsc) {
-        if (sortTypeAsc) {
+        if(sortTypeAsc) {
             return PageRequest.of(pageNo, pageSize, Sort.by(sortBy).ascending());
         } else {
             return PageRequest.of(pageNo, pageSize, Sort.by(sortBy).descending());
@@ -79,7 +78,7 @@ public class Util {
     }
 
     public List<ShowUserModel> userPagingConverter(Page<tblAccount> pagingResult, Pageable paging) {
-        if (pagingResult.hasContent()) {
+        if(pagingResult.hasContent()) {
             double totalPage = Math.ceil((double) pagingResult.getTotalElements() / paging.getPageSize());
             Page<ShowUserModel> modelResult = pagingResult.map(new Converter<tblAccount, ShowUserModel>() {
                 @Override
@@ -113,7 +112,7 @@ public class Util {
     }
 
     public List<ShowWorkingDateModel> workingDatePagingConverter(Page<WorkingDate> pagingResult, Pageable paging) {
-        if (pagingResult.hasContent()) {
+        if(pagingResult.hasContent()) {
             double totalPage = Math.ceil((double) pagingResult.getTotalElements() / paging.getPageSize());
             Page<ShowWorkingDateModel> modelResult = pagingResult.map(new Converter<WorkingDate, ShowWorkingDateModel>() {
                 @Override
@@ -137,7 +136,7 @@ public class Util {
     }
 
     public List<ShowPlantShipPriceModel> pspPagingConverter(Page<PlantShipPrice> pagingResult, Pageable paging) {
-        if (pagingResult.hasContent()) {
+        if(pagingResult.hasContent()) {
             double totalPage = Math.ceil((double) pagingResult.getTotalElements() / paging.getPageSize());
             Page<ShowPlantShipPriceModel> modelResult = pagingResult.map(new Converter<PlantShipPrice, ShowPlantShipPriceModel>() {
                 @Override
@@ -162,14 +161,14 @@ public class Util {
     }
 
     public List<ShowPlantModel> plantPagingConverter(Page<Plant> pagingResult, Pageable paging) {
-        if (pagingResult.hasContent()) {
+        if(pagingResult.hasContent()) {
             double totalPage = Math.ceil((double) pagingResult.getTotalElements() / paging.getPageSize());
             Page<ShowPlantModel> modelResult = pagingResult.map(new Converter<Plant, ShowPlantModel>() {
                 @Override
                 protected ShowPlantModel doForward(Plant plant) {
                     List<PlantCategory> plantCategoryList = plantCategoryRepository.findAllByPlant_IdAndStatus(plant.getId(), Status.ACTIVE);
                     List<ShowPlantCategory> showPlantCategoryList = new ArrayList<>();
-                    for (PlantCategory plantCategory : plantCategoryList) {
+                    for(PlantCategory plantCategory : plantCategoryList) {
                         ShowPlantCategory showPlantCategory = new ShowPlantCategory();
                         showPlantCategory.setCategoryID(plantCategory.getCategory().getId());
                         showPlantCategory.setCategoryName(plantCategory.getCategory().getName());
@@ -178,7 +177,7 @@ public class Util {
 
                     List<ShowPlantIMGModel> showPlantIMGList = new ArrayList<>();
                     List<PlantIMG> plantIMGList = plantIMGRepository.findByPlant_Id(plant.getId());
-                    if(plantIMGList != null){
+                    if(plantIMGList != null) {
                         for(PlantIMG img : plantIMGList) {
                             ShowPlantIMGModel model = new ShowPlantIMGModel();
                             model.setId(img.getId());
@@ -225,17 +224,17 @@ public class Util {
         }
     }
 
-    public List<ShowPlantModel> plantPricePagingConverter(Double fromPrice, Double toPrice,Page<Plant> pagingResult, Pageable paging) {
-        if (pagingResult.hasContent()) {
+    public List<ShowPlantModel> plantPricePagingConverter(Double fromPrice, Double toPrice, Page<Plant> pagingResult, Pageable paging) {
+        if(pagingResult.hasContent()) {
             double totalPage = Math.ceil((double) pagingResult.getTotalElements() / paging.getPageSize());
             Page<ShowPlantModel> modelResult = pagingResult.map(new Converter<Plant, ShowPlantModel>() {
                 @Override
                 protected ShowPlantModel doForward(Plant resultPlant) {
                     PlantPrice plant = plantPriceRepository.findByPlant_IdAndPriceBetweenAndStatus(resultPlant.getId(), fromPrice, toPrice, Status.ACTIVE);
-                    if(plant != null){
+                    if(plant != null) {
                         List<PlantCategory> plantCategoryList = plantCategoryRepository.findAllByPlant_IdAndStatus(plant.getPlant().getId(), Status.ACTIVE);
                         List<ShowPlantCategory> showPlantCategoryList = new ArrayList<>();
-                        for (PlantCategory plantCategory : plantCategoryList) {
+                        for(PlantCategory plantCategory : plantCategoryList) {
                             ShowPlantCategory showPlantCategory = new ShowPlantCategory();
                             showPlantCategory.setCategoryID(plantCategory.getCategory().getId());
                             showPlantCategory.setCategoryName(plantCategory.getCategory().getName());
@@ -244,7 +243,7 @@ public class Util {
 
                         List<ShowPlantIMGModel> showPlantIMGList = new ArrayList<>();
                         List<PlantIMG> plantIMGList = plantIMGRepository.findByPlant_Id(plant.getPlant().getId());
-                        if(plantIMGList != null){
+                        if(plantIMGList != null) {
                             for(PlantIMG img : plantIMGList) {
                                 ShowPlantIMGModel model = new ShowPlantIMGModel();
                                 model.setId(img.getId());
@@ -293,7 +292,7 @@ public class Util {
     }
 
     public List<ShowCategoryModel> categoryPagingConverter(Page<Category> pagingResult, Pageable paging) {
-        if (pagingResult.hasContent()) {
+        if(pagingResult.hasContent()) {
             double totalPage = Math.ceil((double) pagingResult.getTotalElements() / paging.getPageSize());
             Page<ShowCategoryModel> modelResult = pagingResult.map(new Converter<Category, ShowCategoryModel>() {
                 @Override
@@ -317,7 +316,7 @@ public class Util {
     }
 
     public List<ShowOrderFeedbackModel> orderFeedbackPagingConverter(Page<OrderFeedback> pagingResult, Pageable paging) {
-        if (pagingResult.hasContent()) {
+        if(pagingResult.hasContent()) {
             double totalPage = Math.ceil((double) pagingResult.getTotalElements() / paging.getPageSize());
             Page<ShowOrderFeedbackModel> modelResult = pagingResult.map(new Converter<OrderFeedback, ShowOrderFeedbackModel>() {
                 @Override
@@ -327,7 +326,7 @@ public class Util {
                     ratingModel.setDescription(orderFeedback.getRating().getDescription());
 
                     List<ShowOrderFeedbackIMGModel> imgModelList = new ArrayList<>();
-                    for (OrderFeedbackIMG img : orderFeedback.getOrderFeedbackIMGList()) {
+                    for(OrderFeedbackIMG img : orderFeedback.getOrderFeedbackIMGList()) {
                         ShowOrderFeedbackIMGModel imgModel = new ShowOrderFeedbackIMGModel();
                         imgModel.setId(img.getId());
                         imgModel.setImgURL(imgModel.getImgURL());
@@ -357,7 +356,7 @@ public class Util {
     }
 
     public List<ShowContractFeedbackModel> contractFeedbackPagingConverter(Page<ContractFeedback> pagingResult, Pageable paging) {
-        if (pagingResult.hasContent()) {
+        if(pagingResult.hasContent()) {
             double totalPage = Math.ceil((double) pagingResult.getTotalElements() / paging.getPageSize());
             Page<ShowContractFeedbackModel> modelResult = pagingResult.map(new Converter<ContractFeedback, ShowContractFeedbackModel>() {
                 @Override
@@ -388,15 +387,15 @@ public class Util {
     }
 
     public List<ShowServiceModel> servicePagingConverter(Page<Service> pagingResult, Pageable paging) {
-        if (pagingResult.hasContent()) {
+        if(pagingResult.hasContent()) {
             double totalPage = Math.ceil((double) pagingResult.getTotalElements() / paging.getPageSize());
             Page<ShowServiceModel> modelResult = pagingResult.map(new Converter<Service, ShowServiceModel>() {
                 @Override
                 protected ShowServiceModel doForward(Service service) {
                     List<ShowServiceTypeModel> typeList = new ArrayList<>();
                     List<ServiceType> serviceTypeList = serviceTypeRepository.findByService_IdAndStatus(service.getId(), Status.ACTIVE);
-                    if(serviceTypeList != null){
-                        for (ServiceType serviceType : serviceTypeList) {
+                    if(serviceTypeList != null) {
+                        for(ServiceType serviceType : serviceTypeList) {
                             ShowServiceTypeModel typeModel = new ShowServiceTypeModel();
                             typeModel.setId(serviceType.getId());
                             typeModel.setName(serviceType.getName());
@@ -410,7 +409,7 @@ public class Util {
 
                     List<ShowServiceIMGModel> imgList = new ArrayList<>();
                     List<ServiceIMG> serviceIMGList = serviceIMGRepository.findByService_Id(service.getId());
-                    if(serviceIMGList != null){
+                    if(serviceIMGList != null) {
                         for(ServiceIMG img : serviceIMGList) {
                             ShowServiceIMGModel imgModel = new ShowServiceIMGModel();
                             imgModel.setId(img.getId());
@@ -443,7 +442,7 @@ public class Util {
     }
 
     public List<ShowOrderModel> orderPagingConverter(Page<tblOrder> pagingResult, Pageable paging) {
-        if (pagingResult.hasContent()) {
+        if(pagingResult.hasContent()) {
             double totalPage = Math.ceil((double) pagingResult.getTotalElements() / paging.getPageSize());
             Page<ShowOrderModel> modelResult = pagingResult.map(new Converter<tblOrder, ShowOrderModel>() {
                 @Override
@@ -463,19 +462,47 @@ public class Util {
                     model.setPaymentMethod(order.getPaymentMethod());
                     model.setProgressStatus(order.getProgressStatus());
                     model.setReason(order.getReason());
-                    model.setStoreID(order.getStore().getId());
-                    if(order.getStaff() != null){
-                        model.setStaffID(order.getStaff().getId());
-                    }
-                    model.setCustomerID(order.getCustomer().getId());
-                    model.setDistancePriceID(order.getDistancePrice().getId());
-                    model.setDpApplyDate(order.getDistancePrice().getApplyDate());
-                    model.setDpPricePerKm(order.getDistancePrice().getPricePerKm());
                     model.setLatLong(order.getLatLong());
                     model.setDistance(order.getDistance());
                     model.setTotalShipCost(order.getTotalShipCost());
                     model.setTotal(order.getTotal());
                     model.setStatus(order.getStatus());
+
+                    //store
+                    ShowStoreModel storeModel = new ShowStoreModel();
+                    storeModel.setStoreID(order.getStore().getId());
+                    storeModel.setStoreName(order.getStore().getStoreName());
+                    storeModel.setStoreAddress(order.getStore().getAddress());
+                    storeModel.setStorePhone(order.getStore().getPhone());
+
+                    //staff
+                    ShowStaffModel staffModel = new ShowStaffModel();
+                    if(order.getStaff() != null) {
+                        staffModel.setStaffID(order.getStaff().getId());
+                        staffModel.setAddress(order.getStaff().getAddress());
+                        staffModel.setEmail(order.getStaff().getEmail());
+                        staffModel.setPhone(order.getStaff().getPhone());
+                        staffModel.setFullName(order.getStaff().getFullName());
+                    }
+
+                    //customer
+                    ShowCustomerModel customerModel = new ShowCustomerModel();
+                    customerModel.setCustomerID(order.getCustomer().getId());
+                    customerModel.setAddress(order.getCustomer().getAddress());
+                    customerModel.setEmail(order.getCustomer().getEmail());
+                    customerModel.setPhone(order.getCustomer().getPhone());
+                    customerModel.setFullName(order.getCustomer().getFullName());
+
+                    //distance price
+                    ShowDistancePriceModel distancePriceModel = new ShowDistancePriceModel();
+                    distancePriceModel.setDistancePriceID(order.getDistancePrice().getId());
+                    distancePriceModel.setDpApplyDate(order.getDistancePrice().getApplyDate());
+                    distancePriceModel.setDpPricePerKm(order.getDistancePrice().getPricePerKm());
+
+                    model.setShowStaffModel(model.getShowStaffModel());
+                    model.setShowStoreModel(model.getShowStoreModel());
+                    model.setShowCustomerModel(model.getShowCustomerModel());
+                    model.setShowDistancePriceModel(model.getShowDistancePriceModel());
                     model.setTotalPage(totalPage);
                     return model;
                 }
@@ -492,7 +519,7 @@ public class Util {
     }
 
     public List<ShowContractModel> contractPagingConverter(Page<Contract> pagingResult, Pageable paging) {
-        if (pagingResult.hasContent()) {
+        if(pagingResult.hasContent()) {
             double totalPage = Math.ceil((double) pagingResult.getTotalElements() / paging.getPageSize());
             Page<ShowContractModel> modelResult = pagingResult.map(new Converter<Contract, ShowContractModel>() {
                 @Override
@@ -541,7 +568,7 @@ public class Util {
         return chars + String.format("%03d", 1);
     }
 
-    public String createIDFromLastID(String chars, Integer index, String lastID){
+    public String createIDFromLastID(String chars, Integer index, String lastID) {
         Integer IDNumber = Integer.parseInt(lastID.substring(index));
         IDNumber++;
         String newID = chars + String.format("%03d", IDNumber);

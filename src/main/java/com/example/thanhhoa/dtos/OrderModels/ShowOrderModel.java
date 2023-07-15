@@ -30,11 +30,11 @@ public class ShowOrderModel implements Serializable {
     private Double totalShipCost;
     private Double total;
     private Status status;
-    private String storeID;
-    private Long staffID;
-    private Long customerID;
-    private String distancePriceID;
-    private LocalDateTime dpApplyDate;
-    private Double dpPricePerKm;
+
+    private ShowStaffModel showStaffModel;
+    private ShowCustomerModel showCustomerModel;
+    private ShowDistancePriceModel showDistancePriceModel;
+    private ShowStoreModel showStoreModel;
+
     private Double totalPage;
 }
