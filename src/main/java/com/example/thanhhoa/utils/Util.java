@@ -502,6 +502,7 @@ public class Util {
                     distancePriceModel.setDpPricePerKm(order.getDistancePrice().getPricePerKm());
 
                     //plant
+                    List<com.example.thanhhoa.dtos.OrderModels.ShowPlantModel> listPlantModel = new ArrayList<>();
                     for(OrderDetail detail : order.getOrderDetailList()) {
                         com.example.thanhhoa.dtos.OrderModels.ShowPlantModel plantModel = new com.example.thanhhoa.dtos.OrderModels.ShowPlantModel();
                         PlantPrice newestPrice = plantPriceRepository.findFirstByPlant_IdAndStatusOrderByApplyDateDesc(detail.getPlant().getId(), Status.ACTIVE);
@@ -512,9 +513,10 @@ public class Util {
                         plantModel.setPlantName(detail.getPlant().getName());
                         plantModel.setPlantPrice(newestPrice.getPrice());
                         plantModel.setPlantShipPrice(detail.getPlant().getPlantShipPrice().getPricePerPlant());
-                        model.setShowPlantModel(plantModel);
+                        listPlantModel.add(plantModel);
                     }
 
+                    model.setShowPlantModel(listPlantModel);
                     model.setShowStaffModel(staffModel);
                     model.setShowStoreModel(storeModel);
                     model.setShowCustomerModel(customerModel);

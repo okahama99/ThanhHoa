@@ -35,7 +35,7 @@ public class ShowOrderModel implements Serializable {
     private ShowCustomerModel showCustomerModel;
     private ShowDistancePriceModel showDistancePriceModel;
     private ShowStoreModel showStoreModel;
-    private ShowPlantModel showPlantModel;
+    private List<ShowPlantModel> showPlantModel;
 
     private Double totalPage;
 }

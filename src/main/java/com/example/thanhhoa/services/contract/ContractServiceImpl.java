@@ -505,6 +505,9 @@ public class ContractServiceImpl implements ContractService {
             return "Không thể tìm thấy Hợp đồng có trạng thái WAITING với ID là " + contractID + ".";
         }
         Contract contract = checkExisted.get();
+        if(status.toString().equalsIgnoreCase("WORKING")){
+            contract.setStartedDate(LocalDateTime.now());
+        }
         contract.setStatus(status);
         contractRepository.save(contract);
         return "Chỉnh sửa thành công.";
