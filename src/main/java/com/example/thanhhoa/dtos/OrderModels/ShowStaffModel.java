@@ -12,5 +12,5 @@ public class ShowStaffModel implements Serializable {
     private String email;
     private String phone;
     private String address;
-    private Long staffID;
+    private Long id;
 }

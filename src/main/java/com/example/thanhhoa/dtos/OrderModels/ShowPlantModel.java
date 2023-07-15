@@ -8,7 +8,7 @@ import java.io.Serializable;
 @Getter
 @Setter
 public class ShowPlantModel implements Serializable {
-    private String plantID;
+    private String id;
     private String plantName;
     private Double plantPrice;
     private String plantImage;

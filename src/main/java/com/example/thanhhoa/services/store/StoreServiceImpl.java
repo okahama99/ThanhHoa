@@ -199,8 +199,10 @@ public class StoreServiceImpl implements StoreService{
             model.setAddress(store.getAddress());
             model.setDistrict(store.getDistrict().getDistrictName());
             model.setPhone(store.getPhone());
-            model.setManagerID(manager.getAccount().getId());
-            model.setManagerName(manager.getAccount().getFullName());
+            if(manager != null){
+                model.setManagerID(manager.getAccount().getId());
+                model.setManagerName(manager.getAccount().getFullName());
+            }
             storeModelList.add(model);
         }
         return storeModelList;

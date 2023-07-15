@@ -369,7 +369,7 @@ public class OrderServiceImpl implements OrderService {
 
             //customer
             ShowCustomerModel customerModel = new ShowCustomerModel();
-            customerModel.setCustomerID(orderDetail.getTblOrder().getCustomer().getId());
+            customerModel.setId(orderDetail.getTblOrder().getCustomer().getId());
             customerModel.setAddress(orderDetail.getTblOrder().getCustomer().getAddress());
             customerModel.setEmail(orderDetail.getTblOrder().getCustomer().getEmail());
             customerModel.setPhone(orderDetail.getTblOrder().getCustomer().getPhone());
@@ -378,7 +378,7 @@ public class OrderServiceImpl implements OrderService {
             //staff
             ShowStaffModel staffModel = new ShowStaffModel();
             if(orderDetail.getTblOrder().getStaff() != null) {
-                staffModel.setStaffID(orderDetail.getTblOrder().getStaff().getId());
+                staffModel.setId(orderDetail.getTblOrder().getStaff().getId());
                 staffModel.setAddress(orderDetail.getTblOrder().getStaff().getAddress());
                 staffModel.setEmail(orderDetail.getTblOrder().getStaff().getEmail());
                 staffModel.setPhone(orderDetail.getTblOrder().getStaff().getPhone());
@@ -387,14 +387,14 @@ public class OrderServiceImpl implements OrderService {
 
             //distance price
             ShowDistancePriceModel distancePriceModel = new ShowDistancePriceModel();
-            distancePriceModel.setDistancePriceID(orderDetail.getTblOrder().getDistancePrice().getId());
+            distancePriceModel.setId(orderDetail.getTblOrder().getDistancePrice().getId());
             distancePriceModel.setDpApplyDate(orderDetail.getTblOrder().getDistancePrice().getApplyDate());
             distancePriceModel.setDpPricePerKm(orderDetail.getTblOrder().getDistancePrice().getPricePerKm());
 
             //plant
             ShowPlantModel plantModel = new ShowPlantModel();
             PlantPrice newestPrice = plantPriceRepository.findFirstByPlant_IdAndStatusOrderByApplyDateDesc(orderDetail.getPlant().getId(), Status.ACTIVE);
-            plantModel.setPlantID(orderDetail.getPlant().getId());
+            plantModel.setId(orderDetail.getPlant().getId());
             if(orderDetail.getPlant().getPlantIMGList() != null) {
                 plantModel.setPlantImage(orderDetail.getPlant().getPlantIMGList().get(0).getImgURL());
             }
@@ -404,7 +404,7 @@ public class OrderServiceImpl implements OrderService {
 
             //store
             ShowStoreModel storeModel = new ShowStoreModel();
-            storeModel.setStoreID(orderDetail.getTblOrder().getStore().getId());
+            storeModel.setId(orderDetail.getTblOrder().getStore().getId());
             storeModel.setStoreName(orderDetail.getTblOrder().getStore().getStoreName());
             storeModel.setStoreAddress(orderDetail.getTblOrder().getStore().getAddress());
             storeModel.setStorePhone(orderDetail.getTblOrder().getStore().getPhone());

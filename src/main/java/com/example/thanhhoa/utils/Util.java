@@ -470,7 +470,7 @@ public class Util {
 
                     //store
                     ShowStoreModel storeModel = new ShowStoreModel();
-                    storeModel.setStoreID(order.getStore().getId());
+                    storeModel.setId(order.getStore().getId());
                     storeModel.setStoreName(order.getStore().getStoreName());
                     storeModel.setStoreAddress(order.getStore().getAddress());
                     storeModel.setStorePhone(order.getStore().getPhone());
@@ -478,7 +478,7 @@ public class Util {
                     //staff
                     ShowStaffModel staffModel = new ShowStaffModel();
                     if(order.getStaff() != null) {
-                        staffModel.setStaffID(order.getStaff().getId());
+                        staffModel.setId(order.getStaff().getId());
                         staffModel.setAddress(order.getStaff().getAddress());
                         staffModel.setEmail(order.getStaff().getEmail());
                         staffModel.setPhone(order.getStaff().getPhone());
@@ -487,7 +487,7 @@ public class Util {
 
                     //customer
                     ShowCustomerModel customerModel = new ShowCustomerModel();
-                    customerModel.setCustomerID(order.getCustomer().getId());
+                    customerModel.setId(order.getCustomer().getId());
                     customerModel.setAddress(order.getCustomer().getAddress());
                     customerModel.setEmail(order.getCustomer().getEmail());
                     customerModel.setPhone(order.getCustomer().getPhone());
@@ -495,14 +495,14 @@ public class Util {
 
                     //distance price
                     ShowDistancePriceModel distancePriceModel = new ShowDistancePriceModel();
-                    distancePriceModel.setDistancePriceID(order.getDistancePrice().getId());
+                    distancePriceModel.setId(order.getDistancePrice().getId());
                     distancePriceModel.setDpApplyDate(order.getDistancePrice().getApplyDate());
                     distancePriceModel.setDpPricePerKm(order.getDistancePrice().getPricePerKm());
 
-                    model.setShowStaffModel(model.getShowStaffModel());
-                    model.setShowStoreModel(model.getShowStoreModel());
-                    model.setShowCustomerModel(model.getShowCustomerModel());
-                    model.setShowDistancePriceModel(model.getShowDistancePriceModel());
+                    model.setShowStaffModel(staffModel);
+                    model.setShowStoreModel(storeModel);
+                    model.setShowCustomerModel(customerModel);
+                    model.setShowDistancePriceModel(distancePriceModel);
                     model.setTotalPage(totalPage);
                     return model;
                 }
