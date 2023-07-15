@@ -37,5 +37,6 @@ public class ShowOrderModel implements Serializable {
     private ShowStoreModel showStoreModel;
     private List<ShowPlantModel> showPlantModel;
 
+    private Integer numOfPlant;
     private Double totalPage;
 }

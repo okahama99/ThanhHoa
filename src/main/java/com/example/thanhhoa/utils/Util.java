@@ -521,6 +521,7 @@ public class Util {
                     model.setShowStoreModel(storeModel);
                     model.setShowCustomerModel(customerModel);
                     model.setShowDistancePriceModel(distancePriceModel);
+                    model.setNumOfPlant(order.getOrderDetailList().size());
                     model.setTotalPage(totalPage);
                     return model;
                 }
