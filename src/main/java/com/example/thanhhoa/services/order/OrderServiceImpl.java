@@ -114,8 +114,8 @@ public class OrderServiceImpl implements OrderService {
         Double totalPriceOfAPlant = 0.0;
         Double totalShipCost = 0.0;
         Double total = 0.0;
-        OrderDetail lastDetailRecord = orderDetailRepository.findFirstByOrderByIdDesc();
         for(OrderDetailModel model : createOrderModel.getDetailList()) {
+            OrderDetail lastDetailRecord = orderDetailRepository.findFirstByOrderByIdDesc();
             Plant plant = plantRepository.getById(model.getPlantID());
             PlantPrice newestPrice = plantPriceRepository.findFirstByPlant_IdAndStatusOrderByApplyDateDesc(plant.getId(), Status.ACTIVE);
             totalPriceOfAPlant += newestPrice.getPrice() * model.getQuantity();
