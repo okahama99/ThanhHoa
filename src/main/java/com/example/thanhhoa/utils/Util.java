@@ -506,12 +506,13 @@ public class Util {
                         com.example.thanhhoa.dtos.OrderModels.ShowPlantModel plantModel = new com.example.thanhhoa.dtos.OrderModels.ShowPlantModel();
                         PlantPrice newestPrice = plantPriceRepository.findFirstByPlant_IdAndStatusOrderByApplyDateDesc(detail.getPlant().getId(), Status.ACTIVE);
                         plantModel.setId(detail.getPlant().getId());
-                        if(detail.getPlant().getPlantIMGList() != null) {
+                        if(detail.getPlant().getPlantIMGList() != null && !detail.getPlant().getPlantIMGList().isEmpty()) {
                             plantModel.setPlantImage(detail.getPlant().getPlantIMGList().get(0).getImgURL());
                         }
                         plantModel.setPlantName(detail.getPlant().getName());
                         plantModel.setPlantPrice(newestPrice.getPrice());
                         plantModel.setPlantShipPrice(detail.getPlant().getPlantShipPrice().getPricePerPlant());
+                        model.setShowPlantModel(plantModel);
                     }
 
                     model.setShowStaffModel(staffModel);

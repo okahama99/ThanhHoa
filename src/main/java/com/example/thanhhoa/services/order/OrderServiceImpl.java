@@ -396,7 +396,7 @@ public class OrderServiceImpl implements OrderService {
             ShowPlantModel plantModel = new ShowPlantModel();
             PlantPrice newestPrice = plantPriceRepository.findFirstByPlant_IdAndStatusOrderByApplyDateDesc(orderDetail.getPlant().getId(), Status.ACTIVE);
             plantModel.setId(orderDetail.getPlant().getId());
-            if(orderDetail.getPlant().getPlantIMGList() != null) {
+            if(orderDetail.getPlant().getPlantIMGList() != null  && !orderDetail.getPlant().getPlantIMGList().isEmpty()) {
                 plantModel.setPlantImage(orderDetail.getPlant().getPlantIMGList().get(0).getImgURL());
             }
             plantModel.setPlantName(orderDetail.getPlant().getName());
