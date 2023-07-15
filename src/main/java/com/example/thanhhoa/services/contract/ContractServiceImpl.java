@@ -129,6 +129,48 @@ public class ContractServiceImpl implements ContractService {
     }
 
     @Override
+    public List<ShowContractDetailModel> getAllContractDetailByUserID(Long userID) {
+        List<Contract> contractList = contractRepository.findByStaff_Id(userID);
+        if(contractList == null) {
+            return null;
+        }
+        List<ShowContractDetailModel> modelList = new ArrayList<>();
+        for(Contract contract : contractList) {
+            for(ContractDetail detail : contract.getContractDetailList()) {
+                List<WorkingDate> dateList = workingDateRepository.findByContractDetail_Id(detail.getId());
+                List<ShowWorkingDateModel> dateModelList = new ArrayList<>();
+                for(WorkingDate workingDate : dateList) {
+                    ShowWorkingDateModel model = new ShowWorkingDateModel();
+                    model.setId(workingDate.getId());
+                    model.setWorkingDate(workingDate.getWorkingDate());
+                    dateModelList.add(model);
+                }
+                ShowContractDetailModel model = new ShowContractDetailModel();
+                model.setId(detail.getId());
+                model.setNote(detail.getNote());
+                model.setTimeWorking(detail.getTimeWorking());
+                model.setEndDate(detail.getEndDate());
+                model.setStartDate(detail.getStartDate());
+                model.setTotalPrice(detail.getTotalPrice());
+                model.setContractID(detail.getId());
+                model.setServiceTypeID(detail.getServiceType().getId());
+                model.setTypeName(detail.getServiceType().getName());
+                model.setTypeSize(detail.getServiceType().getSize());
+                model.setTypePercentage(detail.getServiceType().getPercentage());
+                model.setTypeApplyDate(detail.getServiceType().getApplyDate());
+                model.setServicePackID(detail.getServicePack().getId());
+                model.setPackRange(detail.getServicePack().getRange());
+                model.setPackPercentage(detail.getServicePack().getPercentage());
+                model.setPackApplyDate(detail.getServicePack().getApplyDate());
+                model.setWorkingDateList(dateModelList);
+                modelList.add(model);
+            }
+        }
+        return modelList;
+
+    }
+
+    @Override
     public List<ShowContractDetailModel> getContractDetailByContractID(String contractID) {
         List<ContractDetail> detailList = contractDetailRepository.findByContract_Id(contractID);
         if(detailList == null) {

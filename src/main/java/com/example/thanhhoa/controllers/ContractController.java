@@ -67,6 +67,17 @@ public class ContractController {
         return model;
     }
 
+    @GetMapping(value = "/getContractDetailByStaffToken", produces = "application/json;charset=UTF-8")
+    public @ResponseBody
+    List<ShowContractDetailModel> getContractDetailByStaffToken(HttpServletRequest request) {
+        String roleName = jwtUtil.getRoleNameFromRequest(request);
+        if(!roleName.equalsIgnoreCase("Staff")) {
+            throw new ResponseStatusException(HttpStatus.FORBIDDEN, "-----------------------------------Người dùng không có quyền truy cập---------------------------");
+        }
+        List<ShowContractDetailModel> model = contractService.getAllContractDetailByUserID(jwtUtil.getUserIDFromRequest(request));
+        return model;
+    }
+
     @GetMapping(produces = "application/json;charset=UTF-8")
     public @ResponseBody
     ResponseEntity<Object> getContractByStoreID(@RequestParam(required = false) String storeID,
