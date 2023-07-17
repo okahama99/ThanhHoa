@@ -46,15 +46,29 @@ public class ContractController {
     @GetMapping(value = "/byCustomerToken", produces = "application/json;charset=UTF-8")
     public @ResponseBody
     ResponseEntity<Object> getAllContractByUserID(@RequestParam(value = "Staff / Customer") String role,
+                                                  @RequestParam int pageNo,
+                                                  @RequestParam int pageSize,
+                                                  @RequestParam SearchType.CONTRACT sortBy,
+                                                  @RequestParam(required = false, defaultValue = "true") boolean sortAsc,
                                                    HttpServletRequest request) {
         String roleName = jwtUtil.getRoleNameFromRequest(request);
         if(!roleName.equalsIgnoreCase("Customer") && !roleName.equalsIgnoreCase("Staff")) {
             throw new ResponseStatusException(HttpStatus.FORBIDDEN, "-----------------------------------Người dùng không có quyền truy cập---------------------------");
         }
+
+        Pageable paging;
+        if(sortBy.toString().equalsIgnoreCase("CREATEDDATE")) {
+            paging = util.makePaging(pageNo, pageSize, "createdDate", sortAsc);
+        } else if(sortBy.toString().equalsIgnoreCase("ENDEDDATE")) {
+            paging = util.makePaging(pageNo, pageSize, "endedDate", sortAsc);
+        } else {
+            paging = util.makePaging(pageNo, pageSize, sortBy.toString().toLowerCase(), sortAsc);
+        }
+
         if(role.equalsIgnoreCase("staff")){
-            return ResponseEntity.ok().body(contractService.getAllContractByUserID(jwtUtil.getUserIDFromRequest(request), "Staff"));
+            return ResponseEntity.ok().body(contractService.getAllContractByUserID(jwtUtil.getUserIDFromRequest(request), "Staff", paging));
         }else if(role.equalsIgnoreCase("customer")){
-            return ResponseEntity.ok().body(contractService.getAllContractByUserID(jwtUtil.getUserIDFromRequest(request), "Customer"));
+            return ResponseEntity.ok().body(contractService.getAllContractByUserID(jwtUtil.getUserIDFromRequest(request), "Customer", paging));
         }else{
             return ResponseEntity.badRequest().body("Nhập dữ liệu sai, Role phải là Staff hoặc Customer ( Không phân biệt hoa thường ).");
         }
@@ -62,8 +76,21 @@ public class ContractController {
 
     @GetMapping(value = "/contractDetail/{contractID}", produces = "application/json;charset=UTF-8")
     public @ResponseBody
-    List<ShowContractDetailModel> getContractDetailByContractID(@PathVariable("contractID") String contractID) {
-        List<ShowContractDetailModel> model = contractService.getContractDetailByContractID(contractID);
+    List<ShowContractDetailModel> getContractDetailByContractID(@PathVariable("contractID") String contractID,
+                                                                @RequestParam int pageNo,
+                                                                @RequestParam int pageSize,
+                                                                @RequestParam SearchType.CONTRACT sortBy,
+                                                                @RequestParam(required = false, defaultValue = "true") boolean sortAsc) {
+        Pageable paging;
+        if(sortBy.toString().equalsIgnoreCase("CREATEDDATE")) {
+            paging = util.makePaging(pageNo, pageSize, "createdDate", sortAsc);
+        } else if(sortBy.toString().equalsIgnoreCase("ENDEDDATE")) {
+            paging = util.makePaging(pageNo, pageSize, "endedDate", sortAsc);
+        } else {
+            paging = util.makePaging(pageNo, pageSize, sortBy.toString().toLowerCase(), sortAsc);
+        }
+
+        List<ShowContractDetailModel> model = contractService.getContractDetailByContractID(contractID, paging);
         return model;
     }
 

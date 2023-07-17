@@ -14,9 +14,6 @@ import com.example.thanhhoa.dtos.ContractModels.ShowServicePackModel;
 import com.example.thanhhoa.dtos.ContractModels.ShowServiceTypeModel;
 import com.example.thanhhoa.dtos.ContractModels.ShowWorkingDateModel;
 import com.example.thanhhoa.dtos.ContractModels.UpdateContractModel;
-import com.example.thanhhoa.dtos.OrderModels.ShowCustomerModel;
-import com.example.thanhhoa.dtos.OrderModels.ShowStaffModel;
-import com.example.thanhhoa.dtos.OrderModels.ShowStoreModel;
 import com.example.thanhhoa.entities.Contract;
 import com.example.thanhhoa.entities.ContractDetail;
 import com.example.thanhhoa.entities.ContractIMG;
@@ -36,8 +33,8 @@ import com.example.thanhhoa.repositories.ServiceTypeRepository;
 import com.example.thanhhoa.repositories.StoreRepository;
 import com.example.thanhhoa.repositories.UserRepository;
 import com.example.thanhhoa.repositories.WorkingDateRepository;
+import com.example.thanhhoa.repositories.pagings.ContractDetailPagingRepository;
 import com.example.thanhhoa.repositories.pagings.ContractPagingRepository;
-import com.example.thanhhoa.services.firebaseIMG.FirebaseImageService;
 import com.example.thanhhoa.utils.Util;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -46,7 +43,10 @@ import org.springframework.stereotype.Service;
 
 import java.io.IOException;
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+import java.time.format.DateTimeParseException;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
@@ -74,94 +74,19 @@ public class ContractServiceImpl implements ContractService {
     @Autowired
     private ContractPagingRepository contractPagingRepository;
     @Autowired
-    private FirebaseImageService firebaseImageService;
+    private ContractDetailPagingRepository contractDetailPagingRepository;
     @Autowired
     private Util util;
 
     @Override
-    public List<ShowContractModel> getAllContractByUserID(Long userID, String role) {
-        List<Contract> contractList;
-        if(role.equalsIgnoreCase("Staff")){
-            contractList = contractRepository.findByStaff_Id(userID);
-        }else{
-            contractList = contractRepository.findByCustomer_Id(userID);
+    public List<ShowContractModel> getAllContractByUserID(Long userID, String role, Pageable pageable) {
+        Page<Contract> pagingResult;
+        if(role.equalsIgnoreCase("Staff")) {
+            pagingResult = contractPagingRepository.findByStaff_Id(userID, pageable);
+        } else {
+            pagingResult = contractPagingRepository.findByCustomer_Id(userID, pageable);
         }
-
-        if(contractList == null) {
-            return null;
-        }
-        List<ShowContractModel> modelList = new ArrayList<>();
-        for(Contract contract : contractList) {
-            List<ContractIMG> imgList = contractIMGRepository.findByContract_Id(contract.getId());
-            List<ShowContractIMGModel> imgModelList = new ArrayList<>();
-            if(imgList != null) {
-                for(ContractIMG img : imgList) {
-                    ShowContractIMGModel imgModel = new ShowContractIMGModel();
-                    imgModel.setId(img.getId());
-                    imgModel.setImgUrl(img.getImgURL());
-                    imgModelList.add(imgModel);
-                }
-            }
-            ShowContractModel model = new ShowContractModel();
-            model.setId(contract.getId());
-            model.setFullName(contract.getFullName());
-            model.setAddress(contract.getAddress());
-            model.setEmail(contract.getEmail());
-            model.setPhone(contract.getPhone());
-            model.setTitle(contract.getTitle());
-            model.setPaymentMethod(contract.getPaymentMethod());
-            model.setCreatedDate(contract.getCreatedDate());
-            model.setStartedDate(contract.getStartedDate());
-            model.setApprovedDate(contract.getApprovedDate());
-            model.setRejectedDate(contract.getRejectedDate());
-            model.setEndedDate(contract.getEndedDate());
-            model.setDeposit(contract.getDeposit());
-            model.setTotal(contract.getTotal());
-            model.setIsFeedback(contract.getIsFeedback());
-            model.setIsSigned(contract.getIsSigned());
-            model.setStatus(contract.getStatus());
-            model.setReason(contract.getReason());
-            model.setImgList(imgModelList);
-
-            //store
-            ShowStoreModel storeModel = new ShowStoreModel();
-            storeModel.setId(contract.getStore().getId());
-            storeModel.setStoreName(contract.getStore().getStoreName());
-            storeModel.setAddress(contract.getStore().getAddress());
-            storeModel.setPhone(contract.getStore().getPhone());
-
-            //staff
-            ShowStaffModel staffModel = new ShowStaffModel();
-            if(contract.getStaff() != null) {
-                staffModel.setId(contract.getStaff().getId());
-                staffModel.setAddress(contract.getStaff().getAddress());
-                staffModel.setEmail(contract.getStaff().getEmail());
-                staffModel.setPhone(contract.getStaff().getPhone());
-                staffModel.setFullName(contract.getStaff().getFullName());
-            }
-
-            //customer
-            ShowCustomerModel customerModel = new ShowCustomerModel();
-            customerModel.setId(contract.getCustomer().getId());
-            customerModel.setAddress(contract.getCustomer().getAddress());
-            customerModel.setEmail(contract.getCustomer().getEmail());
-            customerModel.setPhone(contract.getCustomer().getPhone());
-            customerModel.setFullName(contract.getCustomer().getFullName());
-
-            //payment type
-            ShowPaymentTypeModel paymentTypeModel = new ShowPaymentTypeModel();
-            paymentTypeModel.setId(contract.getPaymentType().getId());
-            paymentTypeModel.setName(contract.getPaymentType().getName());
-            paymentTypeModel.setValue(contract.getPaymentType().getValue());
-
-            model.setShowStaffModel(staffModel);
-            model.setShowCustomerModel(customerModel);
-            model.setShowStoreModel(storeModel);
-            model.setShowPaymentTypeModel(paymentTypeModel);
-            model.setStatus(contract.getStatus());
-            modelList.add(model);
-        }
-        return modelList;
+        return util.contractPagingConverter(pagingResult, pageable);
 
     }
 
@@ -257,91 +182,9 @@ public class ContractServiceImpl implements ContractService {
     }
 
     @Override
-    public List<ShowContractDetailModel> getContractDetailByContractID(String contractID) {
-        List<ContractDetail> detailList = contractDetailRepository.findByContract_Id(contractID);
-        if(detailList == null) {
-            return null;
-        }
-        List<ShowContractDetailModel> modelList = new ArrayList<>();
-        for(ContractDetail detail : detailList) {
-            List<WorkingDate> dateList = workingDateRepository.findByContractDetail_Id(detail.getId());
-            List<ShowWorkingDateModel> dateModelList = new ArrayList<>();
-            for(WorkingDate workingDate : dateList) {
-                ShowWorkingDateModel model = new ShowWorkingDateModel();
-                model.setId(workingDate.getId());
-                model.setWorkingDate(workingDate.getWorkingDate());
-                dateModelList.add(model);
-            }
-            ShowContractDetailModel model = new ShowContractDetailModel();
-            model.setId(detail.getId());
-            model.setNote(detail.getNote());
-            model.setTimeWorking(detail.getTimeWorking());
-            model.setEndDate(detail.getEndDate());
-            model.setStartDate(detail.getStartDate());
-            model.setTotalPrice(detail.getTotalPrice());
-
-            //contract
-            List<ContractIMG> imgList = contractIMGRepository.findByContract_Id(detail.getContract().getId());
-            List<ShowContractIMGModel> imgModelList = new ArrayList<>();
-            if(imgList != null) {
-                for(ContractIMG img : imgList) {
-                    ShowContractIMGModel imgModel = new ShowContractIMGModel();
-                    imgModel.setId(img.getId());
-                    imgModel.setImgUrl(img.getImgURL());
-                    imgModelList.add(imgModel);
-                }
-            }
-            ShowContractModel contractModel = new ShowContractModel();
-            contractModel.setId(detail.getContract().getId());
-            contractModel.setAddress(detail.getContract().getAddress());
-            contractModel.setPhone(detail.getContract().getPhone());
-            contractModel.setFullName(detail.getContract().getFullName());
-            contractModel.setEmail(detail.getContract().getEmail());
-            contractModel.setTitle(detail.getContract().getTitle());
-            contractModel.setPaymentMethod(detail.getContract().getPaymentMethod());
-            contractModel.setCreatedDate(detail.getContract().getCreatedDate());
-            contractModel.setStartedDate(detail.getContract().getStartedDate());
-            contractModel.setApprovedDate(detail.getContract().getApprovedDate());
-            contractModel.setRejectedDate(detail.getContract().getRejectedDate());
-            contractModel.setEndedDate(detail.getContract().getEndedDate());
-            contractModel.setDeposit(detail.getContract().getDeposit());
-            contractModel.setTotal(detail.getContract().getTotal());
-            contractModel.setIsFeedback(detail.getContract().getIsFeedback());
-            contractModel.setIsSigned(detail.getContract().getIsSigned());
-            contractModel.setStatus(detail.getContract().getStatus());
-            contractModel.setReason(detail.getContract().getReason());
-            contractModel.setImgList(imgModelList);
-
-            //service type
-            ShowServiceTypeModel serviceTypeModel = new ShowServiceTypeModel();
-            serviceTypeModel.setId(detail.getServiceType().getId());
-            serviceTypeModel.setTypeName(detail.getServiceType().getName());
-            serviceTypeModel.setTypeSize(detail.getServiceType().getSize());
-            serviceTypeModel.setTypePercentage(detail.getServiceType().getPercentage());
-            serviceTypeModel.setTypeApplyDate(detail.getServiceType().getApplyDate());
-
-            //service pack
-            ShowServicePackModel servicePackModel = new ShowServicePackModel();
-            servicePackModel.setId(detail.getServicePack().getId());
-            servicePackModel.setPackPercentage(detail.getServicePack().getPercentage());
-            servicePackModel.setPackRange(detail.getServicePack().getRange());
-            servicePackModel.setPackApplyDate(detail.getServicePack().getApplyDate());
-
-            //service
-            ShowServiceModel serviceModel = new ShowServiceModel();
-            serviceModel.setId(detail.getServiceType().getService().getId());
-            serviceModel.setDescription(detail.getServiceType().getService().getDescription());
-            serviceModel.setPrice(detail.getServiceType().getService().getPrice());
-            serviceModel.setName(detail.getServiceType().getService().getName());
-
-            model.setShowContractModel(contractModel);
-            model.setShowServiceModel(serviceModel);
-            model.setShowServicePackModel(servicePackModel);
-            model.setShowServiceTypeModel(serviceTypeModel);
-            model.setWorkingDateList(dateModelList);
-            modelList.add(model);
-        }
-        return modelList;
+    public List<ShowContractDetailModel> getContractDetailByContractID(String contractID, Pageable pageable) {
+        Page<ContractDetail> pagingResult = contractDetailPagingRepository.findByContract_Id(contractID, pageable);
+        return util.contractDetailPagingConverter(pagingResult, pageable);
     }
 
     @Override
@@ -371,6 +214,8 @@ public class ContractServiceImpl implements ContractService {
         contract.setCreatedDate(LocalDateTime.now());
 
         Double totalPrice = 0.0;
+        List<LocalDateTime> startDateList = new ArrayList<>();
+        List<LocalDateTime> endDateList = new ArrayList<>();
         for(CreateContractDetailModel model : createCustomerContractModel.getDetailModelList()) {
             ServicePack servicePack = new ServicePack();
             if(model.getServicePackID() != null) {
@@ -384,6 +229,14 @@ public class ContractServiceImpl implements ContractService {
                 return "Không tìm thấy ServiceType với ID là " + model.getServiceTypeID() + ".";
             }
 
+            LocalDateTime startDate = isDateValid(model.getStartDate());
+            LocalDateTime endDate = isDateValid(model.getEndDate());
+            if(startDate == null || endDate == null) {
+                return "Nhập theo khuôn được định sẵn yyyy-MM-dd, ví dụ : 2021-12-21";
+            }
+            startDateList.add(startDate);
+            endDateList.add(endDate);
+
             Double total = 0.0;
             ContractDetail detail = new ContractDetail();
             ContractDetail lastContractDetail = contractDetailRepository.findFirstByOrderByIdDesc();
@@ -396,6 +249,8 @@ public class ContractServiceImpl implements ContractService {
             total += servicePack.getPercentage() * (serviceType.getService().getPrice() + (serviceType.getPercentage() * serviceType.getService().getPrice()));
             totalPrice += total;
 
+            detail.setStartDate(startDate);
+            detail.setEndDate(endDate);
             detail.setNote(model.getNote());
             detail.setTimeWorking(model.getTimeWorking());
             detail.setTotalPrice(model.getTotalPrice());
@@ -406,6 +261,10 @@ public class ContractServiceImpl implements ContractService {
             contractDetailRepository.save(detail);
         }
 
+        LocalDateTime startDate = Collections.min(startDateList);
+        LocalDateTime endDate = Collections.max(endDateList);
+        contract.setStartedDate(startDate);
+        contract.setEndedDate(endDate);
         contract.setTotal(totalPrice);
         contractRepository.save(contract);
         return "Tạo thành công.";
@@ -425,7 +284,6 @@ public class ContractServiceImpl implements ContractService {
         if(createManagerContractModel.getDetailModelList() == null) {
             return "Phải chọn ít nhất một dịch vụ để tạo hợp đồng.";
         }
-
 
         Contract lastContract = contractRepository.findFirstByOrderByIdDesc();
         if(lastContract == null) {
@@ -451,6 +309,8 @@ public class ContractServiceImpl implements ContractService {
         contract.setCreatedDate(LocalDateTime.now());
 
         Double totalPrice = 0.0;
+        List<LocalDateTime> startDateList = new ArrayList<>();
+        List<LocalDateTime> endDateList = new ArrayList<>();
         for(CreateContractDetailModel model : createManagerContractModel.getDetailModelList()) {
             ServicePack servicePack = new ServicePack();
             if(model.getServicePackID() != null) {
@@ -464,6 +324,14 @@ public class ContractServiceImpl implements ContractService {
                 return "Không tìm thấy ServiceType với ID là " + model.getServiceTypeID() + ".";
             }
 
+            LocalDateTime startDate = isDateValid(model.getStartDate());
+            LocalDateTime endDate = isDateValid(model.getEndDate());
+            if(startDate == null || endDate == null) {
+                return "Nhập theo khuôn được định sẵn yyyy-MM-dd, ví dụ : 2021-12-21";
+            }
+            startDateList.add(startDate);
+            endDateList.add(endDate);
+
             Double total = 0.0;
             ContractDetail detail = new ContractDetail();
             ContractDetail lastContractDetail = contractDetailRepository.findFirstByOrderByIdDesc();
@@ -476,6 +344,8 @@ public class ContractServiceImpl implements ContractService {
             total += servicePack.getPercentage() * (serviceType.getService().getPrice() + (serviceType.getPercentage() * serviceType.getService().getPrice()));
             totalPrice += total;
 
+            detail.setStartDate(startDate);
+            detail.setEndDate(endDate);
             detail.setNote(model.getNote());
             detail.setTimeWorking(model.getTimeWorking());
             detail.setTotalPrice(model.getTotalPrice());
@@ -486,6 +356,10 @@ public class ContractServiceImpl implements ContractService {
             contractDetailRepository.save(detail);
         }
 
+        LocalDateTime startDate = Collections.min(startDateList);
+        LocalDateTime endDate = Collections.max(endDateList);
+        contract.setStartedDate(startDate);
+        contract.setEndedDate(endDate);
         contract.setTotal(totalPrice);
         contractRepository.save(contract);
         return contract.getId();
@@ -603,5 +477,16 @@ public class ContractServiceImpl implements ContractService {
             listModel.add(model);
         }
         return listModel;
+    }
+
+    private LocalDateTime isDateValid(String date) {
+        date += " 00:00:00";
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+        try {
+            return LocalDateTime.parse(date, formatter);
+        } catch(DateTimeParseException e) {
+            e.printStackTrace();
+            return null;
+        }
     }
 }

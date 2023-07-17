@@ -25,7 +25,7 @@ public class Contract implements Serializable {
     @Column(nullable = false, length = 50)
     private String fullName;
 
-    @Column(nullable = false, length = 100)
+    @Column(length = 100)
     private String email;
 
     @Column(nullable = false, length = 20)
@@ -34,7 +34,7 @@ public class Contract implements Serializable {
     @Column(nullable = false)
     private String address;
 
-    @Column(nullable = false, length = 50)
+    @Column(length = 50)
     private String paymentMethod;
 
     @Lob

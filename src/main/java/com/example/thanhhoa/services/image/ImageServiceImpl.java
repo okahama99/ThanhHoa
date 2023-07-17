@@ -22,6 +22,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
+import java.util.List;
 import java.util.Optional;
 
 @org.springframework.stereotype.Service
@@ -56,81 +57,80 @@ public class ImageServiceImpl implements ImageService {
     }
 
     @Override
-    public String addImage(String entityName, String entityID, MultipartFile file) throws IOException {
+    public String addImage(String entityName, String entityID, List<String> listURL) throws IOException {
         switch(entityName) {
             case "PLANT":
                 Optional<Plant> plant = plantRepository.findById(entityID);
                 if(plant == null) {
                     return "Không tìm thấy entity với ID là " + entityID + ".";
                 }
-                String pFileName = firebaseImageService.save(file);
-                String imgPURL = firebaseImageService.getImageUrl(pFileName);
-                PlantIMG plantIMG = new PlantIMG();
-                PlantIMG lastPlantIMG = plantIMGRepository.findFirstByOrderByIdDesc();
-                if(lastPlantIMG == null) {
-                    plantIMG.setId(util.createNewID("PIMG"));
-                } else {
-                    plantIMG.setId(util.createIDFromLastID("PIMG", 4, lastPlantIMG.getId()));
+                for(String imageURL : listURL) {
+                    PlantIMG plantIMG = new PlantIMG();
+                    PlantIMG lastPlantIMG = plantIMGRepository.findFirstByOrderByIdDesc();
+                    if(lastPlantIMG == null) {
+                        plantIMG.setId(util.createNewID("PIMG"));
+                    } else {
+                        plantIMG.setId(util.createIDFromLastID("PIMG", 4, lastPlantIMG.getId()));
+                    }
+                    plantIMG.setPlant(plant.get());
+                    plantIMG.setImgURL(imageURL);
+                    plantIMGRepository.save(plantIMG);
                 }
-                plantIMG.setPlant(plant.get());
-                plantIMG.setImgURL(imgPURL);
-                plantIMGRepository.save(plantIMG);
                 return "Thêm thành công.";
             case "CONTRACT":
                 Optional<Contract> contract = contractRepository.findById(entityID);
                 if(contract == null) {
                     return "Không tìm thấy entity với ID là " + entityID + ".";
                 }
-                String cFileName = firebaseImageService.save(file);
-                String imgCURL = firebaseImageService.getImageUrl(cFileName);
-                ContractIMG contractIMG = new ContractIMG();
-                ContractIMG lastContractIMG = contractIMGRepository.findFirstByOrderByIdDesc();
-                if(lastContractIMG == null) {
-                    contractIMG.setId(util.createNewID("CIMG"));
-                } else {
-                    contractIMG.setId(util.createIDFromLastID("CIMG", 4, lastContractIMG.getId()));
+                for(String imageURL : listURL) {
+                    ContractIMG contractIMG = new ContractIMG();
+                    ContractIMG lastContractIMG = contractIMGRepository.findFirstByOrderByIdDesc();
+                    if(lastContractIMG == null) {
+                        contractIMG.setId(util.createNewID("CIMG"));
+                    } else {
+                        contractIMG.setId(util.createIDFromLastID("CIMG", 4, lastContractIMG.getId()));
+                    }
+                    contractIMG.setContract(contract.get());
+                    contractIMG.setImgURL(imageURL);
+                    contractIMGRepository.save(contractIMG);
                 }
-                contractIMG.setContract(contract.get());
-                contractIMG.setImgURL(imgCURL);
-                contractIMGRepository.save(contractIMG);
+
                 return "Thêm thành công.";
             case "SERVICE":
                 Optional<Service> entity = serviceRepository.findById(entityID);
                 if(entity == null) {
                     return "Không tìm thấy entity với ID là " + entityID + ".";
                 }
-                String sFileName = firebaseImageService.save(file);
-                String imgSURL = firebaseImageService.getImageUrl(sFileName);
-                ServiceIMG serviceIMG = new ServiceIMG();
-                ServiceIMG lastServiceIMG = serviceIMGRepository.findFirstByOrderByIdDesc();
-                if(lastServiceIMG == null) {
-                    serviceIMG.setId(util.createNewID("SIMG"));
-                } else {
-                    serviceIMG.setId(util.createIDFromLastID("SIMG", 4, lastServiceIMG.getId()));
+                for(String imageURL : listURL) {
+                    ServiceIMG serviceIMG = new ServiceIMG();
+                    ServiceIMG lastServiceIMG = serviceIMGRepository.findFirstByOrderByIdDesc();
+                    if(lastServiceIMG == null) {
+                        serviceIMG.setId(util.createNewID("SIMG"));
+                    } else {
+                        serviceIMG.setId(util.createIDFromLastID("SIMG", 4, lastServiceIMG.getId()));
+                    }
+                    serviceIMG.setService(entity.get());
+                    serviceIMG.setImgURL(imageURL);
+                    serviceIMGRepository.save(serviceIMG);
                 }
-                serviceIMG.setService(entity.get());
-                serviceIMG.setImgURL(imgSURL);
-                serviceIMGRepository.save(serviceIMG);
-
                 return "Thêm thành công.";
             case "ORDERFEEDBACK":
                 Optional<OrderFeedback> orderFeedback = orderFeedbackRepository.findById(entityID);
                 if(orderFeedback == null) {
                     return "Không tìm thấy entity với ID là " + entityID + ".";
                 }
-                String ofFileName = firebaseImageService.save(file);
-                String imgOFURL = firebaseImageService.getImageUrl(ofFileName);
-                OrderFeedbackIMG orderFeedbackIMG = new OrderFeedbackIMG();
-                OrderFeedbackIMG lastOrderFeedbackIMG = orderFeedbackIMGRepository.findFirstByOrderByIdDesc();
-                if(lastOrderFeedbackIMG == null) {
-                    orderFeedbackIMG.setId(util.createNewID("OFIMG"));
-                } else {
-                    orderFeedbackIMG.setId(util.createIDFromLastID("OFIMG", 5, lastOrderFeedbackIMG.getId()));
+                for(String imageURL : listURL) {
+                    OrderFeedbackIMG orderFeedbackIMG = new OrderFeedbackIMG();
+                    OrderFeedbackIMG lastOrderFeedbackIMG = orderFeedbackIMGRepository.findFirstByOrderByIdDesc();
+                    if(lastOrderFeedbackIMG == null) {
+                        orderFeedbackIMG.setId(util.createNewID("OFIMG"));
+                    } else {
+                        orderFeedbackIMG.setId(util.createIDFromLastID("OFIMG", 5, lastOrderFeedbackIMG.getId()));
+                    }
+                    orderFeedbackIMG.setOrderFeedback(orderFeedback.get());
+                    orderFeedbackIMG.setImgURL(imageURL);
+                    orderFeedbackIMGRepository.save(orderFeedbackIMG);
                 }
-                orderFeedbackIMG.setOrderFeedback(orderFeedback.get());
-                orderFeedbackIMG.setImgURL(imgOFURL);
-                orderFeedbackIMGRepository.save(orderFeedbackIMG);
-
                 return "Thêm thành công.";
         }
         return "Thêm thất bại, kiểm tra lại EntityName.";

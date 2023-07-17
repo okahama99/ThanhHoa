@@ -1,8 +1,11 @@
 package com.example.thanhhoa.utils;
 
 import com.example.thanhhoa.dtos.CategoryModels.ShowCategoryModel;
+import com.example.thanhhoa.dtos.ContractModels.ShowContractDetailModel;
+import com.example.thanhhoa.dtos.ContractModels.ShowContractIMGModel;
 import com.example.thanhhoa.dtos.ContractModels.ShowContractModel;
 import com.example.thanhhoa.dtos.ContractModels.ShowPaymentTypeModel;
+import com.example.thanhhoa.dtos.ContractModels.ShowServicePackModel;
 import com.example.thanhhoa.dtos.FeedbackModels.ShowContractFeedbackModel;
 import com.example.thanhhoa.dtos.FeedbackModels.ShowOrderFeedbackIMGModel;
 import com.example.thanhhoa.dtos.FeedbackModels.ShowOrderFeedbackModel;
@@ -24,7 +27,9 @@ import com.example.thanhhoa.dtos.UserModels.ShowUserModel;
 import com.example.thanhhoa.dtos.WorkingDateModels.ShowWorkingDateModel;
 import com.example.thanhhoa.entities.Category;
 import com.example.thanhhoa.entities.Contract;
+import com.example.thanhhoa.entities.ContractDetail;
 import com.example.thanhhoa.entities.ContractFeedback;
+import com.example.thanhhoa.entities.ContractIMG;
 import com.example.thanhhoa.entities.OrderDetail;
 import com.example.thanhhoa.entities.OrderFeedback;
 import com.example.thanhhoa.entities.OrderFeedbackIMG;
@@ -40,11 +45,13 @@ import com.example.thanhhoa.entities.WorkingDate;
 import com.example.thanhhoa.entities.tblAccount;
 import com.example.thanhhoa.entities.tblOrder;
 import com.example.thanhhoa.enums.Status;
+import com.example.thanhhoa.repositories.ContractIMGRepository;
 import com.example.thanhhoa.repositories.PlantCategoryRepository;
 import com.example.thanhhoa.repositories.PlantIMGRepository;
 import com.example.thanhhoa.repositories.PlantPriceRepository;
 import com.example.thanhhoa.repositories.ServiceIMGRepository;
 import com.example.thanhhoa.repositories.ServiceTypeRepository;
+import com.example.thanhhoa.repositories.WorkingDateRepository;
 import com.google.common.base.Converter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -67,6 +74,10 @@ public class Util {
     private PlantIMGRepository plantIMGRepository;
     @Autowired
     private PlantPriceRepository plantPriceRepository;
+    @Autowired
+    private ContractIMGRepository contractIMGRepository;
+    @Autowired
+    private WorkingDateRepository workingDateRepository;
 
     /**
      * Small Util to return {@link Pageable} to replace dup code in serviceImpl
@@ -543,6 +554,16 @@ public class Util {
             Page<ShowContractModel> modelResult = pagingResult.map(new Converter<Contract, ShowContractModel>() {
                 @Override
                 protected ShowContractModel doForward(Contract contract) {
+                    List<ContractIMG> imgList = contractIMGRepository.findByContract_Id(contract.getId());
+                    List<ShowContractIMGModel> imgModelList = new ArrayList<>();
+                    if(imgList != null) {
+                        for(ContractIMG img : imgList) {
+                            ShowContractIMGModel imgModel = new ShowContractIMGModel();
+                            imgModel.setId(img.getId());
+                            imgModel.setImgUrl(img.getImgURL());
+                            imgModelList.add(imgModel);
+                        }
+                    }
                     ShowContractModel model = new ShowContractModel();
                     model.setId(contract.getId());
                     model.setFullName(contract.getFullName());
@@ -604,6 +625,102 @@ public class Util {
 
                 @Override
                 protected Contract doBackward(ShowContractModel showContractModel) {
+                    return null;
+                }
+            });
+            return modelResult.getContent();
+        } else {
+            return new ArrayList<>();
+        }
+    }
+
+    public List<ShowContractDetailModel> contractDetailPagingConverter(Page<ContractDetail> pagingResult, Pageable paging) {
+        if(pagingResult.hasContent()) {
+            double totalPage = Math.ceil((double) pagingResult.getTotalElements() / paging.getPageSize());
+            Page<ShowContractDetailModel> modelResult = pagingResult.map(new Converter<ContractDetail, ShowContractDetailModel>() {
+                @Override
+                protected ShowContractDetailModel doForward(ContractDetail detail) {
+                    List<WorkingDate> dateList = workingDateRepository.findByContractDetail_Id(detail.getId());
+                    List<com.example.thanhhoa.dtos.ContractModels.ShowWorkingDateModel> dateModelList = new ArrayList<>();
+                    for(WorkingDate workingDate : dateList) {
+                        com.example.thanhhoa.dtos.ContractModels.ShowWorkingDateModel model = new com.example.thanhhoa.dtos.ContractModels.ShowWorkingDateModel();
+                        model.setId(workingDate.getId());
+                        model.setWorkingDate(workingDate.getWorkingDate());
+                        dateModelList.add(model);
+                    }
+                    ShowContractDetailModel model = new ShowContractDetailModel();
+                    model.setId(detail.getId());
+                    model.setNote(detail.getNote());
+                    model.setTimeWorking(detail.getTimeWorking());
+                    model.setEndDate(detail.getEndDate());
+                    model.setStartDate(detail.getStartDate());
+                    model.setTotalPrice(detail.getTotalPrice());
+
+                    //contract
+                    List<ContractIMG> imgList = contractIMGRepository.findByContract_Id(detail.getContract().getId());
+                    List<ShowContractIMGModel> imgModelList = new ArrayList<>();
+                    if(imgList != null) {
+                        for(ContractIMG img : imgList) {
+                            ShowContractIMGModel imgModel = new ShowContractIMGModel();
+                            imgModel.setId(img.getId());
+                            imgModel.setImgUrl(img.getImgURL());
+                            imgModelList.add(imgModel);
+                        }
+                    }
+                    ShowContractModel contractModel = new ShowContractModel();
+                    contractModel.setId(detail.getContract().getId());
+                    contractModel.setAddress(detail.getContract().getAddress());
+                    contractModel.setPhone(detail.getContract().getPhone());
+                    contractModel.setFullName(detail.getContract().getFullName());
+                    contractModel.setEmail(detail.getContract().getEmail());
+                    contractModel.setTitle(detail.getContract().getTitle());
+                    contractModel.setPaymentMethod(detail.getContract().getPaymentMethod());
+                    contractModel.setCreatedDate(detail.getContract().getCreatedDate());
+                    contractModel.setStartedDate(detail.getContract().getStartedDate());
+                    contractModel.setApprovedDate(detail.getContract().getApprovedDate());
+                    contractModel.setRejectedDate(detail.getContract().getRejectedDate());
+                    contractModel.setEndedDate(detail.getContract().getEndedDate());
+                    contractModel.setDeposit(detail.getContract().getDeposit());
+                    contractModel.setTotal(detail.getContract().getTotal());
+                    contractModel.setIsFeedback(detail.getContract().getIsFeedback());
+                    contractModel.setIsSigned(detail.getContract().getIsSigned());
+                    contractModel.setStatus(detail.getContract().getStatus());
+                    contractModel.setReason(detail.getContract().getReason());
+                    contractModel.setImgList(imgModelList);
+
+                    //service type
+                    com.example.thanhhoa.dtos.ContractModels.ShowServiceTypeModel serviceTypeModel = new com.example.thanhhoa.dtos.ContractModels.ShowServiceTypeModel();
+                    serviceTypeModel.setId(detail.getServiceType().getId());
+                    serviceTypeModel.setTypeName(detail.getServiceType().getName());
+                    serviceTypeModel.setTypeSize(detail.getServiceType().getSize());
+                    serviceTypeModel.setTypePercentage(detail.getServiceType().getPercentage());
+                    serviceTypeModel.setTypeApplyDate(detail.getServiceType().getApplyDate());
+
+                    //service pack
+                    ShowServicePackModel servicePackModel = new ShowServicePackModel();
+                    servicePackModel.setId(detail.getServicePack().getId());
+                    servicePackModel.setPackPercentage(detail.getServicePack().getPercentage());
+                    servicePackModel.setPackRange(detail.getServicePack().getRange());
+                    servicePackModel.setPackApplyDate(detail.getServicePack().getApplyDate());
+
+                    //service
+                    com.example.thanhhoa.dtos.ContractModels.ShowServiceModel serviceModel = new com.example.thanhhoa.dtos.ContractModels.ShowServiceModel();
+                    serviceModel.setId(detail.getServiceType().getService().getId());
+                    serviceModel.setDescription(detail.getServiceType().getService().getDescription());
+                    serviceModel.setPrice(detail.getServiceType().getService().getPrice());
+                    serviceModel.setName(detail.getServiceType().getService().getName());
+
+                    model.setShowContractModel(contractModel);
+                    model.setShowServiceModel(serviceModel);
+                    model.setShowServicePackModel(servicePackModel);
+                    model.setShowServiceTypeModel(serviceTypeModel);
+                    model.setWorkingDateList(dateModelList);
+                    model.setTotalPage(totalPage);
+                    return model;
+                }
+
+                @Override
+                protected ContractDetail doBackward(ShowContractDetailModel showContractDetailModel) {
                     return null;
                 }
             });

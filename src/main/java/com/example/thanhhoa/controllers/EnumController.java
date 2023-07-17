@@ -23,7 +23,8 @@ public class EnumController {
         list.add(Status.PACKAGING.toString());
         list.add(Status.DELIVERING.toString());
         list.add(Status.RECEIVED.toString());
-        list.add(Status.CANCELED.toString());
+        list.add(Status.STAFFCANCELED.toString());
+        list.add(Status.CUSTOMERCANCELED.toString());
         return list;
     }
 
@@ -33,7 +34,8 @@ public class EnumController {
         List<String> list = new ArrayList<>();
         list.add(Status.WAITING.toString());
         list.add(Status.DENIED.toString());
-        list.add(Status.CANCELED.toString());
+        list.add(Status.STAFFCANCELED.toString());
+        list.add(Status.CUSTOMERCANCELED.toString());
         list.add(Status.SIGNED.toString());
         list.add(Status.WORKING.toString());
         list.add(Status.DONE.toString());

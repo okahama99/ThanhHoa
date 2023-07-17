@@ -29,8 +29,8 @@ public class ImageController {
     @PostMapping(value = "/addImage", produces = "application/json;charset=UTF-8", consumes= MediaType.MULTIPART_FORM_DATA_VALUE)
     public String addImage(@RequestParam String entityName,
                            @RequestParam String entityID,
-                           @RequestPart(name = "file") MultipartFile file) throws Exception {
-        return imageService.addImage(entityName, entityID, file);
+                           @RequestParam List<String> listURL) throws Exception {
+        return imageService.addImage(entityName, entityID, listURL);
     }
 
     @DeleteMapping(value = "/deleteImage", produces = "application/json;charset=UTF-8")

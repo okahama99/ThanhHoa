@@ -110,8 +110,8 @@ public class OrderController {
     List<ShowOrderModel> getAllOrderByUsername(@RequestParam(required = false) String status,
                                                @RequestParam int pageNo,
                                                @RequestParam int pageSize,
-                                               @RequestParam(required = false, defaultValue = "ID") SearchType.ORDER sortBy,
-                                               @RequestParam(required = false, defaultValue = "true") Boolean sortAsc,
+                                               @RequestParam(defaultValue = "ID") SearchType.ORDER sortBy,
+                                               @RequestParam(defaultValue = "true") Boolean sortAsc,
                                                HttpServletRequest request) {
         String roleName = jwtUtil.getRoleNameFromRequest(request);
         if(!roleName.equalsIgnoreCase("Customer")) {
@@ -121,9 +121,9 @@ public class OrderController {
         String token = authTokenHeader.substring(7);
 
         Pageable paging;
-        if(sortBy.equals("CREATEDDATE")) {
+        if(sortBy.toString().equalsIgnoreCase("CREATEDDATE")) {
             paging = util.makePaging(pageNo, pageSize, "createdDate", sortAsc);
-        } else if(sortBy.equals("RECEIVEDDATE")) {
+        } else if(sortBy.toString().equalsIgnoreCase("RECEIVEDDATE")) {
             paging = util.makePaging(pageNo, pageSize, "receivedDate", sortAsc);
         } else {
             paging = util.makePaging(pageNo, pageSize, sortBy.toString().toLowerCase(), sortAsc);

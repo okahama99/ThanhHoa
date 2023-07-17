@@ -23,4 +23,5 @@ public class ShowContractDetailModel implements Serializable {
     private ShowServicePackModel showServicePackModel;
 
     private List<ShowWorkingDateModel> workingDateList;
+    private Double totalPage;
 }

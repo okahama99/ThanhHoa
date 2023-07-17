@@ -13,4 +13,6 @@ public class CreateContractDetailModel implements Serializable {
     private Double totalPrice;
     private String servicePackID;
     private String serviceTypeID;
+    private String startDate;
+    private String endDate;
 }

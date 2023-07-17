@@ -54,7 +54,7 @@ public class CartController {
         }
         String result = cartService.addToCart(addCartModel, jwtUtil.getUserIDFromRequest(request));
         if (result.equals("Thêm thành công.")) {
-            return ResponseEntity.ok().body(result);
+            return ResponseEntity.ok().body(cartService.getCartByUserID(jwtUtil.getUserIDFromRequest(request)));
         }
         return ResponseEntity.badRequest().body(result);
     }
@@ -68,7 +68,7 @@ public class CartController {
         }
         String result = cartService.updateItem(updateCartModel, jwtUtil.getUserIDFromRequest(request));
         if (result.equals("Chỉnh sửa thành công.")) {
-            return ResponseEntity.ok().body(result);
+            return ResponseEntity.ok().body(cartService.getCartByUserID(jwtUtil.getUserIDFromRequest(request)));
         }
         return ResponseEntity.badRequest().body(result);
     }

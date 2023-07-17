@@ -14,4 +14,8 @@ public interface ContractPagingRepository extends PagingAndSortingRepository<Con
     Page<Contract> findByStore_Id(String storeID, Pageable pageable);
 
     Page<Contract> findByStore_IdAndStatus(String storeID, Status status, Pageable pageable);
+
+    Page<Contract> findByStaff_Id(Long staffID, Pageable pageable);
+
+    Page<Contract> findByCustomer_Id(Long customerID,Pageable pageable);
 }
