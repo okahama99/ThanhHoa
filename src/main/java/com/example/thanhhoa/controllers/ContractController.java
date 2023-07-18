@@ -108,7 +108,7 @@ public class ContractController {
     @GetMapping(produces = "application/json;charset=UTF-8")
     public @ResponseBody
     ResponseEntity<Object> getContractByStoreID(@RequestParam(required = false) String storeID,
-                                                @RequestParam(required = false, value = "WAITING / APPROVE / DENIED / CANCELED / SIGNED / WORKING / DONE") String status,
+                                                @RequestParam(required = false, value = "WAITING / APPROVE / DENIED / STAFFCANCELED / CUSTOMERCANCELED / SIGNED / WORKING / DONE") String status,
                                                 @RequestParam int pageNo,
                                                 @RequestParam int pageSize,
                                                 @RequestParam SearchType.CONTRACT sortBy,

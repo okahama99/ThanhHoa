@@ -602,17 +602,21 @@ public class Util {
 
                     //customer
                     ShowCustomerModel customerModel = new ShowCustomerModel();
-                    customerModel.setId(contract.getCustomer().getId());
-                    customerModel.setAddress(contract.getCustomer().getAddress());
-                    customerModel.setEmail(contract.getCustomer().getEmail());
-                    customerModel.setPhone(contract.getCustomer().getPhone());
-                    customerModel.setFullName(contract.getCustomer().getFullName());
-
+                    if(contract.getCustomer() != null){
+                        customerModel.setId(contract.getCustomer().getId());
+                        customerModel.setAddress(contract.getCustomer().getAddress());
+                        customerModel.setEmail(contract.getCustomer().getEmail());
+                        customerModel.setPhone(contract.getCustomer().getPhone());
+                        customerModel.setFullName(contract.getCustomer().getFullName());
+                    }
+                    
                     //payment type
                     ShowPaymentTypeModel paymentTypeModel = new ShowPaymentTypeModel();
-                    paymentTypeModel.setId(contract.getPaymentType().getId());
-                    paymentTypeModel.setName(contract.getPaymentType().getName());
-                    paymentTypeModel.setValue(contract.getPaymentType().getValue());
+                    if(contract.getPaymentType() != null){
+                        paymentTypeModel.setId(contract.getPaymentType().getId());
+                        paymentTypeModel.setName(contract.getPaymentType().getName());
+                        paymentTypeModel.setValue(contract.getPaymentType().getValue());
+                    }
 
                     model.setShowStaffModel(staffModel);
                     model.setShowCustomerModel(customerModel);
