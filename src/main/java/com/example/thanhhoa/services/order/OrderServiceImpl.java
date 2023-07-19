@@ -399,6 +399,7 @@ public class OrderServiceImpl implements OrderService {
             if(orderDetail.getPlant().getPlantIMGList() != null  && !orderDetail.getPlant().getPlantIMGList().isEmpty()) {
                 plantModel.setImage(orderDetail.getPlant().getPlantIMGList().get(0).getImgURL());
             }
+            plantModel.setQuantity(orderDetail.getQuantity());
             plantModel.setPlantName(orderDetail.getPlant().getName());
             plantModel.setPlantPrice(newestPrice.getPrice());
             plantModel.setPlantPrice(orderDetail.getPlant().getPlantShipPrice().getPricePerPlant());

@@ -521,6 +521,7 @@ public class Util {
                         if(detail.getPlant().getPlantIMGList() != null && !detail.getPlant().getPlantIMGList().isEmpty()) {
                             plantModel.setImage(detail.getPlant().getPlantIMGList().get(0).getImgURL());
                         }
+                        plantModel.setQuantity(detail.getQuantity());
                         plantModel.setPlantName(detail.getPlant().getName());
                         plantModel.setPlantPrice(newestPrice.getPrice());
                         plantModel.setShipPrice(detail.getPlant().getPlantShipPrice().getPricePerPlant());
