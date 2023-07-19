@@ -609,7 +609,7 @@ public class Util {
                         customerModel.setPhone(contract.getCustomer().getPhone());
                         customerModel.setFullName(contract.getCustomer().getFullName());
                     }
-                    
+
                     //payment type
                     ShowPaymentTypeModel paymentTypeModel = new ShowPaymentTypeModel();
                     if(contract.getPaymentType() != null){

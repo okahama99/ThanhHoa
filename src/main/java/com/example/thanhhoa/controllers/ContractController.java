@@ -79,13 +79,17 @@ public class ContractController {
     List<ShowContractDetailModel> getContractDetailByContractID(@PathVariable("contractID") String contractID,
                                                                 @RequestParam int pageNo,
                                                                 @RequestParam int pageSize,
-                                                                @RequestParam SearchType.CONTRACT sortBy,
+                                                                @RequestParam SearchType.CONTRACT_DETAIL sortBy,
                                                                 @RequestParam(required = false, defaultValue = "true") boolean sortAsc) {
         Pageable paging;
-        if(sortBy.toString().equalsIgnoreCase("CREATEDDATE")) {
-            paging = util.makePaging(pageNo, pageSize, "createdDate", sortAsc);
-        } else if(sortBy.toString().equalsIgnoreCase("ENDEDDATE")) {
-            paging = util.makePaging(pageNo, pageSize, "endedDate", sortAsc);
+        if(sortBy.toString().equalsIgnoreCase("STARTDATE")) {
+            paging = util.makePaging(pageNo, pageSize, "startDate", sortAsc);
+        } else if(sortBy.toString().equalsIgnoreCase("ENDDATE")) {
+            paging = util.makePaging(pageNo, pageSize, "endDate", sortAsc);
+        } else if(sortBy.toString().equalsIgnoreCase("TIMEWORKING")) {
+            paging = util.makePaging(pageNo, pageSize, "timeWorking", sortAsc);
+        } else if(sortBy.toString().equalsIgnoreCase("TOTALPRICE")) {
+            paging = util.makePaging(pageNo, pageSize, "totalPrice", sortAsc);
         } else {
             paging = util.makePaging(pageNo, pageSize, sortBy.toString().toLowerCase(), sortAsc);
         }

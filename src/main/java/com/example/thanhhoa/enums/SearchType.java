@@ -44,6 +44,15 @@ public class SearchType {
         STATUS
     }
 
+    public enum CONTRACT_DETAIL{
+        ID,
+        STARTDATE,
+        ENDDATE,
+        TIMEWORKING,
+        TOTALPRICE,
+        NOTE
+    }
+
     public enum ORDER{
         ID,
         CREATEDDATE,

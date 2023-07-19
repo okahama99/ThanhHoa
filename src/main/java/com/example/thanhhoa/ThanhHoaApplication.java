@@ -51,7 +51,7 @@ public class ThanhHoaApplication {
 	}
 
 	@Bean
-	void firestore() throws IOException {
+	FirebaseMessaging firestore() throws IOException {
 		FileInputStream serviceAccount =
 				new FileInputStream("src/main/java/com/example/thanhhoa/services/firebase/firebase.json");
 
@@ -60,6 +60,7 @@ public class ThanhHoaApplication {
 				.setStorageBucket(FirebaseResource.BUCKET_NAME)
 				.build();
 
-		FirebaseApp.initializeApp(options);
+		FirebaseApp app = FirebaseApp.initializeApp(options, "ThanhHoa");
+		return FirebaseMessaging.getInstance(app);
 	}
 }
