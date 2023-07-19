@@ -508,9 +508,9 @@ public class Util {
 
                     //distance price
                     ShowDistancePriceModel distancePriceModel = new ShowDistancePriceModel();
-                    distancePriceModel.setDistancePriceID(order.getDistancePrice().getId());
-                    distancePriceModel.setDpApplyDate(order.getDistancePrice().getApplyDate());
-                    distancePriceModel.setDpPricePerKm(order.getDistancePrice().getPricePerKm());
+                    distancePriceModel.setId(order.getDistancePrice().getId());
+                    distancePriceModel.setApplyDate(order.getDistancePrice().getApplyDate());
+                    distancePriceModel.setPricePerKm(order.getDistancePrice().getPricePerKm());
 
                     //plant
                     List<com.example.thanhhoa.dtos.OrderModels.ShowPlantModel> listPlantModel = new ArrayList<>();
@@ -519,11 +519,11 @@ public class Util {
                         PlantPrice newestPrice = plantPriceRepository.findFirstByPlant_IdAndStatusOrderByApplyDateDesc(detail.getPlant().getId(), Status.ACTIVE);
                         plantModel.setId(detail.getPlant().getId());
                         if(detail.getPlant().getPlantIMGList() != null && !detail.getPlant().getPlantIMGList().isEmpty()) {
-                            plantModel.setPlantImage(detail.getPlant().getPlantIMGList().get(0).getImgURL());
+                            plantModel.setImage(detail.getPlant().getPlantIMGList().get(0).getImgURL());
                         }
                         plantModel.setPlantName(detail.getPlant().getName());
                         plantModel.setPlantPrice(newestPrice.getPrice());
-                        plantModel.setPlantShipPrice(detail.getPlant().getPlantShipPrice().getPricePerPlant());
+                        plantModel.setShipPrice(detail.getPlant().getPlantShipPrice().getPricePerPlant());
                         listPlantModel.add(plantModel);
                     }
 

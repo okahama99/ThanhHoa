@@ -388,20 +388,20 @@ public class OrderServiceImpl implements OrderService {
 
             //distance price
             ShowDistancePriceModel distancePriceModel = new ShowDistancePriceModel();
-            distancePriceModel.setDistancePriceID(orderDetail.getTblOrder().getDistancePrice().getId());
-            distancePriceModel.setDpApplyDate(orderDetail.getTblOrder().getDistancePrice().getApplyDate());
-            distancePriceModel.setDpPricePerKm(orderDetail.getTblOrder().getDistancePrice().getPricePerKm());
+            distancePriceModel.setId(orderDetail.getTblOrder().getDistancePrice().getId());
+            distancePriceModel.setApplyDate(orderDetail.getTblOrder().getDistancePrice().getApplyDate());
+            distancePriceModel.setPricePerKm(orderDetail.getTblOrder().getDistancePrice().getPricePerKm());
 
             //plant
             ShowPlantModel plantModel = new ShowPlantModel();
             PlantPrice newestPrice = plantPriceRepository.findFirstByPlant_IdAndStatusOrderByApplyDateDesc(orderDetail.getPlant().getId(), Status.ACTIVE);
             plantModel.setId(orderDetail.getPlant().getId());
             if(orderDetail.getPlant().getPlantIMGList() != null  && !orderDetail.getPlant().getPlantIMGList().isEmpty()) {
-                plantModel.setPlantImage(orderDetail.getPlant().getPlantIMGList().get(0).getImgURL());
+                plantModel.setImage(orderDetail.getPlant().getPlantIMGList().get(0).getImgURL());
             }
             plantModel.setPlantName(orderDetail.getPlant().getName());
             plantModel.setPlantPrice(newestPrice.getPrice());
-            plantModel.setPlantShipPrice(orderDetail.getPlant().getPlantShipPrice().getPricePerPlant());
+            plantModel.setPlantPrice(orderDetail.getPlant().getPlantShipPrice().getPricePerPlant());
 
             //store
             ShowStoreModel storeModel = new ShowStoreModel();

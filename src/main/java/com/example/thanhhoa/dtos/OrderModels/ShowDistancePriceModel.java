@@ -9,7 +9,7 @@ import java.time.LocalDateTime;
 @Getter
 @Setter
 public class ShowDistancePriceModel implements Serializable {
-    private String distancePriceID;
-    private LocalDateTime dpApplyDate;
-    private Double dpPricePerKm;
+    private String id;
+    private LocalDateTime applyDate;
+    private Double pricePerKm;
 }
