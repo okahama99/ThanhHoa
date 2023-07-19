@@ -402,7 +402,7 @@ public class OrderServiceImpl implements OrderService {
             plantModel.setQuantity(orderDetail.getQuantity());
             plantModel.setPlantName(orderDetail.getPlant().getName());
             plantModel.setPlantPrice(newestPrice.getPrice());
-            plantModel.setPlantPrice(orderDetail.getPlant().getPlantShipPrice().getPricePerPlant());
+            plantModel.setShipPrice(orderDetail.getPlant().getPlantShipPrice().getPricePerPlant());
 
             //store
             ShowStoreModel storeModel = new ShowStoreModel();
