@@ -196,12 +196,10 @@ public class FeedbackServiceImpl implements FeedbackService {
 
     @Override
     public ShowOrderFeedbackModel getOrderFeedbackByOrderDetailID(String orderDetailID) {
-        Optional<OrderFeedback> checkOrderFeedback = orderFeedbackRepository.findByOrderDetail_Id(orderDetailID);
-        if(checkOrderFeedback == null) {
+        OrderFeedback orderFeedback = orderFeedbackRepository.findByOrderDetail_Id(orderDetailID);
+        if(orderFeedback == null) {
             return null;
         }
-
-        OrderFeedback orderFeedback = checkOrderFeedback.get();
         ShowRatingModel ratingModel = new ShowRatingModel();
         ratingModel.setId(orderFeedback.getRating().getId());
         ratingModel.setDescription(orderFeedback.getRating().getDescription());

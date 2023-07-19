@@ -363,7 +363,7 @@ public class OrderServiceImpl implements OrderService {
             orderModel.setTotalShipCost(orderDetail.getTblOrder().getTotalShipCost());
             orderModel.setTotal(orderDetail.getTblOrder().getTotal());
             orderModel.setStatus(orderDetail.getTblOrder().getStatus());
-            Optional<OrderFeedback> orderFeedback = orderFeedbackRepository.findByOrderDetail_Id(orderDetail.getId());
+            OrderFeedback orderFeedback = orderFeedbackRepository.findByOrderDetail_Id(orderDetail.getId());
             if(orderFeedback != null){
                 model.setIsFeedback(true);
             }
