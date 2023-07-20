@@ -26,7 +26,7 @@ public class ImageController {
         return imageService.convertFileToImageURL(file);
     }
 
-    @PostMapping(value = "/addImage", produces = "application/json;charset=UTF-8", consumes= MediaType.MULTIPART_FORM_DATA_VALUE)
+    @PostMapping(value = "/addImage", produces = "application/json;charset=UTF-8")
     public String addImage(@RequestParam String entityName,
                            @RequestParam String entityID,
                            @RequestParam List<String> listURL) throws Exception {
