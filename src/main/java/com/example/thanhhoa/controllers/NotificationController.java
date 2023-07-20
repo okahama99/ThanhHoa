@@ -1,11 +1,17 @@
 package com.example.thanhhoa.controllers;
 
+import com.example.thanhhoa.dtos.NotificationModels.CreateNotificationModel;
 import com.example.thanhhoa.dtos.NotificationModels.ShowNotificationModel;
+import com.example.thanhhoa.entities.Notification;
+import com.example.thanhhoa.services.firebase.FirebaseMessagingService;
 import com.example.thanhhoa.services.notification.NotificationService;
 import com.example.thanhhoa.utils.JwtUtil;
+import com.google.firebase.messaging.FirebaseMessagingException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
@@ -21,7 +27,14 @@ public class NotificationController {
     @Autowired
     private NotificationService notificationService;
     @Autowired
+    private FirebaseMessagingService firebaseMessagingService;
+    @Autowired
     private JwtUtil jwtUtil;
+
+    @PostMapping("/send-notification")
+    public String sendNotification(@RequestBody CreateNotificationModel createNotificationModel) throws FirebaseMessagingException {
+        return firebaseMessagingService.sendNotification(createNotificationModel);
+    }
 
     @GetMapping(produces = "application/json;charset=UTF-8")
     public @ResponseBody

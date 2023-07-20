@@ -1,5 +1,6 @@
 package com.example.thanhhoa.services.firebase;
 
+import com.example.thanhhoa.dtos.NotificationModels.CreateNotificationModel;
 import com.example.thanhhoa.entities.Notification;
 import com.example.thanhhoa.entities.tblAccount;
 import com.example.thanhhoa.repositories.UserRepository;
@@ -22,21 +23,21 @@ public class FirebaseMessagingService {
     }
 
 
-    public String sendNotification(Notification notification) throws FirebaseMessagingException {
+    public String sendNotification(CreateNotificationModel createNotificationModel) throws FirebaseMessagingException {
 
-        tblAccount user = userRepository.getById(notification.getTblAccount().getId());
+        tblAccount user = userRepository.getById(createNotificationModel.getUserID());
 
             com.google.firebase.messaging.Notification a = com.google.firebase.messaging.Notification
                     .builder()
-                    .setTitle(notification.getTitle())
-                    .setBody(notification.getDescription())
+                    .setTitle(createNotificationModel.getTitle())
+                    .setBody(createNotificationModel.getContent())
                     .build();
 
             Message message = Message
                     .builder()
                     .setToken(user.getFcmToken())
                     .setNotification(a)
-//                    .putAllData(notification.getLink())
+                    .putData("PLANT","P001")
                     .build();
             return firebaseMessaging.send(message);
 
