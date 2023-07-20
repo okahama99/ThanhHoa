@@ -222,7 +222,7 @@ public class OrderServiceImpl implements OrderService {
         Optional<tblOrder> checkExistedOrder = orderRepository.findById(orderID);
         if(checkExistedOrder != null) {
             tblOrder order = checkExistedOrder.get();
-            if(!order.getProgressStatus().equals("WAITING")) {
+            if(!order.getProgressStatus().toString().equals("WAITING")) {
                 return "Chỉ được hủy đơn hàng có trạng thái là WAITING.";
             }
             order.setReason(reason);

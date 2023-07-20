@@ -62,7 +62,7 @@ public class OrderController {
         return ResponseEntity.badRequest().body(result);
     }
 
-    @DeleteMapping(value = "/{orderID}", produces = "application/json;charset=UTF-8")
+    @PutMapping(value = "/{orderID}", produces = "application/json;charset=UTF-8")
     public ResponseEntity<Object> deleteOrder(@PathVariable(name = "orderID") String orderID,
                                               @RequestParam String reason,
                                               @RequestParam String status,
