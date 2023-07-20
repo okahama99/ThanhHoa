@@ -225,11 +225,13 @@ public class OrderServiceImpl implements OrderService {
             if(!order.getProgressStatus().toString().equals("WAITING")) {
                 return "Chỉ được hủy đơn hàng có trạng thái là WAITING.";
             }
+            if(order.getStaff() != null){
+                order.getStaff().setStatus(Status.AVAILABLE);
+            }
             order.setReason(reason);
-            order.setStatus(status);
+            order.setProgressStatus(status);
+            order.setStatus(Status.INACTIVE);
             order.setRejectDate(LocalDateTime.now());
-            order.getStaff().setStatus(Status.AVAILABLE);
-            orderRepository.save(checkExistedOrder.get());
 
             List<OrderDetail> orderDetailList = order.getOrderDetailList();
             for(OrderDetail orderDetail : orderDetailList) {
@@ -250,9 +252,8 @@ public class OrderServiceImpl implements OrderService {
                 storePlantRecord.setStorePlant(storePlant);
                 storePlantRecord.setReason("Hủy đơn hàng với mã là : " + orderID + ".");
                 storePlantRecordRepository.save(storePlantRecord);
-
-                orderDetailRepository.delete(orderDetail);
             }
+            orderRepository.save(checkExistedOrder.get());
             return "Xóa thành công.";
         }
         return "Không tồn tại Order với ID là : " + orderID + ".";

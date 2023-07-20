@@ -62,8 +62,8 @@ public class OrderController {
         return ResponseEntity.badRequest().body(result);
     }
 
-    @PutMapping(value = "/{orderID}", produces = "application/json;charset=UTF-8")
-    public ResponseEntity<Object> deleteOrder(@PathVariable(name = "orderID") String orderID,
+    @PutMapping(value = "/rejectOrder", produces = "application/json;charset=UTF-8")
+    public ResponseEntity<Object> deleteOrder(@RequestParam String orderID,
                                               @RequestParam String reason,
                                               @RequestParam String status,
                                               HttpServletRequest request) {
