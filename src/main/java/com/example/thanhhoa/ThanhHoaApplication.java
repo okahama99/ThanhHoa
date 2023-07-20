@@ -60,7 +60,7 @@ public class ThanhHoaApplication {
 				.setStorageBucket(FirebaseResource.BUCKET_NAME)
 				.build();
 
-		FirebaseApp app = FirebaseApp.initializeApp(options, "ThanhHoa");
+		FirebaseApp app = FirebaseApp.initializeApp(options);
 		return FirebaseMessaging.getInstance(app);
 	}
 }
