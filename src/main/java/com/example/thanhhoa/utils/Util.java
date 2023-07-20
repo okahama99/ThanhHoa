@@ -479,7 +479,6 @@ public class Util {
                     model.setDistance(order.getDistance());
                     model.setTotalShipCost(order.getTotalShipCost());
                     model.setTotal(order.getTotal());
-                    model.setStatus(order.getStatus());
 
                     //store
                     ShowStoreModel storeModel = new ShowStoreModel();

@@ -97,7 +97,6 @@ public class OrderServiceImpl implements OrderService {
         order.setDistance(createOrderModel.getDistance());
         order.setLatLong(createOrderModel.getLatLong());
         order.setProgressStatus(Status.WAITING);
-        order.setStatus(Status.ACTIVE);
 
         if(createOrderModel.getStaffID() != null) {
             tblAccount staff = userRepository.getById(createOrderModel.getStaffID());
@@ -173,7 +172,6 @@ public class OrderServiceImpl implements OrderService {
         order.setDistance(updateOrderModel.getDistance());
         order.setLatLong(updateOrderModel.getLatLong());
         order.setProgressStatus(Status.WAITING);
-        order.setStatus(Status.ACTIVE);
 
         tblAccount staff = userRepository.getById(updateOrderModel.getStaffID());
         staff.setStatus(Status.UNAVAILABLE);
@@ -230,7 +228,6 @@ public class OrderServiceImpl implements OrderService {
             }
             order.setReason(reason);
             order.setProgressStatus(status);
-            order.setStatus(Status.INACTIVE);
             order.setRejectDate(LocalDateTime.now());
 
             List<OrderDetail> orderDetailList = order.getOrderDetailList();
@@ -264,7 +261,7 @@ public class OrderServiceImpl implements OrderService {
         Optional<tblOrder> checkExistedOrder = orderRepository.findById(orderID);
         if(checkExistedOrder != null) {
             tblOrder order = checkExistedOrder.get();
-            order.setStatus(Status.APPROVED);
+            order.setProgressStatus(Status.APPROVED);
             order.getStaff().setStatus(Status.UNAVAILABLE);
             orderRepository.save(checkExistedOrder.get());
 
@@ -298,11 +295,11 @@ public class OrderServiceImpl implements OrderService {
         Optional<tblOrder> checkExistedOrder = orderRepository.findById(orderID);
         if(checkExistedOrder != null) {
             if(status.equals("PACKAGING")) {
-                checkExistedOrder.get().setStatus(Status.PACKAGING);
+                checkExistedOrder.get().setProgressStatus(Status.PACKAGING);
             } else if(status.equals("DELIVERING")) {
-                checkExistedOrder.get().setStatus(Status.DELIVERING);
+                checkExistedOrder.get().setProgressStatus(Status.DELIVERING);
             } else {
-                checkExistedOrder.get().setStatus(Status.RECEIVED);
+                checkExistedOrder.get().setProgressStatus(Status.RECEIVED);
                 checkExistedOrder.get().getStaff().setStatus(Status.AVAILABLE);
             }
             orderRepository.save(checkExistedOrder.get());
@@ -313,7 +310,7 @@ public class OrderServiceImpl implements OrderService {
 
     @Override
     public List<ShowOrderModel> getAllOrderByUsername(String username, Pageable pageable) {
-        Page<tblOrder> pagingResult = orderPagingRepository.findByCustomer_UsernameAndStatus(username, Status.ACTIVE, pageable);
+        Page<tblOrder> pagingResult = orderPagingRepository.findByCustomer_Username(username, pageable);
         return util.orderPagingConverter(pagingResult, pageable);
     }
 
@@ -363,7 +360,6 @@ public class OrderServiceImpl implements OrderService {
             orderModel.setDistance(orderDetail.getTblOrder().getDistance());
             orderModel.setTotalShipCost(orderDetail.getTblOrder().getTotalShipCost());
             orderModel.setTotal(orderDetail.getTblOrder().getTotal());
-            orderModel.setStatus(orderDetail.getTblOrder().getStatus());
             OrderFeedback orderFeedback = orderFeedbackRepository.findByOrderDetail_Id(orderDetail.getId());
             if(orderFeedback != null){
                 model.setIsFeedback(true);

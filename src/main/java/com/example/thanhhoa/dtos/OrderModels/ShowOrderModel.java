@@ -29,7 +29,6 @@ public class ShowOrderModel implements Serializable {
     private Double distance;
     private Double totalShipCost;
     private Double total;
-    private Status status;
 
     private ShowStaffModel showStaffModel;
     private ShowCustomerModel showCustomerModel;

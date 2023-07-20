@@ -71,9 +71,6 @@ public class tblOrder implements Serializable {
     @Column
     private Double total = 0.0;
 
-    @Enumerated(EnumType.STRING)
-    private Status status;
-
     @ManyToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     @JoinColumn(name = "store_id")
     private Store store;

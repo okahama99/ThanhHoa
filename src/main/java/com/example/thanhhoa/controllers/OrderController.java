@@ -125,6 +125,8 @@ public class OrderController {
             paging = util.makePaging(pageNo, pageSize, "createdDate", sortAsc);
         } else if(sortBy.toString().equalsIgnoreCase("RECEIVEDDATE")) {
             paging = util.makePaging(pageNo, pageSize, "receivedDate", sortAsc);
+        } else if(sortBy.toString().equalsIgnoreCase("PROGRESSSTATUS")) {
+            paging = util.makePaging(pageNo, pageSize, "progressStatus", sortAsc);
         } else {
             paging = util.makePaging(pageNo, pageSize, sortBy.toString().toLowerCase(), sortAsc);
         }
@@ -153,6 +155,8 @@ public class OrderController {
             paging = util.makePaging(pageNo, pageSize, "createdDate", sortAsc);
         } else if(sortBy.equals("RECEIVEDDATE")) {
             paging = util.makePaging(pageNo, pageSize, "receivedDate", sortAsc);
+        } else if(sortBy.toString().equalsIgnoreCase("PROGRESSSTATUS")) {
+            paging = util.makePaging(pageNo, pageSize, "progressStatus", sortAsc);
         } else {
             paging = util.makePaging(pageNo, pageSize, sortBy.toString().toLowerCase(), sortAsc);
         }

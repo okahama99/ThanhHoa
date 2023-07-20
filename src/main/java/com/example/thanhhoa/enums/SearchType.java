@@ -57,7 +57,7 @@ public class SearchType {
         ID,
         CREATEDDATE,
         RECEIVEDDATE,
-        STATUS
+        PROGRESSSTATUS
     }
 
     public enum STORE{
