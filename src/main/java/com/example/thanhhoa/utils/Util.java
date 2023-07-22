@@ -365,6 +365,7 @@ public class Util {
                     model.setImgList(imgModelList);
                     model.setStatus(orderFeedback.getStatus());
                     model.setTotalPage(totalPage);
+                    model.setShowPlantModel(plantModel);
                     return model;
                 }
 
