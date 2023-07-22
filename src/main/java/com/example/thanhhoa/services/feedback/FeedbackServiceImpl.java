@@ -19,6 +19,7 @@ import com.example.thanhhoa.enums.Status;
 import com.example.thanhhoa.repositories.ContractFeedbackRepository;
 import com.example.thanhhoa.repositories.ContractRepository;
 import com.example.thanhhoa.repositories.OrderDetailRepository;
+import com.example.thanhhoa.repositories.OrderFeedbackIMGRepository;
 import com.example.thanhhoa.repositories.OrderFeedbackRepository;
 import com.example.thanhhoa.repositories.PlantRepository;
 import com.example.thanhhoa.repositories.RatingRepository;
@@ -58,6 +59,8 @@ public class FeedbackServiceImpl implements FeedbackService {
     @Autowired
     private RatingRepository ratingRepository;
     @Autowired
+    private OrderFeedbackIMGRepository orderFeedbackIMGRepository;
+    @Autowired
     private Util util;
 
 
@@ -71,6 +74,7 @@ public class FeedbackServiceImpl implements FeedbackService {
         if(orderDetail == null) {
             return "Không tìm thấy Chi tiết Order với ID là " + createOrderFeedbackModel.getOrderDetailID() + ".";
         }
+
         OrderFeedback orderFeedback = new OrderFeedback();
         OrderFeedback lastOrderFeedback = orderFeedbackRepository.findFirstByOrderByIdDesc();
         if(lastOrderFeedback == null) {
@@ -85,6 +89,19 @@ public class FeedbackServiceImpl implements FeedbackService {
         orderFeedback.setPlant(plant.get());
         orderFeedback.setRating(ratingRepository.getById(createOrderFeedbackModel.getRatingID()));
         orderFeedback.setOrderDetail(orderDetail.get());
+
+        for(String imageURL : createOrderFeedbackModel.getListURL()) {
+            OrderFeedbackIMG orderFeedbackIMG = new OrderFeedbackIMG();
+            OrderFeedbackIMG lastOrderFeedbackIMG = orderFeedbackIMGRepository.findFirstByOrderByIdDesc();
+            if(lastOrderFeedbackIMG == null) {
+                orderFeedbackIMG.setId(util.createNewID("OFIMG"));
+            } else {
+                orderFeedbackIMG.setId(util.createIDFromLastID("OFIMG", 5, lastOrderFeedbackIMG.getId()));
+            }
+            orderFeedbackIMG.setOrderFeedback(orderFeedback);
+            orderFeedbackIMG.setImgURL(imageURL);
+            orderFeedbackIMGRepository.save(orderFeedbackIMG);
+        }
         orderFeedbackRepository.save(orderFeedback);
         return "Tạo thành công.";
     }
@@ -108,6 +125,19 @@ public class FeedbackServiceImpl implements FeedbackService {
         orderFeedback.setPlant(plant.get());
         orderFeedback.setRating(ratingRepository.getById(updateOrderFeedbackModel.getRatingID()));
         orderFeedback.setOrderDetail(orderDetail.get());
+
+        for(String imageURL : updateOrderFeedbackModel.getListURL()) {
+            OrderFeedbackIMG orderFeedbackIMG = new OrderFeedbackIMG();
+            OrderFeedbackIMG lastOrderFeedbackIMG = orderFeedbackIMGRepository.findFirstByOrderByIdDesc();
+            if(lastOrderFeedbackIMG == null) {
+                orderFeedbackIMG.setId(util.createNewID("OFIMG"));
+            } else {
+                orderFeedbackIMG.setId(util.createIDFromLastID("OFIMG", 5, lastOrderFeedbackIMG.getId()));
+            }
+            orderFeedbackIMG.setOrderFeedback(orderFeedback);
+            orderFeedbackIMG.setImgURL(imageURL);
+            orderFeedbackIMGRepository.save(orderFeedbackIMG);
+        }
         orderFeedbackRepository.save(orderFeedback);
         return "Chỉnh sửa thành công.";
     }
