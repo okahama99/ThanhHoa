@@ -1,10 +1,11 @@
 package com.example.thanhhoa.services.store;
 
+import com.example.thanhhoa.dtos.OrderModels.ShowStaffModel;
 import com.example.thanhhoa.dtos.PlantModels.AddStorePlantModel;
-import com.example.thanhhoa.dtos.PlantModels.ShowPlantModel;
 import com.example.thanhhoa.dtos.StoreModels.AddStoreEmployeeModel;
 import com.example.thanhhoa.dtos.StoreModels.CreateStoreModel;
 import com.example.thanhhoa.dtos.StoreModels.ShowDistrictModel;
+import com.example.thanhhoa.dtos.StoreModels.ShowPlantModel;
 import com.example.thanhhoa.dtos.StoreModels.ShowProvinceModel;
 import com.example.thanhhoa.dtos.StoreModels.ShowStoreModel;
 import com.example.thanhhoa.dtos.StoreModels.ShowStorePlantRecordModel;
@@ -27,10 +28,11 @@ import com.example.thanhhoa.repositories.StorePlantRecordRepository;
 import com.example.thanhhoa.repositories.StorePlantRepository;
 import com.example.thanhhoa.repositories.StoreRepository;
 import com.example.thanhhoa.repositories.UserRepository;
+import com.example.thanhhoa.repositories.pagings.StoreEmployeePagingRepository;
+import com.example.thanhhoa.repositories.pagings.StorePlantPagingRepository;
 import com.example.thanhhoa.utils.Util;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
@@ -60,6 +62,10 @@ public class StoreServiceImpl implements StoreService{
     private DistrictRepository districtRepository;
     @Autowired
     private ProvinceRepository provinceRepository;
+    @Autowired
+    private StorePlantPagingRepository storePlantPagingRepository;
+    @Autowired
+    private StoreEmployeePagingRepository storeEmployeePagingRepository;
 
     @Override
     public String createStore(CreateStoreModel createStoreModel) {
@@ -120,6 +126,7 @@ public class StoreServiceImpl implements StoreService{
         StoreEmployee manager = storeEmployeeRepository.findByStore_IdAndAccount_Role_RoleName(store.getId(), "Manager");
         ShowStoreModel model = new ShowStoreModel();
         model.setId(store.getId());
+        model.setStatus(store.getStatus());
         model.setStoreName(store.getStoreName());
         model.setAddress(store.getAddress());
         model.setDistrict(store.getDistrict().getDistrictName());
@@ -195,6 +202,7 @@ public class StoreServiceImpl implements StoreService{
             StoreEmployee manager = storeEmployeeRepository.findByStore_IdAndAccount_Role_RoleName(store.getId(), "Manager");
             ShowStoreModel model = new ShowStoreModel();
             model.setId(store.getId());
+            model.setStatus(store.getStatus());
             model.setStoreName(store.getStoreName());
             model.setAddress(store.getAddress());
             model.setDistrict(store.getDistrict().getDistrictName());
@@ -210,16 +218,8 @@ public class StoreServiceImpl implements StoreService{
 
     @Override
     public List<ShowPlantModel> getStorePlantByStoreID(String storeID, Pageable pageable) {
-        List<StorePlant> listPlant = storePlantRepository.findByStore_IdAndPlant_StatusAndStore_Status(storeID, Status.ONSALE, Status.ACTIVE);
-        if(listPlant==null){
-            return null;
-        }
-        List<Plant> plantList = new ArrayList<>();
-        for (StorePlant storePlant : listPlant) {
-            plantList.add(storePlant.getPlant());
-        }
-        Page<Plant> pagingResult = new PageImpl<>(plantList);
-        return util.plantPagingConverter(pagingResult,pageable);
+        Page<StorePlant> pagingResult = storePlantPagingRepository.findByStore_IdAndPlant_StatusAndStore_Status(storeID, Status.ONSALE, Status.ACTIVE, pageable);
+        return util.storePlantPagingConverter(pagingResult,pageable);
     }
 
     @Override
@@ -315,5 +315,11 @@ public class StoreServiceImpl implements StoreService{
             listModel.add(model);
         }
         return listModel;
+    }
+
+    @Override
+    public List<ShowStaffModel> getStaffByStoreID(String storeID, Pageable pageable) {
+        Page<StoreEmployee> pagingResult = storeEmployeePagingRepository.findByStore_IdAndStore_Status(storeID, Status.ONSALE, pageable);
+        return util.staffPagingConverter(pagingResult,pageable);
     }
 }

@@ -14,7 +14,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -108,6 +107,7 @@ public class OrderController {
     @GetMapping(value = "/getAllOrderByUsername", produces = "application/json;charset=UTF-8")
     public @ResponseBody
     List<ShowOrderModel> getAllOrderByUsername(@RequestParam(required = false) String status,
+                                               @RequestParam(required = false) String storeID,
                                                @RequestParam int pageNo,
                                                @RequestParam int pageSize,
                                                @RequestParam(defaultValue = "ID") SearchType.ORDER sortBy,
@@ -131,9 +131,11 @@ public class OrderController {
             paging = util.makePaging(pageNo, pageSize, sortBy.toString().toLowerCase(), sortAsc);
         }
 
-        if(status != null){
+        if(status != null) {
             return orderService.getAllByStatusOrderByUsername(Status.valueOf(status), jwtUtil.getUserNameFromJWT(token), paging);
-        }else{
+        } else if(storeID != null) {
+            return orderService.getAllOrderByStoreID(storeID, paging);
+        } else {
             return orderService.getAllOrderByUsername(jwtUtil.getUserNameFromJWT(token), paging);
         }
 

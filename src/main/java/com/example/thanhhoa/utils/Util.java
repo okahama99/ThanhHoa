@@ -42,6 +42,8 @@ import com.example.thanhhoa.entities.PlantShipPrice;
 import com.example.thanhhoa.entities.Service;
 import com.example.thanhhoa.entities.ServiceIMG;
 import com.example.thanhhoa.entities.ServiceType;
+import com.example.thanhhoa.entities.StoreEmployee;
+import com.example.thanhhoa.entities.StorePlant;
 import com.example.thanhhoa.entities.WorkingDate;
 import com.example.thanhhoa.entities.tblAccount;
 import com.example.thanhhoa.entities.tblOrder;
@@ -186,6 +188,8 @@ public class Util {
             Page<ShowPlantModel> modelResult = pagingResult.map(new Converter<Plant, ShowPlantModel>() {
                 @Override
                 protected ShowPlantModel doForward(Plant plant) {
+
+
                     List<PlantCategory> plantCategoryList = plantCategoryRepository.findAllByPlant_IdAndStatus(plant.getId(), Status.ACTIVE);
                     List<ShowPlantCategory> showPlantCategoryList = new ArrayList<>();
                     for(PlantCategory plantCategory : plantCategoryList) {
@@ -235,6 +239,71 @@ public class Util {
 
                 @Override
                 protected Plant doBackward(ShowPlantModel showPlantModel) {
+                    return null;
+                }
+            });
+            return modelResult.getContent();
+        } else {
+            return new ArrayList<>();
+        }
+    }
+
+    public List<com.example.thanhhoa.dtos.StoreModels.ShowPlantModel> storePlantPagingConverter(Page<StorePlant> pagingResult, Pageable paging) {
+        if(pagingResult.hasContent()) {
+            double totalPage = Math.ceil((double) pagingResult.getTotalElements() / paging.getPageSize());
+            Page<com.example.thanhhoa.dtos.StoreModels.ShowPlantModel> modelResult = pagingResult.map(new Converter<StorePlant, com.example.thanhhoa.dtos.StoreModels.ShowPlantModel>() {
+                @Override
+                protected com.example.thanhhoa.dtos.StoreModels.ShowPlantModel doForward(StorePlant storePlant) {
+                    Plant plant = storePlant.getPlant();
+                    List<PlantCategory> plantCategoryList = plantCategoryRepository.findAllByPlant_IdAndStatus(plant.getId(), Status.ACTIVE);
+                    List<ShowPlantCategory> showPlantCategoryList = new ArrayList<>();
+                    for(PlantCategory plantCategory : plantCategoryList) {
+                        ShowPlantCategory showPlantCategory = new ShowPlantCategory();
+                        showPlantCategory.setCategoryID(plantCategory.getCategory().getId());
+                        showPlantCategory.setCategoryName(plantCategory.getCategory().getName());
+                        showPlantCategoryList.add(showPlantCategory);
+                    }
+
+                    List<ShowPlantIMGModel> showPlantIMGList = new ArrayList<>();
+                    List<PlantIMG> plantIMGList = plantIMGRepository.findByPlant_Id(plant.getId());
+                    if(plantIMGList != null) {
+                        for(PlantIMG img : plantIMGList) {
+                            ShowPlantIMGModel model = new ShowPlantIMGModel();
+                            model.setId(img.getId());
+                            model.setUrl(img.getImgURL());
+                            showPlantIMGList.add(model);
+                        }
+                    }
+
+                    ShowPlantShipPriceModel showPlantShipPriceModel = new ShowPlantShipPriceModel();
+                    showPlantShipPriceModel.setId(plant.getPlantShipPrice().getId());
+                    showPlantShipPriceModel.setPotSize(plant.getPlantShipPrice().getPotSize());
+                    showPlantShipPriceModel.setPricePerPlant(plant.getPlantShipPrice().getPricePerPlant());
+
+                    PlantPrice newestPrice = plantPriceRepository.findFirstByPlant_IdAndStatusOrderByApplyDateDesc(plant.getId(), Status.ACTIVE);
+                    ShowPlantPriceModel showPlantPriceModel = new ShowPlantPriceModel();
+                    showPlantPriceModel.setId(newestPrice.getId());
+                    showPlantPriceModel.setPrice(newestPrice.getPrice());
+                    showPlantPriceModel.setApplyDate(newestPrice.getApplyDate());
+
+                    com.example.thanhhoa.dtos.StoreModels.ShowPlantModel model = new com.example.thanhhoa.dtos.StoreModels.ShowPlantModel();
+                    model.setPlantID(plant.getId());
+                    model.setName(plant.getName());
+                    model.setHeight(plant.getHeight());
+                    model.setWithPot(plant.getWithPot());
+                    model.setShowPlantShipPriceModel(showPlantShipPriceModel);
+                    model.setPlantCategoryList(showPlantCategoryList);
+                    model.setShowPlantPriceModel(showPlantPriceModel);
+                    model.setPlantIMGList(showPlantIMGList);
+                    model.setDescription(plant.getDescription());
+                    model.setCareNote(plant.getCareNote());
+                    model.setStatus(plant.getStatus());
+                    model.setTotalPage(totalPage);
+                    return model;
+                }
+
+                @Override
+                protected StorePlant doBackward(com.example.thanhhoa.dtos.StoreModels.ShowPlantModel showPlantModel) {
                     return null;
                 }
             });
@@ -406,6 +475,36 @@ public class Util {
 
                 @Override
                 protected ContractFeedback doBackward(ShowContractFeedbackModel showContractFeedback) {
+                    return null;
+                }
+            });
+            return modelResult.getContent();
+        } else {
+            return new ArrayList<>();
+        }
+    }
+
+    public List<ShowStaffModel> staffPagingConverter(Page<StoreEmployee> pagingResult, Pageable paging) {
+        if(pagingResult.hasContent()) {
+            double totalPage = Math.ceil((double) pagingResult.getTotalElements() / paging.getPageSize());
+            Page<ShowStaffModel> modelResult = pagingResult.map(new Converter<StoreEmployee, ShowStaffModel>() {
+                @Override
+                protected ShowStaffModel doForward(StoreEmployee storeEmployee) {
+                    ShowStaffModel model = new ShowStaffModel();
+                    model.setId(storeEmployee.getId().getTblAccount_id());
+                    model.setFullName(storeEmployee.getAccount().getFullName());
+                    model.setAddress(storeEmployee.getAccount().getAddress());
+                    model.setAvatar(storeEmployee.getAccount().getAvatar());
+                    model.setGender(storeEmployee.getAccount().getGender());
+                    model.setPhone(storeEmployee.getAccount().getPhone());
+                    model.setStatus(storeEmployee.getAccount().getStatus());
+                    model.setEmail(storeEmployee.getAccount().getFullName());
+                    model.setTotalPage(totalPage);
+                    return model;
+                }
+
+                @Override
+                protected StoreEmployee doBackward(ShowStaffModel showStaffModel) {
                     return null;
                 }
             });
@@ -772,7 +871,7 @@ public class Util {
         }
     }
 
-    public ShowOrderDetailModel returnOrderDetailModelList(OrderDetail orderDetail){
+    public ShowOrderDetailModel returnOrderDetailModelList(OrderDetail orderDetail) {
         ShowOrderDetailModel model = new ShowOrderDetailModel();
         //detail
         model.setId(orderDetail.getId());
@@ -829,7 +928,7 @@ public class Util {
         com.example.thanhhoa.dtos.OrderModels.ShowPlantModel plantModel = new com.example.thanhhoa.dtos.OrderModels.ShowPlantModel();
         PlantPrice newestPrice = plantPriceRepository.findFirstByPlant_IdAndStatusOrderByApplyDateDesc(orderDetail.getPlant().getId(), Status.ACTIVE);
         plantModel.setId(orderDetail.getPlant().getId());
-        if(orderDetail.getPlant().getPlantIMGList() != null  && !orderDetail.getPlant().getPlantIMGList().isEmpty()) {
+        if(orderDetail.getPlant().getPlantIMGList() != null && !orderDetail.getPlant().getPlantIMGList().isEmpty()) {
             plantModel.setImage(orderDetail.getPlant().getPlantIMGList().get(0).getImgURL());
         }
         plantModel.setQuantity(orderDetail.getQuantity());
@@ -862,9 +961,9 @@ public class Util {
                     ShowOrderDetailModel model = new ShowOrderDetailModel();
                     ShowOrderFeedbackModel feedbackModel = new ShowOrderFeedbackModel();
                     //feedback
-                    if(orderDetail.getIsFeedback() != null){
+                    if(orderDetail.getIsFeedback() != null) {
                         model.setIsFeedback(true);
-                        if(orderDetail.getIsFeedback() == true){
+                        if(orderDetail.getIsFeedback() == true) {
                             OrderFeedback orderFeedback = orderFeedbackRepository.findByOrderDetail_Id(orderDetail.getId());
                             ShowRatingModel ratingModel = new ShowRatingModel();
                             ratingModel.setId(orderFeedback.getRating().getId());
@@ -894,7 +993,7 @@ public class Util {
                             feedbackModel.setStatus(orderFeedback.getStatus());
                             feedbackModel.setShowPlantModel(plantModel);
                         }
-                    }else{
+                    } else {
                         model.setIsFeedback(false);
                     }
 
@@ -952,7 +1051,7 @@ public class Util {
                     com.example.thanhhoa.dtos.OrderModels.ShowPlantModel plantModel = new com.example.thanhhoa.dtos.OrderModels.ShowPlantModel();
                     PlantPrice newestPrice = plantPriceRepository.findFirstByPlant_IdAndStatusOrderByApplyDateDesc(orderDetail.getPlant().getId(), Status.ACTIVE);
                     plantModel.setId(orderDetail.getPlant().getId());
-                    if(orderDetail.getPlant().getPlantIMGList() != null  && !orderDetail.getPlant().getPlantIMGList().isEmpty()) {
+                    if(orderDetail.getPlant().getPlantIMGList() != null && !orderDetail.getPlant().getPlantIMGList().isEmpty()) {
                         plantModel.setImage(orderDetail.getPlant().getPlantIMGList().get(0).getImgURL());
                     }
                     plantModel.setQuantity(orderDetail.getQuantity());

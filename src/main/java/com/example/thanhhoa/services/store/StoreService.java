@@ -1,10 +1,11 @@
 package com.example.thanhhoa.services.store;
 
+import com.example.thanhhoa.dtos.OrderModels.ShowStaffModel;
 import com.example.thanhhoa.dtos.PlantModels.AddStorePlantModel;
-import com.example.thanhhoa.dtos.PlantModels.ShowPlantModel;
 import com.example.thanhhoa.dtos.StoreModels.AddStoreEmployeeModel;
 import com.example.thanhhoa.dtos.StoreModels.CreateStoreModel;
 import com.example.thanhhoa.dtos.StoreModels.ShowDistrictModel;
+import com.example.thanhhoa.dtos.StoreModels.ShowPlantModel;
 import com.example.thanhhoa.dtos.StoreModels.ShowProvinceModel;
 import com.example.thanhhoa.dtos.StoreModels.ShowStoreModel;
 import com.example.thanhhoa.dtos.StoreModels.ShowStorePlantRecordModel;
@@ -39,5 +40,5 @@ public interface StoreService {
 
     List<ShowStorePlantRecordModel> getStorePlantRecordByStorePlantID(String storePlantID);
 
-
+    List<ShowStaffModel> getStaffByStoreID(String storeID, Pageable pageable);
 }

@@ -309,6 +309,12 @@ public class OrderServiceImpl implements OrderService {
     }
 
     @Override
+    public List<ShowOrderModel> getAllOrderByStoreID(String storeID, Pageable pageable) {
+        Page<tblOrder> pagingResult = orderPagingRepository.findByCustomer_Username(storeID, pageable);
+        return util.orderPagingConverter(pagingResult, pageable);
+    }
+
+    @Override
     public List<ShowOrderModel> getAllByStatusOrderByUsername(Status status, String username, Pageable pageable) {
         Page<tblOrder> pagingResult = orderPagingRepository.findByCustomer_UsernameAndProgressStatus(username, status, pageable);
         return util.orderPagingConverter(pagingResult, pageable);

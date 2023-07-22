@@ -83,4 +83,9 @@ public class SearchType {
         ID,
         WORKINGDATE
     }
+
+    public enum CATEGORY{
+        ID,
+        NAME
+    }
 }

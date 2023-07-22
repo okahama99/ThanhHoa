@@ -11,4 +11,8 @@ public interface CategoryService {
     ShowCategoryModel getCategoryByID(String categoryID);
 
     List<ShowCategoryModel> getCategory();
+
+    String create(String name);
+
+    String update(String id, String name);
 }

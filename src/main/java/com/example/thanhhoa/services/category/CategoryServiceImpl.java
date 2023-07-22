@@ -2,6 +2,7 @@ package com.example.thanhhoa.services.category;
 
 import com.example.thanhhoa.dtos.CategoryModels.ShowCategoryModel;
 import com.example.thanhhoa.entities.Category;
+import com.example.thanhhoa.entities.Role;
 import com.example.thanhhoa.repositories.CategoryRepository;
 import com.example.thanhhoa.repositories.pagings.CategoryPagingRepository;
 import com.example.thanhhoa.utils.Util;
@@ -57,5 +58,39 @@ public class CategoryServiceImpl implements CategoryService{
             listModel.add(model);
         }
         return listModel;
+    }
+
+    @Override
+    public String create(String name) {
+        Category checkExisted = categoryRepository.findByName(name);
+        if(checkExisted != null){
+            return "Đã tồn tại Category với Tên là : " + name + ".";
+        }
+        Category category = new Category();
+        Category lastCategory = categoryRepository.findFirstByOrderByIdDesc();
+        if(lastCategory == null) {
+            category.setId(util.createNewID("C"));
+        } else {
+            category.setId(util.createIDFromLastID("C", 1, lastCategory.getId()));
+        }
+        category.setName(name);
+        categoryRepository.save(category);
+        return "Tạo thành công.";
+    }
+
+    @Override
+    public String update(String id, String name) {
+        Optional<Category> checkExistedID = categoryRepository.findById(id);
+        if(checkExistedID != null){
+            return "Đã tồn tại Category với ID là : " + id + ".";
+        }
+        Category checkExistedName = categoryRepository.findByName(name);
+        if(checkExistedName != null){
+            return "Đã tồn tại Category với Tên là : " + name + ".";
+        }
+        Category category = checkExistedID.get();
+        category.setName(name);
+        categoryRepository.save(category);
+        return "Chỉnh sửa thành công.";
     }
 }
