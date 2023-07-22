@@ -422,6 +422,14 @@ public class Util {
                         imgModelList.add(imgModel);
                     }
 
+                    //customer
+                    ShowCustomerModel customerModel = new ShowCustomerModel();
+                    customerModel.setId(orderFeedback.getCustomer().getId());
+                    customerModel.setAddress(orderFeedback.getCustomer().getAddress());
+                    customerModel.setEmail(orderFeedback.getCustomer().getEmail());
+                    customerModel.setPhone(orderFeedback.getCustomer().getPhone());
+                    customerModel.setFullName(orderFeedback.getCustomer().getFullName());
+
                     //plant
                     com.example.thanhhoa.dtos.OrderModels.ShowPlantModel plantModel = new com.example.thanhhoa.dtos.OrderModels.ShowPlantModel();
                     plantModel.setId(orderFeedback.getPlant().getId());
@@ -431,6 +439,7 @@ public class Util {
                     plantModel.setPlantName(orderFeedback.getPlant().getName());
 
                     ShowOrderFeedbackModel model = new ShowOrderFeedbackModel();
+                    model.setShowCustomerModel(customerModel);
                     model.setOrderFeedbackID(orderFeedback.getId());
                     model.setDescription(orderFeedback.getDescription());
                     model.setCreatedDate(orderFeedback.getCreatedDate());

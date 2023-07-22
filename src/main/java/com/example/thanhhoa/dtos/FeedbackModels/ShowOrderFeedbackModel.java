@@ -1,5 +1,6 @@
 package com.example.thanhhoa.dtos.FeedbackModels;
 
+import com.example.thanhhoa.dtos.OrderModels.ShowCustomerModel;
 import com.example.thanhhoa.dtos.OrderModels.ShowPlantModel;
 import com.example.thanhhoa.enums.Status;
 import lombok.Getter;
@@ -20,6 +21,7 @@ public class ShowOrderFeedbackModel implements Serializable {
     private List<ShowOrderFeedbackIMGModel> imgList;
     private ShowPlantModel showPlantModel;
     private ShowRatingModel ratingModel;
+    private ShowCustomerModel showCustomerModel;
     private Double totalPage;
 
 }

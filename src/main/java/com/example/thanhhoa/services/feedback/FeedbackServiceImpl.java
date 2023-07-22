@@ -8,6 +8,7 @@ import com.example.thanhhoa.dtos.FeedbackModels.ShowOrderFeedbackModel;
 import com.example.thanhhoa.dtos.FeedbackModels.ShowRatingModel;
 import com.example.thanhhoa.dtos.FeedbackModels.UpdateContractFeedbackModel;
 import com.example.thanhhoa.dtos.FeedbackModels.UpdateOrderFeedbackModel;
+import com.example.thanhhoa.dtos.OrderModels.ShowCustomerModel;
 import com.example.thanhhoa.entities.Contract;
 import com.example.thanhhoa.entities.ContractFeedback;
 import com.example.thanhhoa.entities.OrderDetail;
@@ -179,6 +180,14 @@ public class FeedbackServiceImpl implements FeedbackService {
             imgModelList.add(imgModel);
         }
 
+        //customer
+        ShowCustomerModel customerModel = new ShowCustomerModel();
+        customerModel.setId(orderFeedback.getCustomer().getId());
+        customerModel.setAddress(orderFeedback.getCustomer().getAddress());
+        customerModel.setEmail(orderFeedback.getCustomer().getEmail());
+        customerModel.setPhone(orderFeedback.getCustomer().getPhone());
+        customerModel.setFullName(orderFeedback.getCustomer().getFullName());
+
         //plant
         com.example.thanhhoa.dtos.OrderModels.ShowPlantModel plantModel = new com.example.thanhhoa.dtos.OrderModels.ShowPlantModel();
         plantModel.setId(orderFeedback.getPlant().getId());
@@ -188,6 +197,7 @@ public class FeedbackServiceImpl implements FeedbackService {
         plantModel.setPlantName(orderFeedback.getPlant().getName());
 
         ShowOrderFeedbackModel model = new ShowOrderFeedbackModel();
+        model.setShowCustomerModel(customerModel);
         model.setOrderFeedbackID(orderFeedback.getId());
         model.setDescription(orderFeedback.getDescription());
         model.setCreatedDate(orderFeedback.getCreatedDate());
@@ -217,6 +227,14 @@ public class FeedbackServiceImpl implements FeedbackService {
             imgModelList.add(imgModel);
         }
 
+        //customer
+        ShowCustomerModel customerModel = new ShowCustomerModel();
+        customerModel.setId(orderFeedback.getCustomer().getId());
+        customerModel.setAddress(orderFeedback.getCustomer().getAddress());
+        customerModel.setEmail(orderFeedback.getCustomer().getEmail());
+        customerModel.setPhone(orderFeedback.getCustomer().getPhone());
+        customerModel.setFullName(orderFeedback.getCustomer().getFullName());
+
         //plant
         com.example.thanhhoa.dtos.OrderModels.ShowPlantModel plantModel = new com.example.thanhhoa.dtos.OrderModels.ShowPlantModel();
         plantModel.setId(orderFeedback.getPlant().getId());
@@ -226,6 +244,7 @@ public class FeedbackServiceImpl implements FeedbackService {
         plantModel.setPlantName(orderFeedback.getPlant().getName());
 
         ShowOrderFeedbackModel model = new ShowOrderFeedbackModel();
+        model.setShowCustomerModel(customerModel);
         model.setOrderFeedbackID(orderFeedback.getId());
         model.setDescription(orderFeedback.getDescription());
         model.setCreatedDate(orderFeedback.getCreatedDate());
@@ -260,6 +279,14 @@ public class FeedbackServiceImpl implements FeedbackService {
             imgModelList.add(imgModel);
         }
 
+        //customer
+        ShowCustomerModel customerModel = new ShowCustomerModel();
+        customerModel.setId(orderFeedback.getCustomer().getId());
+        customerModel.setAddress(orderFeedback.getCustomer().getAddress());
+        customerModel.setEmail(orderFeedback.getCustomer().getEmail());
+        customerModel.setPhone(orderFeedback.getCustomer().getPhone());
+        customerModel.setFullName(orderFeedback.getCustomer().getFullName());
+
         //plant
         com.example.thanhhoa.dtos.OrderModels.ShowPlantModel plantModel = new com.example.thanhhoa.dtos.OrderModels.ShowPlantModel();
         plantModel.setId(orderFeedback.getPlant().getId());
@@ -269,6 +296,7 @@ public class FeedbackServiceImpl implements FeedbackService {
         plantModel.setPlantName(orderFeedback.getPlant().getName());
 
         ShowOrderFeedbackModel model = new ShowOrderFeedbackModel();
+        model.setShowCustomerModel(customerModel);
         model.setOrderFeedbackID(orderFeedback.getId());
         model.setDescription(orderFeedback.getDescription());
         model.setCreatedDate(orderFeedback.getCreatedDate());
@@ -284,7 +312,7 @@ public class FeedbackServiceImpl implements FeedbackService {
     @Override
     public String createContract(CreateContractFeedbackModel createContractFeedbackModel, Long userID) {
         Optional<Contract> contract = contractRepository.findById(createContractFeedbackModel.getContractID());
-        if(contract == null){
+        if(contract == null) {
             return "Không tìm thấy Hợp đồng với ID là " + createContractFeedbackModel.getContractID() + ".";
         }
         ContractFeedback contractFeedback = new ContractFeedback();
@@ -306,11 +334,11 @@ public class FeedbackServiceImpl implements FeedbackService {
     @Override
     public String updateContract(UpdateContractFeedbackModel updateContractFeedbackModel) {
         Optional<ContractFeedback> checkExisted = contractFeedbackRepository.findById(updateContractFeedbackModel.getId());
-        if(checkExisted == null){
+        if(checkExisted == null) {
             return "Không tìm thấy Feedback Hợp đồng với ID là " + updateContractFeedbackModel.getId() + ".";
         }
         Optional<Contract> contract = contractRepository.findById(updateContractFeedbackModel.getContractID());
-        if(contract == null){
+        if(contract == null) {
             return "Không tìm thấy Hợp đồng với ID là " + updateContractFeedbackModel.getContractID() + ".";
         }
         ContractFeedback contractFeedback = checkExisted.get();
@@ -324,7 +352,7 @@ public class FeedbackServiceImpl implements FeedbackService {
     @Override
     public String deleteContract(String id) {
         Optional<ContractFeedback> checkExisted = contractFeedbackRepository.findById(id);
-        if(checkExisted == null){
+        if(checkExisted == null) {
             return "Không tìm thấy Feedback Hợp đồng với ID là " + id + ".";
         }
         ContractFeedback contractFeedback = checkExisted.get();
@@ -382,7 +410,7 @@ public class FeedbackServiceImpl implements FeedbackService {
     @Override
     public List<ShowRatingModel> getRating() {
         List<Rating> ratingList = ratingRepository.findAll();
-        if(ratingList == null){
+        if(ratingList == null) {
             return null;
         }
         List<ShowRatingModel> modelList = new ArrayList<>();
