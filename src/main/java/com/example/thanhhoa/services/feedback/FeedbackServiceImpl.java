@@ -175,7 +175,7 @@ public class FeedbackServiceImpl implements FeedbackService {
         ShowOrderFeedbackIMGModel imgModel = new ShowOrderFeedbackIMGModel();
         for(OrderFeedbackIMG img : orderFeedback.getOrderFeedbackIMGList()) {
             imgModel.setId(img.getId());
-            imgModel.setImgURL(imgModel.getImgURL());
+            imgModel.setImgURL(img.getImgURL());
             imgModelList.add(imgModel);
         }
 
@@ -213,7 +213,7 @@ public class FeedbackServiceImpl implements FeedbackService {
         ShowOrderFeedbackIMGModel imgModel = new ShowOrderFeedbackIMGModel();
         for(OrderFeedbackIMG img : orderFeedback.getOrderFeedbackIMGList()) {
             imgModel.setId(img.getId());
-            imgModel.setImgURL(imgModel.getImgURL());
+            imgModel.setImgURL(img.getImgURL());
             imgModelList.add(imgModel);
         }
 
@@ -256,7 +256,7 @@ public class FeedbackServiceImpl implements FeedbackService {
         ShowOrderFeedbackIMGModel imgModel = new ShowOrderFeedbackIMGModel();
         for(OrderFeedbackIMG img : orderFeedback.getOrderFeedbackIMGList()) {
             imgModel.setId(img.getId());
-            imgModel.setImgURL(imgModel.getImgURL());
+            imgModel.setImgURL(img.getImgURL());
             imgModelList.add(imgModel);
         }
 

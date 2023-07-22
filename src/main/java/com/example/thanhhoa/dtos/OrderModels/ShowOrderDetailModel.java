@@ -1,5 +1,6 @@
 package com.example.thanhhoa.dtos.OrderModels;
 
+import com.example.thanhhoa.dtos.FeedbackModels.ShowOrderFeedbackModel;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -11,7 +12,7 @@ public class ShowOrderDetailModel implements Serializable {
     private String id;
     private Integer quantity;
     private Double price;
-    private Boolean isFeedback = false;
+    private Boolean isFeedback;
 
     private ShowOrderModel showOrderModel;
     private ShowPlantModel showPlantModel;
@@ -19,4 +20,6 @@ public class ShowOrderDetailModel implements Serializable {
     private ShowCustomerModel showCustomerModel;
     private ShowDistancePriceModel showDistancePriceModel;
     private ShowStoreModel showStoreModel;
+    private ShowOrderFeedbackModel showOrderFeedbackModel;
+    private Double totalPage;
 }

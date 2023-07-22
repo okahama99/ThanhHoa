@@ -12,6 +12,7 @@ import com.example.thanhhoa.dtos.FeedbackModels.ShowOrderFeedbackModel;
 import com.example.thanhhoa.dtos.FeedbackModels.ShowRatingModel;
 import com.example.thanhhoa.dtos.OrderModels.ShowCustomerModel;
 import com.example.thanhhoa.dtos.OrderModels.ShowDistancePriceModel;
+import com.example.thanhhoa.dtos.OrderModels.ShowOrderDetailModel;
 import com.example.thanhhoa.dtos.OrderModels.ShowOrderModel;
 import com.example.thanhhoa.dtos.OrderModels.ShowStaffModel;
 import com.example.thanhhoa.dtos.OrderModels.ShowStoreModel;
@@ -46,6 +47,7 @@ import com.example.thanhhoa.entities.tblAccount;
 import com.example.thanhhoa.entities.tblOrder;
 import com.example.thanhhoa.enums.Status;
 import com.example.thanhhoa.repositories.ContractIMGRepository;
+import com.example.thanhhoa.repositories.OrderFeedbackRepository;
 import com.example.thanhhoa.repositories.PlantCategoryRepository;
 import com.example.thanhhoa.repositories.PlantIMGRepository;
 import com.example.thanhhoa.repositories.PlantPriceRepository;
@@ -81,6 +83,8 @@ public class Util {
     private ContractIMGRepository contractIMGRepository;
     @Autowired
     private WorkingDateRepository workingDateRepository;
+    @Autowired
+    private OrderFeedbackRepository orderFeedbackRepository;
 
     /**
      * Small Util to return {@link Pageable} to replace dup code in serviceImpl
@@ -345,7 +349,7 @@ public class Util {
                     for(OrderFeedbackIMG img : orderFeedback.getOrderFeedbackIMGList()) {
                         ShowOrderFeedbackIMGModel imgModel = new ShowOrderFeedbackIMGModel();
                         imgModel.setId(img.getId());
-                        imgModel.setImgURL(imgModel.getImgURL());
+                        imgModel.setImgURL(img.getImgURL());
                         imgModelList.add(imgModel);
                     }
 
@@ -765,6 +769,223 @@ public class Util {
         } catch(DateTimeParseException e) {
             e.printStackTrace();
             return null;
+        }
+    }
+
+    public ShowOrderDetailModel returnOrderDetailModelList(OrderDetail orderDetail){
+        ShowOrderDetailModel model = new ShowOrderDetailModel();
+        //detail
+        model.setId(orderDetail.getId());
+        model.setPrice(orderDetail.getPrice());
+        model.setQuantity(orderDetail.getQuantity());
+        model.setIsFeedback(orderDetail.getIsFeedback());
+
+        //order
+        ShowOrderModel orderModel = new ShowOrderModel();
+        orderModel.setId(orderDetail.getTblOrder().getId());
+        orderModel.setFullName(orderDetail.getTblOrder().getFullName());
+        orderModel.setAddress(orderDetail.getTblOrder().getAddress());
+        orderModel.setEmail(orderDetail.getTblOrder().getEmail());
+        orderModel.setPhone(orderDetail.getTblOrder().getPhone());
+        orderModel.setCreatedDate(orderDetail.getTblOrder().getCreatedDate());
+        orderModel.setPackageDate(orderDetail.getTblOrder().getPackageDate());
+        orderModel.setDeliveryDate(orderDetail.getTblOrder().getDeliveryDate());
+        orderModel.setReceivedDate(orderDetail.getTblOrder().getReceivedDate());
+        orderModel.setApproveDate(orderDetail.getTblOrder().getApproveDate());
+        orderModel.setRejectDate(orderDetail.getTblOrder().getRejectDate());
+        orderModel.setPaymentMethod(orderDetail.getTblOrder().getPaymentMethod());
+        orderModel.setProgressStatus(orderDetail.getTblOrder().getProgressStatus());
+        orderModel.setReason(orderDetail.getTblOrder().getReason());
+        orderModel.setLatLong(orderDetail.getTblOrder().getLatLong());
+        orderModel.setDistance(orderDetail.getTblOrder().getDistance());
+        orderModel.setTotalShipCost(orderDetail.getTblOrder().getTotalShipCost());
+        orderModel.setTotal(orderDetail.getTblOrder().getTotal());
+
+        //customer
+        ShowCustomerModel customerModel = new ShowCustomerModel();
+        customerModel.setId(orderDetail.getTblOrder().getCustomer().getId());
+        customerModel.setAddress(orderDetail.getTblOrder().getCustomer().getAddress());
+        customerModel.setEmail(orderDetail.getTblOrder().getCustomer().getEmail());
+        customerModel.setPhone(orderDetail.getTblOrder().getCustomer().getPhone());
+        customerModel.setFullName(orderDetail.getTblOrder().getCustomer().getFullName());
+
+        //staff
+        ShowStaffModel staffModel = new ShowStaffModel();
+        if(orderDetail.getTblOrder().getStaff() != null) {
+            staffModel.setId(orderDetail.getTblOrder().getStaff().getId());
+            staffModel.setAddress(orderDetail.getTblOrder().getStaff().getAddress());
+            staffModel.setEmail(orderDetail.getTblOrder().getStaff().getEmail());
+            staffModel.setPhone(orderDetail.getTblOrder().getStaff().getPhone());
+            staffModel.setFullName(orderDetail.getTblOrder().getStaff().getFullName());
+        }
+
+        //distance price
+        ShowDistancePriceModel distancePriceModel = new ShowDistancePriceModel();
+        distancePriceModel.setId(orderDetail.getTblOrder().getDistancePrice().getId());
+        distancePriceModel.setApplyDate(orderDetail.getTblOrder().getDistancePrice().getApplyDate());
+        distancePriceModel.setPricePerKm(orderDetail.getTblOrder().getDistancePrice().getPricePerKm());
+
+        //plant
+        com.example.thanhhoa.dtos.OrderModels.ShowPlantModel plantModel = new com.example.thanhhoa.dtos.OrderModels.ShowPlantModel();
+        PlantPrice newestPrice = plantPriceRepository.findFirstByPlant_IdAndStatusOrderByApplyDateDesc(orderDetail.getPlant().getId(), Status.ACTIVE);
+        plantModel.setId(orderDetail.getPlant().getId());
+        if(orderDetail.getPlant().getPlantIMGList() != null  && !orderDetail.getPlant().getPlantIMGList().isEmpty()) {
+            plantModel.setImage(orderDetail.getPlant().getPlantIMGList().get(0).getImgURL());
+        }
+        plantModel.setQuantity(orderDetail.getQuantity());
+        plantModel.setPlantName(orderDetail.getPlant().getName());
+        plantModel.setPlantPrice(newestPrice.getPrice());
+        plantModel.setShipPrice(orderDetail.getPlant().getPlantShipPrice().getPricePerPlant());
+
+        //store
+        ShowStoreModel storeModel = new ShowStoreModel();
+        storeModel.setId(orderDetail.getTblOrder().getStore().getId());
+        storeModel.setStoreName(orderDetail.getTblOrder().getStore().getStoreName());
+        storeModel.setAddress(orderDetail.getTblOrder().getStore().getAddress());
+        storeModel.setPhone(orderDetail.getTblOrder().getStore().getPhone());
+
+        model.setShowOrderModel(orderModel);
+        model.setShowCustomerModel(customerModel);
+        model.setShowPlantModel(plantModel);
+        model.setShowDistancePriceModel(distancePriceModel);
+        model.setShowStaffModel(staffModel);
+        model.setShowStoreModel(storeModel);
+        return model;
+    }
+
+    public List<ShowOrderDetailModel> orderDetailPagingConverter(Page<OrderDetail> pagingResult, Pageable paging) {
+        if(pagingResult.hasContent()) {
+            double totalPage = Math.ceil((double) pagingResult.getTotalElements() / paging.getPageSize());
+            Page<ShowOrderDetailModel> modelResult = pagingResult.map(new Converter<OrderDetail, ShowOrderDetailModel>() {
+                @Override
+                protected ShowOrderDetailModel doForward(OrderDetail orderDetail) {
+                    ShowOrderDetailModel model = new ShowOrderDetailModel();
+                    ShowOrderFeedbackModel feedbackModel = new ShowOrderFeedbackModel();
+                    //feedback
+                    if(orderDetail.getIsFeedback() != null){
+                        model.setIsFeedback(true);
+                        if(orderDetail.getIsFeedback() == true){
+                            OrderFeedback orderFeedback = orderFeedbackRepository.findByOrderDetail_Id(orderDetail.getId());
+                            ShowRatingModel ratingModel = new ShowRatingModel();
+                            ratingModel.setId(orderFeedback.getRating().getId());
+                            ratingModel.setDescription(orderFeedback.getRating().getDescription());
+
+                            List<ShowOrderFeedbackIMGModel> imgModelList = new ArrayList<>();
+                            for(OrderFeedbackIMG img : orderFeedback.getOrderFeedbackIMGList()) {
+                                ShowOrderFeedbackIMGModel imgModel = new ShowOrderFeedbackIMGModel();
+                                imgModel.setId(img.getId());
+                                imgModel.setImgURL(img.getImgURL());
+                                imgModelList.add(imgModel);
+                            }
+
+                            //plant
+                            com.example.thanhhoa.dtos.OrderModels.ShowPlantModel plantModel = new com.example.thanhhoa.dtos.OrderModels.ShowPlantModel();
+                            plantModel.setId(orderFeedback.getPlant().getId());
+                            if(orderFeedback.getPlant().getPlantIMGList() != null && !orderFeedback.getPlant().getPlantIMGList().isEmpty()) {
+                                plantModel.setImage(orderFeedback.getPlant().getPlantIMGList().get(0).getImgURL());
+                            }
+                            plantModel.setPlantName(orderFeedback.getPlant().getName());
+
+                            feedbackModel.setOrderFeedbackID(orderFeedback.getId());
+                            feedbackModel.setDescription(orderFeedback.getDescription());
+                            feedbackModel.setCreatedDate(orderFeedback.getCreatedDate());
+                            feedbackModel.setRatingModel(ratingModel);
+                            feedbackModel.setImgList(imgModelList);
+                            feedbackModel.setStatus(orderFeedback.getStatus());
+                            feedbackModel.setShowPlantModel(plantModel);
+                        }
+                    }else{
+                        model.setIsFeedback(false);
+                    }
+
+                    //detail
+                    model.setId(orderDetail.getId());
+                    model.setPrice(orderDetail.getPrice());
+                    model.setQuantity(orderDetail.getQuantity());
+
+                    //order
+                    ShowOrderModel orderModel = new ShowOrderModel();
+                    orderModel.setId(orderDetail.getTblOrder().getId());
+                    orderModel.setFullName(orderDetail.getTblOrder().getFullName());
+                    orderModel.setAddress(orderDetail.getTblOrder().getAddress());
+                    orderModel.setEmail(orderDetail.getTblOrder().getEmail());
+                    orderModel.setPhone(orderDetail.getTblOrder().getPhone());
+                    orderModel.setCreatedDate(orderDetail.getTblOrder().getCreatedDate());
+                    orderModel.setPackageDate(orderDetail.getTblOrder().getPackageDate());
+                    orderModel.setDeliveryDate(orderDetail.getTblOrder().getDeliveryDate());
+                    orderModel.setReceivedDate(orderDetail.getTblOrder().getReceivedDate());
+                    orderModel.setApproveDate(orderDetail.getTblOrder().getApproveDate());
+                    orderModel.setRejectDate(orderDetail.getTblOrder().getRejectDate());
+                    orderModel.setPaymentMethod(orderDetail.getTblOrder().getPaymentMethod());
+                    orderModel.setProgressStatus(orderDetail.getTblOrder().getProgressStatus());
+                    orderModel.setReason(orderDetail.getTblOrder().getReason());
+                    orderModel.setLatLong(orderDetail.getTblOrder().getLatLong());
+                    orderModel.setDistance(orderDetail.getTblOrder().getDistance());
+                    orderModel.setTotalShipCost(orderDetail.getTblOrder().getTotalShipCost());
+                    orderModel.setTotal(orderDetail.getTblOrder().getTotal());
+
+                    //customer
+                    ShowCustomerModel customerModel = new ShowCustomerModel();
+                    customerModel.setId(orderDetail.getTblOrder().getCustomer().getId());
+                    customerModel.setAddress(orderDetail.getTblOrder().getCustomer().getAddress());
+                    customerModel.setEmail(orderDetail.getTblOrder().getCustomer().getEmail());
+                    customerModel.setPhone(orderDetail.getTblOrder().getCustomer().getPhone());
+                    customerModel.setFullName(orderDetail.getTblOrder().getCustomer().getFullName());
+
+                    //staff
+                    ShowStaffModel staffModel = new ShowStaffModel();
+                    if(orderDetail.getTblOrder().getStaff() != null) {
+                        staffModel.setId(orderDetail.getTblOrder().getStaff().getId());
+                        staffModel.setAddress(orderDetail.getTblOrder().getStaff().getAddress());
+                        staffModel.setEmail(orderDetail.getTblOrder().getStaff().getEmail());
+                        staffModel.setPhone(orderDetail.getTblOrder().getStaff().getPhone());
+                        staffModel.setFullName(orderDetail.getTblOrder().getStaff().getFullName());
+                    }
+
+                    //distance price
+                    ShowDistancePriceModel distancePriceModel = new ShowDistancePriceModel();
+                    distancePriceModel.setId(orderDetail.getTblOrder().getDistancePrice().getId());
+                    distancePriceModel.setApplyDate(orderDetail.getTblOrder().getDistancePrice().getApplyDate());
+                    distancePriceModel.setPricePerKm(orderDetail.getTblOrder().getDistancePrice().getPricePerKm());
+
+                    //plant
+                    com.example.thanhhoa.dtos.OrderModels.ShowPlantModel plantModel = new com.example.thanhhoa.dtos.OrderModels.ShowPlantModel();
+                    PlantPrice newestPrice = plantPriceRepository.findFirstByPlant_IdAndStatusOrderByApplyDateDesc(orderDetail.getPlant().getId(), Status.ACTIVE);
+                    plantModel.setId(orderDetail.getPlant().getId());
+                    if(orderDetail.getPlant().getPlantIMGList() != null  && !orderDetail.getPlant().getPlantIMGList().isEmpty()) {
+                        plantModel.setImage(orderDetail.getPlant().getPlantIMGList().get(0).getImgURL());
+                    }
+                    plantModel.setQuantity(orderDetail.getQuantity());
+                    plantModel.setPlantName(orderDetail.getPlant().getName());
+                    plantModel.setPlantPrice(newestPrice.getPrice());
+                    plantModel.setShipPrice(orderDetail.getPlant().getPlantShipPrice().getPricePerPlant());
+
+                    //store
+                    ShowStoreModel storeModel = new ShowStoreModel();
+                    storeModel.setId(orderDetail.getTblOrder().getStore().getId());
+                    storeModel.setStoreName(orderDetail.getTblOrder().getStore().getStoreName());
+                    storeModel.setAddress(orderDetail.getTblOrder().getStore().getAddress());
+                    storeModel.setPhone(orderDetail.getTblOrder().getStore().getPhone());
+
+                    model.setShowOrderModel(orderModel);
+                    model.setShowCustomerModel(customerModel);
+                    model.setShowPlantModel(plantModel);
+                    model.setShowDistancePriceModel(distancePriceModel);
+                    model.setShowStaffModel(staffModel);
+                    model.setShowStoreModel(storeModel);
+                    model.setShowOrderFeedbackModel(feedbackModel);
+                    model.setTotalPage(totalPage);
+                    return model;
+                }
+
+                @Override
+                protected OrderDetail doBackward(ShowOrderDetailModel showOrderDetailModel) {
+                    return null;
+                }
+            });
+            return modelResult.getContent();
+        } else {
+            return new ArrayList<>();
         }
     }
 

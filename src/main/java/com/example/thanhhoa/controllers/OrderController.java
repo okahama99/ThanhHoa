@@ -144,7 +144,8 @@ public class OrderController {
     List<ShowOrderModel> getWaitingOrder(@RequestParam int pageNo,
                                          @RequestParam int pageSize,
                                          @RequestParam(required = false, defaultValue = "ID") SearchType.ORDER sortBy,
-                                         @RequestParam(required = false, defaultValue = "true") Boolean sortAsc, HttpServletRequest request) {
+                                         @RequestParam(required = false, defaultValue = "true") Boolean sortAsc,
+                                         HttpServletRequest request) {
         String roleName = jwtUtil.getRoleNameFromRequest(request);
         if(!roleName.equalsIgnoreCase("Manager")) {
             throw new ResponseStatusException(HttpStatus.FORBIDDEN, "-----------------------------------Người dùng không có quyền truy cập---------------------------");
@@ -168,6 +169,34 @@ public class OrderController {
     public @ResponseBody
     List<ShowOrderDetailModel> getOrderDetailByOrderID(@PathVariable("orderID") String orderID) {
         List<ShowOrderDetailModel> model = orderService.getOrderDetailByOrderID(orderID);
+        return model;
+    }
+
+    @GetMapping(value = "/getOrderDetailByIsFeedback", produces = "application/json;charset=UTF-8")
+    public @ResponseBody
+    List<ShowOrderDetailModel> getOrderDetailByIsFeedback(@RequestParam(required = false) String isFeedback,
+                                                          @RequestParam int pageNo,
+                                                          @RequestParam int pageSize,
+                                                          @RequestParam(required = false, defaultValue = "ID") SearchType.ORDER sortBy,
+                                                          @RequestParam(required = false, defaultValue = "true") Boolean sortAsc,
+                                                          HttpServletRequest request) {
+        String roleName = jwtUtil.getRoleNameFromRequest(request);
+        if(!roleName.equalsIgnoreCase("Customer") && !roleName.equalsIgnoreCase("Staff")) {
+            throw new ResponseStatusException(HttpStatus.FORBIDDEN, "-----------------------------------Người dùng không có quyền truy cập---------------------------");
+        }
+
+        Pageable paging;
+        if(sortBy.equals("CREATEDDATE")) {
+            paging = util.makePaging(pageNo, pageSize, "createdDate", sortAsc);
+        } else if(sortBy.equals("RECEIVEDDATE")) {
+            paging = util.makePaging(pageNo, pageSize, "receivedDate", sortAsc);
+        } else if(sortBy.toString().equalsIgnoreCase("PROGRESSSTATUS")) {
+            paging = util.makePaging(pageNo, pageSize, "progressStatus", sortAsc);
+        } else {
+            paging = util.makePaging(pageNo, pageSize, sortBy.toString().toLowerCase(), sortAsc);
+        }
+
+        List<ShowOrderDetailModel> model = orderService.getOrderDetailByIsFeedback(isFeedback, paging);
         return model;
     }
 

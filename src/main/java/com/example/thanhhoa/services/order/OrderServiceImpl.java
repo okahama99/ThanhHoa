@@ -3,18 +3,12 @@ package com.example.thanhhoa.services.order;
 import com.example.thanhhoa.dtos.OrderModels.CreateOrderModel;
 import com.example.thanhhoa.dtos.OrderModels.GetStaffModel;
 import com.example.thanhhoa.dtos.OrderModels.OrderDetailModel;
-import com.example.thanhhoa.dtos.OrderModels.ShowCustomerModel;
-import com.example.thanhhoa.dtos.OrderModels.ShowDistancePriceModel;
 import com.example.thanhhoa.dtos.OrderModels.ShowOrderDetailModel;
 import com.example.thanhhoa.dtos.OrderModels.ShowOrderModel;
-import com.example.thanhhoa.dtos.OrderModels.ShowPlantModel;
-import com.example.thanhhoa.dtos.OrderModels.ShowStaffModel;
-import com.example.thanhhoa.dtos.OrderModels.ShowStoreModel;
 import com.example.thanhhoa.dtos.OrderModels.UpdateOrderModel;
 import com.example.thanhhoa.entities.Cart;
 import com.example.thanhhoa.entities.DistancePrice;
 import com.example.thanhhoa.entities.OrderDetail;
-import com.example.thanhhoa.entities.OrderFeedback;
 import com.example.thanhhoa.entities.Plant;
 import com.example.thanhhoa.entities.PlantPrice;
 import com.example.thanhhoa.entities.StorePlant;
@@ -25,7 +19,6 @@ import com.example.thanhhoa.enums.Status;
 import com.example.thanhhoa.repositories.CartRepository;
 import com.example.thanhhoa.repositories.DistancePriceRepository;
 import com.example.thanhhoa.repositories.OrderDetailRepository;
-import com.example.thanhhoa.repositories.OrderFeedbackRepository;
 import com.example.thanhhoa.repositories.OrderRepository;
 import com.example.thanhhoa.repositories.PlantPriceRepository;
 import com.example.thanhhoa.repositories.PlantRepository;
@@ -33,6 +26,7 @@ import com.example.thanhhoa.repositories.StorePlantRecordRepository;
 import com.example.thanhhoa.repositories.StorePlantRepository;
 import com.example.thanhhoa.repositories.StoreRepository;
 import com.example.thanhhoa.repositories.UserRepository;
+import com.example.thanhhoa.repositories.pagings.OrderDetailPagingRepository;
 import com.example.thanhhoa.repositories.pagings.OrderPagingRepository;
 import com.example.thanhhoa.utils.Util;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -71,7 +65,7 @@ public class OrderServiceImpl implements OrderService {
     @Autowired
     private CartRepository cartRepository;
     @Autowired
-    private OrderFeedbackRepository orderFeedbackRepository;
+    private OrderDetailPagingRepository orderDetailPagingRepository;
     @Autowired
     private Util util;
 
@@ -223,7 +217,7 @@ public class OrderServiceImpl implements OrderService {
             if(!order.getProgressStatus().toString().equals("WAITING")) {
                 return "Chỉ được hủy đơn hàng có trạng thái là WAITING.";
             }
-            if(order.getStaff() != null){
+            if(order.getStaff() != null) {
                 order.getStaff().setStatus(Status.AVAILABLE);
             }
             order.setReason(reason);
@@ -334,89 +328,22 @@ public class OrderServiceImpl implements OrderService {
         }
         List<ShowOrderDetailModel> modelList = new ArrayList<>();
         for(OrderDetail orderDetail : orderDetailList) {
-            ShowOrderDetailModel model = new ShowOrderDetailModel();
-            //detail
-            model.setId(orderDetail.getId());
-            model.setPrice(orderDetail.getPrice());
-            model.setQuantity(orderDetail.getQuantity());
-
-            //order
-            ShowOrderModel orderModel = new ShowOrderModel();
-            orderModel.setId(orderDetail.getTblOrder().getId());
-            orderModel.setFullName(orderDetail.getTblOrder().getFullName());
-            orderModel.setAddress(orderDetail.getTblOrder().getAddress());
-            orderModel.setEmail(orderDetail.getTblOrder().getEmail());
-            orderModel.setPhone(orderDetail.getTblOrder().getPhone());
-            orderModel.setCreatedDate(orderDetail.getTblOrder().getCreatedDate());
-            orderModel.setPackageDate(orderDetail.getTblOrder().getPackageDate());
-            orderModel.setDeliveryDate(orderDetail.getTblOrder().getDeliveryDate());
-            orderModel.setReceivedDate(orderDetail.getTblOrder().getReceivedDate());
-            orderModel.setApproveDate(orderDetail.getTblOrder().getApproveDate());
-            orderModel.setRejectDate(orderDetail.getTblOrder().getRejectDate());
-            orderModel.setPaymentMethod(orderDetail.getTblOrder().getPaymentMethod());
-            orderModel.setProgressStatus(orderDetail.getTblOrder().getProgressStatus());
-            orderModel.setReason(orderDetail.getTblOrder().getReason());
-            orderModel.setLatLong(orderDetail.getTblOrder().getLatLong());
-            orderModel.setDistance(orderDetail.getTblOrder().getDistance());
-            orderModel.setTotalShipCost(orderDetail.getTblOrder().getTotalShipCost());
-            orderModel.setTotal(orderDetail.getTblOrder().getTotal());
-            OrderFeedback orderFeedback = orderFeedbackRepository.findByOrderDetail_Id(orderDetail.getId());
-            if(orderFeedback != null){
-                model.setIsFeedback(true);
-            }
-
-            //customer
-            ShowCustomerModel customerModel = new ShowCustomerModel();
-            customerModel.setId(orderDetail.getTblOrder().getCustomer().getId());
-            customerModel.setAddress(orderDetail.getTblOrder().getCustomer().getAddress());
-            customerModel.setEmail(orderDetail.getTblOrder().getCustomer().getEmail());
-            customerModel.setPhone(orderDetail.getTblOrder().getCustomer().getPhone());
-            customerModel.setFullName(orderDetail.getTblOrder().getCustomer().getFullName());
-
-            //staff
-            ShowStaffModel staffModel = new ShowStaffModel();
-            if(orderDetail.getTblOrder().getStaff() != null) {
-                staffModel.setId(orderDetail.getTblOrder().getStaff().getId());
-                staffModel.setAddress(orderDetail.getTblOrder().getStaff().getAddress());
-                staffModel.setEmail(orderDetail.getTblOrder().getStaff().getEmail());
-                staffModel.setPhone(orderDetail.getTblOrder().getStaff().getPhone());
-                staffModel.setFullName(orderDetail.getTblOrder().getStaff().getFullName());
-            }
-
-            //distance price
-            ShowDistancePriceModel distancePriceModel = new ShowDistancePriceModel();
-            distancePriceModel.setId(orderDetail.getTblOrder().getDistancePrice().getId());
-            distancePriceModel.setApplyDate(orderDetail.getTblOrder().getDistancePrice().getApplyDate());
-            distancePriceModel.setPricePerKm(orderDetail.getTblOrder().getDistancePrice().getPricePerKm());
-
-            //plant
-            ShowPlantModel plantModel = new ShowPlantModel();
-            PlantPrice newestPrice = plantPriceRepository.findFirstByPlant_IdAndStatusOrderByApplyDateDesc(orderDetail.getPlant().getId(), Status.ACTIVE);
-            plantModel.setId(orderDetail.getPlant().getId());
-            if(orderDetail.getPlant().getPlantIMGList() != null  && !orderDetail.getPlant().getPlantIMGList().isEmpty()) {
-                plantModel.setImage(orderDetail.getPlant().getPlantIMGList().get(0).getImgURL());
-            }
-            plantModel.setQuantity(orderDetail.getQuantity());
-            plantModel.setPlantName(orderDetail.getPlant().getName());
-            plantModel.setPlantPrice(newestPrice.getPrice());
-            plantModel.setShipPrice(orderDetail.getPlant().getPlantShipPrice().getPricePerPlant());
-
-            //store
-            ShowStoreModel storeModel = new ShowStoreModel();
-            storeModel.setId(orderDetail.getTblOrder().getStore().getId());
-            storeModel.setStoreName(orderDetail.getTblOrder().getStore().getStoreName());
-            storeModel.setAddress(orderDetail.getTblOrder().getStore().getAddress());
-            storeModel.setPhone(orderDetail.getTblOrder().getStore().getPhone());
-
-            model.setShowOrderModel(orderModel);
-            model.setShowCustomerModel(customerModel);
-            model.setShowPlantModel(plantModel);
-            model.setShowDistancePriceModel(distancePriceModel);
-            model.setShowStaffModel(staffModel);
-            model.setShowStoreModel(storeModel);
-            modelList.add(model);
+            modelList.add(util.returnOrderDetailModelList(orderDetail));
         }
         return modelList;
+    }
+
+    @Override
+    public List<ShowOrderDetailModel> getOrderDetailByIsFeedback(String isFeedback, Pageable pageable) {
+        Page<OrderDetail> pagingResult = null;
+        if(isFeedback == null) {
+            pagingResult = orderDetailPagingRepository.findAll(pageable);
+        } else if(isFeedback.equalsIgnoreCase("true")) {
+            pagingResult = orderDetailPagingRepository.findByIsFeedback(true, pageable);
+        } else {
+            pagingResult = orderDetailPagingRepository.findByIsFeedback(null, pageable);
+        }
+        return util.orderDetailPagingConverter(pagingResult, pageable);
     }
 
     @Override

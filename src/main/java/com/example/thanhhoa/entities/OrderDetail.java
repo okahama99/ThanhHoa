@@ -20,6 +20,9 @@ public class OrderDetail implements Serializable {
     @Column(nullable = false)
     private Double price;
 
+    @Column
+    private Boolean isFeedback = false;
+
     @ManyToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     @JoinColumn(name = "order_id")
     private tblOrder tblOrder;
