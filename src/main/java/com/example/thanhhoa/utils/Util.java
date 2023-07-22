@@ -59,6 +59,9 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+import java.time.format.DateTimeParseException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -346,6 +349,14 @@ public class Util {
                         imgModelList.add(imgModel);
                     }
 
+                    //plant
+                    com.example.thanhhoa.dtos.OrderModels.ShowPlantModel plantModel = new com.example.thanhhoa.dtos.OrderModels.ShowPlantModel();
+                    plantModel.setId(orderFeedback.getPlant().getId());
+                    if(orderFeedback.getPlant().getPlantIMGList() != null && !orderFeedback.getPlant().getPlantIMGList().isEmpty()) {
+                        plantModel.setImage(orderFeedback.getPlant().getPlantIMGList().get(0).getImgURL());
+                    }
+                    plantModel.setPlantName(orderFeedback.getPlant().getName());
+
                     ShowOrderFeedbackModel model = new ShowOrderFeedbackModel();
                     model.setOrderFeedbackID(orderFeedback.getId());
                     model.setDescription(orderFeedback.getDescription());
@@ -602,7 +613,7 @@ public class Util {
 
                     //customer
                     ShowCustomerModel customerModel = new ShowCustomerModel();
-                    if(contract.getCustomer() != null){
+                    if(contract.getCustomer() != null) {
                         customerModel.setId(contract.getCustomer().getId());
                         customerModel.setAddress(contract.getCustomer().getAddress());
                         customerModel.setEmail(contract.getCustomer().getEmail());
@@ -612,7 +623,7 @@ public class Util {
 
                     //payment type
                     ShowPaymentTypeModel paymentTypeModel = new ShowPaymentTypeModel();
-                    if(contract.getPaymentType() != null){
+                    if(contract.getPaymentType() != null) {
                         paymentTypeModel.setId(contract.getPaymentType().getId());
                         paymentTypeModel.setName(contract.getPaymentType().getName());
                         paymentTypeModel.setValue(contract.getPaymentType().getValue());
@@ -743,6 +754,17 @@ public class Util {
         IDNumber++;
         String newID = chars + String.format("%03d", IDNumber);
         return newID;
+    }
+
+    public LocalDateTime isDateValid(String date) {
+        date += " 00:00:00";
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+        try {
+            return LocalDateTime.parse(date, formatter);
+        } catch(DateTimeParseException e) {
+            e.printStackTrace();
+            return null;
+        }
     }
 
 //    class InvalidInput extends Exception {

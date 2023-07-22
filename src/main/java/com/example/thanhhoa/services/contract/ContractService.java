@@ -12,6 +12,7 @@ import com.example.thanhhoa.enums.Status;
 import org.springframework.data.domain.Pageable;
 
 import java.io.IOException;
+import java.time.LocalDateTime;
 import java.util.List;
 
 public interface ContractService {
@@ -43,4 +44,6 @@ public interface ContractService {
     List<ShowContractModel> getContractByStoreIDAndStatus(String storeID, Status status, Pageable pageable);
 
     List<ShowPaymentTypeModel> getPaymentType();
+
+    List<ShowContractDetailModel> getContractDetailByDateBetween(LocalDateTime from, LocalDateTime to, Long staffID);
 }

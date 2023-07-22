@@ -30,7 +30,7 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.server.ResponseStatusException;
 
 import javax.servlet.http.HttpServletRequest;
-import java.util.InputMismatchException;
+import java.time.LocalDateTime;
 import java.util.List;
 
 @RestController
@@ -50,7 +50,7 @@ public class ContractController {
                                                   @RequestParam int pageSize,
                                                   @RequestParam SearchType.CONTRACT sortBy,
                                                   @RequestParam(required = false, defaultValue = "true") boolean sortAsc,
-                                                   HttpServletRequest request) {
+                                                  HttpServletRequest request) {
         String roleName = jwtUtil.getRoleNameFromRequest(request);
         if(!roleName.equalsIgnoreCase("Customer") && !roleName.equalsIgnoreCase("Staff")) {
             throw new ResponseStatusException(HttpStatus.FORBIDDEN, "-----------------------------------Người dùng không có quyền truy cập---------------------------");
@@ -65,11 +65,11 @@ public class ContractController {
             paging = util.makePaging(pageNo, pageSize, sortBy.toString().toLowerCase(), sortAsc);
         }
 
-        if(role.equalsIgnoreCase("staff")){
+        if(role.equalsIgnoreCase("staff")) {
             return ResponseEntity.ok().body(contractService.getAllContractByUserID(jwtUtil.getUserIDFromRequest(request), "Staff", paging));
-        }else if(role.equalsIgnoreCase("customer")){
+        } else if(role.equalsIgnoreCase("customer")) {
             return ResponseEntity.ok().body(contractService.getAllContractByUserID(jwtUtil.getUserIDFromRequest(request), "Customer", paging));
-        }else{
+        } else {
             return ResponseEntity.badRequest().body("Nhập dữ liệu sai, Role phải là Staff hoặc Customer ( Không phân biệt hoa thường ).");
         }
     }
@@ -107,6 +107,28 @@ public class ContractController {
         }
         List<ShowContractDetailModel> model = contractService.getAllContractDetailByUserID(jwtUtil.getUserIDFromRequest(request));
         return model;
+    }
+
+    @GetMapping(value = "/getContractDetailByStaffTokenAndDate", produces = "application/json;charset=UTF-8")
+    public @ResponseBody
+    ResponseEntity<?> getContractDetailByStaffToken(@RequestParam String from,
+                                                                @RequestParam String to,
+                                                                HttpServletRequest request) {
+        String roleName = jwtUtil.getRoleNameFromRequest(request);
+        if(!roleName.equalsIgnoreCase("Staff")) {
+            throw new ResponseStatusException(HttpStatus.FORBIDDEN, "-----------------------------------Người dùng không có quyền truy cập---------------------------");
+        }
+
+        LocalDateTime fromDate = util.isDateValid(from);
+        if( fromDate == null){
+            return ResponseEntity.badRequest().body("Nhập theo khuôn được định sẵn yyyy-MM-dd, ví dụ : 2021-12-21");
+        }
+        LocalDateTime toDate = util.isDateValid(to);
+        if( toDate == null){
+            return ResponseEntity.badRequest().body("Nhập theo khuôn được định sẵn yyyy-MM-dd, ví dụ : 2021-12-21");
+        }
+
+        return ResponseEntity.ok().body(contractService.getContractDetailByDateBetween(fromDate, toDate, jwtUtil.getUserIDFromRequest(request)));
     }
 
     @GetMapping(produces = "application/json;charset=UTF-8")
@@ -210,7 +232,7 @@ public class ContractController {
                                                        @RequestParam String status,
                                                        HttpServletRequest request) throws Exception {
         String roleName = jwtUtil.getRoleNameFromRequest(request);
-        if(!roleName.equalsIgnoreCase("Staff")) {
+        if(!roleName.equalsIgnoreCase("Manager")) {
             throw new ResponseStatusException(HttpStatus.FORBIDDEN, "-----------------------------------Người dùng không có quyền truy cập---------------------------");
         }
         String result = contractService.changeContractStatus(contractID, Status.valueOf(status));

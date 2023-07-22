@@ -149,6 +149,14 @@ public class FeedbackServiceImpl implements FeedbackService {
             imgModelList.add(imgModel);
         }
 
+        //plant
+        com.example.thanhhoa.dtos.OrderModels.ShowPlantModel plantModel = new com.example.thanhhoa.dtos.OrderModels.ShowPlantModel();
+        plantModel.setId(orderFeedback.getPlant().getId());
+        if(orderFeedback.getPlant().getPlantIMGList() != null && !orderFeedback.getPlant().getPlantIMGList().isEmpty()) {
+            plantModel.setImage(orderFeedback.getPlant().getPlantIMGList().get(0).getImgURL());
+        }
+        plantModel.setPlantName(orderFeedback.getPlant().getName());
+
         ShowOrderFeedbackModel model = new ShowOrderFeedbackModel();
         model.setOrderFeedbackID(orderFeedback.getId());
         model.setDescription(orderFeedback.getDescription());
@@ -177,6 +185,14 @@ public class FeedbackServiceImpl implements FeedbackService {
             imgModel.setImgURL(imgModel.getImgURL());
             imgModelList.add(imgModel);
         }
+
+        //plant
+        com.example.thanhhoa.dtos.OrderModels.ShowPlantModel plantModel = new com.example.thanhhoa.dtos.OrderModels.ShowPlantModel();
+        plantModel.setId(orderFeedback.getPlant().getId());
+        if(orderFeedback.getPlant().getPlantIMGList() != null && !orderFeedback.getPlant().getPlantIMGList().isEmpty()) {
+            plantModel.setImage(orderFeedback.getPlant().getPlantIMGList().get(0).getImgURL());
+        }
+        plantModel.setPlantName(orderFeedback.getPlant().getName());
 
         ShowOrderFeedbackModel model = new ShowOrderFeedbackModel();
         model.setOrderFeedbackID(orderFeedback.getId());

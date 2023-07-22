@@ -122,7 +122,7 @@ public class FeedbackController {
 
     @GetMapping(value = "/orderFeedback/{orderDetailID}", produces = "application/json;charset=UTF-8")
     public @ResponseBody
-    ResponseEntity<Object> getOrderFeedbackByOrderDetailID(@PathVariable("orderID") String orderDetailID) {
+    ResponseEntity<Object> getOrderFeedbackByOrderDetailID(@PathVariable("orderDetailID") String orderDetailID) {
         ShowOrderFeedbackModel model = feedbackService.getOrderFeedbackByOrderDetailID(orderDetailID);
         if (model != null) {
             return ResponseEntity.ok().body(model);

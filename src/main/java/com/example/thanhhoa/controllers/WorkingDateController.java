@@ -92,25 +92,12 @@ public class WorkingDateController {
         if(!roleName.equalsIgnoreCase("Staff") && !roleName.equalsIgnoreCase("Manager") && !roleName.equalsIgnoreCase("Owner")) {
             throw new ResponseStatusException(HttpStatus.FORBIDDEN, "-----------------------------------Người dùng không có quyền truy cập---------------------------");
         }
-        LocalDateTime workingDate = isDateValid(date);
+        LocalDateTime workingDate = util.isDateValid(date);
         if( workingDate == null){
             return ResponseEntity.badRequest().body("Nhập theo khuôn được định sẵn yyyy-MM-dd, ví dụ : 2021-12-21");
         }
         return ResponseEntity.ok().body(workingDateService.getByWorkingDate(contractDetailID, workingDate));
     }
 
-    private LocalDateTime isDateValid(String date)
-    {
-        date += " 00:00:00";
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
-        try
-        {
-            return LocalDateTime.parse(date, formatter);
-        }
-        catch (DateTimeParseException e)
-        {
-            e.printStackTrace();
-            return null;
-        }
-    }
+
 }
