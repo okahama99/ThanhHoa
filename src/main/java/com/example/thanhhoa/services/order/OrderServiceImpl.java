@@ -310,7 +310,7 @@ public class OrderServiceImpl implements OrderService {
 
     @Override
     public List<ShowOrderModel> getAllOrderByStoreID(String storeID, Pageable pageable) {
-        Page<tblOrder> pagingResult = orderPagingRepository.findByCustomer_Username(storeID, pageable);
+        Page<tblOrder> pagingResult = orderPagingRepository.findByStore_Id(storeID, pageable);
         return util.orderPagingConverter(pagingResult, pageable);
     }
 
