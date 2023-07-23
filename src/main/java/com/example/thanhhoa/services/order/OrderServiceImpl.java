@@ -347,7 +347,7 @@ public class OrderServiceImpl implements OrderService {
         } else if(isFeedback.equalsIgnoreCase("true")) {
             pagingResult = orderDetailPagingRepository.findByIsFeedbackAndTblOrder_ProgressStatus(true, Status.RECEIVED, pageable);
         } else {
-            pagingResult = orderDetailPagingRepository.findByIsFeedbackAndTblOrder_ProgressStatus(null, Status.RECEIVED, pageable);
+            pagingResult = orderDetailPagingRepository.findByIsFeedbackAndTblOrder_ProgressStatus(false, Status.RECEIVED, pageable);
         }
         return util.orderDetailPagingConverter(pagingResult, pageable);
     }
