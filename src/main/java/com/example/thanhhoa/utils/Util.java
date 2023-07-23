@@ -437,6 +437,7 @@ public class Util {
                     customerModel.setEmail(orderFeedback.getCustomer().getEmail());
                     customerModel.setPhone(orderFeedback.getCustomer().getPhone());
                     customerModel.setFullName(orderFeedback.getCustomer().getFullName());
+                    customerModel.setAvatar(orderFeedback.getCustomer().getAvatar());
 
                     //plant
                     com.example.thanhhoa.dtos.OrderModels.ShowPlantModel plantModel = new com.example.thanhhoa.dtos.OrderModels.ShowPlantModel();
