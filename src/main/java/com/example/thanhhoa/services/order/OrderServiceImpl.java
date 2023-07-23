@@ -343,11 +343,11 @@ public class OrderServiceImpl implements OrderService {
     public List<ShowOrderDetailModel> getOrderDetailByIsFeedback(String isFeedback, Pageable pageable) {
         Page<OrderDetail> pagingResult = null;
         if(isFeedback == null) {
-            pagingResult = orderDetailPagingRepository.findAll(pageable);
+            pagingResult = orderDetailPagingRepository.findAllByTblOrder_ProgressStatus(Status.RECEIVED, pageable);
         } else if(isFeedback.equalsIgnoreCase("true")) {
-            pagingResult = orderDetailPagingRepository.findByIsFeedback(true, pageable);
+            pagingResult = orderDetailPagingRepository.findByIsFeedbackAndTblOrder_ProgressStatus(true, Status.RECEIVED, pageable);
         } else {
-            pagingResult = orderDetailPagingRepository.findByIsFeedback(null, pageable);
+            pagingResult = orderDetailPagingRepository.findByIsFeedbackAndTblOrder_ProgressStatus(null, Status.RECEIVED, pageable);
         }
         return util.orderDetailPagingConverter(pagingResult, pageable);
     }

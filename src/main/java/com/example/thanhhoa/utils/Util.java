@@ -122,7 +122,7 @@ public class Util {
                     model.setRoleName(user.getRole().getRoleName());
                     model.setStatus(user.getStatus());
                     StoreEmployee storeEmployee = storeEmployeeRepository.findByAccount_IdAndStatus(user.getId(), Status.ACTIVE);
-                    if((user.getRole().getRoleName().equalsIgnoreCase("Manager") || user.getRole().getRoleName().equalsIgnoreCase("Staff")) && storeEmployee != null){
+                    if((user.getRole().getRoleName().equalsIgnoreCase("Manager") || user.getRole().getRoleName().equalsIgnoreCase("Staff")) && storeEmployee != null) {
                         model.setStoreID(storeEmployee.getStore().getId());
                         model.setStoreName(storeEmployee.getStore().getStoreName());
                     }
@@ -1103,6 +1103,50 @@ public class Util {
         } else {
             return new ArrayList<>();
         }
+    }
+
+    public void getSetRatingFeedbackForModelList(List<ShowOrderFeedbackModel> list) {
+        Double totalRating = 0.0;
+        Double totalFeedback = 0.0;
+        Double avgRatingFeedback = 0.0;
+        if(list != null && !list.isEmpty()) {
+            for(ShowOrderFeedbackModel model : list) {
+                totalRating += Double.parseDouble(model.getRatingModel().getDescription());
+            }
+            totalFeedback = Double.valueOf(list.size());
+        }
+
+        if(totalRating > 0.0 && totalFeedback > 0.0) {
+            avgRatingFeedback = totalRating / totalFeedback;
+        }
+
+        for(ShowOrderFeedbackModel model : list) {
+            model.setTotalFeedback(totalFeedback);
+            model.setTotalRating(totalRating);
+            model.setAvgRatingFeedback(avgRatingFeedback);
+        }
+    }
+
+    public void getSetRatingFeedbackForModel(OrderFeedback orderFeedback, ShowOrderFeedbackModel model) {
+        Double totalRating = 0.0;
+        Double totalFeedback = 0.0;
+        Double avgRatingFeedback = 0.0;
+        List<OrderFeedback> list = orderFeedbackRepository.findAllByStatusAndPlant_Id(Status.ACTIVE, orderFeedback.getPlant().getId());
+        if(list != null && !list.isEmpty()) {
+            for(OrderFeedback ofb : list) {
+                totalRating += Double.parseDouble(ofb.getRating().getDescription());
+            }
+            totalFeedback = Double.valueOf(list.size());
+        }
+
+        if(totalRating > 0.0 && totalFeedback > 0.0) {
+            avgRatingFeedback = totalRating / totalFeedback;
+        }
+
+        model.setTotalFeedback(totalFeedback);
+        model.setTotalRating(totalRating);
+        model.setAvgRatingFeedback(avgRatingFeedback);
+
     }
 
 //    class InvalidInput extends Exception {

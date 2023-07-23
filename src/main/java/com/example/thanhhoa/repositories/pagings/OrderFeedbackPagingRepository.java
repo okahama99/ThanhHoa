@@ -11,6 +11,8 @@ import org.springframework.stereotype.Repository;
 public interface OrderFeedbackPagingRepository extends PagingAndSortingRepository<OrderFeedback, String> {
     Page<OrderFeedback> findAllByStatus(Status status, Pageable pageable);
 
-    Page<OrderFeedback> findByPlantId(String plantID, Pageable pageable);
-    
+    Page<OrderFeedback> findByPlant_Id(String plantID, Pageable pageable);
+
+    Page<OrderFeedback> findByRating_Id(String plantID, Pageable pageable);
+
 }

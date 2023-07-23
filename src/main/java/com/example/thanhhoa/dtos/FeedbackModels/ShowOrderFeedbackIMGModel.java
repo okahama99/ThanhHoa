@@ -9,5 +9,5 @@ import java.io.Serializable;
 @Setter
 public class ShowOrderFeedbackIMGModel implements Serializable {
     private String id;
-    private String imgURL;
+    private String url;
 }

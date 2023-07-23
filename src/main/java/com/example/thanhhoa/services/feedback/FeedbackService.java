@@ -27,6 +27,8 @@ public interface FeedbackService {
 
     List<ShowOrderFeedbackModel> getOrderFeedbackByPlantID(String plantID, Pageable pageable);
 
+    List<ShowOrderFeedbackModel> getOrderFeedbackByRatingID(String ratingID, Pageable pageable);
+
     ShowOrderFeedbackModel getOrderFeedbackByOrderDetailID(String orderDetailID);
 
 

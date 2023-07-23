@@ -19,7 +19,6 @@ public class Rating implements Serializable {
     @Enumerated(EnumType.STRING)
     private Status status;
 
-    @Lob
     @Column(nullable = false)
     private String description;
 

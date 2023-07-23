@@ -87,7 +87,9 @@ public class FeedbackController {
                                                      @RequestParam int pageSize,
                                                      @RequestParam(required = false, defaultValue = "ID") String sortBy,
                                                      @RequestParam(required = false, defaultValue = "true") Boolean sortAsc) {
-        return feedbackService.getAllOrderFeedback(util.makePaging(pageNo, pageSize, sortBy.toLowerCase(), sortAsc));
+        List<ShowOrderFeedbackModel> result = feedbackService.getAllOrderFeedback(util.makePaging(pageNo, pageSize, sortBy.toLowerCase(), sortAsc));
+        util.getSetRatingFeedbackForModelList(result);
+        return result;
     }
 
     @GetMapping(value = "/orderFeedback/byID/{orderFeedbackID}", produces = "application/json;charset=UTF-8")
@@ -110,14 +112,25 @@ public class FeedbackController {
         return ResponseEntity.badRequest().body("Feedback không tồn tại.");
     }
 
-    @GetMapping(value = "/orderFeedback/byPlantID/{plantID}", produces = "application/json;charset=UTF-8")
+    @GetMapping(value = "/orderFeedback/byPlantID", produces = "application/json;charset=UTF-8")
     public @ResponseBody
-    List<ShowOrderFeedbackModel> getOrderFeedbackByPlantID(@PathVariable("plantID") String plantID,
+    List<ShowOrderFeedbackModel> getOrderFeedbackByPlantID(@RequestParam(required = false) String plantID,
+                                                           @RequestParam(required = false) String ratingID,
                                                            @RequestParam int pageNo,
                                                            @RequestParam int pageSize,
                                                            @RequestParam(required = false, defaultValue = "ID") String sortBy,
                                                            @RequestParam(required = false, defaultValue = "true") Boolean sortAsc) {
-        return feedbackService.getOrderFeedbackByPlantID(plantID, util.makePaging(pageNo, pageSize, sortBy.toLowerCase(), sortAsc));
+        List<ShowOrderFeedbackModel> result;
+        if(ratingID != null){
+            result = feedbackService.getOrderFeedbackByRatingID(ratingID, util.makePaging(pageNo, pageSize, sortBy.toLowerCase(), sortAsc));
+        }else if(plantID != null){
+           result = feedbackService.getOrderFeedbackByPlantID(plantID, util.makePaging(pageNo, pageSize, sortBy.toLowerCase(), sortAsc));
+        }else{
+            result = feedbackService.getAllOrderFeedback(util.makePaging(pageNo, pageSize, sortBy.toLowerCase(), sortAsc));
+        }
+
+        util.getSetRatingFeedbackForModelList(result);
+        return result;
     }
 
     @GetMapping(value = "/orderFeedback/byOrderDetailID/{orderDetailID}", produces = "application/json;charset=UTF-8")

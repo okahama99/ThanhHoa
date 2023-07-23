@@ -16,6 +16,9 @@ public class ShowOrderFeedbackModel implements Serializable {
     private String orderFeedbackID;
     private String description;
     private Status status;
+    private Double totalRating;
+    private Double totalFeedback;
+    private Double avgRatingFeedback;
     private LocalDateTime createdDate;
 
     private List<ShowOrderFeedbackIMGModel> imgList;
