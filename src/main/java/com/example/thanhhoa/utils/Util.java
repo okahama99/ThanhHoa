@@ -924,6 +924,7 @@ public class Util {
         customerModel.setEmail(orderDetail.getTblOrder().getCustomer().getEmail());
         customerModel.setPhone(orderDetail.getTblOrder().getCustomer().getPhone());
         customerModel.setFullName(orderDetail.getTblOrder().getCustomer().getFullName());
+        customerModel.setAvatar(orderDetail.getTblOrder().getCustomer().getAvatar());
 
         //staff
         ShowStaffModel staffModel = new ShowStaffModel();
@@ -1047,6 +1048,7 @@ public class Util {
                     customerModel.setEmail(orderDetail.getTblOrder().getCustomer().getEmail());
                     customerModel.setPhone(orderDetail.getTblOrder().getCustomer().getPhone());
                     customerModel.setFullName(orderDetail.getTblOrder().getCustomer().getFullName());
+                    customerModel.setAvatar(orderDetail.getTblOrder().getCustomer().getAvatar());
 
                     //staff
                     ShowStaffModel staffModel = new ShowStaffModel();
@@ -1105,13 +1107,14 @@ public class Util {
         }
     }
 
-    public void getSetRatingFeedbackForModelList(List<ShowOrderFeedbackModel> list) {
+    public void getSetRatingFeedbackForModelList(List<ShowOrderFeedbackModel> modelList) {
         Double totalRating = 0.0;
         Double totalFeedback = 0.0;
         Double avgRatingFeedback = 0.0;
-        if(list != null && !list.isEmpty()) {
-            for(ShowOrderFeedbackModel model : list) {
-                totalRating += Double.parseDouble(model.getRatingModel().getDescription());
+        if(modelList != null && !modelList.isEmpty()) {
+            List<OrderFeedback> list = orderFeedbackRepository.findAllByStatusAndPlant_Id(Status.ACTIVE, modelList.get(0).getShowPlantModel().getId());
+            for(OrderFeedback orderFeedback : list) {
+                totalRating += Double.parseDouble(orderFeedback.getRating().getDescription());
             }
             totalFeedback = Double.valueOf(list.size());
         }
@@ -1120,7 +1123,7 @@ public class Util {
             avgRatingFeedback = totalRating / totalFeedback;
         }
 
-        for(ShowOrderFeedbackModel model : list) {
+        for(ShowOrderFeedbackModel model : modelList) {
             model.setTotalFeedback(totalFeedback);
             model.setTotalRating(totalRating);
             model.setAvgRatingFeedback(avgRatingFeedback);
