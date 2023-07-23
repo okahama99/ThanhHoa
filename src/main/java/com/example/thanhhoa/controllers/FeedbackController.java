@@ -86,8 +86,13 @@ public class FeedbackController {
     List<ShowOrderFeedbackModel> getAllOrderFeedback(@RequestParam int pageNo,
                                                      @RequestParam int pageSize,
                                                      @RequestParam(required = false, defaultValue = "ID") String sortBy,
-                                                     @RequestParam(required = false, defaultValue = "true") Boolean sortAsc) {
-        List<ShowOrderFeedbackModel> result = feedbackService.getAllOrderFeedback(util.makePaging(pageNo, pageSize, sortBy.toLowerCase(), sortAsc));
+                                                     @RequestParam(required = false, defaultValue = "true") Boolean sortAsc,
+                                                     HttpServletRequest request) {
+        String roleName = jwtUtil.getRoleNameFromRequest(request);
+        if(!roleName.equalsIgnoreCase("Customer")) {
+            throw new ResponseStatusException(HttpStatus.FORBIDDEN, "-----------------------------------Người dùng không có quyền truy cập---------------------------");
+        }
+        List<ShowOrderFeedbackModel> result = feedbackService.getAllOrderFeedback(jwtUtil.getUserIDFromRequest(request),util.makePaging(pageNo, pageSize, sortBy.toLowerCase(), sortAsc));
         util.getSetRatingFeedbackForModelList(result);
         return result;
     }
@@ -119,14 +124,20 @@ public class FeedbackController {
                                                            @RequestParam int pageNo,
                                                            @RequestParam int pageSize,
                                                            @RequestParam(required = false, defaultValue = "ID") String sortBy,
-                                                           @RequestParam(required = false, defaultValue = "true") Boolean sortAsc) {
+                                                           @RequestParam(required = false, defaultValue = "true") Boolean sortAsc,
+                                                           HttpServletRequest request) {
+        String roleName = jwtUtil.getRoleNameFromRequest(request);
+        if(!roleName.equalsIgnoreCase("Customer")) {
+            throw new ResponseStatusException(HttpStatus.FORBIDDEN, "-----------------------------------Người dùng không có quyền truy cập---------------------------");
+        }
+
         List<ShowOrderFeedbackModel> result;
         if(ratingID != null){
             result = feedbackService.getOrderFeedbackByRatingID(ratingID, util.makePaging(pageNo, pageSize, sortBy.toLowerCase(), sortAsc));
         }else if(plantID != null){
            result = feedbackService.getOrderFeedbackByPlantID(plantID, util.makePaging(pageNo, pageSize, sortBy.toLowerCase(), sortAsc));
         }else{
-            result = feedbackService.getAllOrderFeedback(util.makePaging(pageNo, pageSize, sortBy.toLowerCase(), sortAsc));
+            result = feedbackService.getAllOrderFeedback(jwtUtil.getUserIDFromRequest(request), util.makePaging(pageNo, pageSize, sortBy.toLowerCase(), sortAsc));
         }
 
         util.getSetRatingFeedbackForModelList(result);

@@ -162,6 +162,7 @@ public class PlantServiceImpl implements PlantService {
             }
             plantCategory.setCategory(category.get());
             plantCategory.setPlant(plant);
+            plantCategory.setStatus(Status.ACTIVE);
             plantCategoryRepository.save(plantCategory);
         }
 

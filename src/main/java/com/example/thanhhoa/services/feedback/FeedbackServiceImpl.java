@@ -160,8 +160,8 @@ public class FeedbackServiceImpl implements FeedbackService {
     }
 
     @Override
-    public List<ShowOrderFeedbackModel> getAllOrderFeedback(Pageable pageable) {
-        Page<OrderFeedback> pagingResult = orderFeedbackPagingRepository.findAllByStatus(Status.ACTIVE, pageable);
+    public List<ShowOrderFeedbackModel> getAllOrderFeedback(Long userID, Pageable pageable) {
+        Page<OrderFeedback> pagingResult = orderFeedbackPagingRepository.findAllByStatusAndCustomer_Id(Status.ACTIVE, userID, pageable);
         return util.orderFeedbackPagingConverter(pagingResult, pageable);
     }
 
