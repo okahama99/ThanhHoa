@@ -17,6 +17,5 @@ public interface ContractDetailRepository extends JpaRepository<ContractDetail, 
 
     List<ContractDetail> findByContract_Staff_Id(Long staffID);
 
-    List<ContractDetail> findByContract_Staff_IdAndStartDateBetweenAndEndDateBetween
-            (Long staffID, LocalDateTime fromStartDate, LocalDateTime toStartDate, LocalDateTime fromEndDate, LocalDateTime toEndDate);
+    List<ContractDetail> findByContract_Staff_IdAndStartDateLessThanEqualAndEndDateGreaterThanEqual(Long staffID, LocalDateTime startDate, LocalDateTime endDate);
 }

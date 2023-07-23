@@ -482,8 +482,7 @@ public class ContractServiceImpl implements ContractService {
     @Override
     public List<ShowContractDetailModel> getContractDetailByDateBetween(LocalDateTime from, LocalDateTime to, Long staffID) {
         List<ContractDetail> contractDetailList =
-                contractDetailRepository.findByContract_Staff_IdAndStartDateBetweenAndEndDateBetween
-                        (staffID, from, from.plusDays(1L), to, to.plusDays(1L));
+                contractDetailRepository.findByContract_Staff_IdAndStartDateLessThanEqualAndEndDateGreaterThanEqual(staffID, from, to);
         if(contractDetailList == null) {
             return null;
         }
