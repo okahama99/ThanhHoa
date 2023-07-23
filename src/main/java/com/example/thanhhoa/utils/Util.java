@@ -55,6 +55,7 @@ import com.example.thanhhoa.repositories.PlantIMGRepository;
 import com.example.thanhhoa.repositories.PlantPriceRepository;
 import com.example.thanhhoa.repositories.ServiceIMGRepository;
 import com.example.thanhhoa.repositories.ServiceTypeRepository;
+import com.example.thanhhoa.repositories.StoreEmployeeRepository;
 import com.example.thanhhoa.repositories.WorkingDateRepository;
 import com.google.common.base.Converter;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -87,6 +88,8 @@ public class Util {
     private WorkingDateRepository workingDateRepository;
     @Autowired
     private OrderFeedbackRepository orderFeedbackRepository;
+    @Autowired
+    private StoreEmployeeRepository storeEmployeeRepository;
 
     /**
      * Small Util to return {@link Pageable} to replace dup code in serviceImpl
@@ -118,6 +121,11 @@ public class Util {
                     model.setRoleID(user.getRole().getId());
                     model.setRoleName(user.getRole().getRoleName());
                     model.setStatus(user.getStatus());
+                    StoreEmployee storeEmployee = storeEmployeeRepository.findByAccount_IdAndStatus(user.getId(), Status.ACTIVE);
+                    if((user.getRole().getRoleName().equalsIgnoreCase("Manager") || user.getRole().getRoleName().equalsIgnoreCase("Staff")) && storeEmployee != null){
+                        model.setStoreID(storeEmployee.getStore().getId());
+                        model.setStoreName(storeEmployee.getStore().getStoreName());
+                    }
                     model.setTotalPage(totalPage);
                     return model;
                 }
@@ -418,7 +426,7 @@ public class Util {
                     for(OrderFeedbackIMG img : orderFeedback.getOrderFeedbackIMGList()) {
                         ShowOrderFeedbackIMGModel imgModel = new ShowOrderFeedbackIMGModel();
                         imgModel.setId(img.getId());
-                        imgModel.setImgURL(img.getImgURL());
+                        imgModel.setUrl(img.getImgURL());
                         imgModelList.add(imgModel);
                     }
 
@@ -982,7 +990,7 @@ public class Util {
                             for(OrderFeedbackIMG img : orderFeedback.getOrderFeedbackIMGList()) {
                                 ShowOrderFeedbackIMGModel imgModel = new ShowOrderFeedbackIMGModel();
                                 imgModel.setId(img.getId());
-                                imgModel.setImgURL(img.getImgURL());
+                                imgModel.setUrl(img.getImgURL());
                                 imgModelList.add(imgModel);
                             }
 

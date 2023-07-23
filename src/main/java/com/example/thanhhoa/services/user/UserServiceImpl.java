@@ -79,6 +79,11 @@ public class UserServiceImpl implements UserService {
         model.setAddress(user.getAddress());
         model.setGender(user.getGender());
         model.setStatus(user.getStatus());
+        StoreEmployee storeEmployee = storeEmployeeRepository.findByAccount_IdAndStatus(user.getId(), Status.ACTIVE);
+        if((user.getRole().getRoleName().equalsIgnoreCase("Manager") || user.getRole().getRoleName().equalsIgnoreCase("Staff")) && storeEmployee != null){
+            model.setStoreID(storeEmployee.getStore().getId());
+            model.setStoreName(storeEmployee.getStore().getStoreName());
+        }
         return model;
     }
 

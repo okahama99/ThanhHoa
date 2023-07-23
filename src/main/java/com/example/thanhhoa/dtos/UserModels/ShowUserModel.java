@@ -21,6 +21,8 @@ public class ShowUserModel implements Serializable {
     private Status status;
     private LocalDateTime createdDate;
 
+    private String storeID;
+    private String storeName;
     private String roleID;
     private String roleName;
     private Double totalPage;
