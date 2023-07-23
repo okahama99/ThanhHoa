@@ -90,7 +90,7 @@ public class UserController {
             response.put("token", token);
 
             return ResponseEntity.ok().body(response);
-        } catch (Exception e) {
+        } catch(Exception e) {
             e.printStackTrace();
             return ResponseEntity.internalServerError().body("Lỗi đăng nhập.");
         }
@@ -99,7 +99,7 @@ public class UserController {
     @RequestMapping(value = "/logout", method = RequestMethod.GET, produces = "application/json;charset=UTF-8")
     public String logoutPage(HttpServletRequest request, HttpServletResponse response) {
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-        if (auth != null) {
+        if(auth != null) {
             new SecurityContextLogoutHandler().logout(request, response, auth);
         }
         return "redirect:/";
@@ -110,10 +110,10 @@ public class UserController {
                                                         @RequestParam(required = false) String email,
                                                         @RequestParam(required = false) String phone) throws Exception {
         tblAccount user = null;
-        switch (loginType) {
+        switch(loginType) {
             case EMAIL:
                 user = userService.loginWithEmail(email);
-                if (user != null) {
+                if(user != null) {
                     Map<String, String> response = new HashMap<>(2);
                     String token = jwtUtil.generateTokenForEmailOrPhone(user);
                     response.put("status", "success");
@@ -124,7 +124,7 @@ public class UserController {
                 break;
             case PHONE:
                 user = userService.loginWithPhone(phone);
-                if (user != null) {
+                if(user != null) {
                     Map<String, String> response = new HashMap<>(2);
                     String token = jwtUtil.generateTokenForEmailOrPhone(user);
                     response.put("status", "success");
@@ -141,7 +141,7 @@ public class UserController {
     public ResponseEntity<Object> loginGoogle(HttpServletRequest request) throws Exception {
         String code = request.getParameter("code");
 
-        if (code == null || code.isEmpty()) {
+        if(code == null || code.isEmpty()) {
             return ResponseEntity.badRequest().body("Lỗi lấy code từ request.");
         }
         String accessToken = googleUtils.getToken(code);
@@ -173,7 +173,7 @@ public class UserController {
 
         // generate OTP.
         Boolean isGenerated = otpService.generateOTPForResetPassword(email);
-        if (!isGenerated) {
+        if(!isGenerated) {
             response.put("status", "error");
             response.put("message", "Không thể khởi tạo OTP.");
 
@@ -191,7 +191,7 @@ public class UserController {
                                               @RequestParam Integer otp) {
         // validate provided OTP.
         Boolean isValid = otpService.validateOTP(email, otp);
-        if (!isValid) {
+        if(!isValid) {
             return new ResponseEntity<>("OTP không chính xác", HttpStatus.BAD_REQUEST);
         }
 
@@ -209,7 +209,7 @@ public class UserController {
     public ResponseEntity<Object> register(@RequestBody RegisterUserModel registerUserModel) {
         registerUserModel.setPassword(passwordEncoder.encode(registerUserModel.getPassword()));
         String result = userService.register(registerUserModel);
-        if (result.equals("Tạo User thành công.")) {
+        if(result.equals("Tạo User thành công.")) {
             return ResponseEntity.ok().body(result);
         }
         return ResponseEntity.badRequest().body(result);
@@ -222,9 +222,9 @@ public class UserController {
                                @RequestParam SearchType.USER sortBy,
                                @RequestParam(required = false, defaultValue = "true") Boolean sortTypeAsc) {
         Pageable paging;
-        if (sortBy.equals("FULLNAME")) {
+        if(sortBy.equals("FULLNAME")) {
             paging = util.makePaging(pageNo, pageSize, "fullName", sortTypeAsc);
-        } else if (sortBy.equals("CREATEDDATE")) {
+        } else if(sortBy.equals("CREATEDDATE")) {
             paging = util.makePaging(pageNo, pageSize, "createdDate", sortTypeAsc);
         } else {
             paging = util.makePaging(pageNo, pageSize, sortBy.toString().toLowerCase(), sortTypeAsc);
@@ -243,48 +243,48 @@ public class UserController {
                                              @RequestParam(required = false, defaultValue = "true") Boolean sortTypeAsc,
                                              HttpServletRequest request) {
         String roleName = jwtUtil.getRoleNameFromRequest(request);
-        if (!roleName.equalsIgnoreCase("Admin")) {
+        if(!roleName.equalsIgnoreCase("Admin")) {
             throw new ResponseStatusException(HttpStatus.FORBIDDEN, "-----------------------------------Người dùng không có quyền truy cập---------------------------");
         }
         Pageable paging;
-        if (sortBy.equals("FULLNAME")) {
+        if(sortBy.equals("FULLNAME")) {
             paging = util.makePaging(pageNo, pageSize, "fullName", sortTypeAsc);
-        } else if (sortBy.equals("CREATEDDATE")) {
+        } else if(sortBy.equals("CREATEDDATE")) {
             paging = util.makePaging(pageNo, pageSize, "createdDate", sortTypeAsc);
         } else {
             paging = util.makePaging(pageNo, pageSize, sortBy.toString().toLowerCase(), sortTypeAsc);
         }
-        if (!StringUtils.isEmpty(username) && StringUtils.isEmpty(fullName)
+        if(!StringUtils.isEmpty(username) && StringUtils.isEmpty(fullName)
                 && StringUtils.isEmpty(email) && StringUtils.isEmpty(phone)) {
             return ResponseEntity.ok().body(userService.getUserByUsername(username, paging));
-        } else if (StringUtils.isEmpty(username) && !StringUtils.isEmpty(fullName)
+        } else if(StringUtils.isEmpty(username) && !StringUtils.isEmpty(fullName)
                 && StringUtils.isEmpty(email) && StringUtils.isEmpty(phone)) {
             return ResponseEntity.ok().body(userService.getUserByFullName(fullName, paging));
-        } else if (StringUtils.isEmpty(username) && StringUtils.isEmpty(fullName)
+        } else if(StringUtils.isEmpty(username) && StringUtils.isEmpty(fullName)
                 && !StringUtils.isEmpty(email) && StringUtils.isEmpty(phone)) {
             return ResponseEntity.ok().body(userService.getUserByEmail(email, paging));
-        } else if (StringUtils.isEmpty(username) && StringUtils.isEmpty(fullName)
+        } else if(StringUtils.isEmpty(username) && StringUtils.isEmpty(fullName)
                 && StringUtils.isEmpty(email) && !StringUtils.isEmpty(phone)) {
             return ResponseEntity.ok().body(userService.getUserByPhone(phone, paging));
-        } else if (StringUtils.isEmpty(username) && StringUtils.isEmpty(fullName)
+        } else if(StringUtils.isEmpty(username) && StringUtils.isEmpty(fullName)
                 && !StringUtils.isEmpty(email) && !StringUtils.isEmpty(phone)) {
             return ResponseEntity.ok().body(userService.getUserByEmailAndPhone(email, phone, paging));
-        } else if (!StringUtils.isEmpty(username) && !StringUtils.isEmpty(fullName)
+        } else if(!StringUtils.isEmpty(username) && !StringUtils.isEmpty(fullName)
                 && StringUtils.isEmpty(email) && StringUtils.isEmpty(phone)) {
             return ResponseEntity.ok().body(userService.getUserByUsernameAndFullName(username, fullName, paging));
-        } else if (StringUtils.isEmpty(username) && !StringUtils.isEmpty(fullName)
+        } else if(StringUtils.isEmpty(username) && !StringUtils.isEmpty(fullName)
                 && !StringUtils.isEmpty(email) && StringUtils.isEmpty(phone)) {
             return ResponseEntity.ok().body(userService.getUserByFullNameAndEmail(fullName, email, paging));
-        } else if (StringUtils.isEmpty(username) && !StringUtils.isEmpty(fullName)
+        } else if(StringUtils.isEmpty(username) && !StringUtils.isEmpty(fullName)
                 && StringUtils.isEmpty(email) && !StringUtils.isEmpty(phone)) {
             return ResponseEntity.ok().body(userService.getUserByFullNameAndPhone(fullName, phone, paging));
-        } else if (!StringUtils.isEmpty(username) && StringUtils.isEmpty(fullName)
+        } else if(!StringUtils.isEmpty(username) && StringUtils.isEmpty(fullName)
                 && StringUtils.isEmpty(email) && !StringUtils.isEmpty(phone)) {
             return ResponseEntity.ok().body(userService.getUserByUsernameAndPhone(username, phone, paging));
-        } else if (!StringUtils.isEmpty(username) && StringUtils.isEmpty(fullName)
+        } else if(!StringUtils.isEmpty(username) && StringUtils.isEmpty(fullName)
                 && !StringUtils.isEmpty(email) && StringUtils.isEmpty(phone)) {
             return ResponseEntity.ok().body(userService.getUserByUsernameAndEmail(username, email, paging));
-        } else if (!StringUtils.isEmpty(username) && !StringUtils.isEmpty(fullName)
+        } else if(!StringUtils.isEmpty(username) && !StringUtils.isEmpty(fullName)
                 && !StringUtils.isEmpty(email) && !StringUtils.isEmpty(phone)) {
             return ResponseEntity.ok().body(userService.getUserByUsernameAndFullNameAndEmailAndPhone(username, fullName, email, phone, paging));
         } else {
@@ -299,12 +299,24 @@ public class UserController {
         return ResponseEntity.ok().body(userService.getById(userId));
     }
 
+    @GetMapping(value = "/getByID", produces = "application/json;charset=UTF-8")
+    public ResponseEntity<Object> getByID(@RequestParam Long userID,
+                                          HttpServletRequest request) throws Exception {
+        String roleName = jwtUtil.getRoleNameFromRequest(request);
+        if(!roleName.equalsIgnoreCase("Admin") && !roleName.equalsIgnoreCase("Owner")
+                && !roleName.equalsIgnoreCase("Manager") && !roleName.equalsIgnoreCase("Staff")
+                && !roleName.equalsIgnoreCase("Customer")) {
+            throw new ResponseStatusException(HttpStatus.FORBIDDEN, "-----------------------------------Người dùng không có quyền truy cập---------------------------");
+        }
+        return ResponseEntity.ok().body(userService.getById(userID));
+    }
+
     @PostMapping(value = "/{username}", produces = "application/json;charset=UTF-8")
     public HttpStatus changeUserRole(@PathVariable(name = "username") String username,
                                      @RequestParam String roleId,
                                      HttpServletRequest request) {
         String roleName = jwtUtil.getRoleNameFromRequest(request);
-        if (!roleName.equalsIgnoreCase("Admin")) {
+        if(!roleName.equalsIgnoreCase("Admin")) {
             throw new ResponseStatusException(HttpStatus.FORBIDDEN, "-----------------------------------Người dùng không có quyền truy cập---------------------------");
         }
         userService.changeUserRole(username, roleId);
@@ -332,16 +344,16 @@ public class UserController {
     public String getTempPassword(@RequestBody RegisterStaffModel registerStaffModel,
                                   HttpServletRequest request) {
         String roleName = jwtUtil.getRoleNameFromRequest(request);
-        if (!roleName.equalsIgnoreCase("Admin")) {
+        if(!roleName.equalsIgnoreCase("Admin")) {
             throw new ResponseStatusException(HttpStatus.FORBIDDEN, "-----------------------------------Người dùng không có quyền truy cập---------------------------");
         }
         Random random = new Random();
         int randomNum = 100000 + random.nextInt(900000);
         registerStaffModel.setPassword(passwordEncoder.encode(randomNum + ("")));
         String result = userService.generateTempPassword(registerStaffModel, registerStaffModel.getRoleName());
-        if(result.equals("Tạo User thành công.")){
+        if(result.equals("Tạo User thành công.")) {
             return randomNum + "";
-        }else{
+        } else {
             return result;
         }
     }
