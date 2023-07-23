@@ -1127,7 +1127,7 @@ public class Util {
         for(ShowOrderFeedbackModel model : modelList) {
             model.setTotalFeedback(totalFeedback);
             model.setTotalRating(totalRating);
-            model.setAvgRatingFeedback(avgRatingFeedback);
+            model.setAvgRatingFeedback(Double.parseDouble(String.format("%.2f", avgRatingFeedback)));
         }
     }
 
@@ -1149,7 +1149,7 @@ public class Util {
 
         model.setTotalFeedback(totalFeedback);
         model.setTotalRating(totalRating);
-        model.setAvgRatingFeedback(avgRatingFeedback);
+        model.setAvgRatingFeedback(Double.parseDouble(String.format("%.2f", avgRatingFeedback)));
 
     }
 

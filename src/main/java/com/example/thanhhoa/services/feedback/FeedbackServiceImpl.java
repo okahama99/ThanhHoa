@@ -89,6 +89,7 @@ public class FeedbackServiceImpl implements FeedbackService {
         orderFeedback.setDescription(createOrderFeedbackModel.getDescription());
         orderFeedback.setPlant(plant.get());
         orderFeedback.setRating(ratingRepository.getById(createOrderFeedbackModel.getRatingID()));
+        orderDetail.get().setIsFeedback(true);
         orderFeedback.setOrderDetail(orderDetail.get());
 
         for(String imageURL : createOrderFeedbackModel.getListURL()) {
@@ -125,6 +126,7 @@ public class FeedbackServiceImpl implements FeedbackService {
         orderFeedback.setDescription(updateOrderFeedbackModel.getDescription());
         orderFeedback.setPlant(plant.get());
         orderFeedback.setRating(ratingRepository.getById(updateOrderFeedbackModel.getRatingID()));
+        orderDetail.get().setIsFeedback(true);
         orderFeedback.setOrderDetail(orderDetail.get());
 
         for(String imageURL : updateOrderFeedbackModel.getListURL()) {
@@ -150,8 +152,10 @@ public class FeedbackServiceImpl implements FeedbackService {
             return "Không tìm thấy Order Feedback với ID là " + id + ".";
         }
         OrderFeedback orderFeedback = checkExisted.get();
+        orderFeedback.getOrderDetail().setIsFeedback(false);
         orderFeedback.setStatus(Status.INACTIVE);
         orderFeedbackRepository.save(orderFeedback);
+        orderDetailRepository.save(orderFeedback.getOrderDetail());
         return "Xóa thành công.";
     }
 
