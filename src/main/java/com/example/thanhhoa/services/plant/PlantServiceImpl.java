@@ -8,6 +8,7 @@ import com.example.thanhhoa.dtos.PlantModels.UpdatePlantModel;
 import com.example.thanhhoa.dtos.PlantPriceModels.ShowPlantPriceModel;
 import com.example.thanhhoa.dtos.PlantShipPriceModels.ShowPlantShipPriceModel;
 import com.example.thanhhoa.entities.Category;
+import com.example.thanhhoa.entities.OrderFeedbackIMG;
 import com.example.thanhhoa.entities.Plant;
 import com.example.thanhhoa.entities.PlantCategory;
 import com.example.thanhhoa.entities.PlantIMG;
@@ -66,6 +67,12 @@ public class PlantServiceImpl implements PlantService {
     @Override
     public List<ShowPlantModel> getAllPlant(Pageable paging) {
         Page<Plant> pagingResult = plantPagingRepository.findAllByStatus(Status.ONSALE, paging);
+        return util.plantPagingConverter(pagingResult, paging);
+    }
+
+    @Override
+    public List<ShowPlantModel> getAllPlantWithInactive(Pageable paging) {
+        Page<Plant> pagingResult = plantPagingRepository.findAll(paging);
         return util.plantPagingConverter(pagingResult, paging);
     }
 
@@ -184,11 +191,24 @@ public class PlantServiceImpl implements PlantService {
         plantPrice.setApplyDate(LocalDateTime.now());
         plantPrice.setPlant(plant);
         plantPrice.setStatus(Status.ACTIVE);
-        plantPriceRepository.save(plantPrice);
+
+        for(String imageURL : createPlantModel.getListURL()) {
+            PlantIMG plantIMG = new PlantIMG();
+            PlantIMG lastPlantIMG = plantIMGRepository.findFirstByOrderByIdDesc();
+            if(lastPlantIMG == null) {
+                plantIMG.setId(util.createNewID("PIMG"));
+            } else {
+                plantIMG.setId(util.createIDFromLastID("PIMG", 4, lastPlantIMG.getId()));
+            }
+            plantIMG.setPlant(plant);
+            plantIMG.setImgURL(imageURL);
+            plantIMGRepository.save(plantIMG);
+        }
 
         List<PlantPrice> plantPriceList = new ArrayList<>();
         plantPriceList.add(plantPrice);
         plant.setPlantPriceList(plantPriceList);
+        plantPriceRepository.save(plantPrice);
         plantRepository.save(plant);
         return plant.getId();
     }
@@ -290,6 +310,19 @@ public class PlantServiceImpl implements PlantService {
 
                     plant.getPlantPriceList().add(plantPrice);
                 }
+            }
+
+            for(String imageURL : updatePlantModel.getListURL()) {
+                PlantIMG plantIMG = new PlantIMG();
+                PlantIMG lastPlantIMG = plantIMGRepository.findFirstByOrderByIdDesc();
+                if(lastPlantIMG == null) {
+                    plantIMG.setId(util.createNewID("PIMG"));
+                } else {
+                    plantIMG.setId(util.createIDFromLastID("PIMG", 4, lastPlantIMG.getId()));
+                }
+                plantIMG.setPlant(plant);
+                plantIMG.setImgURL(imageURL);
+                plantIMGRepository.save(plantIMG);
             }
 
             plantRepository.save(plant);

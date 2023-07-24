@@ -21,6 +21,7 @@ import com.example.thanhhoa.dtos.PlantModels.ShowPlantIMGModel;
 import com.example.thanhhoa.dtos.PlantModels.ShowPlantModel;
 import com.example.thanhhoa.dtos.PlantPriceModels.ShowPlantPriceModel;
 import com.example.thanhhoa.dtos.PlantShipPriceModels.ShowPlantShipPriceModel;
+import com.example.thanhhoa.dtos.ReportModels.ShowReportModel;
 import com.example.thanhhoa.dtos.ServiceModels.ShowServiceIMGModel;
 import com.example.thanhhoa.dtos.ServiceModels.ShowServiceModel;
 import com.example.thanhhoa.dtos.ServiceModels.ShowServiceTypeModel;
@@ -39,6 +40,7 @@ import com.example.thanhhoa.entities.PlantCategory;
 import com.example.thanhhoa.entities.PlantIMG;
 import com.example.thanhhoa.entities.PlantPrice;
 import com.example.thanhhoa.entities.PlantShipPrice;
+import com.example.thanhhoa.entities.Report;
 import com.example.thanhhoa.entities.Service;
 import com.example.thanhhoa.entities.ServiceIMG;
 import com.example.thanhhoa.entities.ServiceType;
@@ -1151,6 +1153,40 @@ public class Util {
         model.setTotalRating(totalRating);
         model.setAvgRatingFeedback(Double.parseDouble(String.format("%.2f", avgRatingFeedback)));
 
+    }
+
+    public List<ShowReportModel> reportPagingConverter(Page<Report> pagingResult, Pageable paging) {
+        if(pagingResult.hasContent()) {
+            double totalPage = Math.ceil((double) pagingResult.getTotalElements() / paging.getPageSize());
+            Page<ShowReportModel> modelResult = pagingResult.map(new Converter<Report, ShowReportModel>() {
+                @Override
+                protected ShowReportModel doForward(Report report) {
+                    ShowReportModel model = new ShowReportModel();
+                    model.setId(report.getId());
+                    model.setCreatedDate(report.getCreatedDate());
+                    model.setContractDetailID(report.getContractDetail().getId());
+                    model.setServiceTypeID(report.getContractDetail().getServiceType().getId());
+                    model.setServiceTypeName(report.getContractDetail().getServiceType().getName());
+                    model.setServiceID(report.getContractDetail().getServiceType().getService().getId());
+                    model.setServiceName(report.getContractDetail().getServiceType().getService().getName());
+                    model.setDescription(report.getDescription());
+                    model.setCustomerID(report.getCustomer().getId());
+                    model.setFullName(report.getCustomer().getFullName());
+                    model.setEmail(report.getCustomer().getEmail());
+                    model.setPhone(report.getCustomer().getPhone());
+                    model.setTotalPage(totalPage);
+                    return model;
+                }
+
+                @Override
+                protected Report doBackward(ShowReportModel showReportModel) {
+                    return null;
+                }
+            });
+            return modelResult.getContent();
+        } else {
+            return new ArrayList<>();
+        }
     }
 
 //    class InvalidInput extends Exception {

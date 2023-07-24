@@ -338,12 +338,14 @@ public class FeedbackServiceImpl implements FeedbackService {
         } else {
             contractFeedback.setId(util.createIDFromLastID("CF", 2, lastContractFeedback.getId()));
         }
+        contract.get().setIsFeedback(true);
         contractFeedback.setContract(contract.get());
         contractFeedback.setStatus(Status.ACTIVE);
         contractFeedback.setDescription(createContractFeedbackModel.getDescription());
         contractFeedback.setRating(ratingRepository.getById(createContractFeedbackModel.getRatingID()));
         contractFeedback.setDate(LocalDateTime.now());
         contractFeedbackRepository.save(contractFeedback);
+        contractRepository.save(contract.get());
         return "Tạo thành công.";
     }
 
@@ -358,10 +360,12 @@ public class FeedbackServiceImpl implements FeedbackService {
             return "Không tìm thấy Hợp đồng với ID là " + updateContractFeedbackModel.getContractID() + ".";
         }
         ContractFeedback contractFeedback = checkExisted.get();
+        contract.get().setIsFeedback(true);
         contractFeedback.setContract(contract.get());
         contractFeedback.setDescription(updateContractFeedbackModel.getDescription());
         contractFeedback.setRating(ratingRepository.getById(updateContractFeedbackModel.getRatingID()));
         contractFeedbackRepository.save(contractFeedback);
+        contractRepository.save(contract.get());
         return "Chỉnh sửa thành công.";
     }
 

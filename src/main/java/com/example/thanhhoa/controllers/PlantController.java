@@ -117,6 +117,15 @@ public class PlantController {
         return plantService.getAllPlant(util.makePaging(pageNo, pageSize, sortBy.toString().toLowerCase(), sortAsc));
     }
 
+    @GetMapping(value = "/getAllPlantWithInactive", produces = "application/json;charset=UTF-8")
+    public @ResponseBody
+    List<ShowPlantModel> getAllPlantWithInactive(@RequestParam int pageNo,
+                                     @RequestParam int pageSize,
+                                     @RequestParam SearchType.PLANT sortBy,
+                                     @RequestParam(required = false, defaultValue = "true") Boolean sortAsc) {
+        return plantService.getAllPlantWithInactive(util.makePaging(pageNo, pageSize, sortBy.toString().toLowerCase(), sortAsc));
+    }
+
     @GetMapping(value = "/{plantID}", produces = "application/json;charset=UTF-8")
     public @ResponseBody
     ResponseEntity<Object> getPlantByID(@PathVariable("plantID") String plantID) {

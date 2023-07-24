@@ -10,8 +10,11 @@ import com.example.thanhhoa.enums.Status;
 import com.example.thanhhoa.repositories.ContractDetailRepository;
 import com.example.thanhhoa.repositories.ReportRepository;
 import com.example.thanhhoa.repositories.UserRepository;
+import com.example.thanhhoa.repositories.pagings.ReportPagingRepository;
 import com.example.thanhhoa.utils.Util;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
@@ -28,6 +31,8 @@ public class ReportServiceImpl implements ReportService{
     private ContractDetailRepository contractDetailRepository;
     @Autowired
     private UserRepository userRepository;
+    @Autowired
+    private ReportPagingRepository reportPagingRepository;
     @Autowired
     private Util util;
 
@@ -49,7 +54,7 @@ public class ReportServiceImpl implements ReportService{
             model.setServiceName(report.getContractDetail().getServiceType().getService().getName());
             model.setDescription(report.getDescription());
             model.setCustomerID(report.getCustomer().getId());
-            model.setCustomerName(report.getCustomer().getFullName());
+            model.setFullName(report.getCustomer().getFullName());
             model.setEmail(report.getCustomer().getEmail());
             model.setPhone(report.getCustomer().getPhone());
             modelList.add(model);
@@ -75,7 +80,7 @@ public class ReportServiceImpl implements ReportService{
             model.setServiceName(report.getContractDetail().getServiceType().getService().getName());
             model.setDescription(report.getDescription());
             model.setCustomerID(report.getCustomer().getId());
-            model.setCustomerName(report.getCustomer().getFullName());
+            model.setFullName(report.getCustomer().getFullName());
             model.setEmail(report.getCustomer().getEmail());
             model.setPhone(report.getCustomer().getPhone());
             modelList.add(model);
@@ -97,7 +102,7 @@ public class ReportServiceImpl implements ReportService{
             report.setId(util.createIDFromLastID("RP", 2, lastReport.getId()));
         }
         report.setCreatedDate(LocalDateTime.now());
-        report.setStatus(Status.ACTIVE);
+        report.setStatus(Status.NEW);
         report.setDescription(createReportModel.getDescription());
         report.setCustomer(userRepository.getById(userID));
         report.setContractDetail(checkExisted.get());
@@ -107,9 +112,9 @@ public class ReportServiceImpl implements ReportService{
 
     @Override
     public String update(UpdateReportModel updateReportModel) {
-        Optional<Report> checkExisted = reportRepository.findById(updateReportModel.getId());
+        Optional<Report> checkExisted = reportRepository.findByIdAndStatus(updateReportModel.getId(), Status.NEW);
         if(checkExisted == null){
-            return "Không tìm thấy Báo cáo với ID là " + updateReportModel.getId() + ".";
+            return "Không tìm thấy Báo cáo với trạng thái NEW có ID là " + updateReportModel.getId() + ".";
         }
         Optional<ContractDetail> contractDetail = contractDetailRepository.findById(updateReportModel.getContractDetailID());
         if(contractDetail == null){
@@ -124,13 +129,43 @@ public class ReportServiceImpl implements ReportService{
 
     @Override
     public String delete(String reportID) {
-        Optional<Report> checkExisted = reportRepository.findById(reportID);
+        Optional<Report> checkExisted = reportRepository.findByIdAndStatus(reportID, Status.NEW);
         if(checkExisted == null){
-            return "Không tìm thấy Báo cáo với ID là " + reportID + ".";
+            return "Không tìm thấy Báo cáo với trạng thái NEW có ID là " + reportID + ".";
         }
         Report report = checkExisted.get();
         report.setStatus(Status.INACTIVE);
         reportRepository.save(report);
         return "Xóa thành công.";
+    }
+
+    @Override
+    public String changeReportStatus(String reportID, String reason, Status status) {
+        Optional<Report> checkExisted = reportRepository.findByIdAndStatus(reportID, Status.NEW);
+        if(checkExisted == null){
+            return "Không tìm thấy Báo cáo với trạng thái NEW có ID là " + reportID + ".";
+        }
+        Report report = checkExisted.get();
+        if(status.toString().equalsIgnoreCase("APPROVED")){
+            report.setStatus(status);
+            reportRepository.save(report);
+            return "Chỉnh sửa thành công.";
+        }else if(status.toString().equalsIgnoreCase("DENIED")){
+            if(reason == null){
+                return "Phải có Lí do khi từ chối báo cáo";
+            }
+            report.setStatus(status);
+            report.setReason(reason);
+            reportRepository.save(report);
+            return "Chỉnh sửa thành công.";
+        }else{
+            return "Trạng thái phải là APPROVED hoặc DENIED";
+        }
+    }
+
+    @Override
+    public List<ShowReportModel> getAllNewReport(Pageable pageable) {
+        Page<Report> pagingResult = reportPagingRepository.findAllByStatus(Status.NEW, pageable);
+        return util.reportPagingConverter(pagingResult, pageable);
     }
 }

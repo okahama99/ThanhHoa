@@ -46,4 +46,8 @@ public interface ContractService {
     List<ShowPaymentTypeModel> getPaymentType();
 
     List<ShowContractDetailModel> getContractDetailByDateBetween(LocalDateTime from, LocalDateTime to, Long staffID);
+
+    List<ShowContractDetailModel> getContractDetailByExactDate(LocalDateTime from, LocalDateTime to, Long staffID);
+
+
 }

@@ -4,6 +4,7 @@ import com.example.thanhhoa.dtos.ServiceModels.CreateServiceModel;
 import com.example.thanhhoa.dtos.ServiceModels.ShowServiceModel;
 import com.example.thanhhoa.dtos.ServiceModels.ShowServiceTypeModel;
 import com.example.thanhhoa.dtos.ServiceModels.UpdateServiceModel;
+import com.example.thanhhoa.entities.OrderFeedbackIMG;
 import com.example.thanhhoa.entities.Service;
 import com.example.thanhhoa.entities.ServiceIMG;
 import com.example.thanhhoa.entities.ServiceType;
@@ -73,24 +74,20 @@ public class ServiceServiceImpl implements ServiceService{
         service.setPrice(createServiceModel.getPrice());
         service.setServiceTypeList(serviceTypeList);
         service.setStatus(Status.ACTIVE);
-        Service serviceWithID = serviceRepository.saveAndFlush(service);
 
-        if (createServiceModel.getFiles() != null) {
-            for (MultipartFile file : createServiceModel.getFiles()) {
-                String fileName = firebaseImageService.save(file);
-                String imgName = firebaseImageService.getImageUrl(fileName);
-                ServiceIMG serviceIMG = new ServiceIMG();
-                ServiceIMG getLastServiceIMG = serviceIMGRepository.findFirstByOrderByIdDesc();
-                if(getLastServiceIMG != null){
-                    serviceIMG.setId(util.createIDFromLastID("SIMG",4,getLastServiceIMG.getId()));
-                }else{
-                    serviceIMG.setId(util.createNewID("SIMG"));
-                }
-                serviceIMG.setService(serviceWithID);
-                serviceIMG.setImgURL(imgName);
-                serviceIMGRepository.save(serviceIMG);
+        for(String imageURL : createServiceModel.getListURL()) {
+            ServiceIMG serviceIMG = new ServiceIMG();
+            ServiceIMG lastServiceIMG = serviceIMGRepository.findFirstByOrderByIdDesc();
+            if(lastServiceIMG == null) {
+                serviceIMG.setId(util.createNewID("SIMG"));
+            } else {
+                serviceIMG.setId(util.createIDFromLastID("SIMG", 4, lastServiceIMG.getId()));
             }
+            serviceIMG.setService(service);
+            serviceIMG.setImgURL(imageURL);
+            serviceIMGRepository.save(serviceIMG);
         }
+        serviceRepository.save(service);
         return "Tạo thành công.";
     }
 
@@ -118,31 +115,17 @@ public class ServiceServiceImpl implements ServiceService{
         service.setServiceTypeList(serviceTypeList);
         serviceRepository.save(service);
 
-        if (updateServiceModel.getFiles() != null) {
-            for (ServiceIMG image : service.getServiceIMGList()) {
-                String imgNameString = image.getImgURL();
-                ServiceIMG serviceIMG = serviceIMGRepository.findByImgURL(imgNameString);
-                serviceIMG.setService(null);
-                serviceIMG.setImgURL(null);
-                serviceIMGRepository.save(serviceIMG);
-                String[] strArr;
-                strArr = imgNameString.split("[/;?]");
-                firebaseImageService.delete(strArr[7]);
+        for(String imageURL : updateServiceModel.getListURL()) {
+            ServiceIMG serviceIMG = new ServiceIMG();
+            ServiceIMG lastServiceIMG = serviceIMGRepository.findFirstByOrderByIdDesc();
+            if(lastServiceIMG == null) {
+                serviceIMG.setId(util.createNewID("SIMG"));
+            } else {
+                serviceIMG.setId(util.createIDFromLastID("SIMG", 4, lastServiceIMG.getId()));
             }
-            for (MultipartFile file : updateServiceModel.getFiles()) {
-                String fileName = firebaseImageService.save(file);
-                String imgName = firebaseImageService.getImageUrl(fileName);
-                ServiceIMG serviceIMG = new ServiceIMG();
-                ServiceIMG getLastServiceIMG = serviceIMGRepository.findFirstByOrderByIdDesc();
-                if(getLastServiceIMG != null){
-                    serviceIMG.setId(util.createIDFromLastID("SIMG",4,getLastServiceIMG.getId()));
-                }else{
-                    serviceIMG.setId(util.createNewID("SIMG"));
-                }
-                serviceIMG.setService(service);
-                serviceIMG.setImgURL(imgName);
-                serviceIMGRepository.save(serviceIMG);
-            }
+            serviceIMG.setService(service);
+            serviceIMG.setImgURL(imageURL);
+            serviceIMGRepository.save(serviceIMG);
         }
         return "Chỉnh sửa thành công.";
     }

@@ -4,6 +4,7 @@ import lombok.Getter;
 import lombok.Setter;
 import org.springframework.web.multipart.MultipartFile;
 
+import javax.annotation.Nullable;
 import java.io.Serializable;
 import java.time.LocalDateTime;
 import java.util.List;
@@ -16,4 +17,6 @@ public class ApproveContractModel implements Serializable {
     private String paymentMethod;
     private Long staffID;
     private String paymentTypeID;
+    @Nullable
+    private List<String> listURL;
 }

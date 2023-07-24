@@ -4,6 +4,7 @@ import lombok.Getter;
 import lombok.Setter;
 import org.springframework.web.multipart.MultipartFile;
 
+import javax.annotation.Nullable;
 import java.io.Serializable;
 import java.util.List;
 
@@ -14,5 +15,6 @@ public class CreateServiceModel implements Serializable {
     private Double price;
     private String description;
     private List<String> typeIDList;
-    private List<MultipartFile> files;
+    @Nullable
+    private List<String> listURL;
 }

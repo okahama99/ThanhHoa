@@ -112,23 +112,45 @@ public class ContractController {
     @GetMapping(value = "/getContractDetailByStaffTokenAndDate", produces = "application/json;charset=UTF-8")
     public @ResponseBody
     ResponseEntity<?> getContractDetailByStaffToken(@RequestParam String from,
-                                                                @RequestParam String to,
-                                                                HttpServletRequest request) {
+                                                    @RequestParam String to,
+                                                    HttpServletRequest request) {
         String roleName = jwtUtil.getRoleNameFromRequest(request);
         if(!roleName.equalsIgnoreCase("Staff")) {
             throw new ResponseStatusException(HttpStatus.FORBIDDEN, "-----------------------------------Người dùng không có quyền truy cập---------------------------");
         }
 
         LocalDateTime fromDate = util.isDateValid(from);
-        if( fromDate == null){
+        if(fromDate == null) {
             return ResponseEntity.badRequest().body("Nhập theo khuôn được định sẵn yyyy-MM-dd, ví dụ : 2021-12-21");
         }
         LocalDateTime toDate = util.isDateValid(to);
-        if( toDate == null){
+        if(toDate == null) {
             return ResponseEntity.badRequest().body("Nhập theo khuôn được định sẵn yyyy-MM-dd, ví dụ : 2021-12-21");
         }
 
         return ResponseEntity.ok().body(contractService.getContractDetailByDateBetween(fromDate, toDate, jwtUtil.getUserIDFromRequest(request)));
+    }
+
+    @GetMapping(value = "/getContractDetailByExactDate", produces = "application/json;charset=UTF-8")
+    public @ResponseBody
+    ResponseEntity<?> getContractDetailByExactDate(@RequestParam String from,
+                                                    @RequestParam String to,
+                                                    HttpServletRequest request) {
+        String roleName = jwtUtil.getRoleNameFromRequest(request);
+        if(!roleName.equalsIgnoreCase("Staff")) {
+            throw new ResponseStatusException(HttpStatus.FORBIDDEN, "-----------------------------------Người dùng không có quyền truy cập---------------------------");
+        }
+
+        LocalDateTime fromDate = util.isDateValid(from);
+        if(fromDate == null) {
+            return ResponseEntity.badRequest().body("Nhập theo khuôn được định sẵn yyyy-MM-dd, ví dụ : 2021-12-21");
+        }
+        LocalDateTime toDate = util.isDateValid(to);
+        if(toDate == null) {
+            return ResponseEntity.badRequest().body("Nhập theo khuôn được định sẵn yyyy-MM-dd, ví dụ : 2021-12-21");
+        }
+
+        return ResponseEntity.ok().body(contractService.getContractDetailByExactDate(fromDate, toDate, jwtUtil.getUserIDFromRequest(request)));
     }
 
     @GetMapping(produces = "application/json;charset=UTF-8")

@@ -18,7 +18,8 @@ public class ShowReportModel implements Serializable {
     private String serviceID;
     private String serviceName;
     private Long customerID;
-    private String customerName;
+    private String fullName;
     private String phone;
     private String email;
+    private Double totalPage;
 }

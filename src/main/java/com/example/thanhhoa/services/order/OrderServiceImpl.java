@@ -101,20 +101,19 @@ public class OrderServiceImpl implements OrderService {
 
         order.setCustomer(userRepository.getById(customerID));
         order.setStore(storeRepository.getById(createOrderModel.getStoreID()));
-        orderRepository.save(order);
 
         DistancePrice distancePrice = distancePriceRepository.getById(createOrderModel.getDistancePriceID());
         Double totalPriceOfAPlant = 0.0;
         Double totalShipCost = 0.0;
         Double total = 0.0;
         for(OrderDetailModel model : createOrderModel.getDetailList()) {
-            OrderDetail lastDetailRecord = orderDetailRepository.findFirstByOrderByIdDesc();
             Plant plant = plantRepository.getById(model.getPlantID());
             PlantPrice newestPrice = plantPriceRepository.findFirstByPlant_IdAndStatusOrderByApplyDateDesc(plant.getId(), Status.ACTIVE);
             totalPriceOfAPlant += newestPrice.getPrice() * model.getQuantity();
             totalShipCost += plant.getPlantShipPrice().getPricePerPlant() * model.getQuantity();
 
             OrderDetail detail = new OrderDetail();
+            OrderDetail lastDetailRecord = orderDetailRepository.findFirstByOrderByIdDesc();
             if(lastDetailRecord == null) {
                 detail.setId(util.createNewID("OD"));
             } else {
@@ -124,10 +123,12 @@ public class OrderServiceImpl implements OrderService {
             detail.setQuantity(model.getQuantity());
             detail.setTblOrder(order);
             detail.setPlant(plant);
-            orderDetailRepository.save(detail);
+
 
             Cart cart = cartRepository.findByPlant_Id(model.getPlantID());
             cart.setQuantity(0);
+
+            orderDetailRepository.save(detail);
             cartRepository.save(cart);
         }
         Double totalDistancePrice = distancePrice.getPricePerKm() * createOrderModel.getDistance();
@@ -223,27 +224,6 @@ public class OrderServiceImpl implements OrderService {
             order.setReason(reason);
             order.setProgressStatus(status);
             order.setRejectDate(LocalDateTime.now());
-
-            List<OrderDetail> orderDetailList = order.getOrderDetailList();
-            for(OrderDetail orderDetail : orderDetailList) {
-                StorePlant storePlant = storePlantRepository.
-                        findByPlantIdAndStoreIdAndPlant_Status(orderDetail.getPlant().getId(), order.getStore().getId(), Status.ONSALE);
-                storePlant.setQuantity(storePlant.getQuantity() + orderDetail.getQuantity());
-                storePlantRepository.save(storePlant);
-
-                StorePlantRecord storePlantRecord = new StorePlantRecord();
-                StorePlantRecord lastRecord = storePlantRecordRepository.findFirstByOrderByIdDesc();
-                if(lastRecord == null) {
-                    storePlantRecord.setId(util.createNewID("SPR"));
-                } else {
-                    storePlantRecord.setId(util.createIDFromLastID("SPR", 3, lastRecord.getId()));
-                }
-                storePlantRecord.setImportDate(LocalDateTime.now());
-                storePlantRecord.setAmount(orderDetail.getQuantity());
-                storePlantRecord.setStorePlant(storePlant);
-                storePlantRecord.setReason("Hủy đơn hàng với mã là : " + orderID + ".");
-                storePlantRecordRepository.save(storePlantRecord);
-            }
             orderRepository.save(checkExistedOrder.get());
             return "Xóa thành công.";
         }

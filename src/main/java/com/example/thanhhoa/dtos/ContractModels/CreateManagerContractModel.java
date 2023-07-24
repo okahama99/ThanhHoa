@@ -22,5 +22,8 @@ public class CreateManagerContractModel implements Serializable {
     private List<CreateContractDetailModel> detailModelList;
     @Nullable
     private Long customerID;
+    @Nullable
     private String email;
+    @Nullable
+    private List<String> listURL;
 }

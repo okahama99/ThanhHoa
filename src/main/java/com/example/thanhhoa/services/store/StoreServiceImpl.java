@@ -173,6 +173,7 @@ public class StoreServiceImpl implements StoreService{
             storePlantRecord.setStorePlant(newPlant);
             storePlantRecord.setReason("Nhập thêm cây");
             storePlantRecordRepository.save(storePlantRecord);
+            storePlantRepository.save(newPlant);
             return "Thêm thành công.";
         }
         storePlant.setQuantity(storePlant.getQuantity() + addStorePlantModel.getQuantity());
@@ -192,6 +193,34 @@ public class StoreServiceImpl implements StoreService{
         storePlantRecord.setReason("Nhập thêm cây");
         storePlantRecordRepository.save(storePlantRecord);
         return "Thêm thành công.";
+    }
+
+    @Override
+    public String removeStorePlant(String storePlantID, Integer quantity, String reason, Long userID){
+        Optional<StorePlant> checkExisted = storePlantRepository.findById(storePlantID);
+        if(checkExisted == null || checkExisted.isEmpty()){
+            return "Không tìm thấy StorePlant với ID là " + storePlantID + ".";
+        }
+        StorePlant storePlant = checkExisted.get();
+        if(storePlant.getQuantity() < quantity){
+            return "Số lượng cây hiện tại ( " + storePlant.getQuantity() + " ) ít hơn số cây yêu cầu : " + quantity + ".";
+        }
+        storePlant.setQuantity(storePlant.getQuantity() - quantity);
+
+        StorePlantRecord storePlantRecord = new StorePlantRecord();
+        StorePlantRecord lastRecord = storePlantRecordRepository.findFirstByOrderByIdDesc();
+        if (lastRecord == null) {
+            storePlantRecord.setId(util.createNewID("SPR"));
+        } else {
+            storePlantRecord.setId(util.createIDFromLastID("SPR",3,lastRecord.getId()));
+        }
+        storePlantRecord.setAmount(quantity);
+        storePlantRecord.setImportDate(LocalDateTime.now());
+        storePlantRecord.setStorePlant(storePlant);
+        storePlantRecord.setReason("ManagerID : " + userID + ", lí do :" + reason);
+        storePlantRecordRepository.save(storePlantRecord);
+        storePlantRepository.save(storePlant);
+        return "Xóa thành công.";
     }
 
     @Override

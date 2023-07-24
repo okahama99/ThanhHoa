@@ -88,4 +88,12 @@ public class SearchType {
         ID,
         NAME
     }
+
+    public enum REPORT{
+        ID,
+        DESCRIPTION,
+        REASON,
+        CREATEDDATE,
+        STATUS
+    }
 }

@@ -122,6 +122,23 @@ public class StoreController {
         }
     }
 
+    @DeleteMapping(value = "/removeStorePlant/{storePlantID}", produces = "application/json;charset=UTF-8")
+    public ResponseEntity<Object> removeStorePlant(@PathVariable(name = "storePlantID") String storePlantID,
+                                                   @RequestParam Integer quantity,
+                                                   @RequestParam String reason,
+                                                   HttpServletRequest request) {
+        String roleName = jwtUtil.getRoleNameFromRequest(request);
+        if(!roleName.equalsIgnoreCase("Manager")) {
+            throw new ResponseStatusException(HttpStatus.FORBIDDEN, "-----------------------------------Người dùng không có quyền truy cập---------------------------");
+        }
+        String result = storeService.removeStorePlant(storePlantID, quantity, reason, jwtUtil.getUserIDFromRequest(request));
+        if(!result.equals("Xóa thành công.")) {
+            return ResponseEntity.ok().body(result);
+        } else {
+            return ResponseEntity.badRequest().body(result);
+        }
+    }
+
     @GetMapping(value = "/getStorePlantRecord/{storePlantID}", produces = "application/json;charset=UTF-8")
     public @ResponseBody
     List<ShowStorePlantRecordModel> getStorePlantRecordByStorePlantID(@PathVariable("storePlantID") String storePlantID,

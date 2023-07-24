@@ -21,12 +21,15 @@ public class Report implements Serializable {
     @Column(nullable = false)
     private String description;
 
+    @Column
+    private String reason;
+
     @CreatedDate
     @Column(nullable = false)
     private LocalDateTime createdDate;
 
     @Enumerated(EnumType.STRING)
-    private Status status;
+    private Status status; // new, approve, deny
 
     @ManyToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     @JoinColumn(name = "contract_detail_id")

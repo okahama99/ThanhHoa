@@ -13,6 +13,8 @@ import java.util.List;
 public interface PlantService {
     List<ShowPlantModel> getAllPlant(Pageable paging);
 
+    List<ShowPlantModel> getAllPlantWithInactive(Pageable paging);
+
     ShowPlantModel getPlantByID(String plantID);
 
     String createPlant(CreatePlantModel createPlantModel) throws Exception;

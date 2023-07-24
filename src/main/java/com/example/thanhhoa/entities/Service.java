@@ -26,6 +26,9 @@ public class Service implements Serializable {
     @Column
     private Double price;
 
+    @Column
+    private Boolean atHome = false;
+
     @Enumerated(EnumType.STRING)
     private Status status;
 

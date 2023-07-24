@@ -4,6 +4,7 @@ import lombok.Getter;
 import lombok.Setter;
 import org.springframework.web.multipart.MultipartFile;
 
+import javax.annotation.Nullable;
 import java.io.Serializable;
 import java.time.LocalDateTime;
 import java.util.List;
@@ -22,4 +23,6 @@ public class CreatePlantModel implements Serializable {
 
     private Double price;
     private LocalDateTime applyDate;
+    @Nullable
+    private List<String> listURL;
 }

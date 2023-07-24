@@ -24,4 +24,6 @@ public class UpdatePlantModel implements Serializable{
 
     @Nullable
     private Double price;
+    @Nullable
+    private List<String> listURL;
 }

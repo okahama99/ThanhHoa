@@ -17,6 +17,7 @@ import com.example.thanhhoa.dtos.ContractModels.UpdateContractModel;
 import com.example.thanhhoa.entities.Contract;
 import com.example.thanhhoa.entities.ContractDetail;
 import com.example.thanhhoa.entities.ContractIMG;
+import com.example.thanhhoa.entities.OrderFeedbackIMG;
 import com.example.thanhhoa.entities.PaymentType;
 import com.example.thanhhoa.entities.ServicePack;
 import com.example.thanhhoa.entities.ServiceType;
@@ -277,7 +278,6 @@ public class ContractServiceImpl implements ContractService {
         if(createManagerContractModel.getCustomerID() != null) {
             customer = userRepository.getById(createManagerContractModel.getCustomerID());
             contract.setCustomer(customer);
-
         }
         Store store = storeRepository.getById(createManagerContractModel.getStoreID());
         tblAccount staff = userRepository.getById(createManagerContractModel.getStaffID());
@@ -298,7 +298,6 @@ public class ContractServiceImpl implements ContractService {
         contract.setPhone(createManagerContractModel.getPhone());
 
         PaymentType paymentType = paymentTypeRepository.getById(createManagerContractModel.getPaymentTypeID());
-        contract.setDeposit(createManagerContractModel.getDeposit());
         contract.setPaymentMethod(createManagerContractModel.getPaymentMethod());
         contract.setPaymentType(paymentType);
         contract.setStaff(staff);
@@ -355,9 +354,26 @@ public class ContractServiceImpl implements ContractService {
             detail.setTotalPrice(total);
             contractDetailRepository.save(detail);
         }
+        if(createManagerContractModel.getDeposit() > totalPrice){
+            return "Tiền trả trước ( deposit : " + createManagerContractModel.getDeposit() + " ) đang lớn hơn tổng tiền ( TotalPrice : " + totalPrice + " ).";
+        }
+
+        for(String imageURL : createManagerContractModel.getListURL()) {
+            ContractIMG contractIMG = new ContractIMG();
+            ContractIMG lastContractIMG = contractIMGRepository.findFirstByOrderByIdDesc();
+            if(lastContractIMG == null) {
+                contractIMG.setId(util.createNewID("CIMG"));
+            } else {
+                contractIMG.setId(util.createIDFromLastID("CIMG", 4, lastContractIMG.getId()));
+            }
+            contractIMG.setContract(contract);
+            contractIMG.setImgURL(imageURL);
+            contractIMGRepository.save(contractIMG);
+        }
 
         LocalDateTime startDate = Collections.min(startDateList);
         LocalDateTime endDate = Collections.max(endDateList);
+        contract.setDeposit(createManagerContractModel.getDeposit());
         contract.setStartedDate(startDate);
         contract.setEndedDate(endDate);
         contract.setTotal(totalPrice);
@@ -404,6 +420,23 @@ public class ContractServiceImpl implements ContractService {
         if(contract == null) {
             return "Không thể tìm thấy Hợp đồng có trạng thái WAITING với ID là " + approveContractModel.getContractID() + ".";
         }
+        if(approveContractModel.getDeposit() > contract.getTotal()){
+            return "Tiền trả trước ( deposit : " + approveContractModel.getDeposit() + " ) đang lớn hơn tổng tiền ( TotalPrice : " + contract.getTotal() + " ).";
+        }
+
+        for(String imageURL : approveContractModel.getListURL()) {
+            ContractIMG contractIMG = new ContractIMG();
+            ContractIMG lastContractIMG = contractIMGRepository.findFirstByOrderByIdDesc();
+            if(lastContractIMG == null) {
+                contractIMG.setId(util.createNewID("CIMG"));
+            } else {
+                contractIMG.setId(util.createIDFromLastID("CIMG", 4, lastContractIMG.getId()));
+            }
+            contractIMG.setContract(contract);
+            contractIMG.setImgURL(imageURL);
+            contractIMGRepository.save(contractIMG);
+        }
+
         tblAccount staff = userRepository.getById(approveContractModel.getStaffID());
 
         PaymentType paymentType = paymentTypeRepository.getById(approveContractModel.getPaymentTypeID());
@@ -483,6 +516,96 @@ public class ContractServiceImpl implements ContractService {
     public List<ShowContractDetailModel> getContractDetailByDateBetween(LocalDateTime from, LocalDateTime to, Long staffID) {
         List<ContractDetail> contractDetailList =
                 contractDetailRepository.findByContract_Staff_IdAndStartDateLessThanEqualAndEndDateGreaterThanEqual(staffID, from, to);
+        if(contractDetailList == null) {
+            return null;
+        }
+        List<ShowContractDetailModel> modelList = new ArrayList<>();
+        for(ContractDetail detail : contractDetailList) {
+            List<WorkingDate> dateList = workingDateRepository.findByContractDetail_Id(detail.getId());
+            List<ShowWorkingDateModel> dateModelList = new ArrayList<>();
+            for(WorkingDate workingDate : dateList) {
+                ShowWorkingDateModel model = new ShowWorkingDateModel();
+                model.setId(workingDate.getId());
+                model.setWorkingDate(workingDate.getWorkingDate());
+                dateModelList.add(model);
+            }
+            ShowContractDetailModel model = new ShowContractDetailModel();
+            model.setId(detail.getId());
+            model.setNote(detail.getNote());
+            model.setTimeWorking(detail.getTimeWorking());
+            model.setEndDate(detail.getEndDate());
+            model.setStartDate(detail.getStartDate());
+            model.setTotalPrice(detail.getTotalPrice());
+
+            //contract
+            List<ContractIMG> imgList = contractIMGRepository.findByContract_Id(detail.getContract().getId());
+            List<ShowContractIMGModel> imgModelList = new ArrayList<>();
+            if(imgList != null) {
+                for(ContractIMG img : imgList) {
+                    ShowContractIMGModel imgModel = new ShowContractIMGModel();
+                    imgModel.setId(img.getId());
+                    imgModel.setImgUrl(img.getImgURL());
+                    imgModelList.add(imgModel);
+                }
+            }
+            ShowContractModel contractModel = new ShowContractModel();
+            contractModel.setId(detail.getContract().getId());
+            contractModel.setAddress(detail.getContract().getAddress());
+            contractModel.setPhone(detail.getContract().getPhone());
+            contractModel.setFullName(detail.getContract().getFullName());
+            contractModel.setEmail(detail.getContract().getEmail());
+            contractModel.setTitle(detail.getContract().getTitle());
+            contractModel.setPaymentMethod(detail.getContract().getPaymentMethod());
+            contractModel.setCreatedDate(detail.getContract().getCreatedDate());
+            contractModel.setStartedDate(detail.getContract().getStartedDate());
+            contractModel.setApprovedDate(detail.getContract().getApprovedDate());
+            contractModel.setRejectedDate(detail.getContract().getRejectedDate());
+            contractModel.setEndedDate(detail.getContract().getEndedDate());
+            contractModel.setDeposit(detail.getContract().getDeposit());
+            contractModel.setTotal(detail.getContract().getTotal());
+            contractModel.setIsFeedback(detail.getContract().getIsFeedback());
+            contractModel.setIsSigned(detail.getContract().getIsSigned());
+            contractModel.setStatus(detail.getContract().getStatus());
+            contractModel.setReason(detail.getContract().getReason());
+            contractModel.setImgList(imgModelList);
+
+            //service type
+            ShowServiceTypeModel serviceTypeModel = new ShowServiceTypeModel();
+            serviceTypeModel.setId(detail.getServiceType().getId());
+            serviceTypeModel.setTypeName(detail.getServiceType().getName());
+            serviceTypeModel.setTypeSize(detail.getServiceType().getSize());
+            serviceTypeModel.setTypePercentage(detail.getServiceType().getPercentage());
+            serviceTypeModel.setTypeApplyDate(detail.getServiceType().getApplyDate());
+
+            //service pack
+            ShowServicePackModel servicePackModel = new ShowServicePackModel();
+            servicePackModel.setId(detail.getServicePack().getId());
+            servicePackModel.setPackPercentage(detail.getServicePack().getPercentage());
+            servicePackModel.setPackRange(detail.getServicePack().getRange());
+            servicePackModel.setPackApplyDate(detail.getServicePack().getApplyDate());
+
+            //service
+            ShowServiceModel serviceModel = new ShowServiceModel();
+            serviceModel.setId(detail.getServiceType().getService().getId());
+            serviceModel.setDescription(detail.getServiceType().getService().getDescription());
+            serviceModel.setPrice(detail.getServiceType().getService().getPrice());
+            serviceModel.setName(detail.getServiceType().getService().getName());
+
+            model.setShowContractModel(contractModel);
+            model.setShowServiceModel(serviceModel);
+            model.setShowServicePackModel(servicePackModel);
+            model.setShowServiceTypeModel(serviceTypeModel);
+            model.setWorkingDateList(dateModelList);
+            modelList.add(model);
+        }
+
+        return modelList;
+    }
+
+    @Override
+    public List<ShowContractDetailModel> getContractDetailByExactDate(LocalDateTime from, LocalDateTime to, Long staffID) {
+        List<ContractDetail> contractDetailList =
+                contractDetailRepository.findByContract_Staff_IdAndStartDateBetweenAndEndDateBetween(staffID, from, from.plusDays(1L), to, to.plusDays(1L));
         if(contractDetailList == null) {
             return null;
         }
