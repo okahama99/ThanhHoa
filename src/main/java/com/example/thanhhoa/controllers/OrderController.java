@@ -41,7 +41,7 @@ public class OrderController {
     @PostMapping(produces = "application/json;charset=UTF-8")
     public ResponseEntity<Object> createOrder(@RequestBody CreateOrderModel createOrderModel, HttpServletRequest request) throws Exception {
         String roleName = jwtUtil.getRoleNameFromRequest(request);
-        if(!roleName.equalsIgnoreCase("Customer")) {
+        if(!roleName.equalsIgnoreCase("Customer") && !roleName.equalsIgnoreCase("Staff")) {
             throw new ResponseStatusException(HttpStatus.FORBIDDEN, "-----------------------------------Người dùng không có quyền truy cập---------------------------");
         }
         String result = orderService.createOrder(createOrderModel, jwtUtil.getUserIDFromRequest(request));
@@ -51,7 +51,7 @@ public class OrderController {
     @PutMapping(produces = "application/json;charset=UTF-8")
     public ResponseEntity<Object> updateOrder(@RequestBody UpdateOrderModel updateOrderModel, HttpServletRequest request) throws Exception {
         String roleName = jwtUtil.getRoleNameFromRequest(request);
-        if(!roleName.equalsIgnoreCase("Customer")) {
+        if(!roleName.equalsIgnoreCase("Customer") && !roleName.equalsIgnoreCase("Staff")) {
             throw new ResponseStatusException(HttpStatus.FORBIDDEN, "-----------------------------------Người dùng không có quyền truy cập---------------------------");
         }
         String result = orderService.updateOrder(updateOrderModel, jwtUtil.getUserIDFromRequest(request));
@@ -67,7 +67,7 @@ public class OrderController {
                                               @RequestParam String status,
                                               HttpServletRequest request) {
         String roleName = jwtUtil.getRoleNameFromRequest(request);
-        if(!roleName.equalsIgnoreCase("Customer")) {
+        if(!roleName.equalsIgnoreCase("Customer") && !roleName.equalsIgnoreCase("Staff")) {
             throw new ResponseStatusException(HttpStatus.FORBIDDEN, "-----------------------------------Người dùng không có quyền truy cập---------------------------");
         }
         String result = orderService.deleteOrder(orderID, reason, Status.valueOf(status));
@@ -114,7 +114,7 @@ public class OrderController {
                                                @RequestParam(defaultValue = "true") Boolean sortAsc,
                                                HttpServletRequest request) {
         String roleName = jwtUtil.getRoleNameFromRequest(request);
-        if(!roleName.equalsIgnoreCase("Customer")) {
+        if(!roleName.equalsIgnoreCase("Customer") && !roleName.equalsIgnoreCase("Staff")) {
             throw new ResponseStatusException(HttpStatus.FORBIDDEN, "-----------------------------------Người dùng không có quyền truy cập---------------------------");
         }
         String authTokenHeader = request.getHeader("Authorization");
