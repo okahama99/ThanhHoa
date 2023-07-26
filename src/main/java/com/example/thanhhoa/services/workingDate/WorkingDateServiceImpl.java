@@ -13,6 +13,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
+import java.time.ZoneId;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -36,9 +37,9 @@ public class WorkingDateServiceImpl implements WorkingDateService {
             return "Không tìm thấy Chi tiết hợp đồng với ID là " + contractDetailID + ".";
         }
         WorkingDate check = workingDateRepository.findFirstByOrderByWorkingDateDesc();
-        if((LocalDateTime.now().getDayOfMonth() == check.getWorkingDate().getDayOfMonth()) &&
-                (LocalDateTime.now().getMonth() == check.getWorkingDate().getMonth()) &&
-                (LocalDateTime.now().getYear() == check.getWorkingDate().getYear())) {
+        if((LocalDateTime.now(ZoneId.of("Asia/Ho_Chi_Minh")).getDayOfMonth() == check.getWorkingDate().getDayOfMonth()) &&
+                (LocalDateTime.now(ZoneId.of("Asia/Ho_Chi_Minh")).getMonth() == check.getWorkingDate().getMonth()) &&
+                (LocalDateTime.now(ZoneId.of("Asia/Ho_Chi_Minh")).getYear() == check.getWorkingDate().getYear())) {
             return "Mỗi ngày chỉ được điểm danh 1 lần.";
         }
         WorkingDate workingDate = new WorkingDate();
@@ -48,7 +49,7 @@ public class WorkingDateServiceImpl implements WorkingDateService {
         } else {
             workingDate.setId(util.createIDFromLastID("WD", 2, lastWorkingDate.getId()));
         }
-        workingDate.setWorkingDate(LocalDateTime.now());
+        workingDate.setWorkingDate(LocalDateTime.now(ZoneId.of("Asia/Ho_Chi_Minh")));
         workingDate.setContractDetail(checkExisted.get());
         workingDateRepository.save(workingDate);
         return "Thêm thành công.";

@@ -44,6 +44,7 @@ import org.springframework.stereotype.Service;
 
 import java.io.IOException;
 import java.time.LocalDateTime;
+import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
 import java.util.ArrayList;
@@ -212,7 +213,7 @@ public class ContractServiceImpl implements ContractService {
         contract.setStore(store);
         contract.setCustomer(customer);
         contract.setStatus(Status.WAITING);
-        contract.setCreatedDate(LocalDateTime.now());
+        contract.setCreatedDate(LocalDateTime.now(ZoneId.of("Asia/Ho_Chi_Minh")));
 
         Double totalPrice = 0.0;
         List<LocalDateTime> startDateList = new ArrayList<>();
@@ -301,11 +302,11 @@ public class ContractServiceImpl implements ContractService {
         contract.setPaymentMethod(createManagerContractModel.getPaymentMethod());
         contract.setPaymentType(paymentType);
         contract.setStaff(staff);
-        contract.setStartedDate(LocalDateTime.now());
+        contract.setStartedDate(LocalDateTime.now(ZoneId.of("Asia/Ho_Chi_Minh")));
         contract.setStatus(Status.SIGNED);
 
         contract.setStore(store);
-        contract.setCreatedDate(LocalDateTime.now());
+        contract.setCreatedDate(LocalDateTime.now(ZoneId.of("Asia/Ho_Chi_Minh")));
 
         Double totalPrice = 0.0;
         List<LocalDateTime> startDateList = new ArrayList<>();
@@ -409,7 +410,7 @@ public class ContractServiceImpl implements ContractService {
         }
         contract.setReason(reason);
         contract.setStatus(status);
-        contract.setRejectedDate(LocalDateTime.now());
+        contract.setRejectedDate(LocalDateTime.now(ZoneId.of("Asia/Ho_Chi_Minh")));
         contractRepository.save(contract);
         return "Hủy thành công.";
     }
@@ -444,8 +445,8 @@ public class ContractServiceImpl implements ContractService {
         contract.setPaymentMethod(approveContractModel.getPaymentMethod());
         contract.setPaymentType(paymentType);
         contract.setStaff(staff);
-        contract.setStartedDate(LocalDateTime.now());
-        contract.setApprovedDate(LocalDateTime.now());
+        contract.setStartedDate(LocalDateTime.now(ZoneId.of("Asia/Ho_Chi_Minh")));
+        contract.setApprovedDate(LocalDateTime.now(ZoneId.of("Asia/Ho_Chi_Minh")));
         contract.setStatus(Status.SIGNED);
         contractRepository.save(contract);
         return contract.getId();

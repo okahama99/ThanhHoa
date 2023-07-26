@@ -37,6 +37,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
+import java.time.ZoneId;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -169,7 +170,7 @@ public class StoreServiceImpl implements StoreService{
                 storePlantRecord.setId(util.createIDFromLastID("SPR",3,lastRecord.getId()));
             }
             storePlantRecord.setAmount(addStorePlantModel.getQuantity());
-            storePlantRecord.setImportDate(LocalDateTime.now());
+            storePlantRecord.setImportDate(LocalDateTime.now(ZoneId.of("Asia/Ho_Chi_Minh")));
             storePlantRecord.setStorePlant(newPlant);
             storePlantRecord.setReason("Nhập thêm cây");
             storePlantRecordRepository.save(storePlantRecord);
@@ -188,7 +189,7 @@ public class StoreServiceImpl implements StoreService{
             storePlantRecord.setId(util.createIDFromLastID("SPR",3,lastRecord.getId()));
         }
         storePlantRecord.setAmount(addStorePlantModel.getQuantity());
-        storePlantRecord.setImportDate(LocalDateTime.now());
+        storePlantRecord.setImportDate(LocalDateTime.now(ZoneId.of("Asia/Ho_Chi_Minh")));
         storePlantRecord.setStorePlant(storePlant);
         storePlantRecord.setReason("Nhập thêm cây");
         storePlantRecordRepository.save(storePlantRecord);
@@ -215,7 +216,7 @@ public class StoreServiceImpl implements StoreService{
             storePlantRecord.setId(util.createIDFromLastID("SPR",3,lastRecord.getId()));
         }
         storePlantRecord.setAmount(quantity);
-        storePlantRecord.setImportDate(LocalDateTime.now());
+        storePlantRecord.setImportDate(LocalDateTime.now(ZoneId.of("Asia/Ho_Chi_Minh")));
         storePlantRecord.setStorePlant(storePlant);
         storePlantRecord.setReason("ManagerID : " + userID + ", lí do :" + reason);
         storePlantRecordRepository.save(storePlantRecord);

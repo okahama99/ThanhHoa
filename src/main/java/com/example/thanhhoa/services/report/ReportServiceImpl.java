@@ -18,6 +18,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
+import java.time.ZoneId;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -113,7 +114,7 @@ public class ReportServiceImpl implements ReportService{
         } else {
             report.setId(util.createIDFromLastID("RP", 2, lastReport.getId()));
         }
-        report.setCreatedDate(LocalDateTime.now());
+        report.setCreatedDate(LocalDateTime.now(ZoneId.of("Asia/Ho_Chi_Minh")));
         report.setStatus(Status.NEW);
         report.setDescription(createReportModel.getDescription());
         report.setCustomer(userRepository.getById(userID));

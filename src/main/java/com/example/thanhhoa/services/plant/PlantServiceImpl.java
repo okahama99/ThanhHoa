@@ -32,6 +32,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import java.time.LocalDateTime;
+import java.time.ZoneId;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -188,7 +189,7 @@ public class PlantServiceImpl implements PlantService {
             plantPrice.setId(util.createIDFromLastID("PP", 2, lastPlantPrice.getId()));
         }
         plantPrice.setPrice(createPlantModel.getPrice());
-        plantPrice.setApplyDate(LocalDateTime.now());
+        plantPrice.setApplyDate(LocalDateTime.now(ZoneId.of("Asia/Ho_Chi_Minh")));
         plantPrice.setPlant(plant);
         plantPrice.setStatus(Status.ACTIVE);
 
@@ -303,7 +304,7 @@ public class PlantServiceImpl implements PlantService {
                         plantPrice.setId(util.createIDFromLastID("PP", 2, lastPlantPrice.getId()));
                     }
                     plantPrice.setPrice(updatePlantModel.getPrice());
-                    plantPrice.setApplyDate(LocalDateTime.now());
+                    plantPrice.setApplyDate(LocalDateTime.now(ZoneId.of("Asia/Ho_Chi_Minh")));
                     plantPrice.setPlant(plant);
                     plantPrice.setStatus(Status.ACTIVE);
                     plantPriceRepository.save(plantPrice);

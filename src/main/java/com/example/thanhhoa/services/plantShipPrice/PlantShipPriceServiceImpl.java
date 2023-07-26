@@ -13,6 +13,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
+import java.time.ZoneId;
 import java.util.List;
 import java.util.Optional;
 
@@ -43,7 +44,7 @@ public class PlantShipPriceServiceImpl implements PlantShipPriceService {
         }
         plantShipPrice.setPricePerPlant(createPlantShipPriceModel.getPricePerPlant());
         plantShipPrice.setPotSize(createPlantShipPriceModel.getPotSize());
-        plantShipPrice.setApplyDate(LocalDateTime.now());
+        plantShipPrice.setApplyDate(LocalDateTime.now(ZoneId.of("Asia/Ho_Chi_Minh")));
         plantShipPrice.setStatus(Status.ACTIVE);
         plantShipPriceRepository.save(plantShipPrice);
         return "Tạo thành công.";

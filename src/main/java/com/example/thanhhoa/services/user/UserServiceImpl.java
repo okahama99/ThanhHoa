@@ -22,6 +22,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
+import java.time.ZoneId;
 import java.util.List;
 
 @Service
@@ -127,7 +128,7 @@ public class UserServiceImpl implements UserService {
         tblAccount user = new tblAccount();
         user.setUsername(registerUserModel.getUsername());
         user.setPassword(registerUserModel.getPassword());
-        user.setCreatedDate(LocalDateTime.now());
+        user.setCreatedDate(LocalDateTime.now(ZoneId.of("Asia/Ho_Chi_Minh")));
         user.setFullName(registerUserModel.getFullName());
         user.setEmail(registerUserModel.getEmail());
         user.setAddress(registerUserModel.getAddress());
@@ -180,7 +181,7 @@ public class UserServiceImpl implements UserService {
         tblAccount user = new tblAccount();
         user.setUsername(registerStaffModel.getUsername());
         user.setPassword(registerStaffModel.getPassword());
-        user.setCreatedDate(LocalDateTime.now());
+        user.setCreatedDate(LocalDateTime.now(ZoneId.of("Asia/Ho_Chi_Minh")));
         user.setFullName(registerStaffModel.getFullName());
         user.setGender(registerStaffModel.getGender());
         user.setAvatar(registerStaffModel.getAvatar());

@@ -9,6 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
+import java.time.ZoneId;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -31,7 +32,7 @@ public class ServicePackServiceImpl implements ServicePackService {
         }
         servicePack.setRange(range);
         servicePack.setPercentage(percentage);
-        servicePack.setApplyDate(LocalDateTime.now());
+        servicePack.setApplyDate(LocalDateTime.now(ZoneId.of("Asia/Ho_Chi_Minh")));
         servicePack.setStatus(Status.ACTIVE);
         servicePackRepository.save(servicePack);
         return "Tạo thành công.";

@@ -9,6 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
+import java.time.ZoneId;
 
 @Service
 public class DistancePriceServiceImpl implements DistancePriceService{
@@ -30,7 +31,7 @@ public class DistancePriceServiceImpl implements DistancePriceService{
             distancePriceRepository.save(lastDistancePrice);
         }
         distancePrice.setPricePerKm(pricePerKm);
-        distancePrice.setApplyDate(LocalDateTime.now());
+        distancePrice.setApplyDate(LocalDateTime.now(ZoneId.of("Asia/Ho_Chi_Minh")));
         distancePrice.setStatus(Status.ACTIVE);
         distancePriceRepository.save(distancePrice);
         return "Tạo thành công.";

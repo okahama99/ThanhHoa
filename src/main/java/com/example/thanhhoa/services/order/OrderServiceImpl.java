@@ -35,6 +35,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
+import java.time.ZoneId;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -87,7 +88,7 @@ public class OrderServiceImpl implements OrderService {
         order.setPhone(createOrderModel.getPhone());
         order.setEmail(createOrderModel.getEmail());
         order.setPaymentMethod(createOrderModel.getFullName());
-        order.setCreatedDate(LocalDateTime.now());
+        order.setCreatedDate(LocalDateTime.now(ZoneId.of("Asia/Ho_Chi_Minh")));
         order.setDistance(createOrderModel.getDistance());
         order.setLatLong(createOrderModel.getLatLong());
         order.setProgressStatus(Status.WAITING);
@@ -163,7 +164,7 @@ public class OrderServiceImpl implements OrderService {
         order.setPhone(updateOrderModel.getPhone());
         order.setEmail(updateOrderModel.getEmail());
         order.setPaymentMethod(updateOrderModel.getFullName());
-        order.setCreatedDate(LocalDateTime.now());
+        order.setCreatedDate(LocalDateTime.now(ZoneId.of("Asia/Ho_Chi_Minh")));
         order.setDistance(updateOrderModel.getDistance());
         order.setLatLong(updateOrderModel.getLatLong());
         order.setProgressStatus(Status.WAITING);
@@ -223,7 +224,7 @@ public class OrderServiceImpl implements OrderService {
             }
             order.setReason(reason);
             order.setProgressStatus(status);
-            order.setRejectDate(LocalDateTime.now());
+            order.setRejectDate(LocalDateTime.now(ZoneId.of("Asia/Ho_Chi_Minh")));
             orderRepository.save(checkExistedOrder.get());
             return "Xóa thành công.";
         }
@@ -253,7 +254,7 @@ public class OrderServiceImpl implements OrderService {
                 } else {
                     storePlantRecord.setId(util.createIDFromLastID("SPR", 3, lastRecord.getId()));
                 }
-                storePlantRecord.setImportDate(LocalDateTime.now());
+                storePlantRecord.setImportDate(LocalDateTime.now(ZoneId.of("Asia/Ho_Chi_Minh")));
                 storePlantRecord.setAmount(orderDetail.getQuantity());
                 storePlantRecord.setStorePlant(storePlant);
                 storePlantRecord.setReason("Chấp nhận đơn hàng với mã là : " + orderID + ".");

@@ -34,6 +34,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
+import java.time.ZoneId;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -83,7 +84,7 @@ public class FeedbackServiceImpl implements FeedbackService {
         } else {
             orderFeedback.setId(util.createIDFromLastID("OF", 2, lastOrderFeedback.getId()));
         }
-        orderFeedback.setCreatedDate(LocalDateTime.now());
+        orderFeedback.setCreatedDate(LocalDateTime.now(ZoneId.of("Asia/Ho_Chi_Minh")));
         orderFeedback.setStatus(Status.ACTIVE);
         orderFeedback.setCustomer(userRepository.getById(userID));
         orderFeedback.setDescription(createOrderFeedbackModel.getDescription());
@@ -343,7 +344,7 @@ public class FeedbackServiceImpl implements FeedbackService {
         contractFeedback.setStatus(Status.ACTIVE);
         contractFeedback.setDescription(createContractFeedbackModel.getDescription());
         contractFeedback.setRating(ratingRepository.getById(createContractFeedbackModel.getRatingID()));
-        contractFeedback.setDate(LocalDateTime.now());
+        contractFeedback.setDate(LocalDateTime.now(ZoneId.of("Asia/Ho_Chi_Minh")));
         contractFeedbackRepository.save(contractFeedback);
         contractRepository.save(contract.get());
         return "Tạo thành công.";
