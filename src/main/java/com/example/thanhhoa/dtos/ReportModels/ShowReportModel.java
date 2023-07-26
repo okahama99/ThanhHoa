@@ -24,5 +24,9 @@ public class ShowReportModel implements Serializable {
     private String fullName;
     private String phone;
     private String email;
+    private Long staffID;
+    private String staffName;
+    private String contractID;
+    private String timeWorking;
     private Double totalPage;
 }

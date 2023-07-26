@@ -1176,6 +1176,10 @@ public class Util {
                     model.setPhone(report.getCustomer().getPhone());
                     model.setReason(report.getReason());
                     model.setStatus(report.getStatus());
+                    model.setStaffID(report.getContractDetail().getContract().getStaff().getId());
+                    model.setStaffName(report.getContractDetail().getContract().getStaff().getFullName());
+                    model.setContractID(report.getContractDetail().getContract().getId());
+                    model.setTimeWorking(report.getContractDetail().getTimeWorking());
                     model.setTotalPage(totalPage);
                     return model;
                 }
