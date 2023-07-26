@@ -1,5 +1,6 @@
 package com.example.thanhhoa.dtos.ReportModels;
 
+import com.example.thanhhoa.enums.Status;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -11,6 +12,8 @@ import java.time.LocalDateTime;
 public class ShowReportModel implements Serializable {
     private String id;
     private String description;
+    private String reason;
+    private Status status;
     private LocalDateTime createdDate;
     private String contractDetailID;
     private String serviceTypeID;

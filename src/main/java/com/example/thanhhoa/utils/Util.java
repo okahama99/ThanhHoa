@@ -1174,6 +1174,8 @@ public class Util {
                     model.setFullName(report.getCustomer().getFullName());
                     model.setEmail(report.getCustomer().getEmail());
                     model.setPhone(report.getCustomer().getPhone());
+                    model.setReason(report.getReason());
+                    model.setStatus(report.getStatus());
                     model.setTotalPage(totalPage);
                     return model;
                 }

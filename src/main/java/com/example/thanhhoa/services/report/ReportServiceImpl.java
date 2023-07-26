@@ -57,6 +57,8 @@ public class ReportServiceImpl implements ReportService{
             model.setFullName(report.getCustomer().getFullName());
             model.setEmail(report.getCustomer().getEmail());
             model.setPhone(report.getCustomer().getPhone());
+            model.setReason(report.getReason());
+            model.setStatus(report.getStatus());
             modelList.add(model);
         }
         return modelList;
@@ -83,6 +85,8 @@ public class ReportServiceImpl implements ReportService{
             model.setFullName(report.getCustomer().getFullName());
             model.setEmail(report.getCustomer().getEmail());
             model.setPhone(report.getCustomer().getPhone());
+            model.setReason(report.getReason());
+            model.setStatus(report.getStatus());
             modelList.add(model);
         }
         return modelList;
