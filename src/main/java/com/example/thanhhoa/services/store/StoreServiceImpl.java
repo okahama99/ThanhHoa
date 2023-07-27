@@ -262,11 +262,14 @@ public class StoreServiceImpl implements StoreService{
             return "Phải có danh sách ID của Employee để thêm vào Store.";
         }
         Store store = checkExistedStore.get();
-        for (String employeeUsername : addStoreEmployeeModel.getEmployeeIDList()) {
-            tblAccount employeeAcc = userRepository.getByUsername(employeeUsername);
+        for (Long employeeUserID : addStoreEmployeeModel.getEmployeeIDList()) {
+            tblAccount employeeAcc = userRepository.getById(employeeUserID);
             StoreEmployee check = storeEmployeeRepository.findByStore_IdAndAccount_Role_RoleName(store.getId(), "Manager");
-            if(check != null && employeeAcc.getRole().getRoleName().equalsIgnoreCase("Manager")){
-                return "Store đã có Manager, 1 Store chỉ được 1 Manager quản lý.";
+            if(check != null){
+                if(employeeAcc.getRole().getRoleName().equalsIgnoreCase("Manager")){
+                    return "Store đã có Manager, 1 Store chỉ được 1 Manager quản lý.";
+                }
+
             }
 
             StoreEmployeeId employeeId = new StoreEmployeeId();

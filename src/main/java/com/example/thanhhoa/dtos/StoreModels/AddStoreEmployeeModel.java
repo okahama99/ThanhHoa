@@ -10,5 +10,5 @@ import java.util.List;
 @Setter
 public class AddStoreEmployeeModel implements Serializable {
     private String storeID;
-    private List<String> employeeIDList;
+    private List<Long> employeeIDList;
 }
