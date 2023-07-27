@@ -279,6 +279,7 @@ public class StoreServiceImpl implements StoreService{
             storeEmployee.setId(employeeId);
             storeEmployee.setStore(store);
             storeEmployee.setAccount(employeeAcc);
+            storeEmployee.setStatus(Status.ACTIVE);
             storeEmployeeRepository.save(storeEmployee);
             employeeAcc.setStatus(Status.AVAILABLE);
             userRepository.save(employeeAcc);
