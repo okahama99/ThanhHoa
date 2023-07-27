@@ -35,6 +35,8 @@ public interface ContractService {
 
     String changeContractStatus(String contractID, Status status);
 
+    String addContractIMG(String contractID, List<String> listURL);
+
     List<ShowContractModel> getWaitingContract(Pageable pageable);
 
     List<GetStaffModel> getStaffForContract();

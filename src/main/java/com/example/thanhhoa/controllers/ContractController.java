@@ -134,8 +134,8 @@ public class ContractController {
     @GetMapping(value = "/getContractDetailByExactDate", produces = "application/json;charset=UTF-8")
     public @ResponseBody
     ResponseEntity<?> getContractDetailByExactDate(@RequestParam String from,
-                                                    @RequestParam String to,
-                                                    HttpServletRequest request) {
+                                                   @RequestParam String to,
+                                                   HttpServletRequest request) {
         String roleName = jwtUtil.getRoleNameFromRequest(request);
         if(!roleName.equalsIgnoreCase("Staff")) {
             throw new ResponseStatusException(HttpStatus.FORBIDDEN, "-----------------------------------Người dùng không có quyền truy cập---------------------------");
@@ -208,6 +208,17 @@ public class ContractController {
             throw new ResponseStatusException(HttpStatus.FORBIDDEN, "-----------------------------------Người dùng không có quyền truy cập---------------------------");
         }
         return ResponseEntity.ok().body(contractService.createContractManager(createManagerContractModel));
+    }
+
+    @PostMapping(value = "/addContractIMG", produces = "application/json;charset=UTF-8")
+    public ResponseEntity<Object> addContractIMG(@RequestParam String contractID,
+                                                 @RequestParam List<String> listURL,
+                                                 HttpServletRequest request) throws Exception {
+        String roleName = jwtUtil.getRoleNameFromRequest(request);
+        if(!roleName.equalsIgnoreCase("Manager")) {
+            throw new ResponseStatusException(HttpStatus.FORBIDDEN, "-----------------------------------Người dùng không có quyền truy cập---------------------------");
+        }
+        return ResponseEntity.ok().body(contractService.addContractIMG(contractID, listURL));
     }
 
     @PutMapping(produces = "application/json;charset=UTF-8")

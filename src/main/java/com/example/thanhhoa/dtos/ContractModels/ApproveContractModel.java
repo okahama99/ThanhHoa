@@ -17,6 +17,4 @@ public class ApproveContractModel implements Serializable {
     private String paymentMethod;
     private Long staffID;
     private String paymentTypeID;
-    @Nullable
-    private List<String> listURL;
 }

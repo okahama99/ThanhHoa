@@ -303,7 +303,7 @@ public class ContractServiceImpl implements ContractService {
         contract.setPaymentType(paymentType);
         contract.setStaff(staff);
         contract.setStartedDate(LocalDateTime.now(ZoneId.of("Asia/Ho_Chi_Minh")));
-        contract.setStatus(Status.SIGNED);
+        contract.setStatus(Status.WORKING);
 
         contract.setStore(store);
         contract.setCreatedDate(LocalDateTime.now(ZoneId.of("Asia/Ho_Chi_Minh")));
@@ -425,19 +425,6 @@ public class ContractServiceImpl implements ContractService {
             return "Tiền trả trước ( deposit : " + approveContractModel.getDeposit() + " ) đang lớn hơn tổng tiền ( TotalPrice : " + contract.getTotal() + " ).";
         }
 
-        for(String imageURL : approveContractModel.getListURL()) {
-            ContractIMG contractIMG = new ContractIMG();
-            ContractIMG lastContractIMG = contractIMGRepository.findFirstByOrderByIdDesc();
-            if(lastContractIMG == null) {
-                contractIMG.setId(util.createNewID("CIMG"));
-            } else {
-                contractIMG.setId(util.createIDFromLastID("CIMG", 4, lastContractIMG.getId()));
-            }
-            contractIMG.setContract(contract);
-            contractIMG.setImgURL(imageURL);
-            contractIMGRepository.save(contractIMG);
-        }
-
         tblAccount staff = userRepository.getById(approveContractModel.getStaffID());
 
         PaymentType paymentType = paymentTypeRepository.getById(approveContractModel.getPaymentTypeID());
@@ -447,9 +434,38 @@ public class ContractServiceImpl implements ContractService {
         contract.setStaff(staff);
         contract.setStartedDate(LocalDateTime.now(ZoneId.of("Asia/Ho_Chi_Minh")));
         contract.setApprovedDate(LocalDateTime.now(ZoneId.of("Asia/Ho_Chi_Minh")));
-        contract.setStatus(Status.SIGNED);
+        contract.setStatus(Status.APPROVED);
         contractRepository.save(contract);
         return contract.getId();
+    }
+
+    @Override
+    public String addContractIMG(String contractID, List<String> listURL){
+        Contract contract = contractRepository.findByIdAndStatus(contractID, Status.APPROVED);
+        if(contract == null) {
+            return "Không thể tìm thấy Hợp đồng có trạng thái APPROVED với ID là " + contractID + ".";
+        }
+        if(listURL.isEmpty() || listURL == null){
+            return "Không tìm thấy URL trong List";
+        }
+        for(String imageURL : listURL) {
+            ContractIMG contractIMG = new ContractIMG();
+            ContractIMG lastContractIMG = contractIMGRepository.findFirstByOrderByIdDesc();
+            if(lastContractIMG == null) {
+                contractIMG.setId(util.createNewID("CIMG"));
+            } else {
+                contractIMG.setId(util.createIDFromLastID("CIMG", 4, lastContractIMG.getId()));
+            }
+            contractIMG.setContract(contract);
+            contractIMG.setImgURL(imageURL);
+
+            contract.setStatus(Status.WORKING);
+            contract.setIsSigned(true);
+
+            contractRepository.save(contract);
+            contractIMGRepository.save(contractIMG);
+        }
+        return "Thêm thành công.";
     }
 
     @Override
