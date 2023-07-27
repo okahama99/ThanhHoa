@@ -460,6 +460,10 @@ public class ContractServiceImpl implements ContractService {
         }
         Contract contract = checkExisted.get();
         contract.setStatus(status);
+        if(status.toString().equalsIgnoreCase("DONE")){
+            contract.getStaff().setStatus(Status.AVAILABLE);
+            userRepository.save(contract.getStaff());
+        }
         contractRepository.save(contract);
         return "Chỉnh sửa thành công.";
     }

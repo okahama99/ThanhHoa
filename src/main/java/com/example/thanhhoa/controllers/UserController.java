@@ -82,13 +82,13 @@ public class UserController {
 
             SecurityContextHolder.getContext().setAuthentication(authentication);
 
-            Map<String, String> response = new HashMap<>(2);
+            Map<String, String> response = new HashMap<>(3);
 
             String token = jwtUtil.generateToken(authentication);
 
             response.put("status", "success");
             response.put("token", token);
-
+            response.put("role", jwtUtil.getRoleNameFromJWT(token));
             return ResponseEntity.ok().body(response);
         } catch(Exception e) {
             e.printStackTrace();

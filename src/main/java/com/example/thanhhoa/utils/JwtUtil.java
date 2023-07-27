@@ -125,6 +125,15 @@ public class JwtUtil {
         return claims.get("id", Long.class);
     }
 
+    public String getRoleNameFromJWT(String token) {
+        Claims claims = Jwts.parser()
+                .setSigningKey(JWT_SECRET)
+                .parseClaimsJws(token)
+                .getBody();
+
+        return claims.get("roleName", String.class);
+    }
+
     public String getUserNameFromJWT(String token) {
         Claims claims = Jwts.parser()
                 .setSigningKey(JWT_SECRET)
