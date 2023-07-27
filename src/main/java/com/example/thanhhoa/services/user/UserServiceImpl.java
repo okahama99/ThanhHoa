@@ -201,7 +201,7 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public List<ShowUserModel> getAll(Pageable paging) {
-        Page<tblAccount> pagingResult = userPagingRepository.findAllByStatus(paging, Status.ACTIVE);
+        Page<tblAccount> pagingResult = userPagingRepository.findAll(paging);
         return util.userPagingConverter(pagingResult, paging);
     }
 

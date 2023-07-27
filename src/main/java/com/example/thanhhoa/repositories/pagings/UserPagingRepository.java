@@ -10,8 +10,6 @@ import org.springframework.stereotype.Repository;
 @Repository
 public interface UserPagingRepository extends PagingAndSortingRepository<tblAccount, String> {
 
-    Page<tblAccount> findAllByStatus(Pageable pageable, Status status);
-
     Page<tblAccount> findByUsernameContainingAndStatus(String username, Pageable pageable, Status status);
 
     Page<tblAccount> findByFullNameContainingAndStatus(String fullName, Pageable pageable, Status status);
