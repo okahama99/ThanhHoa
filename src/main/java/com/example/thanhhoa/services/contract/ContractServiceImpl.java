@@ -14,6 +14,9 @@ import com.example.thanhhoa.dtos.ContractModels.ShowServicePackModel;
 import com.example.thanhhoa.dtos.ContractModels.ShowServiceTypeModel;
 import com.example.thanhhoa.dtos.ContractModels.ShowWorkingDateModel;
 import com.example.thanhhoa.dtos.ContractModels.UpdateContractModel;
+import com.example.thanhhoa.dtos.OrderModels.ShowCustomerModel;
+import com.example.thanhhoa.dtos.OrderModels.ShowStaffModel;
+import com.example.thanhhoa.dtos.OrderModels.ShowStoreModel;
 import com.example.thanhhoa.entities.Contract;
 import com.example.thanhhoa.entities.ContractDetail;
 import com.example.thanhhoa.entities.ContractIMG;
@@ -129,6 +132,40 @@ public class ContractServiceImpl implements ContractService {
                     }
                 }
                 ShowContractModel contractModel = new ShowContractModel();
+                //store
+                ShowStoreModel storeModel = new ShowStoreModel();
+                storeModel.setId(detail.getContract().getStore().getId());
+                storeModel.setStoreName(detail.getContract().getStore().getStoreName());
+                storeModel.setAddress(detail.getContract().getStore().getAddress());
+                storeModel.setPhone(detail.getContract().getStore().getPhone());
+                //staff
+                ShowStaffModel staffModel = new ShowStaffModel();
+                if(detail.getContract().getStaff() != null) {
+                    staffModel.setId(detail.getContract().getStaff().getId());
+                    staffModel.setAddress(detail.getContract().getStaff().getAddress());
+                    staffModel.setEmail(detail.getContract().getStaff().getEmail());
+                    staffModel.setPhone(detail.getContract().getStaff().getPhone());
+                    staffModel.setFullName(detail.getContract().getStaff().getFullName());
+                }
+                //customer
+                ShowCustomerModel customerModel = new ShowCustomerModel();
+                customerModel.setId(detail.getContract().getCustomer().getId());
+                customerModel.setAddress(detail.getContract().getCustomer().getAddress());
+                customerModel.setEmail(detail.getContract().getCustomer().getEmail());
+                customerModel.setPhone(detail.getContract().getCustomer().getPhone());
+                customerModel.setFullName(detail.getContract().getCustomer().getFullName());
+                customerModel.setAvatar(detail.getContract().getCustomer().getAvatar());
+                //paymenttype
+                ShowPaymentTypeModel paymentTypeModel = new ShowPaymentTypeModel();
+                if(detail.getContract().getPaymentType() != null) {
+                    paymentTypeModel.setId(detail.getContract().getPaymentType().getId());
+                    paymentTypeModel.setName(detail.getContract().getPaymentType().getName());
+                    paymentTypeModel.setValue(detail.getContract().getPaymentType().getValue());
+                }
+                contractModel.setShowPaymentTypeModel(paymentTypeModel);
+                contractModel.setShowCustomerModel(customerModel);
+                contractModel.setShowStaffModel(staffModel);
+                contractModel.setShowStoreModel(storeModel);
                 contractModel.setId(detail.getContract().getId());
                 contractModel.setAddress(detail.getContract().getAddress());
                 contractModel.setPhone(detail.getContract().getPhone());
@@ -570,6 +607,40 @@ public class ContractServiceImpl implements ContractService {
                 }
             }
             ShowContractModel contractModel = new ShowContractModel();
+            //store
+            ShowStoreModel storeModel = new ShowStoreModel();
+            storeModel.setId(detail.getContract().getStore().getId());
+            storeModel.setStoreName(detail.getContract().getStore().getStoreName());
+            storeModel.setAddress(detail.getContract().getStore().getAddress());
+            storeModel.setPhone(detail.getContract().getStore().getPhone());
+            //staff
+            ShowStaffModel staffModel = new ShowStaffModel();
+            if(detail.getContract().getStaff() != null) {
+                staffModel.setId(detail.getContract().getStaff().getId());
+                staffModel.setAddress(detail.getContract().getStaff().getAddress());
+                staffModel.setEmail(detail.getContract().getStaff().getEmail());
+                staffModel.setPhone(detail.getContract().getStaff().getPhone());
+                staffModel.setFullName(detail.getContract().getStaff().getFullName());
+            }
+            //customer
+            ShowCustomerModel customerModel = new ShowCustomerModel();
+            customerModel.setId(detail.getContract().getCustomer().getId());
+            customerModel.setAddress(detail.getContract().getCustomer().getAddress());
+            customerModel.setEmail(detail.getContract().getCustomer().getEmail());
+            customerModel.setPhone(detail.getContract().getCustomer().getPhone());
+            customerModel.setFullName(detail.getContract().getCustomer().getFullName());
+            customerModel.setAvatar(detail.getContract().getCustomer().getAvatar());
+            //paymenttype
+            ShowPaymentTypeModel paymentTypeModel = new ShowPaymentTypeModel();
+            if(detail.getContract().getPaymentType() != null) {
+                paymentTypeModel.setId(detail.getContract().getPaymentType().getId());
+                paymentTypeModel.setName(detail.getContract().getPaymentType().getName());
+                paymentTypeModel.setValue(detail.getContract().getPaymentType().getValue());
+            }
+            contractModel.setShowPaymentTypeModel(paymentTypeModel);
+            contractModel.setShowCustomerModel(customerModel);
+            contractModel.setShowStaffModel(staffModel);
+            contractModel.setShowStoreModel(storeModel);
             contractModel.setId(detail.getContract().getId());
             contractModel.setAddress(detail.getContract().getAddress());
             contractModel.setPhone(detail.getContract().getPhone());
@@ -660,6 +731,40 @@ public class ContractServiceImpl implements ContractService {
                 }
             }
             ShowContractModel contractModel = new ShowContractModel();
+            //store
+            ShowStoreModel storeModel = new ShowStoreModel();
+            storeModel.setId(detail.getContract().getStore().getId());
+            storeModel.setStoreName(detail.getContract().getStore().getStoreName());
+            storeModel.setAddress(detail.getContract().getStore().getAddress());
+            storeModel.setPhone(detail.getContract().getStore().getPhone());
+            //staff
+            ShowStaffModel staffModel = new ShowStaffModel();
+            if(detail.getContract().getStaff() != null) {
+                staffModel.setId(detail.getContract().getStaff().getId());
+                staffModel.setAddress(detail.getContract().getStaff().getAddress());
+                staffModel.setEmail(detail.getContract().getStaff().getEmail());
+                staffModel.setPhone(detail.getContract().getStaff().getPhone());
+                staffModel.setFullName(detail.getContract().getStaff().getFullName());
+            }
+            //customer
+            ShowCustomerModel customerModel = new ShowCustomerModel();
+            customerModel.setId(detail.getContract().getCustomer().getId());
+            customerModel.setAddress(detail.getContract().getCustomer().getAddress());
+            customerModel.setEmail(detail.getContract().getCustomer().getEmail());
+            customerModel.setPhone(detail.getContract().getCustomer().getPhone());
+            customerModel.setFullName(detail.getContract().getCustomer().getFullName());
+            customerModel.setAvatar(detail.getContract().getCustomer().getAvatar());
+            //paymenttype
+            ShowPaymentTypeModel paymentTypeModel = new ShowPaymentTypeModel();
+            if(detail.getContract().getPaymentType() != null) {
+                paymentTypeModel.setId(detail.getContract().getPaymentType().getId());
+                paymentTypeModel.setName(detail.getContract().getPaymentType().getName());
+                paymentTypeModel.setValue(detail.getContract().getPaymentType().getValue());
+            }
+            contractModel.setShowPaymentTypeModel(paymentTypeModel);
+            contractModel.setShowCustomerModel(customerModel);
+            contractModel.setShowStaffModel(staffModel);
+            contractModel.setShowStoreModel(storeModel);
             contractModel.setId(detail.getContract().getId());
             contractModel.setAddress(detail.getContract().getAddress());
             contractModel.setPhone(detail.getContract().getPhone());
