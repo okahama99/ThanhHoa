@@ -384,7 +384,7 @@ public class ContractServiceImpl implements ContractService {
 
     @Override
     public String updateContract(UpdateContractModel updateContractModel, Long userID) {
-        Contract contract = contractRepository.findByIdAndStatus(updateContractModel.getId(), Status.SIGNED);
+        Contract contract = contractRepository.findByIdAndStatus(updateContractModel.getId(), Status.WAITING);
         if(contract == null) {
             return "Không tìm thấy Hợp đồng với ID là " + updateContractModel.getId() + " có trạng thái là đã ký tên.";
         }
