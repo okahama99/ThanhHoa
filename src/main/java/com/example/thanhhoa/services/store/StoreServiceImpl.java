@@ -353,7 +353,7 @@ public class StoreServiceImpl implements StoreService{
 
     @Override
     public List<ShowStaffModel> getStaffByStoreID(String storeID, Pageable pageable) {
-        Page<StoreEmployee> pagingResult = storeEmployeePagingRepository.findByStore_IdAndStore_Status(storeID, Status.ONSALE, pageable);
+        Page<StoreEmployee> pagingResult = storeEmployeePagingRepository.findByStore_IdAndStore_Status(storeID, Status.ACTIVE, pageable);
         return util.staffPagingConverter(pagingResult,pageable);
     }
 }
