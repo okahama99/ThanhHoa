@@ -109,6 +109,30 @@ public class ContractController {
         return model;
     }
 
+    @GetMapping(value = "/getAll", produces = "application/json;charset=UTF-8")
+    public @ResponseBody
+    List<ShowContractModel> getAll(@RequestParam int pageNo,
+                                         @RequestParam int pageSize,
+                                         @RequestParam SearchType.CONTRACT sortBy,
+                                         @RequestParam(required = false, defaultValue = "true") boolean sortAsc,
+                                         HttpServletRequest request) {
+        String roleName = jwtUtil.getRoleNameFromRequest(request);
+        if(!roleName.equalsIgnoreCase("Owner")) {
+            throw new ResponseStatusException(HttpStatus.FORBIDDEN, "-----------------------------------Người dùng không có quyền truy cập---------------------------");
+        }
+
+        Pageable paging;
+        if(sortBy.equals("CREATEDDATE")) {
+            paging = util.makePaging(pageNo, pageSize, "createdDate", sortAsc);
+        } else if(sortBy.equals("ENDEDDATE")) {
+            paging = util.makePaging(pageNo, pageSize, "endedDate", sortAsc);
+        } else {
+            paging = util.makePaging(pageNo, pageSize, sortBy.toString().toLowerCase(), sortAsc);
+        }
+        List<ShowContractModel> model = contractService.getAllContract(paging);
+        return model;
+    }
+
     @GetMapping(value = "/getContractDetailByStaffTokenAndDate", produces = "application/json;charset=UTF-8")
     public @ResponseBody
     ResponseEntity<?> getContractDetailByStaffToken(@RequestParam String from,

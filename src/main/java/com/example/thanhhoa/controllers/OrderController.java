@@ -141,6 +141,31 @@ public class OrderController {
 
     }
 
+    @GetMapping(value = "/getAll", produces = "application/json;charset=UTF-8")
+    public @ResponseBody
+    List<ShowOrderModel> getAll(@RequestParam int pageNo,
+                                @RequestParam int pageSize,
+                                @RequestParam(defaultValue = "ID") SearchType.ORDER sortBy,
+                                @RequestParam(defaultValue = "true") Boolean sortAsc,
+                                HttpServletRequest request) {
+        String roleName = jwtUtil.getRoleNameFromRequest(request);
+        if(!roleName.equalsIgnoreCase("Owner")) {
+            throw new ResponseStatusException(HttpStatus.FORBIDDEN, "-----------------------------------Người dùng không có quyền truy cập---------------------------");
+        }
+
+        Pageable paging;
+        if(sortBy.toString().equalsIgnoreCase("CREATEDDATE")) {
+            paging = util.makePaging(pageNo, pageSize, "createdDate", sortAsc);
+        } else if(sortBy.toString().equalsIgnoreCase("RECEIVEDDATE")) {
+            paging = util.makePaging(pageNo, pageSize, "receivedDate", sortAsc);
+        } else if(sortBy.toString().equalsIgnoreCase("PROGRESSSTATUS")) {
+            paging = util.makePaging(pageNo, pageSize, "progressStatus", sortAsc);
+        } else {
+            paging = util.makePaging(pageNo, pageSize, sortBy.toString().toLowerCase(), sortAsc);
+        }
+        return orderService.getAllOrder(paging);
+    }
+
     @GetMapping(value = "/getWaitingOrder", produces = "application/json;charset=UTF-8")
     public @ResponseBody
     List<ShowOrderModel> getWaitingOrder(@RequestParam int pageNo,

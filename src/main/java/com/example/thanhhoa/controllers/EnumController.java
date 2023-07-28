@@ -15,7 +15,7 @@ public class EnumController {
 
     @GetMapping(value = "/order", produces = "application/json;charset=UTF-8")
     public @ResponseBody
-    List<String> cart() {
+    List<String> order() {
         List<String> list = new ArrayList<>();
         list.add(Status.WAITING.toString());
         list.add(Status.APPROVED.toString());
