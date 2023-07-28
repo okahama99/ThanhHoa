@@ -824,12 +824,15 @@ public class Util {
                     }
                     //customer
                     ShowCustomerModel customerModel = new ShowCustomerModel();
-                    customerModel.setId(detail.getContract().getCustomer().getId());
-                    customerModel.setAddress(detail.getContract().getCustomer().getAddress());
-                    customerModel.setEmail(detail.getContract().getCustomer().getEmail());
-                    customerModel.setPhone(detail.getContract().getCustomer().getPhone());
-                    customerModel.setFullName(detail.getContract().getCustomer().getFullName());
-                    customerModel.setAvatar(detail.getContract().getCustomer().getAvatar());
+                    if(detail.getContract().getCustomer() != null){
+                        customerModel.setId(detail.getContract().getCustomer().getId());
+                        customerModel.setAddress(detail.getContract().getCustomer().getAddress());
+                        customerModel.setEmail(detail.getContract().getCustomer().getEmail());
+                        customerModel.setPhone(detail.getContract().getCustomer().getPhone());
+                        customerModel.setFullName(detail.getContract().getCustomer().getFullName());
+                        customerModel.setAvatar(detail.getContract().getCustomer().getAvatar());
+                    }
+
                     //paymenttype
                     ShowPaymentTypeModel paymentTypeModel = new ShowPaymentTypeModel();
                     if(detail.getContract().getPaymentType() != null) {
