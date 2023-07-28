@@ -97,7 +97,7 @@ public class StoreController {
     public ResponseEntity<Object> addStoreEmployee(@RequestBody AddStoreEmployeeModel addStoreEmployeeModel,
                                                    HttpServletRequest request) {
         String roleName = jwtUtil.getRoleNameFromRequest(request);
-        if(!roleName.equalsIgnoreCase("Manager")) {
+        if(!roleName.equalsIgnoreCase("Manager") && !roleName.equalsIgnoreCase("Owner") && !roleName.equalsIgnoreCase("Admin")) {
             throw new ResponseStatusException(HttpStatus.FORBIDDEN, "-----------------------------------Người dùng không có quyền truy cập---------------------------");
         }
         String result = storeService.addStoreEmployee(addStoreEmployeeModel);
@@ -196,6 +196,15 @@ public class StoreController {
     @GetMapping(value = "/getByID", produces = "application/json;charset=UTF-8")
     public ShowStoreModel getByID(@RequestParam String storeID) {
         return storeService.getByID(storeID);
+    }
+
+    @GetMapping(value = "/getStoreByStaffToken", produces = "application/json;charset=UTF-8")
+    public ShowStoreModel getStoreByStaffToken(HttpServletRequest request) {
+        String roleName = jwtUtil.getRoleNameFromRequest(request);
+        if(!roleName.equalsIgnoreCase("Staff")) {
+            throw new ResponseStatusException(HttpStatus.FORBIDDEN, "-----------------------------------Người dùng không có quyền truy cập---------------------------");
+        }
+        return storeService.getStoreByStaffToken(jwtUtil.getUserIDFromRequest(request));
     }
 
     @GetMapping(value = "/getAllProvince", produces = "application/json;charset=UTF-8")

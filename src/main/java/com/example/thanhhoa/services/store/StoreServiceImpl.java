@@ -356,4 +356,23 @@ public class StoreServiceImpl implements StoreService{
         Page<StoreEmployee> pagingResult = storeEmployeePagingRepository.findByStore_IdAndStore_Status(storeID, Status.ACTIVE, pageable);
         return util.staffPagingConverter(pagingResult,pageable);
     }
+
+    @Override
+    public ShowStoreModel getStoreByStaffToken(Long staffID){
+        StoreEmployee employee = storeEmployeeRepository.findByAccount_IdAndStatus(staffID, Status.ACTIVE);
+        if(employee == null){
+            return null;
+        }
+        StoreEmployee manager = storeEmployeeRepository.findByStore_IdAndAccount_Role_RoleName(employee.getStore().getId(), "Manager");
+        ShowStoreModel model = new ShowStoreModel();
+        model.setId(employee.getStore().getId());
+        model.setStatus(employee.getStore().getStatus());
+        model.setStoreName(employee.getStore().getStoreName());
+        model.setAddress(employee.getStore().getAddress());
+        model.setDistrict(employee.getStore().getDistrict().getDistrictName());
+        model.setPhone(employee.getStore().getPhone());
+        model.setManagerID(manager.getAccount().getId());
+        model.setManagerName(manager.getAccount().getFullName());
+        return model;
+    }
 }
