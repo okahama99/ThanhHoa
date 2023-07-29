@@ -126,7 +126,7 @@ public class OrderServiceImpl implements OrderService {
             detail.setPlant(plant);
 
 
-            Cart cart = cartRepository.findByPlant_Id(model.getPlantID());
+            Cart cart = cartRepository.findByPlant_IdAndAccount_Id(model.getPlantID(), customerID);
             cart.setQuantity(0);
 
             orderDetailRepository.save(detail);
