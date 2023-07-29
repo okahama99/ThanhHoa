@@ -284,8 +284,6 @@ public class ContractServiceImpl implements ContractService {
             }
             startDateList.add(startDate);
             endDateList.add(endDate);
-
-            Double total = 0.0;
             ContractDetail detail = new ContractDetail();
             ContractDetail lastContractDetail = contractDetailRepository.findFirstByOrderByIdDesc();
             if(lastContractDetail == null) {
@@ -294,8 +292,7 @@ public class ContractServiceImpl implements ContractService {
                 detail.setId(util.createIDFromLastID("CTD", 3, lastContractDetail.getId()));
             }
 
-            total += servicePack.getPercentage() * (serviceType.getService().getPrice() + (serviceType.getPercentage() * serviceType.getService().getPrice()));
-            totalPrice += total;
+            totalPrice += detail.getTotalPrice();
 
             detail.setStartDate(startDate);
             detail.setEndDate(endDate);
@@ -305,7 +302,7 @@ public class ContractServiceImpl implements ContractService {
             detail.setContract(contract);
             detail.setServicePack(servicePack);
             detail.setServiceType(serviceType);
-            detail.setTotalPrice(total);
+            detail.setTotalPrice(detail.getTotalPrice());
             contractDetailRepository.save(detail);
         }
 
@@ -378,7 +375,6 @@ public class ContractServiceImpl implements ContractService {
             startDateList.add(startDate);
             endDateList.add(endDate);
 
-            Double total = 0.0;
             ContractDetail detail = new ContractDetail();
             ContractDetail lastContractDetail = contractDetailRepository.findFirstByOrderByIdDesc();
             if(lastContractDetail == null) {
@@ -387,8 +383,7 @@ public class ContractServiceImpl implements ContractService {
                 detail.setId(util.createIDFromLastID("CTD", 3, lastContractDetail.getId()));
             }
 
-            total += servicePack.getPercentage() * (serviceType.getService().getPrice() + (serviceType.getPercentage() * serviceType.getService().getPrice()));
-            totalPrice += total;
+            totalPrice += detail.getTotalPrice();
 
             detail.setStartDate(startDate);
             detail.setEndDate(endDate);
@@ -398,7 +393,7 @@ public class ContractServiceImpl implements ContractService {
             detail.setContract(contract);
             detail.setServicePack(servicePack);
             detail.setServiceType(serviceType);
-            detail.setTotalPrice(total);
+            detail.setTotalPrice(detail.getTotalPrice());
             contractDetailRepository.save(detail);
         }
         if(createManagerContractModel.getDeposit() > totalPrice){
