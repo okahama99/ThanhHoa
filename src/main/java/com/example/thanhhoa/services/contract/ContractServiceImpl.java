@@ -292,7 +292,7 @@ public class ContractServiceImpl implements ContractService {
                 detail.setId(util.createIDFromLastID("CTD", 3, lastContractDetail.getId()));
             }
 
-            totalPrice += detail.getTotalPrice();
+            totalPrice += model.getTotalPrice();
 
             detail.setStartDate(startDate);
             detail.setEndDate(endDate);
@@ -383,7 +383,7 @@ public class ContractServiceImpl implements ContractService {
                 detail.setId(util.createIDFromLastID("CTD", 3, lastContractDetail.getId()));
             }
 
-            totalPrice += detail.getTotalPrice();
+            totalPrice += model.getTotalPrice();
 
             detail.setStartDate(startDate);
             detail.setEndDate(endDate);
