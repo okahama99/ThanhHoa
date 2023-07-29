@@ -30,7 +30,7 @@ public interface OrderService {
 
     List<ShowOrderModel> getAllByStatusOrderByUsername(Status status, String username, Pageable pageable);
 
-    List<ShowOrderModel> getWaitingOrder(Pageable pageable);
+    List<ShowOrderModel> getWaitingOrder(String storeID, Pageable pageable);
 
     List<ShowOrderDetailModel> getOrderDetailByOrderID(String orderID);
 

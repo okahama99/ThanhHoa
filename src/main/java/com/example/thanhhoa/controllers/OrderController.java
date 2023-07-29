@@ -114,7 +114,8 @@ public class OrderController {
                                                @RequestParam(defaultValue = "true") Boolean sortAsc,
                                                HttpServletRequest request) {
         String roleName = jwtUtil.getRoleNameFromRequest(request);
-        if(!roleName.equalsIgnoreCase("Customer") && !roleName.equalsIgnoreCase("Staff")) {
+        if(!roleName.equalsIgnoreCase("Customer") && !roleName.equalsIgnoreCase("Staff")
+                && !roleName.equalsIgnoreCase("Manager") && !roleName.equalsIgnoreCase("Owner")) {
             throw new ResponseStatusException(HttpStatus.FORBIDDEN, "-----------------------------------Người dùng không có quyền truy cập---------------------------");
         }
         String authTokenHeader = request.getHeader("Authorization");
@@ -168,7 +169,8 @@ public class OrderController {
 
     @GetMapping(value = "/getWaitingOrder", produces = "application/json;charset=UTF-8")
     public @ResponseBody
-    List<ShowOrderModel> getWaitingOrder(@RequestParam int pageNo,
+    List<ShowOrderModel> getWaitingOrder(@RequestParam String storeID,
+                                         @RequestParam int pageNo,
                                          @RequestParam int pageSize,
                                          @RequestParam(required = false, defaultValue = "ID") SearchType.ORDER sortBy,
                                          @RequestParam(required = false, defaultValue = "true") Boolean sortAsc,
@@ -189,7 +191,7 @@ public class OrderController {
             paging = util.makePaging(pageNo, pageSize, sortBy.toString().toLowerCase(), sortAsc);
         }
 
-        return orderService.getWaitingOrder(paging);
+        return orderService.getWaitingOrder(storeID, paging);
     }
 
     @GetMapping(value = "/orderDetail/{orderID}", produces = "application/json;charset=UTF-8")

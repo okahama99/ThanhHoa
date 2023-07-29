@@ -15,5 +15,5 @@ public interface OrderPagingRepository extends PagingAndSortingRepository<tblOrd
 
     Page<tblOrder> findByCustomer_UsernameAndProgressStatus(String username, Status status, Pageable pageable);
 
-    Page<tblOrder> findByProgressStatus(Status status, Pageable pageable);
+    Page<tblOrder> findByProgressStatusAndStore_Id(Status status, String storeID, Pageable pageable);
 }

@@ -308,8 +308,8 @@ public class OrderServiceImpl implements OrderService {
     }
 
     @Override
-    public List<ShowOrderModel> getWaitingOrder(Pageable pageable) {
-        Page<tblOrder> pagingResult = orderPagingRepository.findByProgressStatus(Status.WAITING, pageable);
+    public List<ShowOrderModel> getWaitingOrder(String storeID, Pageable pageable) {
+        Page<tblOrder> pagingResult = orderPagingRepository.findByProgressStatusAndStore_Id(Status.WAITING, storeID, pageable);
         return util.orderPagingConverter(pagingResult, pageable);
     }
 
