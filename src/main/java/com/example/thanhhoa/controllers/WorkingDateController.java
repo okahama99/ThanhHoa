@@ -1,7 +1,5 @@
 package com.example.thanhhoa.controllers;
 
-import com.example.thanhhoa.dtos.ServiceModels.ShowServiceModel;
-import com.example.thanhhoa.dtos.ServiceModels.ShowServiceTypeModel;
 import com.example.thanhhoa.dtos.WorkingDateModels.ShowWorkingDateModel;
 import com.example.thanhhoa.entities.WorkingDate;
 import com.example.thanhhoa.enums.SearchType;
@@ -13,7 +11,6 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -23,8 +20,6 @@ import org.springframework.web.server.ResponseStatusException;
 
 import javax.servlet.http.HttpServletRequest;
 import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
-import java.time.format.DateTimeParseException;
 import java.util.List;
 
 @RestController
@@ -63,7 +58,7 @@ public class WorkingDateController {
         Pageable paging;
         if(sortBy.equals("WORKINGDATE")) {
             paging = util.makePaging(pageNo, pageSize, "workingDate", sortAsc);
-        }else {
+        } else {
             paging = util.makePaging(pageNo, pageSize, sortBy.toString().toLowerCase(), sortAsc);
         }
         return workingDateService.getAllByContractDetailID(contractDetailID, paging);
@@ -73,7 +68,7 @@ public class WorkingDateController {
     public @ResponseBody
     ResponseEntity<Object> getByID(@RequestParam String workingDateID) {
         WorkingDate result = workingDateService.getByID(workingDateID);
-        if(result == null){
+        if(result == null) {
             return ResponseEntity.badRequest().body(result);
         }
         return ResponseEntity.ok().body(result);
@@ -93,7 +88,7 @@ public class WorkingDateController {
             throw new ResponseStatusException(HttpStatus.FORBIDDEN, "-----------------------------------Người dùng không có quyền truy cập---------------------------");
         }
         LocalDateTime workingDate = util.isDateValid(date);
-        if( workingDate == null){
+        if(workingDate == null) {
             return ResponseEntity.badRequest().body("Nhập theo khuôn được định sẵn yyyy-MM-dd, ví dụ : 2021-12-21");
         }
         return ResponseEntity.ok().body(workingDateService.getByWorkingDate(contractDetailID, workingDate));

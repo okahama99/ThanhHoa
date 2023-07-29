@@ -74,6 +74,7 @@ public class ServiceServiceImpl implements ServiceService{
         service.setPrice(createServiceModel.getPrice());
         service.setServiceTypeList(serviceTypeList);
         service.setStatus(Status.ACTIVE);
+        service.setAtHome(createServiceModel.getAtHome());
 
         for(String imageURL : createServiceModel.getListURL()) {
             ServiceIMG serviceIMG = new ServiceIMG();
@@ -113,7 +114,7 @@ public class ServiceServiceImpl implements ServiceService{
         service.setPrice(updateServiceModel.getPrice());
         service.setDescription(updateServiceModel.getDescription());
         service.setServiceTypeList(serviceTypeList);
-        serviceRepository.save(service);
+        service.setAtHome(updateServiceModel.getAtHome());
 
         for(String imageURL : updateServiceModel.getListURL()) {
             ServiceIMG serviceIMG = new ServiceIMG();
@@ -127,6 +128,7 @@ public class ServiceServiceImpl implements ServiceService{
             serviceIMG.setImgURL(imageURL);
             serviceIMGRepository.save(serviceIMG);
         }
+        serviceRepository.save(service);
         return "Chỉnh sửa thành công.";
     }
 

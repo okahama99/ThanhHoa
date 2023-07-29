@@ -4,6 +4,7 @@ import com.example.thanhhoa.enums.Status;
 import lombok.Getter;
 import lombok.Setter;
 
+import javax.annotation.Nullable;
 import java.io.Serializable;
 import java.util.List;
 
@@ -18,4 +19,6 @@ public class ShowServiceModel implements Serializable {
     private List<ShowServiceTypeModel> typeList;
     private Double totalPage;
     private List<ShowServiceIMGModel> imgList;
+    @Nullable
+    private Boolean atHome = false;
 }

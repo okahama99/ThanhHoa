@@ -574,6 +574,7 @@ public class Util {
                     model.setTypeList(typeList);
                     model.setImgList(imgList);
                     model.setStatus(service.getStatus());
+                    model.setAtHome(service.getAtHome());
                     model.setTotalPage(totalPage);
                     return model;
                 }
@@ -885,6 +886,7 @@ public class Util {
                     serviceModel.setDescription(detail.getServiceType().getService().getDescription());
                     serviceModel.setPrice(detail.getServiceType().getService().getPrice());
                     serviceModel.setName(detail.getServiceType().getService().getName());
+                    serviceModel.setAtHome(detail.getServiceType().getService().getAtHome());
 
                     model.setShowContractModel(contractModel);
                     model.setShowServiceModel(serviceModel);

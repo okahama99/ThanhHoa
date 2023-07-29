@@ -215,6 +215,7 @@ public class ContractServiceImpl implements ContractService {
                 serviceModel.setDescription(detail.getServiceType().getService().getDescription());
                 serviceModel.setPrice(detail.getServiceType().getService().getPrice());
                 serviceModel.setName(detail.getServiceType().getService().getName());
+                serviceModel.setAtHome(detail.getServiceType().getService().getAtHome());
 
                 model.setShowContractModel(contractModel);
                 model.setShowServiceModel(serviceModel);
@@ -692,6 +693,7 @@ public class ContractServiceImpl implements ContractService {
             serviceModel.setDescription(detail.getServiceType().getService().getDescription());
             serviceModel.setPrice(detail.getServiceType().getService().getPrice());
             serviceModel.setName(detail.getServiceType().getService().getName());
+            serviceModel.setAtHome(detail.getServiceType().getService().getAtHome());
 
             model.setShowContractModel(contractModel);
             model.setShowServiceModel(serviceModel);
@@ -818,6 +820,7 @@ public class ContractServiceImpl implements ContractService {
             serviceModel.setDescription(detail.getServiceType().getService().getDescription());
             serviceModel.setPrice(detail.getServiceType().getService().getPrice());
             serviceModel.setName(detail.getServiceType().getService().getName());
+            serviceModel.setAtHome(detail.getServiceType().getService().getAtHome());
 
             model.setShowContractModel(contractModel);
             model.setShowServiceModel(serviceModel);

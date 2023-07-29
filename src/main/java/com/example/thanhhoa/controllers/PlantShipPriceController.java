@@ -2,10 +2,6 @@ package com.example.thanhhoa.controllers;
 
 import com.example.thanhhoa.dtos.PlantShipPriceModels.CreatePlantShipPriceModel;
 import com.example.thanhhoa.dtos.PlantShipPriceModels.ShowPlantShipPriceModel;
-import com.example.thanhhoa.dtos.ServiceModels.CreateServiceModel;
-import com.example.thanhhoa.dtos.ServiceModels.ShowServiceModel;
-import com.example.thanhhoa.dtos.ServiceModels.ShowServiceTypeModel;
-import com.example.thanhhoa.dtos.ServiceModels.UpdateServiceModel;
 import com.example.thanhhoa.enums.SearchType;
 import com.example.thanhhoa.services.plantShipPrice.PlantShipPriceService;
 import com.example.thanhhoa.utils.JwtUtil;
@@ -18,7 +14,6 @@ import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -42,13 +37,13 @@ public class PlantShipPriceController {
 
     @PostMapping(produces = "application/json;charset=UTF-8")
     public ResponseEntity<Object> createPSP(@RequestBody CreatePlantShipPriceModel createPlantShipPriceModel,
-                                                HttpServletRequest request) throws Exception {
+                                            HttpServletRequest request) throws Exception {
         String roleName = jwtUtil.getRoleNameFromRequest(request);
-        if (!roleName.equalsIgnoreCase("Owner")) {
+        if(!roleName.equalsIgnoreCase("Owner")) {
             throw new ResponseStatusException(HttpStatus.FORBIDDEN, "-----------------------------------Người dùng không có quyền truy cập---------------------------");
         }
         String result = plantShipPriceService.createPSP(createPlantShipPriceModel);
-        if (result.equals("Tạo thành công.")) {
+        if(result.equals("Tạo thành công.")) {
             return ResponseEntity.ok().body(result);
         }
         return ResponseEntity.badRequest().body(result);
@@ -56,13 +51,13 @@ public class PlantShipPriceController {
 
     @DeleteMapping(value = "/{plantShipPriceID}", produces = "application/json;charset=UTF-8")
     public ResponseEntity<Object> deletePSP(@PathVariable(name = "plantShipPriceID") String plantShipPriceID,
-                                                HttpServletRequest request) {
+                                            HttpServletRequest request) {
         String roleName = jwtUtil.getRoleNameFromRequest(request);
-        if (!roleName.equalsIgnoreCase("Owner")) {
+        if(!roleName.equalsIgnoreCase("Owner")) {
             throw new ResponseStatusException(HttpStatus.FORBIDDEN, "-----------------------------------Người dùng không có quyền truy cập---------------------------");
         }
         String result = plantShipPriceService.deletePSP(plantShipPriceID);
-        if (!result.equals("Xóa thành công.")) {
+        if(!result.equals("Xóa thành công.")) {
             return ResponseEntity.ok().body(result);
         } else {
             return ResponseEntity.badRequest().body(result);

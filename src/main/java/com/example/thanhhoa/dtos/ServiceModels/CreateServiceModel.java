@@ -17,4 +17,6 @@ public class CreateServiceModel implements Serializable {
     private List<String> typeIDList;
     @Nullable
     private List<String> listURL;
+    @Nullable
+    private Boolean atHome = false;
 }
