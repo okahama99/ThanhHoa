@@ -26,6 +26,7 @@ import com.example.thanhhoa.dtos.ServiceModels.ShowServiceIMGModel;
 import com.example.thanhhoa.dtos.ServiceModels.ShowServiceModel;
 import com.example.thanhhoa.dtos.ServiceModels.ShowServiceTypeModel;
 import com.example.thanhhoa.dtos.ServicePriceModels.ShowServicePriceModel;
+import com.example.thanhhoa.dtos.StoreModels.ShowStorePlantModel;
 import com.example.thanhhoa.dtos.UserModels.ShowUserModel;
 import com.example.thanhhoa.dtos.WorkingDateModels.ShowWorkingDateModel;
 import com.example.thanhhoa.entities.Category;
@@ -303,6 +304,10 @@ public class Util {
                     showPlantPriceModel.setApplyDate(newestPrice.getApplyDate());
                     showPlantPriceModel.setStatus(newestPrice.getStatus());
 
+                    ShowStorePlantModel storePlantModel = new ShowStorePlantModel();
+                    storePlantModel.setId(storePlant.getId());
+                    storePlantModel.setQuantity(storePlant.getQuantity());
+
                     com.example.thanhhoa.dtos.StoreModels.ShowPlantModel model = new com.example.thanhhoa.dtos.StoreModels.ShowPlantModel();
                     model.setPlantID(plant.getId());
                     model.setName(plant.getName());
@@ -315,6 +320,7 @@ public class Util {
                     model.setDescription(plant.getDescription());
                     model.setCareNote(plant.getCareNote());
                     model.setStatus(plant.getStatus());
+                    model.setShowStorePlantModel(storePlantModel);
                     model.setTotalPage(totalPage);
                     return model;
                 }

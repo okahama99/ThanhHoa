@@ -9,5 +9,5 @@ import java.io.Serializable;
 @Setter
 public class ShowStorePlantModel implements Serializable {
     private String id;
-    private String quantity;
+    private Integer quantity;
 }
