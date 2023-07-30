@@ -80,13 +80,13 @@ public class StoreController {
     }
 
     @PostMapping(value = "/addStorePlant", produces = "application/json;charset=UTF-8")
-    public ResponseEntity<Object> addStorePlant(@RequestBody AddStorePlantModel addStorePlantModel,
+    public ResponseEntity<Object> addStorePlant(@RequestBody List<AddStorePlantModel> listModel,
                                                 HttpServletRequest request) throws Exception {
         String roleName = jwtUtil.getRoleNameFromRequest(request);
         if(!roleName.equalsIgnoreCase("Manager")) {
             throw new ResponseStatusException(HttpStatus.FORBIDDEN, "-----------------------------------Người dùng không có quyền truy cập---------------------------");
         }
-        String result = storeService.addStorePlant(addStorePlantModel);
+        String result = storeService.addStorePlant(listModel);
         if(result.equals("Thêm thành công.")) {
             return ResponseEntity.ok().body(result);
         }

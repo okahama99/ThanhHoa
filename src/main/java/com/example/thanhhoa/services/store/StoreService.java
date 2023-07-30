@@ -24,7 +24,7 @@ public interface StoreService {
 
     ShowStoreModel getByID(String storeID);
 
-    String addStorePlant(AddStorePlantModel addStorePlantModel) throws Exception;
+    String addStorePlant(List<AddStorePlantModel> addStorePlantModel) throws Exception;
 
     String removeStorePlant(String storePlantID, Integer quantity, String reason, Long userID);
 
