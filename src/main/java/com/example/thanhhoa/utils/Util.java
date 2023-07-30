@@ -25,6 +25,7 @@ import com.example.thanhhoa.dtos.ReportModels.ShowReportModel;
 import com.example.thanhhoa.dtos.ServiceModels.ShowServiceIMGModel;
 import com.example.thanhhoa.dtos.ServiceModels.ShowServiceModel;
 import com.example.thanhhoa.dtos.ServiceModels.ShowServiceTypeModel;
+import com.example.thanhhoa.dtos.ServicePriceModels.ShowServicePriceModel;
 import com.example.thanhhoa.dtos.UserModels.ShowUserModel;
 import com.example.thanhhoa.dtos.WorkingDateModels.ShowWorkingDateModel;
 import com.example.thanhhoa.entities.Category;
@@ -43,6 +44,7 @@ import com.example.thanhhoa.entities.PlantShipPrice;
 import com.example.thanhhoa.entities.Report;
 import com.example.thanhhoa.entities.Service;
 import com.example.thanhhoa.entities.ServiceIMG;
+import com.example.thanhhoa.entities.ServicePrice;
 import com.example.thanhhoa.entities.ServiceType;
 import com.example.thanhhoa.entities.StoreEmployee;
 import com.example.thanhhoa.entities.StorePlant;
@@ -56,6 +58,7 @@ import com.example.thanhhoa.repositories.PlantCategoryRepository;
 import com.example.thanhhoa.repositories.PlantIMGRepository;
 import com.example.thanhhoa.repositories.PlantPriceRepository;
 import com.example.thanhhoa.repositories.ServiceIMGRepository;
+import com.example.thanhhoa.repositories.ServicePriceRepository;
 import com.example.thanhhoa.repositories.ServiceTypeRepository;
 import com.example.thanhhoa.repositories.StoreEmployeeRepository;
 import com.example.thanhhoa.repositories.WorkingDateRepository;
@@ -92,6 +95,8 @@ public class Util {
     private OrderFeedbackRepository orderFeedbackRepository;
     @Autowired
     private StoreEmployeeRepository storeEmployeeRepository;
+    @Autowired
+    private ServicePriceRepository servicePriceRepository;
 
     /**
      * Small Util to return {@link Pageable} to replace dup code in serviceImpl
@@ -230,6 +235,7 @@ public class Util {
                     showPlantPriceModel.setId(newestPrice.getId());
                     showPlantPriceModel.setPrice(newestPrice.getPrice());
                     showPlantPriceModel.setApplyDate(newestPrice.getApplyDate());
+                    showPlantPriceModel.setStatus(newestPrice.getStatus());
 
                     ShowPlantModel model = new ShowPlantModel();
                     model.setPlantID(plant.getId());
@@ -295,6 +301,7 @@ public class Util {
                     showPlantPriceModel.setId(newestPrice.getId());
                     showPlantPriceModel.setPrice(newestPrice.getPrice());
                     showPlantPriceModel.setApplyDate(newestPrice.getApplyDate());
+                    showPlantPriceModel.setStatus(newestPrice.getStatus());
 
                     com.example.thanhhoa.dtos.StoreModels.ShowPlantModel model = new com.example.thanhhoa.dtos.StoreModels.ShowPlantModel();
                     model.setPlantID(plant.getId());
@@ -360,6 +367,7 @@ public class Util {
                         showPlantPriceModel.setId(plant.getId());
                         showPlantPriceModel.setPrice(plant.getPrice());
                         showPlantPriceModel.setApplyDate(plant.getApplyDate());
+                        showPlantPriceModel.setStatus(plant.getStatus());
 
                         ShowPlantModel model = new ShowPlantModel();
                         model.setPlantID(plant.getPlant().getId());
@@ -405,6 +413,32 @@ public class Util {
 
                 @Override
                 protected Category doBackward(ShowCategoryModel showCategoryModel) {
+                    return null;
+                }
+            });
+            return modelResult.getContent();
+        } else {
+            return new ArrayList<>();
+        }
+    }
+
+    public List<ShowPlantPriceModel> plantPriceModelPagingConverter(Page<PlantPrice> pagingResult, Pageable paging) {
+        if(pagingResult.hasContent()) {
+            double totalPage = Math.ceil((double) pagingResult.getTotalElements() / paging.getPageSize());
+            Page<ShowPlantPriceModel> modelResult = pagingResult.map(new Converter<PlantPrice, ShowPlantPriceModel>() {
+                @Override
+                protected ShowPlantPriceModel doForward(PlantPrice plantPrice) {
+                    ShowPlantPriceModel model = new ShowPlantPriceModel();
+                    model.setId(plantPrice.getId());
+                    model.setPrice(plantPrice.getPrice());
+                    model.setApplyDate(plantPrice.getApplyDate());
+                    model.setStatus(plantPrice.getStatus());
+                    model.setTotalPage(totalPage);
+                    return model;
+                }
+
+                @Override
+                protected PlantPrice doBackward(ShowPlantPriceModel showPlantPriceModel) {
                     return null;
                 }
             });
@@ -549,6 +583,7 @@ public class Util {
                             typeModel.setName(serviceType.getName());
                             typeModel.setApplyDate(serviceType.getApplyDate());
                             typeModel.setSize(serviceType.getSize());
+                            typeModel.setUnit(serviceType.getUnit());
                             typeModel.setPercentage(serviceType.getPercentage());
                             typeModel.setServiceID(service.getId());
                             typeList.add(typeModel);
@@ -566,10 +601,12 @@ public class Util {
                         }
                     }
 
+                    ServicePrice newestPrice = servicePriceRepository.findFirstByService_IdAndStatusOrderByApplyDateDesc(service.getId(), Status.ACTIVE);
                     ShowServiceModel model = new ShowServiceModel();
                     model.setServiceID(service.getId());
                     model.setName(service.getName());
-                    model.setPrice(service.getPrice());
+                    model.setPriceID(newestPrice.getId());
+                    model.setPrice(newestPrice.getPrice());
                     model.setDescription(service.getDescription());
                     model.setTypeList(typeList);
                     model.setImgList(imgList);
@@ -581,6 +618,73 @@ public class Util {
 
                 @Override
                 protected Service doBackward(ShowServiceModel showServiceModel) {
+                    return null;
+                }
+            });
+            return modelResult.getContent();
+        } else {
+            return new ArrayList<>();
+        }
+    }
+
+    public List<ShowServicePriceModel> servicePricePagingConverter(Page<ServicePrice> pagingResult, Pageable paging) {
+        if(pagingResult.hasContent()) {
+            double totalPage = Math.ceil((double) pagingResult.getTotalElements() / paging.getPageSize());
+            Page<ShowServicePriceModel> modelResult = pagingResult.map(new Converter<ServicePrice, ShowServicePriceModel>() {
+                @Override
+                protected ShowServicePriceModel doForward(ServicePrice servicePrice) {
+                    ShowServicePriceModel model = new ShowServicePriceModel();
+
+                    //service
+                    Service service = servicePrice.getService();
+                    ShowServiceModel serviceModel = new ShowServiceModel();
+                    List<ShowServiceTypeModel> typeList = new ArrayList<>();
+                    List<ServiceType> serviceTypeList = serviceTypeRepository.findByService_IdAndStatus(service.getId(), Status.ACTIVE);
+                    if(serviceTypeList != null) {
+                        for(ServiceType serviceType : serviceTypeList) {
+                            ShowServiceTypeModel typeModel = new ShowServiceTypeModel();
+                            typeModel.setId(serviceType.getId());
+                            typeModel.setName(serviceType.getName());
+                            typeModel.setApplyDate(serviceType.getApplyDate());
+                            typeModel.setSize(serviceType.getSize());
+                            typeModel.setPercentage(serviceType.getPercentage());
+                            typeModel.setServiceID(service.getId());
+                            typeModel.setUnit(serviceType.getUnit());
+                            typeList.add(typeModel);
+                        }
+                    }
+                    List<ShowServiceIMGModel> imgList = new ArrayList<>();
+                    List<ServiceIMG> serviceIMGList = serviceIMGRepository.findByService_Id(service.getId());
+                    if(serviceIMGList != null) {
+                        for(ServiceIMG img : serviceIMGList) {
+                            ShowServiceIMGModel imgModel = new ShowServiceIMGModel();
+                            imgModel.setId(img.getId());
+                            imgModel.setUrl(img.getImgURL());
+                            imgList.add(imgModel);
+                        }
+                    }
+                    serviceModel.setServiceID(service.getId());
+                    serviceModel.setName(service.getName());
+                    ServicePrice newestPrice = servicePriceRepository.findFirstByService_IdAndStatusOrderByApplyDateDesc(service.getId(), Status.ACTIVE);
+                    serviceModel.setPriceID(newestPrice.getId());
+                    serviceModel.setPrice(newestPrice.getPrice());
+                    serviceModel.setDescription(service.getDescription());
+                    serviceModel.setTypeList(typeList);
+                    serviceModel.setImgList(imgList);
+                    serviceModel.setStatus(service.getStatus());
+                    serviceModel.setAtHome(service.getAtHome());
+
+                    model.setId(servicePrice.getId());
+                    model.setApplyDate(servicePrice.getApplyDate());
+                    model.setStatus(servicePrice.getStatus());
+                    model.setPrice(servicePrice.getPrice());
+                    model.setServiceModel(serviceModel);
+                    model.setTotalPage(totalPage);
+                    return model;
+                }
+
+                @Override
+                protected ServicePrice doBackward(ShowServicePriceModel showServicePriceModel) {
                     return null;
                 }
             });
@@ -615,6 +719,8 @@ public class Util {
                     model.setDistance(order.getDistance());
                     model.setTotalShipCost(order.getTotalShipCost());
                     model.setTotal(order.getTotal());
+                    model.setIsPaid(order.getIsPaid());
+                    model.setReceiptIMG(order.getReceiptIMG());
 
                     //store
                     ShowStoreModel storeModel = new ShowStoreModel();
@@ -658,6 +764,7 @@ public class Util {
                         }
                         plantModel.setQuantity(detail.getQuantity());
                         plantModel.setPlantName(detail.getPlant().getName());
+                        plantModel.setPlantPriceID(newestPrice.getId());
                         plantModel.setPlantPrice(newestPrice.getPrice());
                         plantModel.setShipPrice(detail.getPlant().getPlantShipPrice().getPricePerPlant());
                         listPlantModel.add(plantModel);
@@ -718,6 +825,7 @@ public class Util {
                     model.setTotal(contract.getTotal());
                     model.setIsFeedback(contract.getIsFeedback());
                     model.setIsSigned(contract.getIsSigned());
+                    model.setIsPaid(contract.getIsPaid());
 
                     //store
                     ShowStoreModel storeModel = new ShowStoreModel();
@@ -825,7 +933,7 @@ public class Util {
                     }
                     //customer
                     ShowCustomerModel customerModel = new ShowCustomerModel();
-                    if(detail.getContract().getCustomer() != null){
+                    if(detail.getContract().getCustomer() != null) {
                         customerModel.setId(detail.getContract().getCustomer().getId());
                         customerModel.setAddress(detail.getContract().getCustomer().getAddress());
                         customerModel.setEmail(detail.getContract().getCustomer().getEmail());
@@ -864,12 +972,14 @@ public class Util {
                     contractModel.setStatus(detail.getContract().getStatus());
                     contractModel.setReason(detail.getContract().getReason());
                     contractModel.setImgList(imgModelList);
+                    contractModel.setIsPaid(detail.getContract().getIsPaid());
 
                     //service type
                     com.example.thanhhoa.dtos.ContractModels.ShowServiceTypeModel serviceTypeModel = new com.example.thanhhoa.dtos.ContractModels.ShowServiceTypeModel();
                     serviceTypeModel.setId(detail.getServiceType().getId());
                     serviceTypeModel.setTypeName(detail.getServiceType().getName());
                     serviceTypeModel.setTypeSize(detail.getServiceType().getSize());
+                    serviceTypeModel.setTypeUnit(detail.getServiceType().getUnit());
                     serviceTypeModel.setTypePercentage(detail.getServiceType().getPercentage());
                     serviceTypeModel.setTypeApplyDate(detail.getServiceType().getApplyDate());
 
@@ -879,12 +989,15 @@ public class Util {
                     servicePackModel.setPackPercentage(detail.getServicePack().getPercentage());
                     servicePackModel.setPackRange(detail.getServicePack().getRange());
                     servicePackModel.setPackApplyDate(detail.getServicePack().getApplyDate());
+                    servicePackModel.setPackUnit(detail.getServicePack().getUnit());
 
                     //service
                     com.example.thanhhoa.dtos.ContractModels.ShowServiceModel serviceModel = new com.example.thanhhoa.dtos.ContractModels.ShowServiceModel();
                     serviceModel.setId(detail.getServiceType().getService().getId());
                     serviceModel.setDescription(detail.getServiceType().getService().getDescription());
-                    serviceModel.setPrice(detail.getServiceType().getService().getPrice());
+                    ServicePrice newestPrice = servicePriceRepository.findFirstByService_IdAndStatusOrderByApplyDateDesc(detail.getServiceType().getService().getId(), Status.ACTIVE);
+                    serviceModel.setPriceID(newestPrice.getId());
+                    serviceModel.setPrice(newestPrice.getPrice());
                     serviceModel.setName(detail.getServiceType().getService().getName());
                     serviceModel.setAtHome(detail.getServiceType().getService().getAtHome());
 
@@ -958,6 +1071,8 @@ public class Util {
         orderModel.setDistance(orderDetail.getTblOrder().getDistance());
         orderModel.setTotalShipCost(orderDetail.getTblOrder().getTotalShipCost());
         orderModel.setTotal(orderDetail.getTblOrder().getTotal());
+        orderModel.setIsPaid(orderDetail.getTblOrder().getIsPaid());
+        orderModel.setReceiptIMG(orderDetail.getTblOrder().getReceiptIMG());
 
         //customer
         ShowCustomerModel customerModel = new ShowCustomerModel();
@@ -993,6 +1108,7 @@ public class Util {
         }
         plantModel.setQuantity(orderDetail.getQuantity());
         plantModel.setPlantName(orderDetail.getPlant().getName());
+        plantModel.setPlantPriceID(newestPrice.getId());
         plantModel.setPlantPrice(newestPrice.getPrice());
         plantModel.setShipPrice(orderDetail.getPlant().getPlantShipPrice().getPricePerPlant());
 
@@ -1082,6 +1198,8 @@ public class Util {
                     orderModel.setDistance(orderDetail.getTblOrder().getDistance());
                     orderModel.setTotalShipCost(orderDetail.getTblOrder().getTotalShipCost());
                     orderModel.setTotal(orderDetail.getTblOrder().getTotal());
+                    orderModel.setIsPaid(orderDetail.getTblOrder().getIsPaid());
+                    orderModel.setReceiptIMG(orderDetail.getTblOrder().getReceiptIMG());
 
                     //customer
                     ShowCustomerModel customerModel = new ShowCustomerModel();
@@ -1117,6 +1235,7 @@ public class Util {
                     }
                     plantModel.setQuantity(orderDetail.getQuantity());
                     plantModel.setPlantName(orderDetail.getPlant().getName());
+                    plantModel.setPlantPriceID(newestPrice.getId());
                     plantModel.setPlantPrice(newestPrice.getPrice());
                     plantModel.setShipPrice(orderDetail.getPlant().getPlantShipPrice().getPricePerPlant());
 

@@ -29,6 +29,8 @@ public class ShowOrderModel implements Serializable {
     private Double distance;
     private Double totalShipCost;
     private Double total;
+    private Boolean isPaid = false;
+    private String receiptIMG;
 
     private ShowStaffModel showStaffModel;
     private ShowCustomerModel showCustomerModel;

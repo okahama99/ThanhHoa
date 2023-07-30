@@ -96,4 +96,11 @@ public class SearchType {
         CREATEDDATE,
         STATUS
     }
+
+    public enum SERVICE_PRICE{
+        ID,
+        PRICE,
+        APPLYDATE,
+        STATUS
+    }
 }

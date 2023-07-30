@@ -6,7 +6,7 @@ import java.util.List;
 
 public interface ServicePackService {
 
-    String create(String range, Integer percentage);
+    String create(String range, String unit, Integer percentage);
 
     String delete(String id);
 

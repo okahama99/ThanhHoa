@@ -11,6 +11,7 @@ public class ShowPlantModel implements Serializable {
     private String id;
     private Integer quantity;
     private String plantName;
+    private String plantPriceID;
     private Double plantPrice;
     private String image;
     private Double shipPrice;

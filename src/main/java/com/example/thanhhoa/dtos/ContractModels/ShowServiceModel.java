@@ -11,6 +11,7 @@ public class ShowServiceModel implements Serializable {
     private String id;
     private String name;
     private String description;
+    private String priceID;
     private Double price;
     private Boolean atHome = false;
 }

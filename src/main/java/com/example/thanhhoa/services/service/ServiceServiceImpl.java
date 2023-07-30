@@ -4,13 +4,15 @@ import com.example.thanhhoa.dtos.ServiceModels.CreateServiceModel;
 import com.example.thanhhoa.dtos.ServiceModels.ShowServiceModel;
 import com.example.thanhhoa.dtos.ServiceModels.ShowServiceTypeModel;
 import com.example.thanhhoa.dtos.ServiceModels.UpdateServiceModel;
-import com.example.thanhhoa.entities.OrderFeedbackIMG;
+import com.example.thanhhoa.entities.PlantPrice;
 import com.example.thanhhoa.entities.Service;
 import com.example.thanhhoa.entities.ServiceIMG;
+import com.example.thanhhoa.entities.ServicePrice;
 import com.example.thanhhoa.entities.ServiceType;
 import com.example.thanhhoa.enums.Status;
 import com.example.thanhhoa.repositories.ContractDetailRepository;
 import com.example.thanhhoa.repositories.ServiceIMGRepository;
+import com.example.thanhhoa.repositories.ServicePriceRepository;
 import com.example.thanhhoa.repositories.ServiceRepository;
 import com.example.thanhhoa.repositories.ServiceTypeRepository;
 import com.example.thanhhoa.repositories.pagings.ServicePagingRepository;
@@ -19,14 +21,15 @@ import com.example.thanhhoa.utils.Util;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
-import org.springframework.web.multipart.MultipartFile;
 
+import java.time.LocalDateTime;
+import java.time.ZoneId;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
 @org.springframework.stereotype.Service
-public class ServiceServiceImpl implements ServiceService{
+public class ServiceServiceImpl implements ServiceService {
 
     @Autowired
     private ServiceRepository serviceRepository;
@@ -37,45 +40,60 @@ public class ServiceServiceImpl implements ServiceService{
     @Autowired
     private Util util;
     @Autowired
-    private FirebaseImageService firebaseImageService;
+    private ServicePriceRepository servicePriceRepository;
     @Autowired
     private ServiceIMGRepository serviceIMGRepository;
     @Autowired
     private ContractDetailRepository contractDetailRepository;
 
     @Override
-    public String createService(CreateServiceModel createServiceModel) throws Exception{
+    public String createService(CreateServiceModel createServiceModel) throws Exception {
         Service checkExisted = serviceRepository.findByName(createServiceModel.getName());
-        if(checkExisted != null){
+        if(checkExisted != null) {
             return "Service với tên là " + createServiceModel.getName() + " đã tồn tại.";
         }
-        if(createServiceModel.getTypeIDList() == null){
+        if(createServiceModel.getTypeIDList() == null) {
             return "Service phải có ít nhất 1 ServiceType.";
         }
 
         Service service = new Service();
         Service getLastService = serviceRepository.findFirstByOrderByIdDesc();
-        if(getLastService != null){
-            service.setId(util.createIDFromLastID("SE",2,getLastService.getId()));
-        }else{
+        if(getLastService != null) {
+            service.setId(util.createIDFromLastID("SE", 2, getLastService.getId()));
+        } else {
             service.setId(util.createNewID("SE"));
         }
+
+        // service type
         List<ServiceType> serviceTypeList = new ArrayList<>();
-        for (String serviceTypeID : createServiceModel.getTypeIDList()) {
+        for(String serviceTypeID : createServiceModel.getTypeIDList()) {
             ServiceType serviceType = serviceTypeRepository.findByIdAndStatus(serviceTypeID, Status.ACTIVE);
-            if(serviceType == null){
+            if(serviceType == null) {
                 return "Không tìm thấy ServiceType với ID là " + serviceTypeID + ".";
             }
             serviceTypeList.add(serviceType);
         }
 
+        //service price
+        ServicePrice servicePrice = new ServicePrice();
+        ServicePrice lastServicePrice = servicePriceRepository.findFirstByOrderByIdDesc();
+        if(lastServicePrice == null) {
+            servicePrice.setId(util.createNewID("SEP"));
+        } else {
+            servicePrice.setId(util.createIDFromLastID("SEP", 3, lastServicePrice.getId()));
+        }
+        servicePrice.setPrice(createServiceModel.getPrice());
+        servicePrice.setApplyDate(LocalDateTime.now(ZoneId.of("Asia/Ho_Chi_Minh")));
+        servicePrice.setService(service);
+        servicePrice.setStatus(Status.ACTIVE);
+
         service.setName(createServiceModel.getName());
         service.setDescription(createServiceModel.getDescription());
-        service.setPrice(createServiceModel.getPrice());
         service.setServiceTypeList(serviceTypeList);
         service.setStatus(Status.ACTIVE);
         service.setAtHome(createServiceModel.getAtHome());
 
+        // service img
         for(String imageURL : createServiceModel.getListURL()) {
             ServiceIMG serviceIMG = new ServiceIMG();
             ServiceIMG lastServiceIMG = serviceIMGRepository.findFirstByOrderByIdDesc();
@@ -88,33 +106,53 @@ public class ServiceServiceImpl implements ServiceService{
             serviceIMG.setImgURL(imageURL);
             serviceIMGRepository.save(serviceIMG);
         }
+        servicePriceRepository.save(servicePrice);
         serviceRepository.save(service);
         return "Tạo thành công.";
     }
 
     @Override
-    public String updateService(UpdateServiceModel updateServiceModel) throws Exception{
+    public String updateService(UpdateServiceModel updateServiceModel) throws Exception {
         Optional<Service> checkExisted = serviceRepository.findById(updateServiceModel.getServiceID());
-        if(checkExisted == null){
+        if(checkExisted == null) {
             return "Không tìm thấy dữ liệu với ServiceID = " + updateServiceModel.getServiceID() + ".";
         }
-        if(updateServiceModel.getTypeIDList() == null){
+        if(updateServiceModel.getTypeIDList() == null) {
             return "Service phải có ít nhất 1 ServiceType.";
         }
         List<ServiceType> serviceTypeList = new ArrayList<>();
-        for (String serviceTypeID : updateServiceModel.getTypeIDList()) {
+        for(String serviceTypeID : updateServiceModel.getTypeIDList()) {
             ServiceType serviceType = serviceTypeRepository.findByIdAndStatus(serviceTypeID, Status.ACTIVE);
-            if(serviceType == null){
+            if(serviceType == null) {
                 return "Không tìm thấy ServiceType với ID là " + serviceTypeID + ".";
             }
             serviceTypeList.add(serviceType);
         }
         Service service = checkExisted.get();
         service.setName(updateServiceModel.getName());
-        service.setPrice(updateServiceModel.getPrice());
         service.setDescription(updateServiceModel.getDescription());
         service.setServiceTypeList(serviceTypeList);
         service.setAtHome(updateServiceModel.getAtHome());
+
+        //service price
+        ServicePrice servicePrice = new ServicePrice();
+        List<ServicePrice> checkExistedPrice = servicePriceRepository.findByService_IdAndStatus(service.getId(), Status.ACTIVE);
+        if(checkExistedPrice != null) {
+            for(ServicePrice sPrice : checkExistedPrice) {
+                sPrice.setStatus(Status.INACTIVE);
+                servicePriceRepository.save(sPrice);
+            }
+        }
+        ServicePrice lastServicePrice = servicePriceRepository.findFirstByOrderByIdDesc();
+        if(lastServicePrice == null) {
+            servicePrice.setId(util.createNewID("SEP"));
+        } else {
+            servicePrice.setId(util.createIDFromLastID("SEP", 3, lastServicePrice.getId()));
+        }
+        servicePrice.setPrice(updateServiceModel.getPrice());
+        servicePrice.setApplyDate(LocalDateTime.now(ZoneId.of("Asia/Ho_Chi_Minh")));
+        servicePrice.setService(service);
+        servicePrice.setStatus(Status.ACTIVE);
 
         for(String imageURL : updateServiceModel.getListURL()) {
             ServiceIMG serviceIMG = new ServiceIMG();
@@ -135,16 +173,16 @@ public class ServiceServiceImpl implements ServiceService{
     @Override
     public String deleteService(String serviceID) {
         Optional<Service> checkExisted = serviceRepository.findById(serviceID);
-        if (checkExisted != null) {
+        if(checkExisted != null) {
             Service service = checkExisted.get();
 
-            for(ServiceType type : service.getServiceTypeList()){
-                if(contractDetailRepository.findByServiceType_IdAndContract_Status(type.getId(), Status.WAITING) != null){
+            for(ServiceType type : service.getServiceTypeList()) {
+                if(contractDetailRepository.findByServiceType_IdAndContract_Status(type.getId(), Status.WAITING) != null) {
                     return "Không thể xóa dịch vụ đang được sử dụng.";
                 }
             }
 
-            for(ServiceType type : service.getServiceTypeList()){
+            for(ServiceType type : service.getServiceTypeList()) {
                 type.setStatus(Status.INACTIVE);
                 serviceTypeRepository.save(type);
             }
@@ -165,11 +203,11 @@ public class ServiceServiceImpl implements ServiceService{
     @Override
     public List<ShowServiceTypeModel> getServiceTypeByServiceID(String serviceID) {
         List<ServiceType> serviceTypeList = serviceTypeRepository.findByService_IdAndStatus(serviceID, Status.ACTIVE);
-        if(serviceTypeList == null){
+        if(serviceTypeList == null) {
             return null;
         }
         List<ShowServiceTypeModel> typeList = new ArrayList<>();
-        for (ServiceType serviceType : serviceTypeList) {
+        for(ServiceType serviceType : serviceTypeList) {
             ShowServiceTypeModel typeModel = new ShowServiceTypeModel();
             typeModel.setId(serviceType.getId());
             typeModel.setName(serviceType.getName());
@@ -177,6 +215,7 @@ public class ServiceServiceImpl implements ServiceService{
             typeModel.setSize(serviceType.getSize());
             typeModel.setPercentage(serviceType.getPercentage());
             typeModel.setServiceID(serviceID);
+            typeModel.setUnit(serviceType.getUnit());
             typeList.add(typeModel);
         }
         return typeList;

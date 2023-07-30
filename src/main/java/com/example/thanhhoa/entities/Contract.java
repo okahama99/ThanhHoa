@@ -37,6 +37,9 @@ public class Contract implements Serializable {
     @Column(length = 50)
     private String paymentMethod;
 
+    @Column
+    private Boolean isPaid = false;
+
     @Lob
     @Column
     private String reason;

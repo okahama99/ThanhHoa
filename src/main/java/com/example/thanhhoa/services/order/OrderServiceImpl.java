@@ -100,7 +100,14 @@ public class OrderServiceImpl implements OrderService {
             order.setStaff(staff);
         }
 
-        order.setCustomer(userRepository.getById(customerID));
+        tblAccount account = userRepository.getById(customerID);
+        if(account.getRole().getRoleName().equalsIgnoreCase("Staff")){
+            order.setStaff(account);
+            order.setProgressStatus(Status.APPROVED);
+        }
+        if(account.getRole().getRoleName().equalsIgnoreCase("Customer")){
+            order.setCustomer(account);
+        }
         order.setStore(storeRepository.getById(createOrderModel.getStoreID()));
 
         DistancePrice distancePrice = distancePriceRepository.getById(createOrderModel.getDistancePriceID());
@@ -120,7 +127,7 @@ public class OrderServiceImpl implements OrderService {
             } else {
                 detail.setId(util.createIDFromLastID("OD", 2, lastDetailRecord.getId()));
             }
-            detail.setPrice(totalPriceOfAPlant);
+            detail.setPrice(newestPrice.getPrice());
             detail.setQuantity(model.getQuantity());
             detail.setTblOrder(order);
             detail.setPlant(plant);
@@ -169,12 +176,17 @@ public class OrderServiceImpl implements OrderService {
         order.setLatLong(updateOrderModel.getLatLong());
         order.setProgressStatus(Status.WAITING);
 
-        tblAccount staff = userRepository.getById(updateOrderModel.getStaffID());
-        staff.setStatus(Status.UNAVAILABLE);
-        userRepository.save(staff);
+        if(updateOrderModel.getStaffID() != null){
+            Optional<tblAccount> checkStaff = userRepository.findById(updateOrderModel.getStaffID());
+            if(checkStaff == null){
+                return "Không tìm thấy Staff với ID là " + updateOrderModel.getStaffID() + ".";
+            }
+            tblAccount staff = checkStaff.get();
+            staff.setStatus(Status.UNAVAILABLE);
+            userRepository.save(staff);
+            order.setStaff(staff);
+        }
 
-        order.setStaff(staff);
-        order.setCustomer(userRepository.getById(customerID));
         order.setStore(storeRepository.getById(updateOrderModel.getStoreID()));
         orderRepository.save(order);
 
@@ -195,7 +207,7 @@ public class OrderServiceImpl implements OrderService {
             } else {
                 detail.setId(util.createIDFromLastID("OD", 2, lastDetailRecord.getId()));
             }
-            detail.setPrice(totalPriceOfAPlant);
+            detail.setPrice(newestPrice.getPrice());
             detail.setQuantity(model.getQuantity());
             detail.setTblOrder(order);
             detail.setPlant(plant);

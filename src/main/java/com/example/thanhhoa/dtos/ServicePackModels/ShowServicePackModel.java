@@ -12,6 +12,7 @@ import java.time.LocalDateTime;
 public class ShowServicePackModel implements Serializable {
     private String id;
     private String range;
+    private String unit;
     private Integer percentage;
     private LocalDateTime applyDate;
     private Status status;

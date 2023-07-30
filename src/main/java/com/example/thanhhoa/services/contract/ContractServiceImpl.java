@@ -22,7 +22,9 @@ import com.example.thanhhoa.entities.ContractDetail;
 import com.example.thanhhoa.entities.ContractIMG;
 import com.example.thanhhoa.entities.OrderFeedbackIMG;
 import com.example.thanhhoa.entities.PaymentType;
+import com.example.thanhhoa.entities.PlantPrice;
 import com.example.thanhhoa.entities.ServicePack;
+import com.example.thanhhoa.entities.ServicePrice;
 import com.example.thanhhoa.entities.ServiceType;
 import com.example.thanhhoa.entities.Store;
 import com.example.thanhhoa.entities.WorkingDate;
@@ -33,6 +35,7 @@ import com.example.thanhhoa.repositories.ContractIMGRepository;
 import com.example.thanhhoa.repositories.ContractRepository;
 import com.example.thanhhoa.repositories.PaymentTypeRepository;
 import com.example.thanhhoa.repositories.ServicePackRepository;
+import com.example.thanhhoa.repositories.ServicePriceRepository;
 import com.example.thanhhoa.repositories.ServiceTypeRepository;
 import com.example.thanhhoa.repositories.StoreRepository;
 import com.example.thanhhoa.repositories.UserRepository;
@@ -72,6 +75,8 @@ public class ContractServiceImpl implements ContractService {
     private PaymentTypeRepository paymentTypeRepository;
     @Autowired
     private ServicePackRepository servicePackRepository;
+    @Autowired
+    private ServicePriceRepository servicePriceRepository;
     @Autowired
     private WorkingDateRepository workingDateRepository;
     @Autowired
@@ -193,6 +198,7 @@ public class ContractServiceImpl implements ContractService {
                 contractModel.setStatus(detail.getContract().getStatus());
                 contractModel.setReason(detail.getContract().getReason());
                 contractModel.setImgList(imgModelList);
+                contract.setIsPaid(detail.getContract().getIsPaid());
 
                 //service type
                 ShowServiceTypeModel serviceTypeModel = new ShowServiceTypeModel();
@@ -201,6 +207,7 @@ public class ContractServiceImpl implements ContractService {
                 serviceTypeModel.setTypeSize(detail.getServiceType().getSize());
                 serviceTypeModel.setTypePercentage(detail.getServiceType().getPercentage());
                 serviceTypeModel.setTypeApplyDate(detail.getServiceType().getApplyDate());
+                serviceTypeModel.setTypeUnit(detail.getServiceType().getUnit());
 
                 //service pack
                 ShowServicePackModel servicePackModel = new ShowServicePackModel();
@@ -208,12 +215,15 @@ public class ContractServiceImpl implements ContractService {
                 servicePackModel.setPackPercentage(detail.getServicePack().getPercentage());
                 servicePackModel.setPackRange(detail.getServicePack().getRange());
                 servicePackModel.setPackApplyDate(detail.getServicePack().getApplyDate());
+                servicePackModel.setPackUnit(detail.getServicePack().getUnit());
 
                 //service
                 ShowServiceModel serviceModel = new ShowServiceModel();
                 serviceModel.setId(detail.getServiceType().getService().getId());
                 serviceModel.setDescription(detail.getServiceType().getService().getDescription());
-                serviceModel.setPrice(detail.getServiceType().getService().getPrice());
+                ServicePrice newestPrice = servicePriceRepository.findFirstByService_IdAndStatusOrderByApplyDateDesc(detail.getServiceType().getService().getId(), Status.ACTIVE);
+                serviceModel.setPriceID(newestPrice.getId());
+                serviceModel.setPrice(newestPrice.getPrice());
                 serviceModel.setName(detail.getServiceType().getService().getName());
                 serviceModel.setAtHome(detail.getServiceType().getService().getAtHome());
 
@@ -666,6 +676,7 @@ public class ContractServiceImpl implements ContractService {
             contractModel.setStatus(detail.getContract().getStatus());
             contractModel.setReason(detail.getContract().getReason());
             contractModel.setImgList(imgModelList);
+            contractModel.setIsPaid(detail.getContract().getIsPaid());
 
             //service type
             ShowServiceTypeModel serviceTypeModel = new ShowServiceTypeModel();
@@ -674,6 +685,7 @@ public class ContractServiceImpl implements ContractService {
             serviceTypeModel.setTypeSize(detail.getServiceType().getSize());
             serviceTypeModel.setTypePercentage(detail.getServiceType().getPercentage());
             serviceTypeModel.setTypeApplyDate(detail.getServiceType().getApplyDate());
+            serviceTypeModel.setTypeUnit(detail.getServiceType().getUnit());
 
             //service pack
             ShowServicePackModel servicePackModel = new ShowServicePackModel();
@@ -681,12 +693,15 @@ public class ContractServiceImpl implements ContractService {
             servicePackModel.setPackPercentage(detail.getServicePack().getPercentage());
             servicePackModel.setPackRange(detail.getServicePack().getRange());
             servicePackModel.setPackApplyDate(detail.getServicePack().getApplyDate());
+            servicePackModel.setPackUnit(detail.getServicePack().getUnit());
 
             //service
             ShowServiceModel serviceModel = new ShowServiceModel();
             serviceModel.setId(detail.getServiceType().getService().getId());
             serviceModel.setDescription(detail.getServiceType().getService().getDescription());
-            serviceModel.setPrice(detail.getServiceType().getService().getPrice());
+            ServicePrice newestPrice = servicePriceRepository.findFirstByService_IdAndStatusOrderByApplyDateDesc(detail.getServiceType().getService().getId(), Status.ACTIVE);
+            serviceModel.setPriceID(newestPrice.getId());
+            serviceModel.setPrice(newestPrice.getPrice());
             serviceModel.setName(detail.getServiceType().getService().getName());
             serviceModel.setAtHome(detail.getServiceType().getService().getAtHome());
 
@@ -793,6 +808,7 @@ public class ContractServiceImpl implements ContractService {
             contractModel.setStatus(detail.getContract().getStatus());
             contractModel.setReason(detail.getContract().getReason());
             contractModel.setImgList(imgModelList);
+            contractModel.setIsPaid(detail.getContract().getIsPaid());
 
             //service type
             ShowServiceTypeModel serviceTypeModel = new ShowServiceTypeModel();
@@ -801,6 +817,7 @@ public class ContractServiceImpl implements ContractService {
             serviceTypeModel.setTypeSize(detail.getServiceType().getSize());
             serviceTypeModel.setTypePercentage(detail.getServiceType().getPercentage());
             serviceTypeModel.setTypeApplyDate(detail.getServiceType().getApplyDate());
+            serviceTypeModel.setTypeUnit(detail.getServiceType().getUnit());
 
             //service pack
             ShowServicePackModel servicePackModel = new ShowServicePackModel();
@@ -808,12 +825,15 @@ public class ContractServiceImpl implements ContractService {
             servicePackModel.setPackPercentage(detail.getServicePack().getPercentage());
             servicePackModel.setPackRange(detail.getServicePack().getRange());
             servicePackModel.setPackApplyDate(detail.getServicePack().getApplyDate());
+            servicePackModel.setPackUnit(detail.getServicePack().getUnit());
 
             //service
             ShowServiceModel serviceModel = new ShowServiceModel();
             serviceModel.setId(detail.getServiceType().getService().getId());
             serviceModel.setDescription(detail.getServiceType().getService().getDescription());
-            serviceModel.setPrice(detail.getServiceType().getService().getPrice());
+            ServicePrice newestPrice = servicePriceRepository.findFirstByService_IdAndStatusOrderByApplyDateDesc(detail.getServiceType().getService().getId(), Status.ACTIVE);
+            serviceModel.setPriceID(newestPrice.getId());
+            serviceModel.setPrice(newestPrice.getPrice());
             serviceModel.setName(detail.getServiceType().getService().getName());
             serviceModel.setAtHome(detail.getServiceType().getService().getAtHome());
 

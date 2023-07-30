@@ -13,5 +13,6 @@ public class ShowServiceTypeModel implements Serializable {
     private String typeName;
     private Integer typePercentage;
     private String typeSize;
+    private String typeUnit;
     private LocalDateTime typeApplyDate;
 }

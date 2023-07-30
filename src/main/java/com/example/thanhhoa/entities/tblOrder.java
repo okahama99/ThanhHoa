@@ -37,6 +37,12 @@ public class tblOrder implements Serializable {
     @Column(nullable = false, length = 50)
     private String paymentMethod;
 
+    @Column
+    private Boolean isPaid = false;
+
+    @Column
+    private String receiptIMG;
+
     @Enumerated(EnumType.STRING)
     private Status progressStatus;
 

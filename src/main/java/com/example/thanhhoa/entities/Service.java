@@ -24,9 +24,6 @@ public class Service implements Serializable {
     private String description;
 
     @Column
-    private Double price;
-
-    @Column
     private Boolean atHome = false;
 
     @Enumerated(EnumType.STRING)
@@ -37,4 +34,7 @@ public class Service implements Serializable {
 
     @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY, mappedBy = "service")
     private List<ServiceIMG> serviceIMGList;
+
+    @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY, mappedBy = "service")
+    private List<ServicePrice> servicePriceList;
 }

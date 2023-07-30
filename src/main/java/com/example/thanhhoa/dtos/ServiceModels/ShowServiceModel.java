@@ -13,6 +13,7 @@ import java.util.List;
 public class ShowServiceModel implements Serializable {
     private String serviceID;
     private String name;
+    private String priceID;
     private Double price;
     private String description;
     private Status status;

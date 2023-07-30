@@ -28,6 +28,9 @@ public class ServicePack implements Serializable {
     @Column(nullable = false)
     private String range;
 
+    @Column(length = 50)
+    private String unit;
+
     @Column(nullable = false)
     private Integer percentage;
 

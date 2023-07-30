@@ -35,6 +35,7 @@ public class ShowContractModel implements Serializable {
     private Boolean isFeedback;
     private Boolean isSigned;
     private Status status;
+    private Boolean isPaid = false;
     private List<ShowContractIMGModel> imgList;
 
     private ShowStaffModel showStaffModel;

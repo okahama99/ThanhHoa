@@ -30,13 +30,14 @@ public class ServicePackController {
 
     @PostMapping(produces = "application/json;charset=UTF-8")
     public ResponseEntity<Object> create(@RequestParam String range,
+                                         @RequestParam String unit,
                                          @RequestParam Integer percentage,
                                          HttpServletRequest request) throws Exception {
         String roleName = jwtUtil.getRoleNameFromRequest(request);
         if(!roleName.equalsIgnoreCase("Owner") && !roleName.equalsIgnoreCase("Manager")) {
             throw new ResponseStatusException(HttpStatus.FORBIDDEN, "-----------------------------------Người dùng không có quyền truy cập---------------------------");
         }
-        String result = servicePackService.create(range, percentage);
+        String result = servicePackService.create(range, unit, percentage);
         if(result.equals("Tạo thành công.")) {
             return ResponseEntity.ok().body(result);
         }

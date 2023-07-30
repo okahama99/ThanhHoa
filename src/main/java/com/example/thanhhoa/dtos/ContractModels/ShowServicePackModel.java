@@ -11,6 +11,7 @@ import java.time.LocalDateTime;
 public class ShowServicePackModel implements Serializable {
     private String id;
     private String packRange;
+    private String packUnit;
     private Integer packPercentage;
     private LocalDateTime packApplyDate;
 }

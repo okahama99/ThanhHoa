@@ -22,7 +22,7 @@ public class ServicePackServiceImpl implements ServicePackService {
     private ServicePackRepository servicePackRepository;
 
     @Override
-    public String create(String range, Integer percentage) {
+    public String create(String range, String unit, Integer percentage) {
         ServicePack servicePack = new ServicePack();
         ServicePack lastServicePack = servicePackRepository.findFirstByOrderByIdDesc();
         if(lastServicePack == null) {
@@ -32,6 +32,7 @@ public class ServicePackServiceImpl implements ServicePackService {
         }
         servicePack.setRange(range);
         servicePack.setPercentage(percentage);
+        servicePack.setUnit(unit);
         servicePack.setApplyDate(LocalDateTime.now(ZoneId.of("Asia/Ho_Chi_Minh")));
         servicePack.setStatus(Status.ACTIVE);
         servicePackRepository.save(servicePack);
@@ -59,6 +60,7 @@ public class ServicePackServiceImpl implements ServicePackService {
             ShowServicePackModel model = new ShowServicePackModel();
             model.setId(servicePack.getId());
             model.setRange(servicePack.getRange());
+            model.setUnit(servicePack.getUnit());
             model.setPercentage(servicePack.getPercentage());
             model.setApplyDate(servicePack.getApplyDate());
             model.setStatus(servicePack.getStatus());
