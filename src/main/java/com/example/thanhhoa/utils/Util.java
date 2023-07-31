@@ -1082,12 +1082,14 @@ public class Util {
 
         //customer
         ShowCustomerModel customerModel = new ShowCustomerModel();
-        customerModel.setId(orderDetail.getTblOrder().getCustomer().getId());
-        customerModel.setAddress(orderDetail.getTblOrder().getCustomer().getAddress());
-        customerModel.setEmail(orderDetail.getTblOrder().getCustomer().getEmail());
-        customerModel.setPhone(orderDetail.getTblOrder().getCustomer().getPhone());
-        customerModel.setFullName(orderDetail.getTblOrder().getCustomer().getFullName());
-        customerModel.setAvatar(orderDetail.getTblOrder().getCustomer().getAvatar());
+        if(orderDetail.getTblOrder().getCustomer() != null){
+            customerModel.setId(orderDetail.getTblOrder().getCustomer().getId());
+            customerModel.setAddress(orderDetail.getTblOrder().getCustomer().getAddress());
+            customerModel.setEmail(orderDetail.getTblOrder().getCustomer().getEmail());
+            customerModel.setPhone(orderDetail.getTblOrder().getCustomer().getPhone());
+            customerModel.setFullName(orderDetail.getTblOrder().getCustomer().getFullName());
+            customerModel.setAvatar(orderDetail.getTblOrder().getCustomer().getAvatar());
+        }
 
         //staff
         ShowStaffModel staffModel = new ShowStaffModel();
@@ -1209,12 +1211,14 @@ public class Util {
 
                     //customer
                     ShowCustomerModel customerModel = new ShowCustomerModel();
-                    customerModel.setId(orderDetail.getTblOrder().getCustomer().getId());
-                    customerModel.setAddress(orderDetail.getTblOrder().getCustomer().getAddress());
-                    customerModel.setEmail(orderDetail.getTblOrder().getCustomer().getEmail());
-                    customerModel.setPhone(orderDetail.getTblOrder().getCustomer().getPhone());
-                    customerModel.setFullName(orderDetail.getTblOrder().getCustomer().getFullName());
-                    customerModel.setAvatar(orderDetail.getTblOrder().getCustomer().getAvatar());
+                    if(orderDetail.getTblOrder().getCustomer() != null){
+                        customerModel.setId(orderDetail.getTblOrder().getCustomer().getId());
+                        customerModel.setAddress(orderDetail.getTblOrder().getCustomer().getAddress());
+                        customerModel.setEmail(orderDetail.getTblOrder().getCustomer().getEmail());
+                        customerModel.setPhone(orderDetail.getTblOrder().getCustomer().getPhone());
+                        customerModel.setFullName(orderDetail.getTblOrder().getCustomer().getFullName());
+                        customerModel.setAvatar(orderDetail.getTblOrder().getCustomer().getAvatar());
+                    }
 
                     //staff
                     ShowStaffModel staffModel = new ShowStaffModel();
