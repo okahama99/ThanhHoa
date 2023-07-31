@@ -92,6 +92,7 @@ public class OrderServiceImpl implements OrderService {
         order.setDistance(createOrderModel.getDistance());
         order.setLatLong(createOrderModel.getLatLong());
         order.setProgressStatus(Status.WAITING);
+        order.setIsPaid(createOrderModel.getIsPaid());
 
         if(createOrderModel.getReceiptIMG() != null){
             order.setReceiptIMG(createOrderModel.getReceiptIMG());

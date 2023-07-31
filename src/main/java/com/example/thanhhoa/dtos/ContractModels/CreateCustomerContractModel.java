@@ -21,4 +21,6 @@ public class CreateCustomerContractModel implements Serializable {
 
     @Nullable
     private String email;
+    @Nullable
+    private Boolean isPaid = false;
 }

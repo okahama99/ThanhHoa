@@ -26,4 +26,6 @@ public class CreateManagerContractModel implements Serializable {
     private String email;
     @Nullable
     private List<String> listURL;
+    @Nullable
+    private Boolean isPaid = false;
 }

@@ -26,4 +26,6 @@ public class CreateOrderModel implements Serializable {
     private String latLong;
     @Nullable
     private String receiptIMG;
+    @Nullable
+    private Boolean isPaid = false;
 }

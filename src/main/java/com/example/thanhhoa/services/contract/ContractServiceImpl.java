@@ -265,6 +265,7 @@ public class ContractServiceImpl implements ContractService {
         contract.setFullName(createCustomerContractModel.getFullName());
         contract.setEmail(createCustomerContractModel.getEmail());
         contract.setPhone(createCustomerContractModel.getPhone());
+        contract.setIsPaid(createCustomerContractModel.getIsPaid());
 
         contract.setStore(store);
         contract.setCustomer(customer);
@@ -350,6 +351,7 @@ public class ContractServiceImpl implements ContractService {
         contract.setFullName(createManagerContractModel.getFullName());
         contract.setEmail(createManagerContractModel.getEmail());
         contract.setPhone(createManagerContractModel.getPhone());
+        contract.setIsPaid(createManagerContractModel.getIsPaid());
 
         PaymentType paymentType = paymentTypeRepository.getById(createManagerContractModel.getPaymentTypeID());
         contract.setPaymentMethod(createManagerContractModel.getPaymentMethod());
