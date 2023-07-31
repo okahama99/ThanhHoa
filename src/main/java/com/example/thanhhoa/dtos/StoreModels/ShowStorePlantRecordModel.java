@@ -13,4 +13,5 @@ public class ShowStorePlantRecordModel implements Serializable {
     private Integer amount;
     private LocalDateTime importDate;
     private String reason;
+    private Double totalPage;
 }

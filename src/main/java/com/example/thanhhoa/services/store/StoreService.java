@@ -40,7 +40,7 @@ public interface StoreService {
 
     List<ShowProvinceModel> getAllProvince();
 
-    List<ShowStorePlantRecordModel> getStorePlantRecordByStorePlantID(String storePlantID);
+    List<ShowStorePlantRecordModel> getStorePlantRecordByPlantIDAndStoreID(String plantID, String storeID, Pageable pageable);
 
     List<ShowStaffModel> getStaffByStoreID(String storeID, Pageable pageable);
 

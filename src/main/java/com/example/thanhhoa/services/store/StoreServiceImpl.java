@@ -30,7 +30,9 @@ import com.example.thanhhoa.repositories.StoreRepository;
 import com.example.thanhhoa.repositories.UserRepository;
 import com.example.thanhhoa.repositories.pagings.StoreEmployeePagingRepository;
 import com.example.thanhhoa.repositories.pagings.StorePlantPagingRepository;
+import com.example.thanhhoa.repositories.pagings.StorePlantRecordPagingRepository;
 import com.example.thanhhoa.utils.Util;
+import com.google.common.base.Converter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -67,6 +69,8 @@ public class StoreServiceImpl implements StoreService{
     private StorePlantPagingRepository storePlantPagingRepository;
     @Autowired
     private StoreEmployeePagingRepository storeEmployeePagingRepository;
+    @Autowired
+    private StorePlantRecordPagingRepository storePlantRecordPagingRepository;
 
     @Override
     public String createStore(CreateStoreModel createStoreModel) {
@@ -334,21 +338,35 @@ public class StoreServiceImpl implements StoreService{
     }
 
     @Override
-    public List<ShowStorePlantRecordModel> getStorePlantRecordByStorePlantID(String storePlantID) {
-        Optional<StorePlant> storePlant = storePlantRepository.findById(storePlantID);
+    public List<ShowStorePlantRecordModel> getStorePlantRecordByPlantIDAndStoreID(String plantID, String storeID, Pageable pageable) {
+        StorePlant storePlant = storePlantRepository.findByPlantIdAndStoreId(plantID, storeID);
         if(storePlant == null){
             return null;
         }
-        List<ShowStorePlantRecordModel> listModel = new ArrayList<>();
-        for(StorePlantRecord record : storePlant.get().getRecordList()) {
-            ShowStorePlantRecordModel model = new ShowStorePlantRecordModel();
-            model.setId(record.getId());
-            model.setAmount(record.getAmount());
-            model.setImportDate(record.getImportDate());
-            model.setReason(record.getReason());
-            listModel.add(model);
+        Page<StorePlantRecord> pagingResult = storePlantRecordPagingRepository.findByStorePlant_Id(storePlant.getId(), pageable);
+        if(pagingResult.hasContent()) {
+            double totalPage = Math.ceil((double) pagingResult.getTotalElements() / pageable.getPageSize());
+            Page<ShowStorePlantRecordModel> modelResult = pagingResult.map(new Converter<StorePlantRecord, ShowStorePlantRecordModel>() {
+                @Override
+                protected ShowStorePlantRecordModel doForward(StorePlantRecord storePlantRecord) {
+                    ShowStorePlantRecordModel model = new ShowStorePlantRecordModel();
+                    model.setId(storePlantRecord.getId());
+                    model.setAmount(storePlantRecord.getAmount());
+                    model.setImportDate(storePlantRecord.getImportDate());
+                    model.setReason(storePlantRecord.getReason());
+                    model.setTotalPage(totalPage);
+                    return model;
+                }
+
+                @Override
+                protected StorePlantRecord doBackward(ShowStorePlantRecordModel showStorePlantRecordModel) {
+                    return null;
+                }
+            });
+            return modelResult.getContent();
+        } else {
+            return new ArrayList<>();
         }
-        return listModel;
     }
 
     @Override

@@ -139,15 +139,28 @@ public class StoreController {
         }
     }
 
-    @GetMapping(value = "/getStorePlantRecord/{storePlantID}", produces = "application/json;charset=UTF-8")
+    @GetMapping(value = "/getStorePlantRecord", produces = "application/json;charset=UTF-8")
     public @ResponseBody
-    List<ShowStorePlantRecordModel> getStorePlantRecordByStorePlantID(@PathVariable("storePlantID") String storePlantID,
-                                                                      HttpServletRequest request) {
+    List<ShowStorePlantRecordModel> getStorePlantRecordByPlantIDAndStoreID
+            (@RequestParam String plantID,
+             @RequestParam String storeID,
+             @RequestParam int pageNo,
+             @RequestParam int pageSize,
+             @RequestParam(required = false, defaultValue = "ID") SearchType.STORE_PLANT_RECORD sortBy,
+             @RequestParam(required = false, defaultValue = "true") Boolean sortAsc,
+             HttpServletRequest request) {
+
+        Pageable paging;
+        if(sortBy.equals("IMPORTDATE")) {
+            paging = util.makePaging(pageNo, pageSize, "importDate", sortAsc);
+        } else {
+            paging = util.makePaging(pageNo, pageSize, sortBy.toString().toLowerCase(), sortAsc);
+        }
         String roleName = jwtUtil.getRoleNameFromRequest(request);
         if(!roleName.equalsIgnoreCase("Manager") && !roleName.equalsIgnoreCase("Owner")) {
             throw new ResponseStatusException(HttpStatus.FORBIDDEN, "-----------------------------------Người dùng không có quyền truy cập---------------------------");
         }
-        return storeService.getStorePlantRecordByStorePlantID(storePlantID);
+        return storeService.getStorePlantRecordByPlantIDAndStoreID(plantID, storeID, paging);
     }
 
     @PostMapping(produces = "application/json;charset=UTF-8")

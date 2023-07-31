@@ -103,4 +103,11 @@ public class SearchType {
         APPLYDATE,
         STATUS
     }
+
+    public enum STORE_PLANT_RECORD{
+        ID,
+        AMOUNT,
+        IMPORTDATE,
+        REASON
+    }
 }
