@@ -93,6 +93,10 @@ public class OrderServiceImpl implements OrderService {
         order.setLatLong(createOrderModel.getLatLong());
         order.setProgressStatus(Status.WAITING);
 
+        if(createOrderModel.getReceiptIMG() != null){
+            order.setReceiptIMG(createOrderModel.getReceiptIMG());
+        }
+
         if(createOrderModel.getStaffID() != null) {
             tblAccount staff = userRepository.getById(createOrderModel.getStaffID());
             staff.setStatus(Status.UNAVAILABLE);
