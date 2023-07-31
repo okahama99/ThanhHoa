@@ -104,6 +104,8 @@ public class OrderServiceImpl implements OrderService {
         if(account.getRole().getRoleName().equalsIgnoreCase("Staff")){
             order.setStaff(account);
             order.setProgressStatus(Status.APPROVED);
+            account.setStatus(Status.UNAVAILABLE);
+            userRepository.save(account);
         }
         if(account.getRole().getRoleName().equalsIgnoreCase("Customer")){
             order.setCustomer(account);
