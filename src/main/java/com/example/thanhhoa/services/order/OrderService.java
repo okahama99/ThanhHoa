@@ -22,13 +22,13 @@ public interface OrderService {
 
     Boolean changeOrderStatus(String orderID, String status);
 
-    List<ShowOrderModel> getAllOrderByUsername(String username, Pageable pageable);
+    List<ShowOrderModel> getAllOrderByUserID(Long userID, String roleName, Pageable pageable);
 
     List<ShowOrderModel> getAllOrder(Pageable pageable);
 
     List<ShowOrderModel> getAllOrderByStoreID(String storeID, Pageable pageable);
 
-    List<ShowOrderModel> getAllByStatusOrderByUsername(Status status, String username, Pageable pageable);
+    List<ShowOrderModel> getAllByStatusOrderByUserID(Status status, Long userID, String roleName, Pageable pageable);
 
     List<ShowOrderModel> getWaitingOrder(String storeID, Pageable pageable);
 

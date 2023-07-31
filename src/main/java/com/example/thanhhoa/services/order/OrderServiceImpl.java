@@ -287,8 +287,13 @@ public class OrderServiceImpl implements OrderService {
     }
 
     @Override
-    public List<ShowOrderModel> getAllOrderByUsername(String username, Pageable pageable) {
-        Page<tblOrder> pagingResult = orderPagingRepository.findByCustomer_Username(username, pageable);
+    public List<ShowOrderModel> getAllOrderByUserID(Long userID, String roleName, Pageable pageable) {
+        Page<tblOrder> pagingResult;
+        if(roleName.equalsIgnoreCase("Staff")){
+            pagingResult = orderPagingRepository.findByStaff_Id(userID, pageable);
+        }else{
+            pagingResult = orderPagingRepository.findByCustomer_Id(userID, pageable);
+        }
         return util.orderPagingConverter(pagingResult, pageable);
     }
 
@@ -305,8 +310,13 @@ public class OrderServiceImpl implements OrderService {
     }
 
     @Override
-    public List<ShowOrderModel> getAllByStatusOrderByUsername(Status status, String username, Pageable pageable) {
-        Page<tblOrder> pagingResult = orderPagingRepository.findByCustomer_UsernameAndProgressStatus(username, status, pageable);
+    public List<ShowOrderModel> getAllByStatusOrderByUserID(Status status, Long userID, String roleName, Pageable pageable) {
+        Page<tblOrder> pagingResult;
+        if(roleName.equalsIgnoreCase("Staff")){
+            pagingResult = orderPagingRepository.findByStaff_IdAndProgressStatus(userID, status, pageable);
+        }else{
+            pagingResult = orderPagingRepository.findByCustomer_IdAndProgressStatus(userID, status, pageable);
+        }
         return util.orderPagingConverter(pagingResult, pageable);
     }
 

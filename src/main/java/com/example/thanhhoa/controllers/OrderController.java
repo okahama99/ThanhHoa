@@ -118,8 +118,6 @@ public class OrderController {
                 && !roleName.equalsIgnoreCase("Manager") && !roleName.equalsIgnoreCase("Owner")) {
             throw new ResponseStatusException(HttpStatus.FORBIDDEN, "-----------------------------------Người dùng không có quyền truy cập---------------------------");
         }
-        String authTokenHeader = request.getHeader("Authorization");
-        String token = authTokenHeader.substring(7);
 
         Pageable paging;
         if(sortBy.toString().equalsIgnoreCase("CREATEDDATE")) {
@@ -133,11 +131,11 @@ public class OrderController {
         }
 
         if(status != null) {
-            return orderService.getAllByStatusOrderByUsername(Status.valueOf(status), jwtUtil.getUserNameFromJWT(token), paging);
+            return orderService.getAllByStatusOrderByUserID(Status.valueOf(status), jwtUtil.getUserIDFromRequest(request), jwtUtil.getRoleNameFromRequest(request), paging);
         } else if(storeID != null) {
             return orderService.getAllOrderByStoreID(storeID, paging);
         } else {
-            return orderService.getAllOrderByUsername(jwtUtil.getUserNameFromJWT(token), paging);
+            return orderService.getAllOrderByUserID(jwtUtil.getUserIDFromRequest(request), jwtUtil.getRoleNameFromRequest(request), paging);
         }
 
     }

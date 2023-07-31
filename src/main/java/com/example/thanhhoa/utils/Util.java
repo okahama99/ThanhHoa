@@ -474,12 +474,14 @@ public class Util {
 
                     //customer
                     ShowCustomerModel customerModel = new ShowCustomerModel();
-                    customerModel.setId(orderFeedback.getCustomer().getId());
-                    customerModel.setAddress(orderFeedback.getCustomer().getAddress());
-                    customerModel.setEmail(orderFeedback.getCustomer().getEmail());
-                    customerModel.setPhone(orderFeedback.getCustomer().getPhone());
-                    customerModel.setFullName(orderFeedback.getCustomer().getFullName());
-                    customerModel.setAvatar(orderFeedback.getCustomer().getAvatar());
+                    if(orderFeedback.getCustomer() != null){
+                        customerModel.setId(orderFeedback.getCustomer().getId());
+                        customerModel.setAddress(orderFeedback.getCustomer().getAddress());
+                        customerModel.setEmail(orderFeedback.getCustomer().getEmail());
+                        customerModel.setPhone(orderFeedback.getCustomer().getPhone());
+                        customerModel.setFullName(orderFeedback.getCustomer().getFullName());
+                        customerModel.setAvatar(orderFeedback.getCustomer().getAvatar());
+                    }
 
                     //plant
                     com.example.thanhhoa.dtos.OrderModels.ShowPlantModel plantModel = new com.example.thanhhoa.dtos.OrderModels.ShowPlantModel();
@@ -747,11 +749,13 @@ public class Util {
 
                     //customer
                     ShowCustomerModel customerModel = new ShowCustomerModel();
-                    customerModel.setId(order.getCustomer().getId());
-                    customerModel.setAddress(order.getCustomer().getAddress());
-                    customerModel.setEmail(order.getCustomer().getEmail());
-                    customerModel.setPhone(order.getCustomer().getPhone());
-                    customerModel.setFullName(order.getCustomer().getFullName());
+                    if(order.getCustomer() != null) {
+                        customerModel.setId(order.getCustomer().getId());
+                        customerModel.setAddress(order.getCustomer().getAddress());
+                        customerModel.setEmail(order.getCustomer().getEmail());
+                        customerModel.setPhone(order.getCustomer().getPhone());
+                        customerModel.setFullName(order.getCustomer().getFullName());
+                    }
 
                     //distance price
                     ShowDistancePriceModel distancePriceModel = new ShowDistancePriceModel();
