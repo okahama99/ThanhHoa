@@ -94,7 +94,7 @@ public class OrderController {
     public ResponseEntity<Object> changeOrderStatus(@RequestParam String orderID,
                                                     @RequestParam SearchType.ORDER_STATUS status, HttpServletRequest request) throws Exception {
         String roleName = jwtUtil.getRoleNameFromRequest(request);
-        if(!roleName.equalsIgnoreCase("Manager")) {
+        if(!roleName.equalsIgnoreCase("Manager") && !roleName.equalsIgnoreCase("Staff")) {
             throw new ResponseStatusException(HttpStatus.FORBIDDEN, "-----------------------------------Người dùng không có quyền truy cập---------------------------");
         }
         if(orderService.changeOrderStatus(orderID, status.toString())) {
