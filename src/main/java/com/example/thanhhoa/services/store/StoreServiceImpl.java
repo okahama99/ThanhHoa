@@ -283,8 +283,6 @@ public class StoreServiceImpl implements StoreService{
             storeEmployee.setAccount(employeeAcc);
             storeEmployee.setStatus(Status.ACTIVE);
             storeEmployeeRepository.save(storeEmployee);
-            employeeAcc.setStatus(Status.AVAILABLE);
-            userRepository.save(employeeAcc);
         }
         return "Thêm thành công.";
     }

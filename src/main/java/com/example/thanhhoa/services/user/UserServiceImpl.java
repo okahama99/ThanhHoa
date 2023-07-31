@@ -6,7 +6,6 @@ import com.example.thanhhoa.dtos.UserModels.RegisterUserModel;
 import com.example.thanhhoa.dtos.UserModels.ShowUserModel;
 import com.example.thanhhoa.dtos.UserModels.UserFCMToken;
 import com.example.thanhhoa.entities.Role;
-import com.example.thanhhoa.entities.Store;
 import com.example.thanhhoa.entities.StoreEmployee;
 import com.example.thanhhoa.entities.tblAccount;
 import com.example.thanhhoa.enums.Status;
@@ -57,7 +56,7 @@ public class UserServiceImpl implements UserService {
         model.setGender(user.getGender());
         model.setStatus(user.getStatus());
         StoreEmployee storeEmployee = storeEmployeeRepository.findByAccount_IdAndStatus(user.getId(), Status.ACTIVE);
-        if((user.getRole().getRoleName().equalsIgnoreCase("Manager") || user.getRole().getRoleName().equalsIgnoreCase("Staff")) && storeEmployee != null){
+        if((user.getRole().getRoleName().equalsIgnoreCase("Manager") || user.getRole().getRoleName().equalsIgnoreCase("Staff")) && storeEmployee != null) {
             model.setStoreID(storeEmployee.getStore().getId());
             model.setStoreName(storeEmployee.getStore().getStoreName());
         }
@@ -81,7 +80,7 @@ public class UserServiceImpl implements UserService {
         model.setGender(user.getGender());
         model.setStatus(user.getStatus());
         StoreEmployee storeEmployee = storeEmployeeRepository.findByAccount_IdAndStatus(user.getId(), Status.ACTIVE);
-        if((user.getRole().getRoleName().equalsIgnoreCase("Manager") || user.getRole().getRoleName().equalsIgnoreCase("Staff")) && storeEmployee != null){
+        if((user.getRole().getRoleName().equalsIgnoreCase("Manager") || user.getRole().getRoleName().equalsIgnoreCase("Staff")) && storeEmployee != null) {
             model.setStoreID(storeEmployee.getStore().getId());
             model.setStoreName(storeEmployee.getStore().getStoreName());
         }
@@ -98,7 +97,7 @@ public class UserServiceImpl implements UserService {
     @Override
     public tblAccount loginWithEmail(String email) {
         tblAccount user = userRepository.getByEmail(email);
-        if (user == null) {
+        if(user == null) {
             return null;
         }
         return user;
@@ -107,7 +106,7 @@ public class UserServiceImpl implements UserService {
     @Override
     public tblAccount loginWithPhone(String phone) {
         tblAccount user = userRepository.getByPhone(phone);
-        if (user == null) {
+        if(user == null) {
             return null;
         }
         return user;
@@ -115,13 +114,13 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public String register(RegisterUserModel registerUserModel) {
-        if (userRepository.getByUsername(registerUserModel.getUsername()) != null) {
+        if(userRepository.getByUsername(registerUserModel.getUsername()) != null) {
             return "Username đã tồn tại.";
         }
-        if (userRepository.getByEmail(registerUserModel.getEmail()) != null) {
+        if(userRepository.getByEmail(registerUserModel.getEmail()) != null) {
             return "Email đã tồn tại.";
         }
-        if (userRepository.getByPhone(registerUserModel.getPhone()) != null) {
+        if(userRepository.getByPhone(registerUserModel.getPhone()) != null) {
             return "Phone đã tồn tại.";
         }
         Role role = roleRepository.getRoleByRoleName("Customer");
@@ -137,7 +136,7 @@ public class UserServiceImpl implements UserService {
         user.setPhone(registerUserModel.getPhone());
         user.setStatus(Status.ACTIVE);
         user.setRole(role);
-        if (userRepository.saveAndFlush(user) != null) {
+        if(userRepository.saveAndFlush(user) != null) {
             return "Tạo User thành công.";
         } else {
             return "Lỗi tạo User.";
@@ -168,14 +167,14 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public String generateTempPassword(RegisterStaffModel registerStaffModel, String roleName) {
-        if (userRepository.getByUsername(registerStaffModel.getUsername()) != null) {
+        if(userRepository.getByUsername(registerStaffModel.getUsername()) != null) {
             return "Username đã tồn tại.";
         }
         Role role = roleRepository.getRoleByRoleName(roleName);
-        if (role == null) {
+        if(role == null) {
             return "Sai tên Role.";
         }
-        if(!role.getRoleName().equals("Owner") && !role.getRoleName().equals("Manager") && !role.getRoleName().equals("Staff")){
+        if(!role.getRoleName().equals("Owner") && !role.getRoleName().equals("Manager") && !role.getRoleName().equals("Staff")) {
             return "Tên Role phải là Owner hoặc Manager hoặc Staff";
         }
         tblAccount user = new tblAccount();
@@ -186,13 +185,9 @@ public class UserServiceImpl implements UserService {
         user.setGender(registerStaffModel.getGender());
         user.setAvatar(registerStaffModel.getAvatar());
         user.setRole(role);
-        if(role.getRoleName().equals("Staff")){
-            user.setStatus(Status.AVAILABLE);
-        }else{
-            user.setStatus(Status.ACTIVE);
-        }
+        user.setStatus(Status.ACTIVE);
 
-        if (userRepository.saveAndFlush(user) != null) {
+        if(userRepository.saveAndFlush(user) != null) {
             return "Tạo User thành công.";
         } else {
             return "Lỗi tạo User.";

@@ -423,8 +423,6 @@ public class ContractServiceImpl implements ContractService {
             contractIMGRepository.save(contractIMG);
         }
 
-        staff.setStatus(Status.UNAVAILABLE);
-
         LocalDateTime startDate = Collections.min(startDateList);
         LocalDateTime endDate = Collections.max(endDateList);
         contract.setDeposit(createManagerContractModel.getDeposit());
@@ -462,10 +460,6 @@ public class ContractServiceImpl implements ContractService {
         if(contract == null) {
             return "Không thể tìm thấy Hợp đồng có trạng thái WAITING với ID là " + contractID + ".";
         }
-        if(contract.getStaff()!=null){
-            contract.getStaff().setStatus(Status.AVAILABLE);
-            userRepository.save(contract.getStaff());
-        }
         contract.setReason(reason);
         contract.setStatus(status);
         contract.setRejectedDate(LocalDateTime.now(ZoneId.of("Asia/Ho_Chi_Minh")));
@@ -484,7 +478,6 @@ public class ContractServiceImpl implements ContractService {
         }
 
         tblAccount staff = userRepository.getById(approveContractModel.getStaffID());
-        staff.setStatus(Status.UNAVAILABLE);
 
         PaymentType paymentType = paymentTypeRepository.getById(approveContractModel.getPaymentTypeID());
         contract.setDeposit(approveContractModel.getDeposit());
@@ -536,10 +529,6 @@ public class ContractServiceImpl implements ContractService {
         }
         Contract contract = checkExisted.get();
         contract.setStatus(status);
-        if(status.toString().equalsIgnoreCase("DONE")){
-            contract.getStaff().setStatus(Status.AVAILABLE);
-            userRepository.save(contract.getStaff());
-        }
         contractRepository.save(contract);
         return "Chỉnh sửa thành công.";
     }
@@ -553,7 +542,7 @@ public class ContractServiceImpl implements ContractService {
 
     @Override
     public List<GetStaffModel> getStaffForContract() {
-        List<tblAccount> listStaff = userRepository.findByStatusAndRole_RoleName(Status.AVAILABLE, "Staff");
+        List<tblAccount> listStaff = userRepository.findByStatusAndRole_RoleName(Status.ACTIVE, "Staff");
         List<GetStaffModel> modelList = new ArrayList<>();
         for(tblAccount staff : listStaff) {
             GetStaffModel model = new GetStaffModel();

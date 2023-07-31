@@ -97,19 +97,10 @@ public class OrderServiceImpl implements OrderService {
             order.setReceiptIMG(createOrderModel.getReceiptIMG());
         }
 
-        if(createOrderModel.getStaffID() != null) {
-            tblAccount staff = userRepository.getById(createOrderModel.getStaffID());
-            staff.setStatus(Status.UNAVAILABLE);
-            userRepository.save(staff);
-            order.setStaff(staff);
-        }
-
         tblAccount account = userRepository.getById(customerID);
         if(account.getRole().getRoleName().equalsIgnoreCase("Staff")){
             order.setStaff(account);
             order.setProgressStatus(Status.APPROVED);
-            account.setStatus(Status.UNAVAILABLE);
-            userRepository.save(account);
         }
         if(account.getRole().getRoleName().equalsIgnoreCase("Customer")){
             order.setCustomer(account);
@@ -188,8 +179,6 @@ public class OrderServiceImpl implements OrderService {
                 return "Không tìm thấy Staff với ID là " + updateOrderModel.getStaffID() + ".";
             }
             tblAccount staff = checkStaff.get();
-            staff.setStatus(Status.UNAVAILABLE);
-            userRepository.save(staff);
             order.setStaff(staff);
         }
 
@@ -237,9 +226,6 @@ public class OrderServiceImpl implements OrderService {
             if(!order.getProgressStatus().toString().equals("WAITING")) {
                 return "Chỉ được hủy đơn hàng có trạng thái là WAITING.";
             }
-            if(order.getStaff() != null) {
-                order.getStaff().setStatus(Status.AVAILABLE);
-            }
             order.setReason(reason);
             order.setProgressStatus(status);
             order.setRejectDate(LocalDateTime.now(ZoneId.of("Asia/Ho_Chi_Minh")));
@@ -255,7 +241,6 @@ public class OrderServiceImpl implements OrderService {
         if(checkExistedOrder != null) {
             tblOrder order = checkExistedOrder.get();
             order.setProgressStatus(Status.APPROVED);
-            order.getStaff().setStatus(Status.UNAVAILABLE);
             orderRepository.save(checkExistedOrder.get());
 
             List<OrderDetail> orderDetailList = order.getOrderDetailList();
@@ -293,7 +278,6 @@ public class OrderServiceImpl implements OrderService {
                 checkExistedOrder.get().setProgressStatus(Status.DELIVERING);
             } else {
                 checkExistedOrder.get().setProgressStatus(Status.RECEIVED);
-                checkExistedOrder.get().getStaff().setStatus(Status.AVAILABLE);
             }
             orderRepository.save(checkExistedOrder.get());
             return true;
@@ -359,7 +343,7 @@ public class OrderServiceImpl implements OrderService {
 
     @Override
     public List<GetStaffModel> getStaffForOrder() {
-        List<tblAccount> listStaff = userRepository.findByStatusAndRole_RoleName(Status.AVAILABLE, "Staff");
+        List<tblAccount> listStaff = userRepository.findByStatusAndRole_RoleName(Status.ACTIVE, "Staff");
         List<GetStaffModel> modelList = new ArrayList<>();
         for(tblAccount staff : listStaff) {
             GetStaffModel model = new GetStaffModel();

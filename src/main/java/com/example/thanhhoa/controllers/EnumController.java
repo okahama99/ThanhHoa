@@ -67,8 +67,6 @@ public class EnumController {
         List<String> list = new ArrayList<>();
         list.add(Status.ACTIVE.toString());
         list.add(Status.INACTIVE.toString());
-        list.add(Status.AVAILABLE.toString());
-        list.add(Status.UNAVAILABLE.toString());
         return list;
     }
 

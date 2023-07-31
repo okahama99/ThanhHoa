@@ -118,6 +118,7 @@ public class UserController {
                     String token = jwtUtil.generateTokenForEmailOrPhone(user);
                     response.put("status", "success");
                     response.put("token", token);
+                    response.put("role", jwtUtil.getRoleNameFromJWT(token));
 
                     return ResponseEntity.ok().body(response);
                 }
@@ -129,6 +130,7 @@ public class UserController {
                     String token = jwtUtil.generateTokenForEmailOrPhone(user);
                     response.put("status", "success");
                     response.put("token", token);
+                    response.put("role", jwtUtil.getRoleNameFromJWT(token));
 
                     return ResponseEntity.ok().body(response);
                 }
@@ -163,6 +165,7 @@ public class UserController {
 
         response.put("status", "Đăng nhập thành công.");
         response.put("token", token);
+        response.put("role", jwtUtil.getRoleNameFromJWT(token));
         return ResponseEntity.ok().body(response);
     }
 
