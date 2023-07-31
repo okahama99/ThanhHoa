@@ -78,12 +78,14 @@ public class OrderController {
     }
 
     @PutMapping(value = "/approveOrder/{orderID}", produces = "application/json;charset=UTF-8")
-    public ResponseEntity<Object> approveOrder(@PathVariable(name = "orderID") String orderID, HttpServletRequest request) throws Exception {
+    public ResponseEntity<Object> approveOrder(@PathVariable(name = "orderID") String orderID,
+                                               @RequestParam Long staffID,
+                                               HttpServletRequest request) throws Exception {
         String roleName = jwtUtil.getRoleNameFromRequest(request);
         if(!roleName.equalsIgnoreCase("Manager")) {
             throw new ResponseStatusException(HttpStatus.FORBIDDEN, "-----------------------------------Người dùng không có quyền truy cập---------------------------");
         }
-        String result = orderService.approveOrder(orderID);
+        String result = orderService.approveOrder(orderID, staffID);
         if(result.equals("Chấp nhận thành công.")) {
             return ResponseEntity.ok().body(result);
         }

@@ -237,19 +237,22 @@ public class OrderServiceImpl implements OrderService {
     }
 
     @Override
-    public String approveOrder(String orderID) {
+    public String approveOrder(String orderID, Long staffID) {
         Optional<tblOrder> checkExistedOrder = orderRepository.findById(orderID);
         if(checkExistedOrder != null) {
+            tblAccount staff = userRepository.findByIdAndStatus(staffID, Status.ACTIVE);
+            if(staff == null){
+                return "Không tìm thấy Staff với ID là : " + staffID + " có trạng thái ACTIVE.";
+            }
             tblOrder order = checkExistedOrder.get();
+            order.setStaff(staff);
             order.setProgressStatus(Status.APPROVED);
-            orderRepository.save(checkExistedOrder.get());
 
             List<OrderDetail> orderDetailList = order.getOrderDetailList();
             for(OrderDetail orderDetail : orderDetailList) {
                 StorePlant storePlant = storePlantRepository.
                         findByPlantIdAndStoreIdAndPlant_Status(orderDetail.getPlant().getId(), order.getStore().getId(), Status.ONSALE);
                 storePlant.setQuantity(storePlant.getQuantity() - orderDetail.getQuantity());
-                storePlantRepository.save(storePlant);
 
                 StorePlantRecord storePlantRecord = new StorePlantRecord();
                 StorePlantRecord lastRecord = storePlantRecordRepository.findFirstByOrderByIdDesc();
@@ -262,8 +265,10 @@ public class OrderServiceImpl implements OrderService {
                 storePlantRecord.setAmount(orderDetail.getQuantity());
                 storePlantRecord.setStorePlant(storePlant);
                 storePlantRecord.setReason("Chấp nhận đơn hàng với mã là : " + orderID + ".");
+                storePlantRepository.save(storePlant);
                 storePlantRecordRepository.save(storePlantRecord);
             }
+            orderRepository.save(checkExistedOrder.get());
             return "Chấp nhận thành công.";
         }
         return "Không tồn tại Order với ID là : " + orderID + ".";

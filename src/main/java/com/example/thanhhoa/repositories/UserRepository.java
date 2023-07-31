@@ -14,6 +14,8 @@ public interface UserRepository extends JpaRepository<tblAccount, Long> {
 
     tblAccount findByEmailAndStatus(String email, Status status);
 
+    tblAccount findByIdAndStatus(Long userID, Status status);
+
     tblAccount getByUsername(String username);
 
     tblAccount getByEmail(String email);
