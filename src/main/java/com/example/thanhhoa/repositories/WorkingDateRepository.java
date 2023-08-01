@@ -15,5 +15,5 @@ public interface WorkingDateRepository extends JpaRepository<WorkingDate, String
 
     WorkingDate findFirstByOrderByIdDesc();
 
-    WorkingDate findFirstByOrderByWorkingDateDesc();
+    WorkingDate findFirstByContractDetail_IdOrderByWorkingDateDesc(String contractDetailID);
 }

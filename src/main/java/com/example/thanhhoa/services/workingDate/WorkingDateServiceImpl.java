@@ -36,12 +36,15 @@ public class WorkingDateServiceImpl implements WorkingDateService {
         if(checkExisted == null) {
             return "Không tìm thấy Chi tiết hợp đồng với ID là " + contractDetailID + ".";
         }
-        WorkingDate check = workingDateRepository.findFirstByOrderByWorkingDateDesc();
-        if((LocalDateTime.now(ZoneId.of("Asia/Ho_Chi_Minh")).getDayOfMonth() == check.getWorkingDate().getDayOfMonth()) &&
-                (LocalDateTime.now(ZoneId.of("Asia/Ho_Chi_Minh")).getMonth() == check.getWorkingDate().getMonth()) &&
-                (LocalDateTime.now(ZoneId.of("Asia/Ho_Chi_Minh")).getYear() == check.getWorkingDate().getYear())) {
-            return "Mỗi ngày chỉ được điểm danh 1 lần.";
+        WorkingDate check = workingDateRepository.findFirstByContractDetail_IdOrderByWorkingDateDesc(contractDetailID);
+        if(check != null){
+            if((LocalDateTime.now(ZoneId.of("Asia/Ho_Chi_Minh")).getDayOfMonth() == check.getWorkingDate().getDayOfMonth()) &&
+                    (LocalDateTime.now(ZoneId.of("Asia/Ho_Chi_Minh")).getMonth() == check.getWorkingDate().getMonth()) &&
+                    (LocalDateTime.now(ZoneId.of("Asia/Ho_Chi_Minh")).getYear() == check.getWorkingDate().getYear())) {
+                return "Mỗi ngày chỉ được điểm danh 1 lần.";
+            }
         }
+
         WorkingDate workingDate = new WorkingDate();
         WorkingDate lastWorkingDate = workingDateRepository.findFirstByOrderByIdDesc();
         if(lastWorkingDate == null) {
