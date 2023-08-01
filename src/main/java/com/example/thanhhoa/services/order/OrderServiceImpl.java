@@ -247,6 +247,7 @@ public class OrderServiceImpl implements OrderService {
             tblOrder order = checkExistedOrder.get();
             order.setStaff(staff);
             order.setProgressStatus(Status.APPROVED);
+            order.setApproveDate(LocalDateTime.now(ZoneId.of("Asia/Ho_Chi_Minh")));
 
             List<OrderDetail> orderDetailList = order.getOrderDetailList();
             for(OrderDetail orderDetail : orderDetailList) {
@@ -278,12 +279,18 @@ public class OrderServiceImpl implements OrderService {
     public Boolean changeOrderStatus(String orderID, String status) {
         Optional<tblOrder> checkExistedOrder = orderRepository.findById(orderID);
         if(checkExistedOrder != null) {
-            if(status.equals("PACKAGING")) {
-                checkExistedOrder.get().setProgressStatus(Status.PACKAGING);
-            } else if(status.equals("DELIVERING")) {
-                checkExistedOrder.get().setProgressStatus(Status.DELIVERING);
-            } else {
-                checkExistedOrder.get().setProgressStatus(Status.RECEIVED);
+            tblOrder order = checkExistedOrder.get();
+            if(status.equalsIgnoreCase("PACKAGING")) {
+                order.setProgressStatus(Status.PACKAGING);
+                order.setPackageDate(LocalDateTime.now(ZoneId.of("Asia/Ho_Chi_Minh")));
+            } else if(status.equalsIgnoreCase("DELIVERING")) {
+                order.setProgressStatus(Status.DELIVERING);
+                order.setDeliveryDate(LocalDateTime.now(ZoneId.of("Asia/Ho_Chi_Minh")));
+            } else if(status.equalsIgnoreCase("RECEIVED")){
+                order.setProgressStatus(Status.RECEIVED);
+                order.setReceivedDate(LocalDateTime.now(ZoneId.of("Asia/Ho_Chi_Minh")));
+            }else{
+                return false;
             }
             orderRepository.save(checkExistedOrder.get());
             return true;

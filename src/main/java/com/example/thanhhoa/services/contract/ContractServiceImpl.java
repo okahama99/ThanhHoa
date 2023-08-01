@@ -486,7 +486,6 @@ public class ContractServiceImpl implements ContractService {
         contract.setPaymentMethod(approveContractModel.getPaymentMethod());
         contract.setPaymentType(paymentType);
         contract.setStaff(staff);
-        contract.setStartedDate(LocalDateTime.now(ZoneId.of("Asia/Ho_Chi_Minh")));
         contract.setApprovedDate(LocalDateTime.now(ZoneId.of("Asia/Ho_Chi_Minh")));
         contract.setStatus(Status.APPROVED);
         userRepository.save(staff);
@@ -516,6 +515,7 @@ public class ContractServiceImpl implements ContractService {
 
             contract.setStatus(Status.WORKING);
             contract.setIsSigned(true);
+            contract.setStartedDate(LocalDateTime.now(ZoneId.of("Asia/Ho_Chi_Minh")));
 
             contractRepository.save(contract);
             contractIMGRepository.save(contractIMG);
@@ -530,7 +530,16 @@ public class ContractServiceImpl implements ContractService {
             return "Không thể tìm thấy Hợp đồng có trạng thái WAITING với ID là " + contractID + ".";
         }
         Contract contract = checkExisted.get();
-        contract.setStatus(status);
+        if(status.toString().equalsIgnoreCase("DENIED")){
+            contract.setStatus(status);
+            contract.setRejectedDate(LocalDateTime.now(ZoneId.of("Asia/Ho_Chi_Minh")));
+        }else if(status.toString().equalsIgnoreCase("DONE")){
+            contract.setStatus(status);
+            contract.setEndedDate(LocalDateTime.now(ZoneId.of("Asia/Ho_Chi_Minh")));
+        }else{
+            contract.setStatus(status);
+        }
+
         contractRepository.save(contract);
         return "Chỉnh sửa thành công.";
     }
