@@ -18,6 +18,7 @@ public class SearchType {
     }
 
     public enum USER{
+        ID,
         USERNAME,
         FULLNAME,
         EMAIL,
