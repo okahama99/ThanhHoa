@@ -628,7 +628,7 @@ public class ContractServiceImpl implements ContractService {
         }
         if(role.equalsIgnoreCase("Customer")){
             contractDetailList =
-                    contractDetailRepository.findByContract_Customer_IdAndStartDateLessThanEqualAndEndDateGreaterThanEqualAndStartDateLessThanEqualAndEndDateGreaterThanEqual(staffID, from, to);
+                    contractDetailRepository.findByContract_Customer_IdAndStartDateLessThanEqualAndEndDateGreaterThanEqual(staffID, from, to);
         }
         if(contractDetailList == null) {
             return null;
