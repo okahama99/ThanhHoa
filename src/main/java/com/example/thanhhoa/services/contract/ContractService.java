@@ -39,7 +39,7 @@ public interface ContractService {
 
     String changeContractStatus(String contractID, Status status);
 
-    String addContractIMG(String contractID, Double deposit, List<String> listURL);
+    String addContractIMG(String contractID, Double deposit, String paymentTypeID, List<String> listURL);
 
     List<ShowContractModel> getWaitingContract(Pageable pageable);
 
@@ -51,7 +51,7 @@ public interface ContractService {
 
     List<ShowPaymentTypeModel> getPaymentType();
 
-    List<ShowContractDetailModel> getContractDetailByDateBetween(LocalDateTime from, LocalDateTime to, Long staffID);
+    List<ShowContractDetailModel> getContractDetailByDateBetween(LocalDateTime from, LocalDateTime to, Long staffID, String role);
 
     List<ShowContractDetailModel> getContractDetailByExactDate(LocalDateTime from, LocalDateTime to, Long staffID);
 

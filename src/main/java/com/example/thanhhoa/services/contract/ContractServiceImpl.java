@@ -507,7 +507,7 @@ public class ContractServiceImpl implements ContractService {
     }
 
     @Override
-    public String addContractIMG(String contractID, Double deposit, List<String> listURL){
+    public String addContractIMG(String contractID, Double deposit, String paymentTypeID, List<String> listURL){
         Contract contract = contractRepository.findByIdAndStatus(contractID, Status.APPROVED);
         if(contract == null) {
             return "Không thể tìm thấy Hợp đồng có trạng thái APPROVED với ID là " + contractID + ".";
@@ -526,6 +526,13 @@ public class ContractServiceImpl implements ContractService {
 
             if(deposit != null){
                 contract.setDeposit(deposit);
+            }
+            if(paymentTypeID != null){
+                Optional<PaymentType> paymentType = paymentTypeRepository.findById(paymentTypeID);
+                if(paymentType == null){
+                    return "Không tìm thấy PaymentType với ID là " + paymentTypeID + ".";
+                }
+                contract.setPaymentType(paymentType.get());
             }
             contractIMG.setContract(contract);
             contractIMG.setImgURL(imageURL);
@@ -613,9 +620,16 @@ public class ContractServiceImpl implements ContractService {
     }
 
     @Override
-    public List<ShowContractDetailModel> getContractDetailByDateBetween(LocalDateTime from, LocalDateTime to, Long staffID) {
-        List<ContractDetail> contractDetailList =
-                contractDetailRepository.findByContract_Staff_IdAndStartDateLessThanEqualAndEndDateGreaterThanEqual(staffID, from, to);
+    public List<ShowContractDetailModel> getContractDetailByDateBetween(LocalDateTime from, LocalDateTime to, Long staffID, String role) {
+        List<ContractDetail> contractDetailList = null;
+        if(role.equalsIgnoreCase("Staff")){
+            contractDetailList =
+                    contractDetailRepository.findByContract_Staff_IdAndStartDateLessThanEqualAndEndDateGreaterThanEqual(staffID, from, to);
+        }
+        if(role.equalsIgnoreCase("Customer")){
+            contractDetailList =
+                    contractDetailRepository.findByContract_Customer_IdAndStartDateLessThanEqualAndEndDateGreaterThanEqualAndStartDateLessThanEqualAndEndDateGreaterThanEqual(staffID, from, to);
+        }
         if(contractDetailList == null) {
             return null;
         }

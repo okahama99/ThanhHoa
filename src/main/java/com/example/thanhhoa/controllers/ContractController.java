@@ -168,7 +168,7 @@ public class ContractController {
                                                     @RequestParam String to,
                                                     HttpServletRequest request) {
         String roleName = jwtUtil.getRoleNameFromRequest(request);
-        if(!roleName.equalsIgnoreCase("Staff")) {
+        if(!roleName.equalsIgnoreCase("Staff") && !roleName.equalsIgnoreCase("Customer")) {
             throw new ResponseStatusException(HttpStatus.FORBIDDEN, "-----------------------------------Người dùng không có quyền truy cập---------------------------");
         }
 
@@ -181,7 +181,7 @@ public class ContractController {
             return ResponseEntity.badRequest().body("Nhập theo khuôn được định sẵn yyyy-MM-dd, ví dụ : 2021-12-21");
         }
 
-        return ResponseEntity.ok().body(contractService.getContractDetailByDateBetween(fromDate, toDate, jwtUtil.getUserIDFromRequest(request)));
+        return ResponseEntity.ok().body(contractService.getContractDetailByDateBetween(fromDate, toDate, jwtUtil.getUserIDFromRequest(request), jwtUtil.getRoleNameFromRequest(request)));
     }
 
     @GetMapping(value = "/getContractDetailByExactDate", produces = "application/json;charset=UTF-8")
@@ -266,13 +266,14 @@ public class ContractController {
     @PostMapping(value = "/addContractIMG", produces = "application/json;charset=UTF-8")
     public ResponseEntity<Object> addContractIMG(@RequestParam String contractID,
                                                  @RequestParam List<String> listURL,
+                                                 @RequestParam(required = false) String paymentTypeID,
                                                  @RequestParam(required = false) Double deposit,
                                                  HttpServletRequest request) throws Exception {
         String roleName = jwtUtil.getRoleNameFromRequest(request);
         if(!roleName.equalsIgnoreCase("Manager")) {
             throw new ResponseStatusException(HttpStatus.FORBIDDEN, "-----------------------------------Người dùng không có quyền truy cập---------------------------");
         }
-        return ResponseEntity.ok().body(contractService.addContractIMG(contractID, deposit, listURL));
+        return ResponseEntity.ok().body(contractService.addContractIMG(contractID, deposit, paymentTypeID, listURL));
     }
 
     @PutMapping(produces = "application/json;charset=UTF-8")
