@@ -87,7 +87,7 @@ public class OrderServiceImpl implements OrderService {
         order.setAddress(createOrderModel.getAddress());
         order.setPhone(createOrderModel.getPhone());
         order.setEmail(createOrderModel.getEmail());
-        order.setPaymentMethod(createOrderModel.getFullName());
+        order.setPaymentMethod(createOrderModel.getPaymentMethod());
         order.setCreatedDate(LocalDateTime.now(ZoneId.of("Asia/Ho_Chi_Minh")));
         order.setDistance(createOrderModel.getDistance());
         order.setLatLong(createOrderModel.getLatLong());
