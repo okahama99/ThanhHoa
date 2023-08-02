@@ -115,7 +115,7 @@ public class ContractServiceImpl implements ContractService {
         List<ShowContractDetailModel> modelList = new ArrayList<>();
         for(Contract contract : contractList) {
             for(ContractDetail detail : contract.getContractDetailList()) {
-                List<WorkingDate> dateList = workingDateRepository.findByContractDetail_Id(detail.getId());
+                List<WorkingDate> dateList = workingDateRepository.findByContractDetail_IdOrderByWorkingDateDesc(detail.getId());
                 List<ShowWorkingDateModel> dateModelList = new ArrayList<>();
                 for(WorkingDate workingDate : dateList) {
                     ShowWorkingDateModel model = new ShowWorkingDateModel();
@@ -602,7 +602,7 @@ public class ContractServiceImpl implements ContractService {
         }
         List<ShowContractDetailModel> modelList = new ArrayList<>();
         for(ContractDetail detail : contractDetailList) {
-            List<WorkingDate> dateList = workingDateRepository.findByContractDetail_Id(detail.getId());
+            List<WorkingDate> dateList = workingDateRepository.findByContractDetail_IdOrderByWorkingDateDesc(detail.getId());
             List<ShowWorkingDateModel> dateModelList = new ArrayList<>();
             for(WorkingDate workingDate : dateList) {
                 ShowWorkingDateModel model = new ShowWorkingDateModel();
@@ -734,7 +734,7 @@ public class ContractServiceImpl implements ContractService {
         }
         List<ShowContractDetailModel> modelList = new ArrayList<>();
         for(ContractDetail detail : contractDetailList) {
-            List<WorkingDate> dateList = workingDateRepository.findByContractDetail_Id(detail.getId());
+            List<WorkingDate> dateList = workingDateRepository.findByContractDetail_IdOrderByWorkingDateDesc(detail.getId());
             List<ShowWorkingDateModel> dateModelList = new ArrayList<>();
             for(WorkingDate workingDate : dateList) {
                 ShowWorkingDateModel model = new ShowWorkingDateModel();

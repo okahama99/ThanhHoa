@@ -899,7 +899,7 @@ public class Util {
             Page<ShowContractDetailModel> modelResult = pagingResult.map(new Converter<ContractDetail, ShowContractDetailModel>() {
                 @Override
                 protected ShowContractDetailModel doForward(ContractDetail detail) {
-                    List<WorkingDate> dateList = workingDateRepository.findByContractDetail_Id(detail.getId());
+                    List<WorkingDate> dateList = workingDateRepository.findByContractDetail_IdOrderByWorkingDateDesc(detail.getId());
                     List<com.example.thanhhoa.dtos.ContractModels.ShowWorkingDateModel> dateModelList = new ArrayList<>();
                     for(WorkingDate workingDate : dateList) {
                         com.example.thanhhoa.dtos.ContractModels.ShowWorkingDateModel model = new com.example.thanhhoa.dtos.ContractModels.ShowWorkingDateModel();

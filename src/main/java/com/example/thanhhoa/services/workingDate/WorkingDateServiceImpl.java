@@ -15,6 +15,8 @@ import org.springframework.stereotype.Service;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Optional;
 
@@ -60,7 +62,7 @@ public class WorkingDateServiceImpl implements WorkingDateService {
 
     @Override
     public List<ShowWorkingDateModel> getAllByContractDetailID(String contractDetailID, Pageable pageable) {
-        Page<WorkingDate> pagingResult = workingDatePagingRepository.findByContractDetail_Id(contractDetailID, pageable);
+        Page<WorkingDate> pagingResult = workingDatePagingRepository.findByContractDetail_IdOrderByWorkingDateDesc(contractDetailID, pageable);
         return util.workingDatePagingConverter(pagingResult, pageable);
     }
 
@@ -81,7 +83,7 @@ public class WorkingDateServiceImpl implements WorkingDateService {
         }
         List<ShowWorkingDateModel> modelList = new ArrayList<>();
         for(ContractDetail detail : contractDetailList) {
-            List<WorkingDate> workingDateList = workingDateRepository.findByContractDetail_Id(detail.getId());
+            List<WorkingDate> workingDateList = workingDateRepository.findByContractDetail_IdOrderByWorkingDateDesc(detail.getId());
             for(WorkingDate workingDate : workingDateList) {
                 ShowWorkingDateModel model = new ShowWorkingDateModel();
                 model.setId(workingDate.getId());
@@ -109,6 +111,7 @@ public class WorkingDateServiceImpl implements WorkingDateService {
                 model.setPackPercentage(detail.getServicePack().getPercentage());
                 model.setPackApplyDate(detail.getServicePack().getApplyDate());
                 modelList.add(model);
+                Collections.sort(modelList, Comparator.comparing(ShowWorkingDateModel ::getWorkingDate).reversed());
             }
         }
         return modelList;
