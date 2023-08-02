@@ -31,6 +31,12 @@ public class PlantPriceServiceImpl implements PlantPriceService{
     }
 
     @Override
+    public List<ShowPlantPriceModel> getAllByPlantID(String plantID, Pageable pageable) {
+        Page<PlantPrice> pagingResult = plantPricePagingRepository.findByPlant_Id(plantID, pageable);
+        return util.plantPriceModelPagingConverter(pagingResult, pageable);
+    }
+
+    @Override
     public ShowPlantPriceModel getByID(String plantPriceID) {
         Optional<PlantPrice> checkExisted = plantPriceRepository.findById(plantPriceID);
         if(checkExisted == null){

@@ -9,4 +9,6 @@ import org.springframework.stereotype.Repository;
 @Repository
 public interface ServicePricePagingRepository extends PagingAndSortingRepository<ServicePrice, String> {
     Page<ServicePrice> findAll(Pageable pageable);
+
+    Page<ServicePrice> findAllByService_Id(String serviceID, Pageable pageable);
 }

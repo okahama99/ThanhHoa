@@ -29,7 +29,8 @@ public class ServicePriceController {
 
     @GetMapping(produces = "application/json;charset=UTF-8")
     public @ResponseBody
-    List<ShowServicePriceModel> getAll(@RequestParam int pageNo,
+    List<ShowServicePriceModel> getAll(@RequestParam(required = false) String serviceID,
+                                       @RequestParam int pageNo,
                                        @RequestParam int pageSize,
                                        @RequestParam(required = false, defaultValue = "ID") SearchType.SERVICE_PRICE sortBy,
                                        @RequestParam(required = false, defaultValue = "true") Boolean sortAsc) {
@@ -41,7 +42,11 @@ public class ServicePriceController {
             paging = util.makePaging(pageNo, pageSize, sortBy.toString().toLowerCase(), sortAsc);
         }
 
-        return service.getAllServicePrice(paging);
+        if(serviceID != null){
+            return service.getAllServicePriceByServiceID(serviceID, paging);
+        }else{
+            return service.getAllServicePrice(paging);
+        }
     }
 
     @GetMapping(value = "/{servicePriceID}", produces = "application/json;charset=UTF-8")

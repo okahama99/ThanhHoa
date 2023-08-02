@@ -43,6 +43,12 @@ public class ServicePriceServiceImpl implements ServicePriceService {
     }
 
     @Override
+    public List<ShowServicePriceModel> getAllServicePriceByServiceID(String serviceID, Pageable pageable) {
+        Page<ServicePrice> pagingResult = servicePricePagingRepository.findAllByService_Id(serviceID, pageable);
+        return util.servicePricePagingConverter(pagingResult, pageable);
+    }
+
+    @Override
     public ShowServicePriceModel getByID(String servicePriceID) {
         Optional<ServicePrice> checkExisted = servicePriceRepository.findById(servicePriceID);
         if(checkExisted == null) {

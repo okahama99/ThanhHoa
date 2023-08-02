@@ -19,6 +19,8 @@ public interface ContractService {
 
     List<ShowContractModel> getAllContractByUserID(Long userID,String role, Pageable pageable);
 
+    List<ShowContractModel> getAllContractByUserIDAndStatus(Long userID,String role, Status status, Pageable pageable);
+
     List<ShowContractModel> getAllContract(Pageable pageable);
 
     List<ShowContractDetailModel> getAllContractDetailByUserID(Long userID);

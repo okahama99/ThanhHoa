@@ -11,5 +11,7 @@ public interface ServicePriceService {
 
     List<ShowServicePriceModel> getAllServicePrice(Pageable pageable);
 
+    List<ShowServicePriceModel> getAllServicePriceByServiceID(String serviceID, Pageable pageable);
+
     ShowServicePriceModel getByID(String servicePriceID);
 }

@@ -101,6 +101,18 @@ public class ContractServiceImpl implements ContractService {
     }
 
     @Override
+    public List<ShowContractModel> getAllContractByUserIDAndStatus(Long userID, String role, Status status, Pageable pageable) {
+        Page<Contract> pagingResult;
+        if(role.equalsIgnoreCase("Staff")) {
+            pagingResult = contractPagingRepository.findByStaff_IdAndStatus(userID, status, pageable);
+        } else {
+            pagingResult = contractPagingRepository.findByCustomer_IdAndStatus(userID, status, pageable);
+        }
+        return util.contractPagingConverter(pagingResult, pageable);
+
+    }
+
+    @Override
     public List<ShowContractModel> getAllContract(Pageable pageable) {
         Page<Contract> pagingResult = contractPagingRepository.findByStatusNot(Status.INACTIVE, pageable);
         return util.contractPagingConverter(pagingResult, pageable);

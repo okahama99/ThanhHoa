@@ -9,5 +9,7 @@ public interface PlantPriceService {
 
     List<ShowPlantPriceModel> getAll(Pageable pageable);
 
+    List<ShowPlantPriceModel> getAllByPlantID(String plantID, Pageable pageable);
+
     ShowPlantPriceModel getByID(String plantPriceID);
 }

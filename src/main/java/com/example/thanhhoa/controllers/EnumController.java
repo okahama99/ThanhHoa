@@ -32,10 +32,10 @@ public class EnumController {
     List<String> contract() {
         List<String> list = new ArrayList<>();
         list.add(Status.WAITING.toString());
-        list.add(Status.DENIED.toString());
-        list.add(Status.CUSTOMERCANCELED.toString());
         list.add(Status.WORKING.toString());
         list.add(Status.DONE.toString());
+        list.add(Status.DENIED.toString());
+        list.add(Status.CUSTOMERCANCELED.toString());
         return list;
     }
 
