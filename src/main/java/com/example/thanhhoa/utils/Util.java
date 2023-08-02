@@ -877,6 +877,7 @@ public class Util {
                     model.setShowStoreModel(storeModel);
                     model.setShowPaymentTypeModel(paymentTypeModel);
                     model.setStatus(contract.getStatus());
+                    model.setImgList(imgModelList);
                     model.setTotalPage(totalPage);
                     return model;
                 }
