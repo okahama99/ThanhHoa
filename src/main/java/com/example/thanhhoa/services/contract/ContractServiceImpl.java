@@ -169,6 +169,7 @@ public class ContractServiceImpl implements ContractService {
                     staffModel.setEmail(detail.getContract().getStaff().getEmail());
                     staffModel.setPhone(detail.getContract().getStaff().getPhone());
                     staffModel.setFullName(detail.getContract().getStaff().getFullName());
+                    staffModel.setAvatar(detail.getContract().getStaff().getAvatar());
                 }
                 //customer
                 ShowCustomerModel customerModel = new ShowCustomerModel();
@@ -656,6 +657,7 @@ public class ContractServiceImpl implements ContractService {
                 staffModel.setEmail(detail.getContract().getStaff().getEmail());
                 staffModel.setPhone(detail.getContract().getStaff().getPhone());
                 staffModel.setFullName(detail.getContract().getStaff().getFullName());
+                staffModel.setAvatar(detail.getContract().getStaff().getAvatar());
             }
             //customer
             ShowCustomerModel customerModel = new ShowCustomerModel();
@@ -788,6 +790,7 @@ public class ContractServiceImpl implements ContractService {
                 staffModel.setEmail(detail.getContract().getStaff().getEmail());
                 staffModel.setPhone(detail.getContract().getStaff().getPhone());
                 staffModel.setFullName(detail.getContract().getStaff().getFullName());
+                staffModel.setAvatar(detail.getContract().getStaff().getAvatar());
             }
             //customer
             ShowCustomerModel customerModel = new ShowCustomerModel();
