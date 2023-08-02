@@ -76,7 +76,7 @@ public class ContractController {
 
     @GetMapping(value = "/byCustomerTokenAndStatus", produces = "application/json;charset=UTF-8")
     public @ResponseBody
-    ResponseEntity<Object> byCustomerTokenAndStatus(@RequestParam String status,
+    ResponseEntity<Object> byCustomerTokenAndStatus(@RequestParam(required = false) String status,
                                                     @RequestParam int pageNo,
                                                     @RequestParam int pageSize,
                                                     @RequestParam SearchType.CONTRACT sortBy,
@@ -96,7 +96,11 @@ public class ContractController {
             paging = util.makePaging(pageNo, pageSize, sortBy.toString().toLowerCase(), sortAsc);
         }
 
-        return ResponseEntity.ok().body(contractService.getAllContractByUserIDAndStatus(jwtUtil.getUserIDFromRequest(request), jwtUtil.getRoleNameFromRequest(request), Status.valueOf(status), paging));
+        if(status != null){
+            return ResponseEntity.ok().body(contractService.getAllContractByUserIDAndStatus(jwtUtil.getUserIDFromRequest(request), jwtUtil.getRoleNameFromRequest(request), Status.valueOf(status), paging));
+        }else{
+            return ResponseEntity.ok().body(contractService.getAllContractByUserID(jwtUtil.getUserIDFromRequest(request), jwtUtil.getRoleNameFromRequest(request), paging));
+        }
     }
 
     @GetMapping(value = "/contractDetail/{contractID}", produces = "application/json;charset=UTF-8")
