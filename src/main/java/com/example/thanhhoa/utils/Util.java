@@ -745,6 +745,7 @@ public class Util {
                         staffModel.setEmail(order.getStaff().getEmail());
                         staffModel.setPhone(order.getStaff().getPhone());
                         staffModel.setFullName(order.getStaff().getFullName());
+                        staffModel.setAvatar(order.getStaff().getAvatar());
                     }
 
                     //customer
@@ -852,6 +853,7 @@ public class Util {
                         staffModel.setEmail(contract.getStaff().getEmail());
                         staffModel.setPhone(contract.getStaff().getPhone());
                         staffModel.setFullName(contract.getStaff().getFullName());
+                        staffModel.setAvatar(contract.getStaff().getAvatar());
                     }
 
                     //customer
@@ -941,6 +943,7 @@ public class Util {
                         staffModel.setEmail(detail.getContract().getStaff().getEmail());
                         staffModel.setPhone(detail.getContract().getStaff().getPhone());
                         staffModel.setFullName(detail.getContract().getStaff().getFullName());
+                        staffModel.setAvatar(detail.getContract().getStaff().getAvatar());
                     }
                     //customer
                     ShowCustomerModel customerModel = new ShowCustomerModel();
@@ -1104,6 +1107,7 @@ public class Util {
             staffModel.setEmail(orderDetail.getTblOrder().getStaff().getEmail());
             staffModel.setPhone(orderDetail.getTblOrder().getStaff().getPhone());
             staffModel.setFullName(orderDetail.getTblOrder().getStaff().getFullName());
+            staffModel.setAvatar(orderDetail.getTblOrder().getStaff().getAvatar());
         }
 
         //distance price
@@ -1233,6 +1237,7 @@ public class Util {
                         staffModel.setEmail(orderDetail.getTblOrder().getStaff().getEmail());
                         staffModel.setPhone(orderDetail.getTblOrder().getStaff().getPhone());
                         staffModel.setFullName(orderDetail.getTblOrder().getStaff().getFullName());
+                        staffModel.setAvatar(orderDetail.getTblOrder().getStaff().getAvatar());
                     }
 
                     //distance price
