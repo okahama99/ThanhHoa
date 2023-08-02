@@ -51,7 +51,7 @@ public class ServicePackServiceImpl implements ServicePackService {
 
     @Override
     public List<ShowServicePackModel> getAll() {
-        List<ServicePack> servicePacks = servicePackRepository.findByStatus(Status.ACTIVE);
+        List<ServicePack> servicePacks = servicePackRepository.findAll();
         if(servicePacks == null){
             return null;
         }

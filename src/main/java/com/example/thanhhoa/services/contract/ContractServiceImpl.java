@@ -114,7 +114,7 @@ public class ContractServiceImpl implements ContractService {
 
     @Override
     public List<ShowContractModel> getAllContract(Pageable pageable) {
-        Page<Contract> pagingResult = contractPagingRepository.findByStatusNot(Status.INACTIVE, pageable);
+        Page<Contract> pagingResult = contractPagingRepository.findAll(pageable);
         return util.contractPagingConverter(pagingResult, pageable);
     }
 

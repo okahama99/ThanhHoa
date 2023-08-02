@@ -19,5 +19,7 @@ public interface ServiceService {
 
     List<ShowServiceModel> getAllService(Pageable pageable);
 
+    List<ShowServiceModel> getAllServiceForOwner(Pageable pageable);
+
     List<ShowServiceTypeModel> getServiceTypeByServiceID(String serviceID);
 }

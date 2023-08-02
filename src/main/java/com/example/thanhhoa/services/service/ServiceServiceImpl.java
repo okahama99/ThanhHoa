@@ -201,6 +201,12 @@ public class ServiceServiceImpl implements ServiceService {
     }
 
     @Override
+    public List<ShowServiceModel> getAllServiceForOwner(Pageable pageable) {
+        Page<Service> pagingResult = servicePagingRepository.findAll(pageable);
+        return util.servicePagingConverter(pagingResult, pageable);
+    }
+
+    @Override
     public List<ShowServiceTypeModel> getServiceTypeByServiceID(String serviceID) {
         List<ServiceType> serviceTypeList = serviceTypeRepository.findByService_IdAndStatus(serviceID, Status.ACTIVE);
         if(serviceTypeList == null) {

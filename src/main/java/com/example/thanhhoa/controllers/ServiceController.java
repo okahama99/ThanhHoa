@@ -40,11 +40,11 @@ public class ServiceController {
     public ResponseEntity<Object> createService(@RequestBody CreateServiceModel createServiceModel,
                                                 HttpServletRequest request) throws Exception {
         String roleName = jwtUtil.getRoleNameFromRequest(request);
-        if (!roleName.equalsIgnoreCase("Owner")) {
+        if(!roleName.equalsIgnoreCase("Owner")) {
             throw new ResponseStatusException(HttpStatus.FORBIDDEN, "-----------------------------------Người dùng không có quyền truy cập---------------------------");
         }
         String result = serviceService.createService(createServiceModel);
-        if (result.equals("Tạo thành công.")) {
+        if(result.equals("Tạo thành công.")) {
             return ResponseEntity.ok().body(result);
         }
         return ResponseEntity.badRequest().body(result);
@@ -52,13 +52,13 @@ public class ServiceController {
 
     @PutMapping(produces = "application/json;charset=UTF-8")
     public ResponseEntity<Object> updateService(@RequestBody UpdateServiceModel updateServiceModel,
-                                              HttpServletRequest request) throws Exception {
+                                                HttpServletRequest request) throws Exception {
         String roleName = jwtUtil.getRoleNameFromRequest(request);
-        if (!roleName.equalsIgnoreCase("Owner") && !roleName.equalsIgnoreCase("Manager")) {
+        if(!roleName.equalsIgnoreCase("Owner") && !roleName.equalsIgnoreCase("Manager")) {
             throw new ResponseStatusException(HttpStatus.FORBIDDEN, "-----------------------------------Người dùng không có quyền truy cập---------------------------");
         }
         String result = serviceService.updateService(updateServiceModel);
-        if (result.equals("Chỉnh sửa thành công.")) {
+        if(result.equals("Chỉnh sửa thành công.")) {
             return ResponseEntity.ok().body(result);
         }
         return ResponseEntity.badRequest().body(result);
@@ -66,13 +66,13 @@ public class ServiceController {
 
     @DeleteMapping(value = "/{serviceID}", produces = "application/json;charset=UTF-8")
     public ResponseEntity<Object> deleteService(@PathVariable(name = "serviceID") String serviceID,
-                                              HttpServletRequest request) {
+                                                HttpServletRequest request) {
         String roleName = jwtUtil.getRoleNameFromRequest(request);
-        if (!roleName.equalsIgnoreCase("Owner")) {
+        if(!roleName.equalsIgnoreCase("Owner")) {
             throw new ResponseStatusException(HttpStatus.FORBIDDEN, "-----------------------------------Người dùng không có quyền truy cập---------------------------");
         }
         String result = serviceService.deleteService(serviceID);
-        if (!result.equals("Xóa thành công.")) {
+        if(!result.equals("Xóa thành công.")) {
             return ResponseEntity.ok().body(result);
         } else {
             return ResponseEntity.badRequest().body(result);
@@ -86,6 +86,15 @@ public class ServiceController {
                                          @RequestParam(required = false, defaultValue = "ID") SearchType.SERVICE sortBy,
                                          @RequestParam(required = false, defaultValue = "true") Boolean sortAsc) {
         return serviceService.getAllService(util.makePaging(pageNo, pageSize, sortBy.toString().toLowerCase(), sortAsc));
+    }
+
+    @GetMapping(value = "/getAllServiceForOwner", produces = "application/json;charset=UTF-8")
+    public @ResponseBody
+    List<ShowServiceModel> getAllServiceForOwner(@RequestParam int pageNo,
+                                                 @RequestParam int pageSize,
+                                                 @RequestParam(required = false, defaultValue = "ID") SearchType.SERVICE sortBy,
+                                                 @RequestParam(required = false, defaultValue = "true") Boolean sortAsc) {
+        return serviceService.getAllServiceForOwner(util.makePaging(pageNo, pageSize, sortBy.toString().toLowerCase(), sortAsc));
     }
 
     @GetMapping(value = "/serviceType/{serviceID}", produces = "application/json;charset=UTF-8")
