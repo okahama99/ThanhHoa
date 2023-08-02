@@ -92,7 +92,6 @@ public class OrderServiceImpl implements OrderService {
         order.setDistance(createOrderModel.getDistance());
         order.setLatLong(createOrderModel.getLatLong());
         order.setProgressStatus(Status.WAITING);
-        order.setIsPaid(createOrderModel.getIsPaid());
 
         if(createOrderModel.getReceiptIMG() != null){
             order.setReceiptIMG(createOrderModel.getReceiptIMG());
@@ -375,5 +374,17 @@ public class OrderServiceImpl implements OrderService {
             modelList.add(model);
         }
         return modelList;
+    }
+
+    @Override
+    public String updateIsPaid(String orderID, Boolean isPaid){
+        Optional<tblOrder> checkExisted = orderRepository.findById(orderID);
+        if(checkExisted == null){
+            return "Không tìm thấy Order với ID là : " + orderID + " .";
+        }
+        tblOrder order = checkExisted.get();
+        order.setIsPaid(isPaid);
+        orderRepository.save(order);
+        return "Chỉnh sửa thành công.";
     }
 }

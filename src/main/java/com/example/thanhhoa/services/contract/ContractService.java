@@ -39,7 +39,7 @@ public interface ContractService {
 
     String changeContractStatus(String contractID, Status status);
 
-    String addContractIMG(String contractID, List<String> listURL);
+    String addContractIMG(String contractID, Double deposit, List<String> listURL);
 
     List<ShowContractModel> getWaitingContract(Pageable pageable);
 

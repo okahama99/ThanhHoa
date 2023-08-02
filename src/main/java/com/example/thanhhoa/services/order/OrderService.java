@@ -38,5 +38,7 @@ public interface OrderService {
 
     List<GetStaffModel> getStaffForOrder();
 
+    String updateIsPaid(String orderID, Boolean isPaid);
+
 
 }

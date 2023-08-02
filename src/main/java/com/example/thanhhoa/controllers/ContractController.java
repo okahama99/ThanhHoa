@@ -266,12 +266,13 @@ public class ContractController {
     @PostMapping(value = "/addContractIMG", produces = "application/json;charset=UTF-8")
     public ResponseEntity<Object> addContractIMG(@RequestParam String contractID,
                                                  @RequestParam List<String> listURL,
+                                                 @RequestParam(required = false) Double deposit,
                                                  HttpServletRequest request) throws Exception {
         String roleName = jwtUtil.getRoleNameFromRequest(request);
         if(!roleName.equalsIgnoreCase("Manager")) {
             throw new ResponseStatusException(HttpStatus.FORBIDDEN, "-----------------------------------Người dùng không có quyền truy cập---------------------------");
         }
-        return ResponseEntity.ok().body(contractService.addContractIMG(contractID, listURL));
+        return ResponseEntity.ok().body(contractService.addContractIMG(contractID, deposit, listURL));
     }
 
     @PutMapping(produces = "application/json;charset=UTF-8")

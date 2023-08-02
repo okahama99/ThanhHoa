@@ -371,7 +371,7 @@ public class ContractServiceImpl implements ContractService {
         contract.setPaymentType(paymentType);
         contract.setStaff(staff);
         contract.setStartedDate(LocalDateTime.now(ZoneId.of("Asia/Ho_Chi_Minh")));
-        contract.setStatus(Status.WORKING);
+        contract.setStatus(Status.SIGNED);
 
         contract.setStore(store);
         contract.setCreatedDate(LocalDateTime.now(ZoneId.of("Asia/Ho_Chi_Minh")));
@@ -507,7 +507,7 @@ public class ContractServiceImpl implements ContractService {
     }
 
     @Override
-    public String addContractIMG(String contractID, List<String> listURL){
+    public String addContractIMG(String contractID, Double deposit, List<String> listURL){
         Contract contract = contractRepository.findByIdAndStatus(contractID, Status.APPROVED);
         if(contract == null) {
             return "Không thể tìm thấy Hợp đồng có trạng thái APPROVED với ID là " + contractID + ".";
@@ -523,10 +523,14 @@ public class ContractServiceImpl implements ContractService {
             } else {
                 contractIMG.setId(util.createIDFromLastID("CIMG", 4, lastContractIMG.getId()));
             }
+
+            if(deposit != null){
+                contract.setDeposit(deposit);
+            }
             contractIMG.setContract(contract);
             contractIMG.setImgURL(imageURL);
 
-            contract.setStatus(Status.WORKING);
+            contract.setStatus(Status.SIGNED);
             contract.setIsSigned(true);
             contract.setStartedDate(LocalDateTime.now(ZoneId.of("Asia/Ho_Chi_Minh")));
 
@@ -549,6 +553,8 @@ public class ContractServiceImpl implements ContractService {
         }else if(status.toString().equalsIgnoreCase("DONE")){
             contract.setStatus(status);
             contract.setEndedDate(LocalDateTime.now(ZoneId.of("Asia/Ho_Chi_Minh")));
+        }else if(status.toString().equalsIgnoreCase("WORKING")){
+            contract.setStatus(status);
         }else{
             contract.setStatus(status);
         }

@@ -234,4 +234,11 @@ public class OrderController {
     List<GetStaffModel> getStaffForOrder() {
         return orderService.getStaffForOrder();
     }
+
+    @PutMapping(value = "/updateIsPaid", produces = "application/json;charset=UTF-8")
+    public @ResponseBody
+    String updateIsPaid(@RequestParam String orderID,
+                        @RequestParam Boolean isPaid) {
+        return orderService.updateIsPaid(orderID, isPaid);
+    }
 }
