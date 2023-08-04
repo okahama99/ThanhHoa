@@ -20,11 +20,11 @@ import java.util.TimeZone;
 @Service
 public class VNPayServiceImpl implements VNPayService{
 
-    public String createOrder(int total, String orderInfor, String urlReturn){
+    public String createOrder(int total, String orderInfor, String urlReturn, String ipAddr){
         String vnp_Version = "2.1.0";
         String vnp_Command = "pay";
         String vnp_TxnRef = Config.getRandomNumber(8);
-        String vnp_IpAddr = "127.0.0.1";
+//        String vnp_IpAddr = "127.0.0.1";
         String vnp_TmnCode = Config.vnp_TmnCode;
         String orderType = "order-type";
 
@@ -44,7 +44,7 @@ public class VNPayServiceImpl implements VNPayService{
 
         urlReturn += Config.vnp_ReturnURL;
         vnp_Params.put("vnp_ReturnUrl", urlReturn);
-        vnp_Params.put("vnp_IpAddr", vnp_IpAddr);
+        vnp_Params.put("vnp_IpAddr", ipAddr);
 
         Calendar cld = Calendar.getInstance(TimeZone.getTimeZone("Etc/GMT+7"));
         SimpleDateFormat formatter = new SimpleDateFormat("yyyyMMddHHmmss");

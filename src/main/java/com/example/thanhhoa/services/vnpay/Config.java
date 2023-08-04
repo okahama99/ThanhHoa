@@ -19,8 +19,6 @@ public class Config {
     public static String vnp_ReturnURL = "/vnpay-payment";
     public static String vnp_TmnCode = "9ZBZ0XRU"; // terminal code trong mail
     public static String vnp_HashSecret = "SMTEDIKJIGIBOZPGERCDUGVUREHDRGGO"; // secret key trong mail
-    public static String vnp_Command = "pay";
-    public static String vnp_Version = "2.1.0";
     public static String vnp_apiUrl = "https://sandbox.vnpayment.vn/merchant_webapi/api/transaction"; // ko thay đổi
 
 //    public static String md5(String message) {
