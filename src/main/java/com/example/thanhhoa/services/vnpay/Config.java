@@ -16,7 +16,7 @@ import java.util.Random;
 
 public class Config {
     public static String vnp_PayUrl = "https://sandbox.vnpayment.vn/paymentv2/vpcpay.html"; // ko thay đổi
-    public static String vnp_ReturnURL = "http://localhost:8080/vnpay_jsp/vnpay_return.jsp";
+    public static String vnp_ReturnURL = "/vnpay-payment";
     public static String vnp_TmnCode = "9ZBZ0XRU"; // terminal code trong mail
     public static String vnp_HashSecret = "SMTEDIKJIGIBOZPGERCDUGVUREHDRGGO"; // secret key trong mail
     public static String vnp_Command = "pay";
