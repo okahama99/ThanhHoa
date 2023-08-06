@@ -4,7 +4,7 @@ import javax.servlet.http.HttpServletRequest;
 
 public interface VNPayService {
 
-    String createOrder(int total, String orderInfor, String urlReturn, String ipAddr);
+    String createOrder(int total, String reason, String urlReturn, String ipAddr);
 
     int orderReturn(HttpServletRequest request);
 }

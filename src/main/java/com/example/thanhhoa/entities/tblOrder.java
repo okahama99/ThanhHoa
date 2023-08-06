@@ -96,7 +96,8 @@ public class tblOrder implements Serializable {
     @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY, mappedBy = "tblOrder")
     private List<OrderDetail> orderDetailList;
 
-
+    @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY, mappedBy = "tblOrder")
+    private List<Transaction> transactionList;
 
 
 }

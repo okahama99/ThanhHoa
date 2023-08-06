@@ -50,6 +50,26 @@ public class EnumController {
         return list;
     }
 
+    @GetMapping(value = "/vnpay", produces = "application/json;charset=UTF-8")
+    public @ResponseBody
+    List<String> vnPay() {
+        List<String> list = new ArrayList<>();
+        list.add(Status.SUCCESS.toString());
+        list.add(Status.FAIL.toString());
+        return list;
+    }
+
+    @GetMapping(value = "/request", produces = "application/json;charset=UTF-8")
+    public @ResponseBody
+    List<String> request() {
+        List<String> list = new ArrayList<>();
+        list.add(Status.WAITING.toString());
+        list.add(Status.APPROVED.toString());
+        list.add(Status.DENIED.toString());
+        list.add(Status.INACTIVE.toString());
+        return list;
+    }
+
     @GetMapping(value = "/report", produces = "application/json;charset=UTF-8")
     public @ResponseBody
     List<String> report() {
