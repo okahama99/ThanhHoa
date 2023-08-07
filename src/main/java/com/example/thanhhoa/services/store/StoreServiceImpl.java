@@ -148,14 +148,16 @@ public class StoreServiceImpl implements StoreService{
         Store store = checkExisted.get();
         StoreEmployee manager = storeEmployeeRepository.findByStore_IdAndAccount_Role_RoleName(store.getId(), "Manager");
         ShowStoreModel model = new ShowStoreModel();
+        if(manager != null){
+            model.setManagerID(manager.getAccount().getId());
+            model.setManagerName(manager.getAccount().getFullName());
+        }
         model.setId(store.getId());
         model.setStatus(store.getStatus());
         model.setStoreName(store.getStoreName());
         model.setAddress(store.getAddress());
         model.setDistrict(store.getDistrict().getDistrictName());
         model.setPhone(store.getPhone());
-        model.setManagerID(manager.getAccount().getId());
-        model.setManagerName(manager.getAccount().getFullName());
         return model;
     }
 
@@ -428,14 +430,16 @@ public class StoreServiceImpl implements StoreService{
         }
         StoreEmployee manager = storeEmployeeRepository.findByStore_IdAndAccount_Role_RoleName(employee.getStore().getId(), "Manager");
         ShowStoreModel model = new ShowStoreModel();
+        if(manager != null){
+            model.setManagerID(manager.getAccount().getId());
+            model.setManagerName(manager.getAccount().getFullName());
+        }
         model.setId(employee.getStore().getId());
         model.setStatus(employee.getStore().getStatus());
         model.setStoreName(employee.getStore().getStoreName());
         model.setAddress(employee.getStore().getAddress());
         model.setDistrict(employee.getStore().getDistrict().getDistrictName());
         model.setPhone(employee.getStore().getPhone());
-        model.setManagerID(manager.getAccount().getId());
-        model.setManagerName(manager.getAccount().getFullName());
         return model;
     }
 
