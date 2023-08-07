@@ -3,6 +3,7 @@ package com.example.thanhhoa.services.vnpay;
 import com.example.thanhhoa.entities.Transaction;
 import com.example.thanhhoa.enums.Status;
 import com.example.thanhhoa.repositories.TransactionRepository;
+import com.example.thanhhoa.repositories.UserRepository;
 import com.example.thanhhoa.utils.Util;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -24,6 +25,8 @@ public class VNPayController {
     private VNPayService vnPayService;
     @Autowired
     private TransactionRepository transactionRepository;
+    @Autowired
+    private UserRepository userRepository;
     @Autowired
     private Util util;
 
@@ -53,7 +56,12 @@ public class VNPayController {
         transaction.setAmount(Integer.parseInt(request.getParameter("vnp_Amount")));
         transaction.setCurrency("VND");
         transaction.setCreateDate(LocalDateTime.now(ZoneId.of("Asia/Ho_Chi_Minh")));
-        transaction.setReason(request.getParameter("vnp_OrderInfo"));
+        String orderInfo = request.getParameter("vnp_OrderInfo");
+        String[] arrayInfo = orderInfo.split("-");
+        Long userID = Long.parseLong(arrayInfo[0]);
+        String reason = arrayInfo[1];
+        transaction.setUser(userRepository.getById(userID));
+        transaction.setReason(reason);
         if(paymentStatus == 1) {
             transaction.setStatus(Status.SUCCESS);
             transactionRepository.save(transaction);
