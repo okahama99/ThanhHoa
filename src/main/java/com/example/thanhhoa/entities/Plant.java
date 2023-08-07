@@ -31,9 +31,6 @@ public class Plant implements Serializable {
     private String height;
 
     @Column
-    private String unit;
-
-    @Column
     private Boolean withPot = false;
 
     @Enumerated(EnumType.STRING)

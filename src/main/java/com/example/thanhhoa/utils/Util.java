@@ -244,7 +244,6 @@ public class Util {
                     model.setPlantID(plant.getId());
                     model.setName(plant.getName());
                     model.setHeight(plant.getHeight());
-                    model.setUnit(plant.getUnit());
                     model.setWithPot(plant.getWithPot());
                     model.setShowPlantShipPriceModel(showPlantShipPriceModel);
                     model.setPlantCategoryList(showPlantCategoryList);
@@ -315,7 +314,6 @@ public class Util {
                     model.setPlantID(plant.getId());
                     model.setName(plant.getName());
                     model.setHeight(plant.getHeight());
-                    model.setUnit(plant.getUnit());
                     model.setWithPot(plant.getWithPot());
                     model.setShowPlantShipPriceModel(showPlantShipPriceModel);
                     model.setPlantCategoryList(showPlantCategoryList);
@@ -383,7 +381,6 @@ public class Util {
                         model.setPlantID(plant.getPlant().getId());
                         model.setName(plant.getPlant().getName());
                         model.setHeight(plant.getPlant().getHeight());
-                        model.setUnit(plant.getPlant().getUnit());
                         model.setWithPot(plant.getPlant().getWithPot());
                         model.setShowPlantShipPriceModel(showPlantShipPriceModel);
                         model.setPlantCategoryList(showPlantCategoryList);

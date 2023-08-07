@@ -14,7 +14,6 @@ public class ShowPlantModel {
     private String plantID;
     private String name;
     private String height;
-    private String unit;
     private Boolean withPot;
     private Double totalPage;
     private String description;
