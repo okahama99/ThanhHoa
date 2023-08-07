@@ -4,6 +4,7 @@ import com.example.thanhhoa.dtos.UserModels.LoginModel;
 import com.example.thanhhoa.dtos.UserModels.RegisterStaffModel;
 import com.example.thanhhoa.dtos.UserModels.RegisterUserModel;
 import com.example.thanhhoa.dtos.UserModels.ShowUserModel;
+import com.example.thanhhoa.dtos.UserModels.UpdateUserModel;
 import com.example.thanhhoa.dtos.UserModels.UserFCMToken;
 import com.example.thanhhoa.entities.tblAccount;
 import com.example.thanhhoa.enums.SearchType;
@@ -33,6 +34,7 @@ import org.springframework.security.web.authentication.logout.SecurityContextLog
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -213,6 +215,21 @@ public class UserController {
         registerUserModel.setPassword(passwordEncoder.encode(registerUserModel.getPassword()));
         String result = userService.register(registerUserModel);
         if(result.equals("Tạo User thành công.")) {
+            return ResponseEntity.ok().body(result);
+        }
+        return ResponseEntity.badRequest().body(result);
+    }
+
+    @PutMapping(value = "/updateProfile", produces = "application/json;charset=UTF-8")
+    public ResponseEntity<Object> updateProfile(@RequestBody UpdateUserModel updateUserModel,
+                                                HttpServletRequest request) throws Exception {
+        String roleName = jwtUtil.getRoleNameFromRequest(request);
+        if(!roleName.equalsIgnoreCase("Owner") && !roleName.equalsIgnoreCase("Manager")
+                && !roleName.equalsIgnoreCase("Staff") && !roleName.equalsIgnoreCase("Customer")) {
+            throw new ResponseStatusException(HttpStatus.FORBIDDEN, "-----------------------------------Người dùng không có quyền truy cập---------------------------");
+        }
+        String result = userService.update(updateUserModel);
+        if(result.equals("Cập nhật thành công.")) {
             return ResponseEntity.ok().body(result);
         }
         return ResponseEntity.badRequest().body(result);

@@ -4,6 +4,7 @@ import com.example.thanhhoa.dtos.UserModels.AuthorizeModel;
 import com.example.thanhhoa.dtos.UserModels.RegisterStaffModel;
 import com.example.thanhhoa.dtos.UserModels.RegisterUserModel;
 import com.example.thanhhoa.dtos.UserModels.ShowUserModel;
+import com.example.thanhhoa.dtos.UserModels.UpdateUserModel;
 import com.example.thanhhoa.dtos.UserModels.UserFCMToken;
 import com.example.thanhhoa.entities.Role;
 import com.example.thanhhoa.entities.StoreEmployee;
@@ -18,6 +19,7 @@ import com.example.thanhhoa.utils.Util;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.security.core.parameters.P;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
@@ -192,6 +194,22 @@ public class UserServiceImpl implements UserService {
         } else {
             return "Lỗi tạo User.";
         }
+    }
+
+    @Override
+    public String update(UpdateUserModel updateUserModel) {
+        tblAccount user = userRepository.findByIdAndStatus(updateUserModel.getId(), Status.ACTIVE);
+        if(user == null){
+            return "Không tìm thấy Account với ID là " + updateUserModel.getId() + ".";
+        }
+        user.setAddress(updateUserModel.getAddress());
+        user.setPhone(updateUserModel.getPhone());
+        user.setEmail(updateUserModel.getEmail());
+        user.setGender(updateUserModel.getGender());
+        user.setFullName(updateUserModel.getFullName());
+        user.setAvatar(updateUserModel.getAvatar());
+        userRepository.save(user);
+        return "Cập nhật thành công.";
     }
 
     @Override
