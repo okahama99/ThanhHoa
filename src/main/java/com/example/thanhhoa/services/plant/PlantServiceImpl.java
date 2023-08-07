@@ -30,6 +30,7 @@ import com.example.thanhhoa.utils.Util;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.security.core.parameters.P;
 import org.springframework.stereotype.Service;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
@@ -222,6 +223,9 @@ public class PlantServiceImpl implements PlantService {
             if(plantShipPrice == null) {
                 return "Không tìm thấy dữ liệu với ShipPriceID = " + updatePlantModel.getShipPriceID() + ".";
             }
+            if(updatePlantModel.getCategoryIDList() == null){
+                return "Phải có ít nhất 1 category.";
+            }
 
             Plant plant = checkPlant.get();
 
@@ -236,58 +240,30 @@ public class PlantServiceImpl implements PlantService {
             plant.setPlantShipPrice(plantShipPrice.get());
 
 
-            if(updatePlantModel.getCategoryIDList() == null) {
-                return "Danh sách Category không được để trống.";
-            }
-            // Tim category tu list categoryID roi add vao 1 list
-            List<Category> categoryList = new ArrayList<>();
-            for(String categoryID : updatePlantModel.getCategoryIDList()) {
-                Optional<Category> category = categoryRepository.findById(categoryID);
-                if(category != null) {
-                    categoryList.add(category.get());
-                }
-            }
-            // Lay het toan bo relationship dang ton tai cua plant
-            if(categoryList != null) {
-                List<PlantCategory> plantCategoryList = plantCategoryRepository.findByPlantAndStatus(plant, Status.ACTIVE);
-                List<Category> plantCate = new ArrayList<>();
-                // Luu lai cac category dang ton tai roi xoa relationship
+            List<PlantCategory> plantCategoryList = plantCategoryRepository.findAllByPlant_IdAndStatus(updatePlantModel.getPlantID(), Status.ACTIVE);
+            if(plantCategoryList != null){
                 for(PlantCategory plantCategory : plantCategoryList) {
-                    plantCate.add(plantCategory.getCategory());
-                    plantCategoryRepository.delete(plantCategory);
-                }
-                // Tao 1 list tam thoi
-                List<Category> copyOfPlantCate = new ArrayList<>(plantCate);
-
-                // Lay ra cac phan tu trung nhau giua list duoc input va list tu database
-                copyOfPlantCate.retainAll(categoryList);
-
-                // Xoa het cac phan tu trung nhau tu list tu database
-                plantCate.removeAll(copyOfPlantCate);
-
-                // Xoa het cac phan tu trung nhau tu list duoc input
-                categoryList.removeAll(copyOfPlantCate);
-
-                // List tu database bay gio chi con cac phan tu khong trung nhau
-                // Them cac phan tu tu list duoc input vao list tu database
-                plantCate.addAll(categoryList);
-
-                // Them cac phan tu trung nhau da duoc lay ra tu truoc do
-                plantCate.addAll(copyOfPlantCate);
-
-                // Tao ra cac relationship tu list da duoc chinh sua
-                for(Category category : plantCate) {
-                    PlantCategory plantCategory = new PlantCategory();
-                    PlantCategory lastPlantCategory = plantCategoryRepository.findFirstByOrderByIdDesc();
-                    if(lastPlantCategory == null) {
-                        plantCategory.setId(util.createNewID("PC"));
-                    } else {
-                        plantCategory.setId(util.createIDFromLastID("PC", 2, lastPlantCategory.getId()));
-                    }
-                    plantCategory.setPlant(plant);
-                    plantCategory.setCategory(category);
+                    plantCategory.setStatus(Status.INACTIVE);
                     plantCategoryRepository.save(plantCategory);
                 }
+            }
+
+            for(String categoryID : updatePlantModel.getCategoryIDList()) {
+                Optional<Category> category = categoryRepository.findById(categoryID);
+                if(category == null){
+                    return "Không tìm thấy Category với ID là " + categoryID + ".";
+                }
+                PlantCategory plantCategory = new PlantCategory();
+                PlantCategory lastPlantCategory = plantCategoryRepository.findFirstByOrderByIdDesc();
+                if(lastPlantCategory == null) {
+                    plantCategory.setId(util.createNewID("PC"));
+                } else {
+                    plantCategory.setId(util.createIDFromLastID("PC", 2, lastPlantCategory.getId()));
+                }
+                plantCategory.setCategory(category.get());
+                plantCategory.setPlant(plant);
+                plantCategory.setStatus(Status.ACTIVE);
+                plantCategoryRepository.save(plantCategory);
             }
 
             if(updatePlantModel.getPrice() != null) {
@@ -342,7 +318,7 @@ public class PlantServiceImpl implements PlantService {
         if(checkingPlant != null) {
             Plant plant = checkingPlant.get();
 
-            if(orderDetailRepository.findByPlant_IdAndTblOrder_ProgressStatus(plantID, Status.WAITING) != null) {
+            if(orderDetailRepository.findByPlant_IdAndTblOrder_ProgressStatus(plantID, Status.WAITING) != null && !orderDetailRepository.findByPlant_IdAndTblOrder_ProgressStatus(plantID, Status.WAITING).isEmpty()) {
                 return "Không thể xóa cây đang được sử dụng.";
             }
 

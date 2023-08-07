@@ -63,11 +63,15 @@ public class PlantController {
         if(!roleName.equalsIgnoreCase("Owner")) {
             throw new ResponseStatusException(HttpStatus.FORBIDDEN, "-----------------------------------Người dùng không có quyền truy cập---------------------------");
         }
-        if(plantService.checkDuplicate(createPlantModel.getName()) != null) {
-            return ResponseEntity.badRequest().body("Cây cùng tên đã tồn tại.");
-        } else {
-            return ResponseEntity.ok().body(plantService.createPlant(createPlantModel));
+
+        if(createPlantModel.getName() != null) {
+            if(plantService.checkDuplicate(createPlantModel.getName()) != null) {
+                return ResponseEntity.badRequest().body("Cây cùng tên đã tồn tại.");
+            }
         }
+
+        String result = plantService.createPlant(createPlantModel);
+        return ResponseEntity.ok().body(result);
     }
 
     @PutMapping(produces = "application/json;charset=UTF-8")
@@ -85,7 +89,7 @@ public class PlantController {
         }
 
         String result = plantService.updatePlant(updatePlantModel);
-        if(result.equals("Chỉnh sửa thành công.")) {
+        if(result.equals("Cập nhật thành công.")) {
             return ResponseEntity.ok().body(result);
         }
         return ResponseEntity.badRequest().body(result);

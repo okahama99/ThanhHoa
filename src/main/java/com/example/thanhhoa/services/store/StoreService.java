@@ -48,4 +48,6 @@ public interface StoreService {
     List<ShowStaffModel> getStaffByStoreID(String storeID, Pageable pageable);
 
     ShowStoreModel getStoreByStaffToken(Long staffID);
+
+    List<ShowPlantModel> getStorePlantByPlantIDAndQuantity(String plantID, Integer quantity);
 }

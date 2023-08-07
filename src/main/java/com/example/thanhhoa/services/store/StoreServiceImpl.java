@@ -2,17 +2,25 @@ package com.example.thanhhoa.services.store;
 
 import com.example.thanhhoa.dtos.OrderModels.ShowStaffModel;
 import com.example.thanhhoa.dtos.PlantModels.AddStorePlantModel;
+import com.example.thanhhoa.dtos.PlantModels.ShowPlantCategory;
+import com.example.thanhhoa.dtos.PlantModels.ShowPlantIMGModel;
 import com.example.thanhhoa.dtos.PlantModels.UpdateStorePlantModel;
+import com.example.thanhhoa.dtos.PlantPriceModels.ShowPlantPriceModel;
+import com.example.thanhhoa.dtos.PlantShipPriceModels.ShowPlantShipPriceModel;
 import com.example.thanhhoa.dtos.StoreModels.AddStoreEmployeeModel;
 import com.example.thanhhoa.dtos.StoreModels.CreateStoreModel;
 import com.example.thanhhoa.dtos.StoreModels.ShowDistrictModel;
 import com.example.thanhhoa.dtos.StoreModels.ShowPlantModel;
 import com.example.thanhhoa.dtos.StoreModels.ShowProvinceModel;
 import com.example.thanhhoa.dtos.StoreModels.ShowStoreModel;
+import com.example.thanhhoa.dtos.StoreModels.ShowStorePlantModel;
 import com.example.thanhhoa.dtos.StoreModels.ShowStorePlantRecordModel;
 import com.example.thanhhoa.dtos.StoreModels.UpdateStoreModel;
 import com.example.thanhhoa.entities.District;
 import com.example.thanhhoa.entities.Plant;
+import com.example.thanhhoa.entities.PlantCategory;
+import com.example.thanhhoa.entities.PlantIMG;
+import com.example.thanhhoa.entities.PlantPrice;
 import com.example.thanhhoa.entities.Province;
 import com.example.thanhhoa.entities.Store;
 import com.example.thanhhoa.entities.StoreEmployee;
@@ -22,6 +30,9 @@ import com.example.thanhhoa.entities.StorePlantRecord;
 import com.example.thanhhoa.entities.tblAccount;
 import com.example.thanhhoa.enums.Status;
 import com.example.thanhhoa.repositories.DistrictRepository;
+import com.example.thanhhoa.repositories.PlantCategoryRepository;
+import com.example.thanhhoa.repositories.PlantIMGRepository;
+import com.example.thanhhoa.repositories.PlantPriceRepository;
 import com.example.thanhhoa.repositories.PlantRepository;
 import com.example.thanhhoa.repositories.ProvinceRepository;
 import com.example.thanhhoa.repositories.StoreEmployeeRepository;
@@ -72,6 +83,12 @@ public class StoreServiceImpl implements StoreService{
     private StoreEmployeePagingRepository storeEmployeePagingRepository;
     @Autowired
     private StorePlantRecordPagingRepository storePlantRecordPagingRepository;
+    @Autowired
+    private PlantIMGRepository plantIMGRepository;
+    @Autowired
+    private PlantPriceRepository plantPriceRepository;
+    @Autowired
+    private PlantCategoryRepository plantCategoryRepository;
 
     @Override
     public String createStore(CreateStoreModel createStoreModel) {
@@ -420,5 +437,68 @@ public class StoreServiceImpl implements StoreService{
         model.setManagerID(manager.getAccount().getId());
         model.setManagerName(manager.getAccount().getFullName());
         return model;
+    }
+
+    @Override
+    public List<ShowPlantModel> getStorePlantByPlantIDAndQuantity(String plantID, Integer quantity) {
+        List<StorePlant> storePlantList = storePlantRepository.findByPlantIdAndQuantityGreaterThanEqual(plantID, quantity);
+        if(storePlantList == null || storePlantList.isEmpty()){
+            return null;
+        }
+        List<ShowPlantModel> modelList = new ArrayList<>();
+        for(StorePlant storePlant : storePlantList) {
+            Plant plant = storePlant.getPlant();
+            List<PlantCategory> plantCategoryList = plantCategoryRepository.findAllByPlant_IdAndStatus(plant.getId(), Status.ACTIVE);
+            List<ShowPlantCategory> showPlantCategoryList = new ArrayList<>();
+            for(PlantCategory plantCategory : plantCategoryList) {
+                ShowPlantCategory showPlantCategory = new ShowPlantCategory();
+                showPlantCategory.setCategoryID(plantCategory.getCategory().getId());
+                showPlantCategory.setCategoryName(plantCategory.getCategory().getName());
+                showPlantCategoryList.add(showPlantCategory);
+            }
+
+            List<ShowPlantIMGModel> showPlantIMGList = new ArrayList<>();
+            List<PlantIMG> plantIMGList = plantIMGRepository.findByPlant_Id(plant.getId());
+            if(plantIMGList != null) {
+                for(PlantIMG img : plantIMGList) {
+                    ShowPlantIMGModel model = new ShowPlantIMGModel();
+                    model.setId(img.getId());
+                    model.setUrl(img.getImgURL());
+                    showPlantIMGList.add(model);
+                }
+            }
+
+            ShowPlantShipPriceModel showPlantShipPriceModel = new ShowPlantShipPriceModel();
+            showPlantShipPriceModel.setId(plant.getPlantShipPrice().getId());
+            showPlantShipPriceModel.setPotSize(plant.getPlantShipPrice().getPotSize());
+            showPlantShipPriceModel.setPricePerPlant(plant.getPlantShipPrice().getPricePerPlant());
+
+            PlantPrice newestPrice = plantPriceRepository.findFirstByPlant_IdAndStatusOrderByApplyDateDesc(plant.getId(), Status.ACTIVE);
+            ShowPlantPriceModel showPlantPriceModel = new ShowPlantPriceModel();
+            showPlantPriceModel.setId(newestPrice.getId());
+            showPlantPriceModel.setPrice(newestPrice.getPrice());
+            showPlantPriceModel.setApplyDate(newestPrice.getApplyDate());
+            showPlantPriceModel.setStatus(newestPrice.getStatus());
+
+            ShowStorePlantModel storePlantModel = new ShowStorePlantModel();
+            storePlantModel.setId(storePlant.getId());
+            storePlantModel.setQuantity(storePlant.getQuantity());
+
+            com.example.thanhhoa.dtos.StoreModels.ShowPlantModel model = new com.example.thanhhoa.dtos.StoreModels.ShowPlantModel();
+            model.setPlantID(plant.getId());
+            model.setName(plant.getName());
+            model.setHeight(plant.getHeight());
+            model.setWithPot(plant.getWithPot());
+            model.setShowPlantShipPriceModel(showPlantShipPriceModel);
+            model.setPlantCategoryList(showPlantCategoryList);
+            model.setShowPlantPriceModel(showPlantPriceModel);
+            model.setPlantIMGList(showPlantIMGList);
+            model.setDescription(plant.getDescription());
+            model.setCareNote(plant.getCareNote());
+            model.setStatus(plant.getStatus());
+            model.setShowStorePlantModel(storePlantModel);
+            modelList.add(model);
+        }
+        return modelList;
     }
 }

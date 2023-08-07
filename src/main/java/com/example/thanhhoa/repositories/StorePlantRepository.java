@@ -13,6 +13,8 @@ public interface StorePlantRepository extends JpaRepository<StorePlant, String> 
 
     StorePlant findByPlantIdAndStoreId(String plantID, String storeID);
 
+    List<StorePlant> findByPlantIdAndQuantityGreaterThanEqual(String plantID, Integer quantity);
+
     StorePlant findByPlant_IdAndPlant_Status(String plantID, Status status);
 
     StorePlant findFirstByOrderByIdDesc();

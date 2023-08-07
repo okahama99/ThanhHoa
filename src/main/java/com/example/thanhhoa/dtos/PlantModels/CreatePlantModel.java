@@ -22,7 +22,6 @@ public class CreatePlantModel implements Serializable {
     private List<String> categoryIDList;
 
     private Double price;
-    private LocalDateTime applyDate;
     @Nullable
     private List<String> listURL;
 }
