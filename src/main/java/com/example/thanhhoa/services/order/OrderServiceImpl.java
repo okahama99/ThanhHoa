@@ -93,10 +93,6 @@ public class OrderServiceImpl implements OrderService {
         order.setLatLong(createOrderModel.getLatLong());
         order.setProgressStatus(Status.WAITING);
 
-        if(createOrderModel.getReceiptIMG() != null){
-            order.setReceiptIMG(createOrderModel.getReceiptIMG());
-        }
-
         tblAccount account = userRepository.getById(customerID);
         if(account.getRole().getRoleName().equalsIgnoreCase("Staff")){
             order.setStaff(account);
@@ -275,7 +271,7 @@ public class OrderServiceImpl implements OrderService {
     }
 
     @Override
-    public Boolean changeOrderStatus(String orderID, String status) {
+    public Boolean changeOrderStatus(String orderID, String receiptIMG, String status) {
         Optional<tblOrder> checkExistedOrder = orderRepository.findById(orderID);
         if(checkExistedOrder != null) {
             tblOrder order = checkExistedOrder.get();
@@ -286,6 +282,9 @@ public class OrderServiceImpl implements OrderService {
                 order.setProgressStatus(Status.DELIVERING);
                 order.setDeliveryDate(LocalDateTime.now(ZoneId.of("Asia/Ho_Chi_Minh")));
             } else if(status.equalsIgnoreCase("RECEIVED")){
+                if(receiptIMG != null){
+                    order.setReceiptIMG(receiptIMG);
+                }
                 order.setProgressStatus(Status.RECEIVED);
                 order.setReceivedDate(LocalDateTime.now(ZoneId.of("Asia/Ho_Chi_Minh")));
             }else{

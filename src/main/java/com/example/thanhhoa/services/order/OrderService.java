@@ -20,7 +20,7 @@ public interface OrderService {
 
     String approveOrder(String orderID, Long userID);
 
-    Boolean changeOrderStatus(String orderID, String status);
+    Boolean changeOrderStatus(String orderID, String receiptIMG, String status);
 
     List<ShowOrderModel> getAllOrderByUserID(Long userID, String roleName, Pageable pageable);
 

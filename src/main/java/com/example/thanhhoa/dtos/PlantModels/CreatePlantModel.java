@@ -15,7 +15,8 @@ public class CreatePlantModel implements Serializable {
     private String name;
     private String description;
     private String careNote;
-    private Double height;
+    private String height;
+    private String unit;
     private Boolean withPot;
 
     private String shipPriceID;

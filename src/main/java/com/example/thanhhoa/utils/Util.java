@@ -27,6 +27,7 @@ import com.example.thanhhoa.dtos.ServiceModels.ShowServiceModel;
 import com.example.thanhhoa.dtos.ServiceModels.ShowServiceTypeModel;
 import com.example.thanhhoa.dtos.ServicePriceModels.ShowServicePriceModel;
 import com.example.thanhhoa.dtos.StoreModels.ShowStorePlantModel;
+import com.example.thanhhoa.dtos.StorePlantRequestModels.ShowRequestModel;
 import com.example.thanhhoa.dtos.UserModels.ShowUserModel;
 import com.example.thanhhoa.dtos.WorkingDateModels.ShowWorkingDateModel;
 import com.example.thanhhoa.entities.Category;
@@ -49,6 +50,7 @@ import com.example.thanhhoa.entities.ServicePrice;
 import com.example.thanhhoa.entities.ServiceType;
 import com.example.thanhhoa.entities.StoreEmployee;
 import com.example.thanhhoa.entities.StorePlant;
+import com.example.thanhhoa.entities.StorePlantRequest;
 import com.example.thanhhoa.entities.WorkingDate;
 import com.example.thanhhoa.entities.tblAccount;
 import com.example.thanhhoa.entities.tblOrder;
@@ -242,6 +244,7 @@ public class Util {
                     model.setPlantID(plant.getId());
                     model.setName(plant.getName());
                     model.setHeight(plant.getHeight());
+                    model.setUnit(plant.getUnit());
                     model.setWithPot(plant.getWithPot());
                     model.setShowPlantShipPriceModel(showPlantShipPriceModel);
                     model.setPlantCategoryList(showPlantCategoryList);
@@ -312,6 +315,7 @@ public class Util {
                     model.setPlantID(plant.getId());
                     model.setName(plant.getName());
                     model.setHeight(plant.getHeight());
+                    model.setUnit(plant.getUnit());
                     model.setWithPot(plant.getWithPot());
                     model.setShowPlantShipPriceModel(showPlantShipPriceModel);
                     model.setPlantCategoryList(showPlantCategoryList);
@@ -379,6 +383,7 @@ public class Util {
                         model.setPlantID(plant.getPlant().getId());
                         model.setName(plant.getPlant().getName());
                         model.setHeight(plant.getPlant().getHeight());
+                        model.setUnit(plant.getPlant().getUnit());
                         model.setWithPot(plant.getPlant().getWithPot());
                         model.setShowPlantShipPriceModel(showPlantShipPriceModel);
                         model.setPlantCategoryList(showPlantCategoryList);
@@ -1364,6 +1369,88 @@ public class Util {
 
                 @Override
                 protected Report doBackward(ShowReportModel showReportModel) {
+                    return null;
+                }
+            });
+            return modelResult.getContent();
+        } else {
+            return new ArrayList<>();
+        }
+    }
+
+    public List<ShowRequestModel> requestPagingConverter(Page<StorePlantRequest> pagingResult, Pageable paging) {
+        if(pagingResult.hasContent()) {
+            double totalPage = Math.ceil((double) pagingResult.getTotalElements() / paging.getPageSize());
+            Page<ShowRequestModel> modelResult = pagingResult.map(new Converter<StorePlantRequest, ShowRequestModel>() {
+                @Override
+                protected ShowRequestModel doForward(StorePlantRequest request) {
+                    // from store
+                    ShowStoreModel fromStoreModel = new ShowStoreModel();
+                    fromStoreModel.setId(request.getFromStore().getId());
+                    fromStoreModel.setStoreName(request.getFromStore().getStoreName());
+                    fromStoreModel.setAddress(request.getFromStore().getAddress());
+                    fromStoreModel.setPhone(request.getFromStore().getPhone());
+
+                    // to store
+                    ShowStoreModel toStoreModel = new ShowStoreModel();
+                    toStoreModel.setId(request.getToStore().getId());
+                    toStoreModel.setStoreName(request.getToStore().getStoreName());
+                    toStoreModel.setAddress(request.getToStore().getAddress());
+                    toStoreModel.setPhone(request.getToStore().getPhone());
+
+                    // from manager
+                    ShowStaffModel fromManagerModel = new ShowStaffModel();
+                    fromManagerModel.setId(request.getFromManager().getAccount().getId());
+                    fromManagerModel.setFullName(request.getFromManager().getAccount().getFullName());
+                    fromManagerModel.setAddress(request.getFromManager().getAccount().getAddress());
+                    fromManagerModel.setAvatar(request.getFromManager().getAccount().getAvatar());
+                    fromManagerModel.setGender(request.getFromManager().getAccount().getGender());
+                    fromManagerModel.setPhone(request.getFromManager().getAccount().getPhone());
+                    fromManagerModel.setStatus(request.getFromManager().getStatus());
+                    fromManagerModel.setEmail(request.getFromManager().getAccount().getFullName());
+
+                    // to manager
+                    ShowStaffModel toManagerModel = new ShowStaffModel();
+                    toManagerModel.setId(request.getToManager().getAccount().getId());
+                    toManagerModel.setFullName(request.getToManager().getAccount().getFullName());
+                    toManagerModel.setAddress(request.getToManager().getAccount().getAddress());
+                    toManagerModel.setAvatar(request.getToManager().getAccount().getAvatar());
+                    toManagerModel.setGender(request.getToManager().getAccount().getGender());
+                    toManagerModel.setPhone(request.getToManager().getAccount().getPhone());
+                    toManagerModel.setStatus(request.getToManager().getStatus());
+                    toManagerModel.setEmail(request.getToManager().getAccount().getFullName());
+
+                    //plant
+                    com.example.thanhhoa.dtos.OrderModels.ShowPlantModel plantModel = new com.example.thanhhoa.dtos.OrderModels.ShowPlantModel();
+                    PlantPrice newestPrice = plantPriceRepository.findFirstByPlant_IdAndStatusOrderByApplyDateDesc(request.getPlant().getId(), Status.ACTIVE);
+                    plantModel.setId(request.getPlant().getId());
+                    if(request.getPlant().getPlantIMGList() != null && !request.getPlant().getPlantIMGList().isEmpty()) {
+                        plantModel.setImage(request.getPlant().getPlantIMGList().get(0).getImgURL());
+                    }
+                    plantModel.setQuantity(request.getQuantity());
+                    plantModel.setPlantName(request.getPlant().getName());
+                    plantModel.setPlantPriceID(newestPrice.getId());
+                    plantModel.setPlantPrice(newestPrice.getPrice());
+                    plantModel.setShipPrice(request.getPlant().getPlantShipPrice().getPricePerPlant());
+
+                    ShowRequestModel model = new ShowRequestModel();
+                    model.setId(request.getId());
+                    model.setQuantity(request.getQuantity());
+                    model.setCreatedDate(request.getCreateDate());
+                    model.setUpdatedDate(request.getUpdateDate());
+                    model.setReason(request.getReason());
+                    model.setStatus(request.getStatus());
+                    model.setFromStoreModel(fromStoreModel);
+                    model.setToStoreModel(toStoreModel);
+                    model.setFromManagerModel(fromManagerModel);
+                    model.setToManagerModel(toManagerModel);
+                    model.setShowPlantModel(plantModel);
+                    model.setTotalPage(totalPage);
+                    return model;
+                }
+
+                @Override
+                protected StorePlantRequest doBackward(ShowRequestModel showRequestModel) {
                     return null;
                 }
             });

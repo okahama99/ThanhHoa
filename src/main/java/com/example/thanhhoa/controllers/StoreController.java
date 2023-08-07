@@ -1,6 +1,7 @@
 package com.example.thanhhoa.controllers;
 
 import com.example.thanhhoa.dtos.PlantModels.AddStorePlantModel;
+import com.example.thanhhoa.dtos.PlantModels.UpdateStorePlantModel;
 import com.example.thanhhoa.dtos.StoreModels.AddStoreEmployeeModel;
 import com.example.thanhhoa.dtos.StoreModels.CreateStoreModel;
 import com.example.thanhhoa.dtos.StoreModels.ShowDistrictModel;
@@ -185,6 +186,20 @@ public class StoreController {
             throw new ResponseStatusException(HttpStatus.FORBIDDEN, "-----------------------------------Người dùng không có quyền truy cập---------------------------");
         }
         String result = storeService.updateStore(updateStoreModel);
+        if(result.equals("Cập nhật thành công.")) {
+            return ResponseEntity.ok().body(result);
+        }
+        return ResponseEntity.badRequest().body(result);
+    }
+
+    @PutMapping(value = "/updateStorePlant", produces = "application/json;charset=UTF-8")
+    public ResponseEntity<Object> updateStorePlant(@RequestBody UpdateStorePlantModel updateStorePlantModel,
+                                                   HttpServletRequest request) throws Exception {
+        String roleName = jwtUtil.getRoleNameFromRequest(request);
+        if(!roleName.equalsIgnoreCase("Manager")) {
+            throw new ResponseStatusException(HttpStatus.FORBIDDEN, "-----------------------------------Người dùng không có quyền truy cập---------------------------");
+        }
+        String result = storeService.updateStorePlant(updateStorePlantModel, jwtUtil.getUserIDFromRequest(request));
         if(result.equals("Cập nhật thành công.")) {
             return ResponseEntity.ok().body(result);
         }

@@ -27,8 +27,11 @@ public class Plant implements Serializable {
     @Column(nullable = false)
     private String careNote;
 
-    @Column(nullable = false)
-    private Double height;
+    @Column
+    private String height;
+
+    @Column
+    private String unit;
 
     @Column
     private Boolean withPot = false;
@@ -60,4 +63,7 @@ public class Plant implements Serializable {
 
     @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY, mappedBy = "plant")
     private List<PlantPrice> plantPriceList;
+
+    @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY, mappedBy = "plant")
+    private List<StorePlantRequest> storePlantRequestList;
 }

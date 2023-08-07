@@ -24,6 +24,4 @@ public class CreateOrderModel implements Serializable {
     private Long staffID;
     @Nullable
     private String latLong;
-    @Nullable
-    private String receiptIMG;
 }

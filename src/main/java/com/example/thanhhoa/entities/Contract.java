@@ -95,4 +95,7 @@ public class Contract implements Serializable {
 
     @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY, mappedBy = "contract")
     private List<ContractIMG> contractIMGList;
+
+    @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY, mappedBy = "contract")
+    private List<Transaction> transactionList;
 }

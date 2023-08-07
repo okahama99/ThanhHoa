@@ -11,7 +11,6 @@ import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -21,14 +20,11 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RequestPart;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
-import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.server.ResponseStatusException;
 
 import javax.servlet.http.HttpServletRequest;
-import java.io.IOException;
 import java.util.List;
 
 @RestController
@@ -82,15 +78,18 @@ public class PlantController {
             throw new ResponseStatusException(HttpStatus.FORBIDDEN, "-----------------------------------Người dùng không có quyền truy cập---------------------------");
         }
 
-        if(plantService.checkDuplicate(updatePlantModel.getName()) != null) {
-            return ResponseEntity.badRequest().body("Cây cùng tên đã tồn tại.");
-        } else {
-            String result = plantService.updatePlant(updatePlantModel);
-            if(result.equals("Chỉnh sửa thành công.")) {
-                return ResponseEntity.ok().body(result);
+        if(updatePlantModel.getName() != null) {
+            if(plantService.checkDuplicate(updatePlantModel.getName()) != null) {
+                return ResponseEntity.badRequest().body("Cây cùng tên đã tồn tại.");
             }
-            return ResponseEntity.badRequest().body(result);
         }
+
+        String result = plantService.updatePlant(updatePlantModel);
+        if(result.equals("Chỉnh sửa thành công.")) {
+            return ResponseEntity.ok().body(result);
+        }
+        return ResponseEntity.badRequest().body(result);
+
     }
 
     @DeleteMapping(value = "/{plantID}", produces = "application/json;charset=UTF-8")
@@ -120,9 +119,9 @@ public class PlantController {
     @GetMapping(value = "/getAllPlantWithInactive", produces = "application/json;charset=UTF-8")
     public @ResponseBody
     List<ShowPlantModel> getAllPlantWithInactive(@RequestParam int pageNo,
-                                     @RequestParam int pageSize,
-                                     @RequestParam SearchType.PLANT sortBy,
-                                     @RequestParam(required = false, defaultValue = "true") Boolean sortAsc) {
+                                                 @RequestParam int pageSize,
+                                                 @RequestParam SearchType.PLANT sortBy,
+                                                 @RequestParam(required = false, defaultValue = "true") Boolean sortAsc) {
         return plantService.getAllPlantWithInactive(util.makePaging(pageNo, pageSize, sortBy.toString().toLowerCase(), sortAsc));
     }
 

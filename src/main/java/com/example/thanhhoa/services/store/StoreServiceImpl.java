@@ -2,6 +2,7 @@ package com.example.thanhhoa.services.store;
 
 import com.example.thanhhoa.dtos.OrderModels.ShowStaffModel;
 import com.example.thanhhoa.dtos.PlantModels.AddStorePlantModel;
+import com.example.thanhhoa.dtos.PlantModels.UpdateStorePlantModel;
 import com.example.thanhhoa.dtos.StoreModels.AddStoreEmployeeModel;
 import com.example.thanhhoa.dtos.StoreModels.CreateStoreModel;
 import com.example.thanhhoa.dtos.StoreModels.ShowDistrictModel;
@@ -165,7 +166,6 @@ public class StoreServiceImpl implements StoreService{
                 newPlant.setQuantity(addStorePlantModel.getQuantity());
                 newPlant.setStore(store.get());
                 newPlant.setPlant(plant.get());
-                storePlantRepository.save(newPlant);
 
                 StorePlantRecord storePlantRecord = new StorePlantRecord();
                 StorePlantRecord lastRecord = storePlantRecordRepository.findFirstByOrderByIdDesc();
@@ -178,13 +178,13 @@ public class StoreServiceImpl implements StoreService{
                 storePlantRecord.setImportDate(LocalDateTime.now(ZoneId.of("Asia/Ho_Chi_Minh")));
                 storePlantRecord.setStorePlant(newPlant);
                 storePlantRecord.setReason("Nhập thêm cây");
+
+                storePlantRepository.save(newPlant);
                 storePlantRecordRepository.save(storePlantRecord);
                 storePlantRepository.save(newPlant);
                 return "Thêm thành công.";
             }
             storePlant.setQuantity(storePlant.getQuantity() + addStorePlantModel.getQuantity());
-
-            storePlantRepository.save(storePlant);
 
             StorePlantRecord storePlantRecord = new StorePlantRecord();
             StorePlantRecord lastRecord = storePlantRecordRepository.findFirstByOrderByIdDesc();
@@ -197,9 +197,37 @@ public class StoreServiceImpl implements StoreService{
             storePlantRecord.setImportDate(LocalDateTime.now(ZoneId.of("Asia/Ho_Chi_Minh")));
             storePlantRecord.setStorePlant(storePlant);
             storePlantRecord.setReason("Nhập thêm cây");
+
+            storePlantRepository.save(storePlant);
             storePlantRecordRepository.save(storePlantRecord);
         }
         return "Thêm thành công.";
+    }
+
+    @Override
+    public String updateStorePlant(UpdateStorePlantModel updateStorePlantModel, Long userID) throws Exception {
+        Optional<StorePlant> checkExisted = storePlantRepository.findById(updateStorePlantModel.getStorePlantID());
+        if(checkExisted == null){
+            return "Không tìm thấy StorePlant với ID là " + updateStorePlantModel.getStorePlantID() + ".";
+        }
+        StorePlant storePlant = checkExisted.get();
+        storePlant.setQuantity(storePlant.getQuantity() + updateStorePlantModel.getQuantity());
+
+        StorePlantRecord storePlantRecord = new StorePlantRecord();
+        StorePlantRecord lastRecord = storePlantRecordRepository.findFirstByOrderByIdDesc();
+        if (lastRecord == null) {
+            storePlantRecord.setId(util.createNewID("SPR"));
+        } else {
+            storePlantRecord.setId(util.createIDFromLastID("SPR",3,lastRecord.getId()));
+        }
+        storePlantRecord.setAmount(updateStorePlantModel.getQuantity());
+        storePlantRecord.setImportDate(LocalDateTime.now(ZoneId.of("Asia/Ho_Chi_Minh")));
+        storePlantRecord.setStorePlant(storePlant);
+        storePlantRecord.setReason("ManagerID : " + userID + ", lí do :" + updateStorePlantModel.getReason());
+
+        storePlantRepository.save(storePlant);
+        storePlantRecordRepository.save(storePlantRecord);
+        return "Cập nhật thành công.";
     }
 
     @Override
@@ -232,7 +260,7 @@ public class StoreServiceImpl implements StoreService{
 
     @Override
     public List<ShowStoreModel> getAllStore() {
-        List<Store> getListStore = storeRepository.findAll();
+        List<Store> getListStore = storeRepository.findAllByOrderByIdDesc();
         List<ShowStoreModel> storeModelList = new ArrayList<>();
         for (Store store : getListStore) {
             StoreEmployee manager = storeEmployeeRepository.findByStore_IdAndAccount_Role_RoleName(store.getId(), "Manager");

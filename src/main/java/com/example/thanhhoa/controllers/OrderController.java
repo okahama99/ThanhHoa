@@ -94,12 +94,14 @@ public class OrderController {
 
     @PutMapping(value = "/changeOrderStatus", produces = "application/json;charset=UTF-8")
     public ResponseEntity<Object> changeOrderStatus(@RequestParam String orderID,
-                                                    @RequestParam SearchType.ORDER_STATUS status, HttpServletRequest request) throws Exception {
+                                                    @RequestParam(required = false) String receiptIMG,
+                                                    @RequestParam SearchType.ORDER_STATUS status,
+                                                    HttpServletRequest request) throws Exception {
         String roleName = jwtUtil.getRoleNameFromRequest(request);
         if(!roleName.equalsIgnoreCase("Manager") && !roleName.equalsIgnoreCase("Staff")) {
             throw new ResponseStatusException(HttpStatus.FORBIDDEN, "-----------------------------------Người dùng không có quyền truy cập---------------------------");
         }
-        if(orderService.changeOrderStatus(orderID, status.toString())) {
+        if(orderService.changeOrderStatus(orderID, receiptIMG, status.toString())) {
             return ResponseEntity.ok().body("Thay đổi thành công.");
         } else {
             return ResponseEntity.badRequest().body("Thay đổi thất bại.");

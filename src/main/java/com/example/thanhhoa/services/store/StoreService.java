@@ -2,6 +2,7 @@ package com.example.thanhhoa.services.store;
 
 import com.example.thanhhoa.dtos.OrderModels.ShowStaffModel;
 import com.example.thanhhoa.dtos.PlantModels.AddStorePlantModel;
+import com.example.thanhhoa.dtos.PlantModels.UpdateStorePlantModel;
 import com.example.thanhhoa.dtos.StoreModels.AddStoreEmployeeModel;
 import com.example.thanhhoa.dtos.StoreModels.CreateStoreModel;
 import com.example.thanhhoa.dtos.StoreModels.ShowDistrictModel;
@@ -25,6 +26,8 @@ public interface StoreService {
     ShowStoreModel getByID(String storeID);
 
     String addStorePlant(List<AddStorePlantModel> addStorePlantModel) throws Exception;
+
+    String updateStorePlant(UpdateStorePlantModel updateStorePlantModel, Long userID) throws Exception;
 
     String removeStorePlant(String storePlantID, Integer quantity, String reason, Long userID);
 

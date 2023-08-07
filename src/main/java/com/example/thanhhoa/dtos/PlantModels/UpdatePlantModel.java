@@ -13,10 +13,10 @@ import java.util.List;
 @Setter
 public class UpdatePlantModel implements Serializable{
     private String plantID;
-    private String name;
     private String description;
     private String careNote;
-    private Double height;
+    private String height;
+    private String unit;
     private Boolean withPot;
 
     private String shipPriceID;
@@ -26,4 +26,6 @@ public class UpdatePlantModel implements Serializable{
     private Double price;
     @Nullable
     private List<String> listURL;
+    @Nullable
+    private String name;
 }

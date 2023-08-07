@@ -119,6 +119,7 @@ public class PlantServiceImpl implements PlantService {
         model.setPlantID(plant.getId());
         model.setName(plant.getName());
         model.setHeight(plant.getHeight());
+        model.setUnit(plant.getUnit());
         model.setWithPot(plant.getWithPot());
         model.setShowPlantShipPriceModel(showPlantShipPriceModel);
         model.setPlantCategoryList(showPlantCategoryList);
@@ -151,6 +152,7 @@ public class PlantServiceImpl implements PlantService {
         plant.setName(createPlantModel.getName());
         plant.setDescription(createPlantModel.getDescription());
         plant.setHeight(createPlantModel.getHeight());
+        plant.setUnit(createPlantModel.getUnit());
         plant.setCareNote(createPlantModel.getCareNote());
         plant.setWithPot(createPlantModel.getWithPot());
         plant.setStatus(Status.ONSALE);
@@ -224,9 +226,14 @@ public class PlantServiceImpl implements PlantService {
             }
 
             Plant plant = checkPlant.get();
-            plant.setName(updatePlantModel.getName());
+
+            if(updatePlantModel.getName() != null){
+                plant.setName(updatePlantModel.getName());
+            }
+
             plant.setDescription(updatePlantModel.getDescription());
             plant.setHeight(updatePlantModel.getHeight());
+            plant.setUnit(updatePlantModel.getUnit());
             plant.setCareNote(updatePlantModel.getCareNote());
             plant.setWithPot(updatePlantModel.getWithPot());
             plant.setPlantShipPrice(plantShipPrice.get());

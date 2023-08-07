@@ -13,7 +13,8 @@ import java.util.List;
 public class ShowPlantModel {
     private String plantID;
     private String name;
-    private Double height;
+    private String height;
+    private String unit;
     private Boolean withPot;
     private Double totalPage;
     private String description;

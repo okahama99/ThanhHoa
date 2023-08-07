@@ -12,7 +12,7 @@ import java.util.Optional;
 public interface PlantRepository extends JpaRepository<Plant, String> {
     Plant findByName(String plantName);
 
-    Optional<Plant> findById(String plantID);
+    Plant findByIdAndStatus(String plantID, Status status);
 
     Plant findFirstByOrderByIdDesc();
 
