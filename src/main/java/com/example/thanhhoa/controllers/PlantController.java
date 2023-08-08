@@ -111,6 +111,21 @@ public class PlantController {
         }
     }
 
+    @DeleteMapping(value = "/activatePlant", produces = "application/json;charset=UTF-8")
+    public ResponseEntity<Object> activatePlant(@RequestParam String plantID,
+                                              HttpServletRequest request) throws Exception {
+        String roleName = jwtUtil.getRoleNameFromRequest(request);
+        if(!roleName.equalsIgnoreCase("Owner")) {
+            throw new ResponseStatusException(HttpStatus.FORBIDDEN, "-----------------------------------Người dùng không có quyền truy cập---------------------------");
+        }
+        String result = plantService.activatePlant(plantID);
+        if(result.equals("Cập nhật thành công.")) {
+            return ResponseEntity.ok().body(result);
+        } else {
+            return ResponseEntity.badRequest().body(result);
+        }
+    }
+
     @GetMapping(produces = "application/json;charset=UTF-8")
     public @ResponseBody
     List<ShowPlantModel> getAllPlant(@RequestParam int pageNo,

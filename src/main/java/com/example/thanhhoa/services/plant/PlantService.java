@@ -21,6 +21,8 @@ public interface PlantService {
 
     String updatePlant(UpdatePlantModel updatePlantModel) throws Exception;
 
+    String activatePlant(String plantID) throws Exception;
+
     String deletePlant(String plantID);
 
     Plant checkDuplicate(String plantName);
