@@ -156,7 +156,8 @@ public class StoreServiceImpl implements StoreService{
         model.setStatus(store.getStatus());
         model.setStoreName(store.getStoreName());
         model.setAddress(store.getAddress());
-        model.setDistrict(store.getDistrict().getDistrictName());
+        model.setDistrictID(store.getDistrict().getId());
+        model.setDistrictName(store.getDistrict().getDistrictName());
         model.setPhone(store.getPhone());
         return model;
     }
@@ -288,7 +289,8 @@ public class StoreServiceImpl implements StoreService{
             model.setStatus(store.getStatus());
             model.setStoreName(store.getStoreName());
             model.setAddress(store.getAddress());
-            model.setDistrict(store.getDistrict().getDistrictName());
+            model.setDistrictID(store.getDistrict().getId());
+            model.setDistrictName(store.getDistrict().getDistrictName());
             model.setPhone(store.getPhone());
             if(manager != null){
                 model.setManagerID(manager.getAccount().getId());
@@ -438,7 +440,8 @@ public class StoreServiceImpl implements StoreService{
         model.setStatus(employee.getStore().getStatus());
         model.setStoreName(employee.getStore().getStoreName());
         model.setAddress(employee.getStore().getAddress());
-        model.setDistrict(employee.getStore().getDistrict().getDistrictName());
+        model.setDistrictID(employee.getStore().getDistrict().getId());
+        model.setDistrictName(employee.getStore().getDistrict().getDistrictName());
         model.setPhone(employee.getStore().getPhone());
         return model;
     }
