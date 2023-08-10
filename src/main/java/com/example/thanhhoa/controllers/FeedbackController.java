@@ -89,7 +89,8 @@ public class FeedbackController {
                                                      @RequestParam(required = false, defaultValue = "true") Boolean sortAsc,
                                                      HttpServletRequest request) {
         String roleName = jwtUtil.getRoleNameFromRequest(request);
-        if(!roleName.equalsIgnoreCase("Customer") && !roleName.equalsIgnoreCase("Staff")) {
+        if(!roleName.equalsIgnoreCase("Customer") && !roleName.equalsIgnoreCase("Staff")
+                && !roleName.equalsIgnoreCase("Owner") && !roleName.equalsIgnoreCase("Manager")) {
             throw new ResponseStatusException(HttpStatus.FORBIDDEN, "-----------------------------------Người dùng không có quyền truy cập---------------------------");
         }
         List<ShowOrderFeedbackModel> result = feedbackService.getAllOrderFeedback(jwtUtil.getUserIDFromRequest(request),util.makePaging(pageNo, pageSize, sortBy.toLowerCase(), sortAsc));
@@ -127,7 +128,8 @@ public class FeedbackController {
                                                            @RequestParam(required = false, defaultValue = "true") Boolean sortAsc,
                                                            HttpServletRequest request) {
         String roleName = jwtUtil.getRoleNameFromRequest(request);
-        if(!roleName.equalsIgnoreCase("Customer") && !roleName.equalsIgnoreCase("Staff")) {
+        if(!roleName.equalsIgnoreCase("Customer") && !roleName.equalsIgnoreCase("Staff")
+                && !roleName.equalsIgnoreCase("Owner") && !roleName.equalsIgnoreCase("Manager")) {
             throw new ResponseStatusException(HttpStatus.FORBIDDEN, "-----------------------------------Người dùng không có quyền truy cập---------------------------");
         }
 
