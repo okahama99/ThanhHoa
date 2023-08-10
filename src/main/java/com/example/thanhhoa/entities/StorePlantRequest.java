@@ -7,6 +7,8 @@ import lombok.Setter;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
 import javax.persistence.FetchType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
@@ -36,7 +38,7 @@ public class StorePlantRequest implements Serializable {
     @Column
     private LocalDateTime updateDate;
 
-    @Column
+    @Enumerated(EnumType.STRING)
     private Status status;
 
     @ManyToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)

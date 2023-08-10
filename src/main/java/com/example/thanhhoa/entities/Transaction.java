@@ -7,6 +7,8 @@ import lombok.Setter;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
 import javax.persistence.FetchType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
@@ -48,7 +50,7 @@ public class Transaction implements Serializable {
     @Column
     private LocalDateTime createDate;
 
-    @Column
+    @Enumerated(EnumType.STRING)
     private Status status;
 
     @ManyToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
