@@ -96,6 +96,7 @@ public class OrderServiceImpl implements OrderService {
         tblAccount account = userRepository.getById(customerID);
         if(account.getRole().getRoleName().equalsIgnoreCase("Staff")){
             order.setStaff(account);
+            order.setApproveDate(LocalDateTime.now(ZoneId.of("Asia/Ho_Chi_Minh")));
             order.setProgressStatus(Status.APPROVED);
         }
         if(account.getRole().getRoleName().equalsIgnoreCase("Customer")){
