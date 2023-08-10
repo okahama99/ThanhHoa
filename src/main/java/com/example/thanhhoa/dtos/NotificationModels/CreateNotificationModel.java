@@ -11,7 +11,6 @@ import java.util.Map;
 public class CreateNotificationModel implements Serializable {
     private String title;
     private Long userID;
-    private String notificationID;
     private String content;
     private Map<String, String> data;
 }
