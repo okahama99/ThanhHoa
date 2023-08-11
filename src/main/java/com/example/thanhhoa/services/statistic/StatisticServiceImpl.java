@@ -34,12 +34,17 @@ public class StatisticServiceImpl implements StatisticService{
         Integer numOfCWorking = contractRepository.countContractByStatusAndCreatedDateBetween(Status.WORKING, fromDate, toDate);
         Integer numOfCDone = contractRepository.countContractByStatusAndCreatedDateBetween(Status.DONE, fromDate, toDate);
         Integer numOfContract = numOfCWorking + numOfCDone;
-        String sumOfContract = String.format("%.2f", contractRepository.sumTotal(fromDate, toDate));
+        String sumOfContract = null;
+        Double sumTotalContract = contractRepository.sumTotal(fromDate, toDate);
+        if(sumTotalContract != null){
+            sumOfContract = String.format("%.2f", sumTotalContract);
+        }
+
 
         Integer numOfStoreCWorking = 0;
         Integer numOfStoreCDone = 0;
         Integer numOfStoreContract = 0;
-        String sumOfStoreContract = "";
+        String sumOfStoreContract = null;
 
         // order
         Integer numOfApproved = orderRepository.countByProgressStatusAndCreatedDateBetween(Status.APPROVED, fromDate, toDate);
@@ -47,14 +52,18 @@ public class StatisticServiceImpl implements StatisticService{
         Integer numOfDelivering = orderRepository.countByProgressStatusAndCreatedDateBetween(Status.DELIVERING, fromDate, toDate);
         Integer numOfReceived = orderRepository.countByProgressStatusAndCreatedDateBetween(Status.RECEIVED, fromDate, toDate);
         Integer numOfOrder = numOfApproved + numOfPackaging + numOfDelivering + numOfReceived;
-        String sumOfOrder = String.format("%.2f", orderRepository.sumTotal(fromDate, toDate));
+        Double sumOfTotalOrder = orderRepository.sumTotal(fromDate, toDate);
+        String sumOfOrder = null;
+        if(sumOfTotalOrder != null){
+            sumOfOrder = String.format("%.2f", sumOfTotalOrder);
+        }
 
         Integer numOfStoreOApproved = 0;
         Integer numOfStoreOPackaging = 0;
         Integer numOfStoreODelivering = 0;
         Integer numOfStoreOReceived = 0;
         Integer numOfStoreOrder = 0;
-        String sumOfStoreOrder = "";
+        String sumOfStoreOrder = null;
 
         ShowStoreModel model = new ShowStoreModel();
 
@@ -62,16 +71,22 @@ public class StatisticServiceImpl implements StatisticService{
             // contract
             numOfStoreCWorking = contractRepository.countContractByStore_IdAndStatusAndCreatedDateBetween(storeID, Status.WORKING, fromDate, toDate);
             numOfStoreCDone = contractRepository.countContractByStore_IdAndStatusAndCreatedDateBetween(storeID, Status.DONE, fromDate, toDate);
-            sumOfStoreContract =  String.format("%.2f", contractRepository.sumTotalOfAStore(storeID, fromDate, toDate));
             numOfStoreContract = numOfStoreCWorking + numOfStoreCDone;
+            Double sumOfTotalStoreContract = contractRepository.sumTotalOfAStore(storeID, fromDate, toDate);
+            if(sumOfTotalStoreContract != null){
+                sumOfStoreContract =  String.format("%.2f", sumOfTotalStoreContract);
+            }
 
             //order
             numOfStoreOApproved = orderRepository.countByStore_IdAndProgressStatusAndCreatedDateBetween(storeID, Status.APPROVED, fromDate, toDate);
             numOfStoreOPackaging = orderRepository.countByStore_IdAndProgressStatusAndCreatedDateBetween(storeID, Status.PACKAGING, fromDate, toDate);
             numOfStoreODelivering = orderRepository.countByStore_IdAndProgressStatusAndCreatedDateBetween(storeID, Status.DELIVERING, fromDate, toDate);
             numOfStoreOReceived = orderRepository.countByStore_IdAndProgressStatusAndCreatedDateBetween(storeID, Status.RECEIVED, fromDate, toDate);
-            sumOfStoreOrder =  String.format("%.2f", orderRepository.sumTotalOfAStore(storeID, fromDate, toDate));
             numOfStoreOrder = numOfApproved + numOfPackaging + numOfDelivering + numOfReceived;
+            Double sumOfTotalStoreOrder = orderRepository.sumTotalOfAStore(storeID, fromDate, toDate);
+            if(sumOfTotalStoreOrder != null){
+                sumOfStoreOrder =  String.format("%.2f", sumOfTotalStoreOrder);
+            }
 
             // store
             Store store = storeRepository.getById(storeID);
