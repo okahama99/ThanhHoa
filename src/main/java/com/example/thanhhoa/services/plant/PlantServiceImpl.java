@@ -22,6 +22,7 @@ import com.example.thanhhoa.repositories.PlantIMGRepository;
 import com.example.thanhhoa.repositories.PlantPriceRepository;
 import com.example.thanhhoa.repositories.PlantRepository;
 import com.example.thanhhoa.repositories.PlantShipPriceRepository;
+import com.example.thanhhoa.repositories.StorePlantRepository;
 import com.example.thanhhoa.repositories.pagings.PlantCategoryPagingRepository;
 import com.example.thanhhoa.repositories.pagings.PlantPagingRepository;
 import com.example.thanhhoa.repositories.pagings.PlantPricePagingRepository;
@@ -65,6 +66,8 @@ public class PlantServiceImpl implements PlantService {
     private PlantPricePagingRepository plantPricePagingRepository;
     @Autowired
     private Util util;
+    @Autowired
+    private StorePlantRepository storePlantRepository;
 
     @Override
     public List<ShowPlantModel> getAllPlant(Pageable paging) {
@@ -116,6 +119,8 @@ public class PlantServiceImpl implements PlantService {
         showPlantPriceModel.setPrice(newestPrice.getPrice());
         showPlantPriceModel.setApplyDate(newestPrice.getApplyDate());
 
+        Integer totalPlant = storePlantRepository.sumQuantity(plant.getId());
+
         ShowPlantModel model = new ShowPlantModel();
         model.setPlantID(plant.getId());
         model.setName(plant.getName());
@@ -127,6 +132,7 @@ public class PlantServiceImpl implements PlantService {
         model.setPlantIMGList(showPlantIMGList);
         model.setDescription(plant.getDescription());
         model.setCareNote(plant.getCareNote());
+        model.setTotalPlant(totalPlant);
         model.setStatus(plant.getStatus());
         return model;
     }

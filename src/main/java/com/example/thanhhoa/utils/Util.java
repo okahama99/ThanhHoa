@@ -64,6 +64,7 @@ import com.example.thanhhoa.repositories.ServiceIMGRepository;
 import com.example.thanhhoa.repositories.ServicePriceRepository;
 import com.example.thanhhoa.repositories.ServiceTypeRepository;
 import com.example.thanhhoa.repositories.StoreEmployeeRepository;
+import com.example.thanhhoa.repositories.StorePlantRepository;
 import com.example.thanhhoa.repositories.WorkingDateRepository;
 import com.google.common.base.Converter;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -100,6 +101,8 @@ public class Util {
     private StoreEmployeeRepository storeEmployeeRepository;
     @Autowired
     private ServicePriceRepository servicePriceRepository;
+    @Autowired
+    private StorePlantRepository storePlantRepository;
 
     /**
      * Small Util to return {@link Pageable} to replace dup code in serviceImpl
@@ -206,8 +209,6 @@ public class Util {
             Page<ShowPlantModel> modelResult = pagingResult.map(new Converter<Plant, ShowPlantModel>() {
                 @Override
                 protected ShowPlantModel doForward(Plant plant) {
-
-
                     List<PlantCategory> plantCategoryList = plantCategoryRepository.findAllByPlant_IdAndStatus(plant.getId(), Status.ACTIVE);
                     List<ShowPlantCategory> showPlantCategoryList = new ArrayList<>();
                     for(PlantCategory plantCategory : plantCategoryList) {
@@ -240,6 +241,8 @@ public class Util {
                     showPlantPriceModel.setApplyDate(newestPrice.getApplyDate());
                     showPlantPriceModel.setStatus(newestPrice.getStatus());
 
+                    Integer totalPlant = storePlantRepository.sumQuantity(plant.getId());
+
                     ShowPlantModel model = new ShowPlantModel();
                     model.setPlantID(plant.getId());
                     model.setName(plant.getName());
@@ -252,6 +255,7 @@ public class Util {
                     model.setDescription(plant.getDescription());
                     model.setCareNote(plant.getCareNote());
                     model.setStatus(plant.getStatus());
+                    model.setTotalPlant(totalPlant);
                     model.setTotalPage(totalPage);
                     return model;
                 }

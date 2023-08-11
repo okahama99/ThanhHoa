@@ -19,6 +19,7 @@ public class ShowPlantModel {
     private String description;
     private String careNote;
     private Status status;
+    private Integer totalPlant;
 
     private ShowPlantShipPriceModel showPlantShipPriceModel;
     private ShowPlantPriceModel showPlantPriceModel;
