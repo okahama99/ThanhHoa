@@ -345,7 +345,13 @@ public class UserController {
     }
 
     @PostMapping("/createFcmToken")
-    public String createFcmToken(@RequestBody UserFCMToken userFCMToken) throws InterruptedException, ExecutionException {
+    public String createFcmToken(@RequestParam String fcmToken,
+                                 @RequestHeader(name = "Authorization") @Parameter(hidden = true) String token) throws Exception {
+        String jwt = jwtUtil.getAndValidateJwt(token);
+        String username = jwtUtil.getUserNameFromJWT(jwt);
+        UserFCMToken userFCMToken = new UserFCMToken();
+        userFCMToken.setFcmToken(fcmToken);
+        userFCMToken.setUsername(username);
         userService.updateUserFcmToken(userFCMToken);
         return CRUDUserFireBaseService.createUser(userFCMToken);
     }
