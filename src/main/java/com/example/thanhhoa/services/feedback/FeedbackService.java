@@ -19,7 +19,9 @@ public interface FeedbackService {
 
     String deleteOrder(String id);
 
-    List<ShowOrderFeedbackModel> getAllOrderFeedback(Pageable pageable);
+    List<ShowOrderFeedbackModel> getAllOrderFeedback(Long userID, Pageable pageable);
+
+    List<ShowOrderFeedbackModel> getFeedbackForManagerOwner(Pageable pageable);
 
     ShowOrderFeedbackModel getOrderFeedbackByID(String orderFeedbackID);
 
