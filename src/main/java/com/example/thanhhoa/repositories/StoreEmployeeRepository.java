@@ -10,4 +10,6 @@ public interface StoreEmployeeRepository extends JpaRepository<StoreEmployee, St
     StoreEmployee findByStore_IdAndAccount_Role_RoleName(String storeID, String roleName);
 
     StoreEmployee findByAccount_IdAndStatus(Long userID, Status status);
+
+    StoreEmployee findByAccount_Id(Long userID);
 }

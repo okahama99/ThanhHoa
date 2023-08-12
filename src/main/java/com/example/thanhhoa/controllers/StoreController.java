@@ -10,6 +10,7 @@ import com.example.thanhhoa.dtos.StoreModels.ShowStoreModel;
 import com.example.thanhhoa.dtos.StoreModels.ShowStorePlantRecordModel;
 import com.example.thanhhoa.dtos.StoreModels.UpdateStoreModel;
 import com.example.thanhhoa.enums.SearchType;
+import com.example.thanhhoa.enums.Status;
 import com.example.thanhhoa.services.store.StoreService;
 import com.example.thanhhoa.utils.JwtUtil;
 import com.example.thanhhoa.utils.Util;
@@ -206,15 +207,16 @@ public class StoreController {
         return ResponseEntity.badRequest().body(result);
     }
 
-    @DeleteMapping(value = "/{storeID}", produces = "application/json;charset=UTF-8")
-    public ResponseEntity<Object> deleteStore(@PathVariable(name = "storeID") String storeID,
-                                                HttpServletRequest request) {
+    @PutMapping(value = "/changeStoreStatus", produces = "application/json;charset=UTF-8")
+    public ResponseEntity<Object> changeStoreStatus(@RequestParam String storeID,
+                                                    @RequestParam String status,
+                                                    HttpServletRequest request) {
         String roleName = jwtUtil.getRoleNameFromRequest(request);
         if(!roleName.equalsIgnoreCase("Owner")) {
             throw new ResponseStatusException(HttpStatus.FORBIDDEN, "-----------------------------------Người dùng không có quyền truy cập---------------------------");
         }
-        String result = storeService.deleteStore(storeID);
-        if(result.equals("Xóa thành công.")) {
+        String result = storeService.changeStoreStatus(storeID, Status.valueOf(status));
+        if(result.equals("Cập nhật thành công.")) {
             return ResponseEntity.ok().body(result);
         } else {
             return ResponseEntity.badRequest().body(result);

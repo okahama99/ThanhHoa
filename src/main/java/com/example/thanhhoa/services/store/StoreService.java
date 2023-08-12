@@ -11,6 +11,7 @@ import com.example.thanhhoa.dtos.StoreModels.ShowProvinceModel;
 import com.example.thanhhoa.dtos.StoreModels.ShowStoreModel;
 import com.example.thanhhoa.dtos.StoreModels.ShowStorePlantRecordModel;
 import com.example.thanhhoa.dtos.StoreModels.UpdateStoreModel;
+import com.example.thanhhoa.enums.Status;
 import org.springframework.data.domain.Pageable;
 
 import java.util.List;
@@ -21,7 +22,7 @@ public interface StoreService {
 
     String updateStore(UpdateStoreModel updateStoremodel);
 
-    String deleteStore(String storeID);
+    String changeStoreStatus(String storeID, Status status);
 
     ShowStoreModel getByID(String storeID);
 

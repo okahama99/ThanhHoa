@@ -128,15 +128,15 @@ public class StoreServiceImpl implements StoreService{
     }
 
     @Override
-    public String deleteStore(String storeID) {
+    public String changeStoreStatus(String storeID, Status status) {
         Optional<Store> checkExisted = storeRepository.findById(storeID);
         if(checkExisted == null){
             return "Không tìm thấy Cửa hàng với tên là " + storeID + ".";
         }
         Store store = checkExisted.get();
-        store.setStatus(Status.INACTIVE);
+        store.setStatus(status);
         storeRepository.save(store);
-        return "Xóa thành công.";
+        return "Cập nhật thành công.";
     }
 
     @Override
@@ -327,14 +327,20 @@ public class StoreServiceImpl implements StoreService{
 
             }
 
-            StoreEmployeeId employeeId = new StoreEmployeeId();
-            employeeId.setTblAccount_id(employeeAcc.getId());
+            StoreEmployee storeEmployee = storeEmployeeRepository.findByAccount_Id(employeeUserID);
+            if(storeEmployee != null && storeEmployee.getStatus().toString().equalsIgnoreCase("INACTIVE")){
+                storeEmployee.setStatus(Status.ACTIVE);
+            }else if(storeEmployee != null && storeEmployee.getStatus().toString().equalsIgnoreCase("ACTIVE")){
+                return "Tài khoản có ID là " + employeeUserID + "vẫn đang là nhân viên của cửa hàng.";
+            }else{
+                StoreEmployeeId employeeId = new StoreEmployeeId();
+                employeeId.setTblAccount_id(employeeAcc.getId());
 
-            StoreEmployee storeEmployee = new StoreEmployee();
-            storeEmployee.setId(employeeId);
-            storeEmployee.setStore(store);
-            storeEmployee.setAccount(employeeAcc);
-            storeEmployee.setStatus(Status.ACTIVE);
+                storeEmployee.setId(employeeId);
+                storeEmployee.setStore(store);
+                storeEmployee.setAccount(employeeAcc);
+                storeEmployee.setStatus(Status.ACTIVE);
+            }
             storeEmployeeRepository.save(storeEmployee);
         }
         return "Thêm thành công.";
@@ -348,9 +354,6 @@ public class StoreServiceImpl implements StoreService{
         }
         storeEmployee.setStatus(Status.INACTIVE);
         storeEmployeeRepository.save(storeEmployee);
-        tblAccount account = storeEmployee.getAccount();
-        account.setStatus(Status.ACTIVE);
-        userRepository.save(account);
         return "Xóa thành công.";
     }
 
