@@ -43,12 +43,7 @@ public class VNPayController {
         int paymentStatus = vnPayService.orderReturn(request);
 
         Transaction transaction = new Transaction();
-        Transaction lastTransaction = transactionRepository.findFirstByOrderByIdDesc();
-        if(lastTransaction == null) {
-            transaction.setId(util.createNewID("T"));
-        } else {
-            transaction.setId(util.createIDFromLastID("T", 1, lastTransaction.getId()));
-        }
+        transaction.setId(request.getParameter("vnp_TransactionNo"));
         transaction.setBillNo(request.getParameter("vnp_TxnRef"));
         transaction.setTransNo(request.getParameter("vnp_TransactionNo"));
         transaction.setBankCode(request.getParameter("vnp_BankCode"));

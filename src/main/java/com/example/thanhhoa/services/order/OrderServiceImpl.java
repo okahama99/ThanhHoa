@@ -1,5 +1,6 @@
 package com.example.thanhhoa.services.order;
 
+import com.example.thanhhoa.dtos.NotificationModels.CreateNotificationModel;
 import com.example.thanhhoa.dtos.OrderModels.CreateOrderModel;
 import com.example.thanhhoa.dtos.OrderModels.GetStaffModel;
 import com.example.thanhhoa.dtos.OrderModels.OrderDetailModel;
@@ -8,16 +9,19 @@ import com.example.thanhhoa.dtos.OrderModels.ShowOrderModel;
 import com.example.thanhhoa.dtos.OrderModels.UpdateOrderModel;
 import com.example.thanhhoa.entities.Cart;
 import com.example.thanhhoa.entities.DistancePrice;
+import com.example.thanhhoa.entities.Notification;
 import com.example.thanhhoa.entities.OrderDetail;
 import com.example.thanhhoa.entities.Plant;
 import com.example.thanhhoa.entities.PlantPrice;
 import com.example.thanhhoa.entities.StorePlant;
 import com.example.thanhhoa.entities.StorePlantRecord;
+import com.example.thanhhoa.entities.Transaction;
 import com.example.thanhhoa.entities.tblAccount;
 import com.example.thanhhoa.entities.tblOrder;
 import com.example.thanhhoa.enums.Status;
 import com.example.thanhhoa.repositories.CartRepository;
 import com.example.thanhhoa.repositories.DistancePriceRepository;
+import com.example.thanhhoa.repositories.NotificationRepository;
 import com.example.thanhhoa.repositories.OrderDetailRepository;
 import com.example.thanhhoa.repositories.OrderRepository;
 import com.example.thanhhoa.repositories.PlantPriceRepository;
@@ -25,10 +29,13 @@ import com.example.thanhhoa.repositories.PlantRepository;
 import com.example.thanhhoa.repositories.StorePlantRecordRepository;
 import com.example.thanhhoa.repositories.StorePlantRepository;
 import com.example.thanhhoa.repositories.StoreRepository;
+import com.example.thanhhoa.repositories.TransactionRepository;
 import com.example.thanhhoa.repositories.UserRepository;
 import com.example.thanhhoa.repositories.pagings.OrderDetailPagingRepository;
 import com.example.thanhhoa.repositories.pagings.OrderPagingRepository;
+import com.example.thanhhoa.services.firebase.FirebaseMessagingService;
 import com.example.thanhhoa.utils.Util;
+import com.google.firebase.messaging.FirebaseMessagingException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -37,7 +44,9 @@ import org.springframework.stereotype.Service;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 @Service
@@ -69,9 +78,15 @@ public class OrderServiceImpl implements OrderService {
     private OrderDetailPagingRepository orderDetailPagingRepository;
     @Autowired
     private Util util;
+    @Autowired
+    private TransactionRepository transactionRepository;
+    @Autowired
+    private FirebaseMessagingService firebaseMessagingService;
+    @Autowired
+    private NotificationRepository notificationRepository;
 
     @Override
-    public String createOrder(CreateOrderModel createOrderModel, Long customerID) {
+    public String createOrder(CreateOrderModel createOrderModel, Long customerID) throws FirebaseMessagingException {
         if(createOrderModel.getDetailList() == null) {
             return "Danh sách cây không được để trống.";
         }
@@ -139,7 +154,42 @@ public class OrderServiceImpl implements OrderService {
         order.setDistancePrice(distancePrice);
         order.setTotalShipCost(totalShipCost);
         order.setTotal(total);
+
+        if(createOrderModel.getTransactionNo() != null){
+            Transaction transaction = transactionRepository.findByTransNo(createOrderModel.getTransactionNo());
+            if(transaction == null){
+                return "TransactionNo không tồn tại";
+            }
+            transaction.setTblOrder(order);
+            transactionRepository.save(transaction);
+        }
         orderRepository.save(order);
+
+        if(account.getFcmToken() != null && !(account.getFcmToken().trim().isEmpty()) && account.getFcmToken().length()>0){
+            CreateNotificationModel notificationModel = new CreateNotificationModel();
+            notificationModel.setTitle("-- Thông báo từ ThanhHoa Gardens --");
+            notificationModel.setUserID(account.getId());
+            notificationModel.setContent("Đơn hàng có mã " + order.getId() + " của quý khách đã được tạo thành công.");
+            Map<String, String> map = new HashMap<String, String>();
+            map.put("UserID : " + account.getId() + ", Fullname : " + account.getFullName(), "OrderID : " + order.getId());
+            notificationModel.setData(map);
+            firebaseMessagingService.sendNotification(notificationModel);
+        }
+        Notification notification = new Notification();
+        Notification lastNotification = notificationRepository.findFirstByOrderByIdDesc();
+        if(lastNotification == null) {
+            notification.setId(util.createNewID("N"));
+        } else {
+            notification.setId(util.createIDFromLastID("N", 1, lastNotification.getId()));
+        }
+        notification.setTblAccount(account);
+        notification.setDescription("Sản phẩm bạn muốn mua đã hết hàng, vui lòng chọn sản phẩm khác.");
+        notification.setIsRead(false);
+        notification.setLink("ORDER-" + order.getId());
+        notification.setDate(LocalDateTime.now(ZoneId.of("Asia/Ho_Chi_Minh")));
+        notification.setTitle("Tạo đơn thành công.");
+        notificationRepository.saveAndFlush(notification);
+
         return order.getId();
     }
 

@@ -242,6 +242,20 @@ public class Util {
                     showPlantPriceModel.setStatus(newestPrice.getStatus());
 
                     Integer totalPlant = storePlantRepository.sumQuantity(plant.getId());
+                    Double totalRating = 0.0;
+                    Double totalFeedback = 0.0;
+                    Double avgRatingFeedback = 0.0;
+                    List<OrderFeedback> list = orderFeedbackRepository.findAllByStatusAndPlant_Id(Status.ACTIVE, plant.getId());
+                    if(list != null && !list.isEmpty()) {
+                        for(OrderFeedback ofb : list) {
+                            totalRating += Double.parseDouble(ofb.getRating().getDescription());
+                        }
+                        totalFeedback = Double.valueOf(list.size());
+                    }
+
+                    if(totalRating > 0.0 && totalFeedback > 0.0) {
+                        avgRatingFeedback = totalRating / totalFeedback;
+                    }
 
                     ShowPlantModel model = new ShowPlantModel();
                     model.setPlantID(plant.getId());
@@ -255,6 +269,9 @@ public class Util {
                     model.setDescription(plant.getDescription());
                     model.setCareNote(plant.getCareNote());
                     model.setStatus(plant.getStatus());
+                    model.setTotalRating(totalRating);
+                    model.setTotalFeedback(totalRating);
+                    model.setAvgRatingFeedback(avgRatingFeedback);
                     model.setTotalPlant(totalPlant);
                     model.setTotalPage(totalPage);
                     return model;
@@ -497,6 +514,89 @@ public class Util {
                     }
                     plantModel.setPlantName(orderFeedback.getPlant().getName());
 
+                    // start of order
+                    tblOrder order = orderFeedback.getOrderDetail().getTblOrder();
+                    ShowOrderModel orderModel = new ShowOrderModel();
+                    orderModel.setId(order.getId());
+                    orderModel.setFullName(order.getFullName());
+                    orderModel.setAddress(order.getAddress());
+                    orderModel.setEmail(order.getEmail());
+                    orderModel.setPhone(order.getPhone());
+                    orderModel.setCreatedDate(order.getCreatedDate());
+                    orderModel.setPackageDate(order.getPackageDate());
+                    orderModel.setDeliveryDate(order.getDeliveryDate());
+                    orderModel.setReceivedDate(order.getReceivedDate());
+                    orderModel.setApproveDate(order.getApproveDate());
+                    orderModel.setRejectDate(order.getRejectDate());
+                    orderModel.setPaymentMethod(order.getPaymentMethod());
+                    orderModel.setProgressStatus(order.getProgressStatus());
+                    orderModel.setReason(order.getReason());
+                    orderModel.setLatLong(order.getLatLong());
+                    orderModel.setDistance(order.getDistance());
+                    orderModel.setTotalShipCost(order.getTotalShipCost());
+                    orderModel.setTotal(order.getTotal());
+                    orderModel.setIsPaid(order.getIsPaid());
+                    orderModel.setReceiptIMG(order.getReceiptIMG());
+
+                    //store
+                    ShowStoreModel storeModel = new ShowStoreModel();
+                    storeModel.setId(order.getStore().getId());
+                    storeModel.setStoreName(order.getStore().getStoreName());
+                    storeModel.setAddress(order.getStore().getAddress());
+                    storeModel.setPhone(order.getStore().getPhone());
+
+                    //staff
+                    ShowStaffModel staffModel = new ShowStaffModel();
+                    if(order.getStaff() != null) {
+                        staffModel.setId(order.getStaff().getId());
+                        staffModel.setAddress(order.getStaff().getAddress());
+                        staffModel.setEmail(order.getStaff().getEmail());
+                        staffModel.setPhone(order.getStaff().getPhone());
+                        staffModel.setFullName(order.getStaff().getFullName());
+                        staffModel.setAvatar(order.getStaff().getAvatar());
+                    }
+
+//                    //customer
+//                    ShowCustomerModel customerModel = new ShowCustomerModel();
+//                    if(order.getCustomer() != null) {
+//                        customerModel.setId(order.getCustomer().getId());
+//                        customerModel.setAddress(order.getCustomer().getAddress());
+//                        customerModel.setEmail(order.getCustomer().getEmail());
+//                        customerModel.setPhone(order.getCustomer().getPhone());
+//                        customerModel.setFullName(order.getCustomer().getFullName());
+//                    }
+
+                    //distance price
+                    ShowDistancePriceModel distancePriceModel = new ShowDistancePriceModel();
+                    distancePriceModel.setId(order.getDistancePrice().getId());
+                    distancePriceModel.setApplyDate(order.getDistancePrice().getApplyDate());
+                    distancePriceModel.setPricePerKm(order.getDistancePrice().getPricePerKm());
+
+//                    //plant
+//                    List<com.example.thanhhoa.dtos.OrderModels.ShowPlantModel> listPlantModel = new ArrayList<>();
+//                    for(OrderDetail detail : order.getOrderDetailList()) {
+//                        com.example.thanhhoa.dtos.OrderModels.ShowPlantModel plantModel = new com.example.thanhhoa.dtos.OrderModels.ShowPlantModel();
+//                        PlantPrice newestPrice = plantPriceRepository.findFirstByPlant_IdAndStatusOrderByApplyDateDesc(detail.getPlant().getId(), Status.ACTIVE);
+//                        plantModel.setId(detail.getPlant().getId());
+//                        if(detail.getPlant().getPlantIMGList() != null && !detail.getPlant().getPlantIMGList().isEmpty()) {
+//                            plantModel.setImage(detail.getPlant().getPlantIMGList().get(0).getImgURL());
+//                        }
+//                        plantModel.setQuantity(detail.getQuantity());
+//                        plantModel.setPlantName(detail.getPlant().getName());
+//                        plantModel.setPlantPriceID(newestPrice.getId());
+//                        plantModel.setPlantPrice(newestPrice.getPrice());
+//                        plantModel.setShipPrice(detail.getPlant().getPlantShipPrice().getPricePerPlant());
+//                        listPlantModel.add(plantModel);
+//                    }
+
+                    //orderModel.setShowPlantModel(listPlantModel);
+                    orderModel.setShowStaffModel(staffModel);
+                    orderModel.setShowStoreModel(storeModel);
+                    //orderModel.setShowCustomerModel(customerModel);
+                    orderModel.setShowDistancePriceModel(distancePriceModel);
+                    orderModel.setNumOfPlant(order.getOrderDetailList().size());
+                    // end of order model
+
                     ShowOrderFeedbackModel model = new ShowOrderFeedbackModel();
                     model.setShowCustomerModel(customerModel);
                     model.setOrderFeedbackID(orderFeedback.getId());
@@ -507,6 +607,7 @@ public class Util {
                     model.setStatus(orderFeedback.getStatus());
                     model.setTotalPage(totalPage);
                     model.setShowPlantModel(plantModel);
+                    model.setShowOrderModel(orderModel);
                     return model;
                 }
 

@@ -27,7 +27,7 @@ public class FirebaseMessagingService {
 
         tblAccount user = userRepository.getById(createNotificationModel.getUserID());
 
-            com.google.firebase.messaging.Notification a = com.google.firebase.messaging.Notification
+            com.google.firebase.messaging.Notification notification = com.google.firebase.messaging.Notification
                     .builder()
                     .setTitle(createNotificationModel.getTitle())
                     .setBody(createNotificationModel.getContent())
@@ -36,8 +36,8 @@ public class FirebaseMessagingService {
             Message message = Message
                     .builder()
                     .setToken(user.getFcmToken())
-                    .setNotification(a)
-                    .putData("PLANT","P001")
+                    .setNotification(notification)
+                    .putAllData(createNotificationModel.getData())
                     .build();
             return firebaseMessaging.send(message);
 

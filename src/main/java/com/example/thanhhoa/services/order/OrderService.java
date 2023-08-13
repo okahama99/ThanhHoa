@@ -6,13 +6,14 @@ import com.example.thanhhoa.dtos.OrderModels.ShowOrderDetailModel;
 import com.example.thanhhoa.dtos.OrderModels.ShowOrderModel;
 import com.example.thanhhoa.dtos.OrderModels.UpdateOrderModel;
 import com.example.thanhhoa.enums.Status;
+import com.google.firebase.messaging.FirebaseMessagingException;
 import org.springframework.data.domain.Pageable;
 
 import java.util.List;
 
 public interface OrderService {
 
-    String createOrder(CreateOrderModel createOrderModel, Long customerID);
+    String createOrder(CreateOrderModel createOrderModel, Long customerID) throws FirebaseMessagingException;
 
     String updateOrder(UpdateOrderModel updateOrderModel, Long customerID);
 

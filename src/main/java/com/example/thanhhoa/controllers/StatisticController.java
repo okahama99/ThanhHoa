@@ -1,6 +1,5 @@
 package com.example.thanhhoa.controllers;
 
-import com.example.thanhhoa.dtos.StatisticModels.ShowStatisticModel;
 import com.example.thanhhoa.services.statistic.StatisticService;
 import com.example.thanhhoa.utils.JwtUtil;
 import com.example.thanhhoa.utils.Util;
@@ -31,11 +30,11 @@ public class StatisticController {
     @GetMapping(produces = "application/json;charset=UTF-8")
     public @ResponseBody
     ResponseEntity<?> getStatistic(@RequestParam(required = false) String storeID,
-                                @RequestParam String from,
-                                @RequestParam String to,
-                                HttpServletRequest request) {
+                                   @RequestParam String from,
+                                   @RequestParam String to,
+                                   HttpServletRequest request) {
         String roleName = jwtUtil.getRoleNameFromRequest(request);
-        if (!roleName.equalsIgnoreCase("Owner") && !roleName.equalsIgnoreCase("Manager")) {
+        if(!roleName.equalsIgnoreCase("Owner") && !roleName.equalsIgnoreCase("Manager")) {
             throw new ResponseStatusException(HttpStatus.FORBIDDEN, "-----------------------------------Người dùng không có quyền truy cập---------------------------");
         }
 
@@ -49,6 +48,29 @@ public class StatisticController {
         }
 
         return ResponseEntity.ok().body(statisticService.getStatistic(storeID, fromDate, toDate));
+
+    }
+
+    @GetMapping(value = "/getStatisticWithAllStore", produces = "application/json;charset=UTF-8")
+    public @ResponseBody
+    ResponseEntity<?> getStatistic(@RequestParam String from,
+                                   @RequestParam String to,
+                                   HttpServletRequest request) {
+        String roleName = jwtUtil.getRoleNameFromRequest(request);
+        if(!roleName.equalsIgnoreCase("Owner") && !roleName.equalsIgnoreCase("Manager")) {
+            throw new ResponseStatusException(HttpStatus.FORBIDDEN, "-----------------------------------Người dùng không có quyền truy cập---------------------------");
+        }
+
+        LocalDateTime fromDate = util.isDateValid(from);
+        LocalDateTime toDate = util.isDateValid(to);
+        if(fromDate == null) {
+            return ResponseEntity.badRequest().body("Nhập theo khuôn được định sẵn yyyy-MM-dd, ví dụ : 2021-12-21");
+        }
+        if(toDate == null) {
+            return ResponseEntity.badRequest().body("Nhập theo khuôn được định sẵn yyyy-MM-dd, ví dụ : 2021-12-21");
+        }
+
+        return ResponseEntity.ok().body(statisticService.getStatisticOfAllStore(fromDate, toDate));
 
     }
 }

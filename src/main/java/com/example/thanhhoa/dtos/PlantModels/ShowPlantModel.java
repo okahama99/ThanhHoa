@@ -21,6 +21,10 @@ public class ShowPlantModel {
     private Status status;
     private Integer totalPlant;
 
+    private Double totalRating;
+    private Double totalFeedback;
+    private Double avgRatingFeedback;
+
     private ShowPlantShipPriceModel showPlantShipPriceModel;
     private ShowPlantPriceModel showPlantPriceModel;
     private List<ShowPlantIMGModel> plantIMGList;

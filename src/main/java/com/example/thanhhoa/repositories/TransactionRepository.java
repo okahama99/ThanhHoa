@@ -12,4 +12,6 @@ public interface TransactionRepository extends JpaRepository<Transaction, String
     Transaction findFirstByOrderByIdDesc();
 
     List<Transaction> findAllByUser_Id(Long userID);
+
+    Transaction findByTransNo(String transNo);
 }
