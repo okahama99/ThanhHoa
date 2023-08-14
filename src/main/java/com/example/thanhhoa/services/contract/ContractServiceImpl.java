@@ -913,6 +913,27 @@ public class ContractServiceImpl implements ContractService {
         return modelList;
     }
 
+    @Override
+    public void checkStartDateEndDate() throws FirebaseMessagingException {
+        List<Contract> workingList = contractRepository.findAllByStartedDateLessThanEqualAndStatus(LocalDateTime.now(ZoneId.of("Asia/Ho_Chi_Minh")), Status.SIGNED);
+        if(workingList != null && !workingList.isEmpty()){
+            for(Contract contract : workingList) {
+                contract.setStatus(Status.WORKING);
+                contractRepository.save(contract);
+                util.createNotification("CONTRACT", contract.getStaff(), contract.getId(), "bắt đầu");
+            }
+        }
+
+        List<Contract> doneList = contractRepository.findAllByEndedDateLessThanEqualAndStatus(LocalDateTime.now(ZoneId.of("Asia/Ho_Chi_Minh")), Status.WORKING);
+        if(doneList != null && !doneList.isEmpty()){
+            for(Contract contract : doneList) {
+                contract.setStatus(Status.DONE);
+                contractRepository.save(contract);
+                util.createNotification("CONTRACT", contract.getStaff(), contract.getId(), "kết thúc");
+            }
+        }
+    }
+
     private LocalDateTime isDateValid(String date) {
         date += " 00:00:00";
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");

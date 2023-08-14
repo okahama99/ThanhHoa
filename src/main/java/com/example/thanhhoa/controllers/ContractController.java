@@ -367,4 +367,9 @@ public class ContractController {
     List<ShowPaymentTypeModel> getPaymentType() {
         return contractService.getPaymentType();
     }
+
+    @GetMapping(value = "/checkStartDateEndDate", produces = "application/json;charset=UTF-8")
+    public void checkStartDateEndDate() throws FirebaseMessagingException {
+        contractService.checkStartDateEndDate();
+    }
 }

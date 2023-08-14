@@ -28,4 +28,8 @@ public interface ContractRepository extends JpaRepository<Contract, String> {
 
     @Query(value = "SELECT SUM(c.total) FROM Contract c WHERE c.store_id = ?1 and c.created_date between ?2 and ?3", nativeQuery = true)
     Double sumTotalOfAStore(String storeID, LocalDateTime from, LocalDateTime to);
+
+    List<Contract> findAllByStartedDateLessThanEqualAndStatus(LocalDateTime date, Status status);
+
+    List<Contract> findAllByEndedDateLessThanEqualAndStatus(LocalDateTime date, Status status);
 }

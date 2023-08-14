@@ -56,5 +56,5 @@ public interface ContractService {
 
     List<ShowContractDetailModel> getContractDetailByExactDate(LocalDateTime from, LocalDateTime to, Long staffID);
 
-
+    void checkStartDateEndDate() throws FirebaseMessagingException;
 }
