@@ -19,6 +19,7 @@ import com.example.thanhhoa.entities.OrderDetail;
 import com.example.thanhhoa.entities.OrderFeedback;
 import com.example.thanhhoa.entities.OrderFeedbackIMG;
 import com.example.thanhhoa.entities.Plant;
+import com.example.thanhhoa.entities.PlantPrice;
 import com.example.thanhhoa.entities.Rating;
 import com.example.thanhhoa.entities.tblOrder;
 import com.example.thanhhoa.enums.Status;
@@ -27,6 +28,7 @@ import com.example.thanhhoa.repositories.ContractRepository;
 import com.example.thanhhoa.repositories.OrderDetailRepository;
 import com.example.thanhhoa.repositories.OrderFeedbackIMGRepository;
 import com.example.thanhhoa.repositories.OrderFeedbackRepository;
+import com.example.thanhhoa.repositories.PlantPriceRepository;
 import com.example.thanhhoa.repositories.PlantRepository;
 import com.example.thanhhoa.repositories.RatingRepository;
 import com.example.thanhhoa.repositories.UserRepository;
@@ -69,6 +71,8 @@ public class FeedbackServiceImpl implements FeedbackService {
     private OrderFeedbackIMGRepository orderFeedbackIMGRepository;
     @Autowired
     private Util util;
+    @Autowired
+    private PlantPriceRepository plantPriceRepository;
 
 
     @Override
@@ -271,24 +275,24 @@ public class FeedbackServiceImpl implements FeedbackService {
         distancePriceModel.setApplyDate(order.getDistancePrice().getApplyDate());
         distancePriceModel.setPricePerKm(order.getDistancePrice().getPricePerKm());
 
-//                    //plant
-//                    List<com.example.thanhhoa.dtos.OrderModels.ShowPlantModel> listPlantModel = new ArrayList<>();
-//                    for(OrderDetail detail : order.getOrderDetailList()) {
-//                        com.example.thanhhoa.dtos.OrderModels.ShowPlantModel plantModel = new com.example.thanhhoa.dtos.OrderModels.ShowPlantModel();
-//                        PlantPrice newestPrice = plantPriceRepository.findFirstByPlant_IdAndStatusOrderByApplyDateDesc(detail.getPlant().getId(), Status.ACTIVE);
-//                        plantModel.setId(detail.getPlant().getId());
-//                        if(detail.getPlant().getPlantIMGList() != null && !detail.getPlant().getPlantIMGList().isEmpty()) {
-//                            plantModel.setImage(detail.getPlant().getPlantIMGList().get(0).getImgURL());
-//                        }
-//                        plantModel.setQuantity(detail.getQuantity());
-//                        plantModel.setPlantName(detail.getPlant().getName());
-//                        plantModel.setPlantPriceID(newestPrice.getId());
-//                        plantModel.setPlantPrice(newestPrice.getPrice());
-//                        plantModel.setShipPrice(detail.getPlant().getPlantShipPrice().getPricePerPlant());
-//                        listPlantModel.add(plantModel);
-//                    }
+        //plant
+        List<com.example.thanhhoa.dtos.OrderModels.ShowPlantModel> listPlantModel = new ArrayList<>();
+        for(OrderDetail detail : order.getOrderDetailList()) {
+            com.example.thanhhoa.dtos.OrderModels.ShowPlantModel plant = new com.example.thanhhoa.dtos.OrderModels.ShowPlantModel();
+            PlantPrice newestPrice = plantPriceRepository.findFirstByPlant_IdAndStatusOrderByApplyDateDesc(detail.getPlant().getId(), Status.ACTIVE);
+            plant.setId(detail.getPlant().getId());
+            if(detail.getPlant().getPlantIMGList() != null && !detail.getPlant().getPlantIMGList().isEmpty()) {
+                plant.setImage(detail.getPlant().getPlantIMGList().get(0).getImgURL());
+            }
+            plant.setQuantity(detail.getQuantity());
+            plant.setPlantName(detail.getPlant().getName());
+            plant.setPlantPriceID(newestPrice.getId());
+            plant.setPlantPrice(newestPrice.getPrice());
+            plant.setShipPrice(detail.getPlant().getPlantShipPrice().getPricePerPlant());
+            listPlantModel.add(plant);
+        }
 
-        //orderModel.setShowPlantModel(listPlantModel);
+        orderModel.setShowPlantModel(listPlantModel);
         orderModel.setShowStaffModel(staffModel);
         orderModel.setShowStoreModel(storeModel);
         //orderModel.setShowCustomerModel(customerModel);
@@ -404,24 +408,24 @@ public class FeedbackServiceImpl implements FeedbackService {
         distancePriceModel.setApplyDate(order.getDistancePrice().getApplyDate());
         distancePriceModel.setPricePerKm(order.getDistancePrice().getPricePerKm());
 
-//                    //plant
-//                    List<com.example.thanhhoa.dtos.OrderModels.ShowPlantModel> listPlantModel = new ArrayList<>();
-//                    for(OrderDetail detail : order.getOrderDetailList()) {
-//                        com.example.thanhhoa.dtos.OrderModels.ShowPlantModel plantModel = new com.example.thanhhoa.dtos.OrderModels.ShowPlantModel();
-//                        PlantPrice newestPrice = plantPriceRepository.findFirstByPlant_IdAndStatusOrderByApplyDateDesc(detail.getPlant().getId(), Status.ACTIVE);
-//                        plantModel.setId(detail.getPlant().getId());
-//                        if(detail.getPlant().getPlantIMGList() != null && !detail.getPlant().getPlantIMGList().isEmpty()) {
-//                            plantModel.setImage(detail.getPlant().getPlantIMGList().get(0).getImgURL());
-//                        }
-//                        plantModel.setQuantity(detail.getQuantity());
-//                        plantModel.setPlantName(detail.getPlant().getName());
-//                        plantModel.setPlantPriceID(newestPrice.getId());
-//                        plantModel.setPlantPrice(newestPrice.getPrice());
-//                        plantModel.setShipPrice(detail.getPlant().getPlantShipPrice().getPricePerPlant());
-//                        listPlantModel.add(plantModel);
-//                    }
+        //plant
+        List<com.example.thanhhoa.dtos.OrderModels.ShowPlantModel> listPlantModel = new ArrayList<>();
+        for(OrderDetail detail : order.getOrderDetailList()) {
+            com.example.thanhhoa.dtos.OrderModels.ShowPlantModel plant = new com.example.thanhhoa.dtos.OrderModels.ShowPlantModel();
+            PlantPrice newestPrice = plantPriceRepository.findFirstByPlant_IdAndStatusOrderByApplyDateDesc(detail.getPlant().getId(), Status.ACTIVE);
+            plant.setId(detail.getPlant().getId());
+            if(detail.getPlant().getPlantIMGList() != null && !detail.getPlant().getPlantIMGList().isEmpty()) {
+                plant.setImage(detail.getPlant().getPlantIMGList().get(0).getImgURL());
+            }
+            plant.setQuantity(detail.getQuantity());
+            plant.setPlantName(detail.getPlant().getName());
+            plant.setPlantPriceID(newestPrice.getId());
+            plant.setPlantPrice(newestPrice.getPrice());
+            plant.setShipPrice(detail.getPlant().getPlantShipPrice().getPricePerPlant());
+            listPlantModel.add(plant);
+        }
 
-        //orderModel.setShowPlantModel(listPlantModel);
+        orderModel.setShowPlantModel(listPlantModel);
         orderModel.setShowStaffModel(staffModel);
         orderModel.setShowStoreModel(storeModel);
         //orderModel.setShowCustomerModel(customerModel);
@@ -548,24 +552,24 @@ public class FeedbackServiceImpl implements FeedbackService {
         distancePriceModel.setApplyDate(order.getDistancePrice().getApplyDate());
         distancePriceModel.setPricePerKm(order.getDistancePrice().getPricePerKm());
 
-//                    //plant
-//                    List<com.example.thanhhoa.dtos.OrderModels.ShowPlantModel> listPlantModel = new ArrayList<>();
-//                    for(OrderDetail detail : order.getOrderDetailList()) {
-//                        com.example.thanhhoa.dtos.OrderModels.ShowPlantModel plantModel = new com.example.thanhhoa.dtos.OrderModels.ShowPlantModel();
-//                        PlantPrice newestPrice = plantPriceRepository.findFirstByPlant_IdAndStatusOrderByApplyDateDesc(detail.getPlant().getId(), Status.ACTIVE);
-//                        plantModel.setId(detail.getPlant().getId());
-//                        if(detail.getPlant().getPlantIMGList() != null && !detail.getPlant().getPlantIMGList().isEmpty()) {
-//                            plantModel.setImage(detail.getPlant().getPlantIMGList().get(0).getImgURL());
-//                        }
-//                        plantModel.setQuantity(detail.getQuantity());
-//                        plantModel.setPlantName(detail.getPlant().getName());
-//                        plantModel.setPlantPriceID(newestPrice.getId());
-//                        plantModel.setPlantPrice(newestPrice.getPrice());
-//                        plantModel.setShipPrice(detail.getPlant().getPlantShipPrice().getPricePerPlant());
-//                        listPlantModel.add(plantModel);
-//                    }
+        //plant
+        List<com.example.thanhhoa.dtos.OrderModels.ShowPlantModel> listPlantModel = new ArrayList<>();
+        for(OrderDetail detail : order.getOrderDetailList()) {
+            com.example.thanhhoa.dtos.OrderModels.ShowPlantModel plant = new com.example.thanhhoa.dtos.OrderModels.ShowPlantModel();
+            PlantPrice newestPrice = plantPriceRepository.findFirstByPlant_IdAndStatusOrderByApplyDateDesc(detail.getPlant().getId(), Status.ACTIVE);
+            plant.setId(detail.getPlant().getId());
+            if(detail.getPlant().getPlantIMGList() != null && !detail.getPlant().getPlantIMGList().isEmpty()) {
+                plant.setImage(detail.getPlant().getPlantIMGList().get(0).getImgURL());
+            }
+            plant.setQuantity(detail.getQuantity());
+            plant.setPlantName(detail.getPlant().getName());
+            plant.setPlantPriceID(newestPrice.getId());
+            plant.setPlantPrice(newestPrice.getPrice());
+            plant.setShipPrice(detail.getPlant().getPlantShipPrice().getPricePerPlant());
+            listPlantModel.add(plant);
+        }
 
-        //orderModel.setShowPlantModel(listPlantModel);
+        orderModel.setShowPlantModel(listPlantModel);
         orderModel.setShowStaffModel(staffModel);
         orderModel.setShowStoreModel(storeModel);
         //orderModel.setShowCustomerModel(customerModel);

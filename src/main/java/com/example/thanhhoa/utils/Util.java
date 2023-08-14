@@ -509,7 +509,7 @@ public class Util {
 
                     //customer
                     ShowCustomerModel customerModel = new ShowCustomerModel();
-                    if(orderFeedback.getCustomer() != null){
+                    if(orderFeedback.getCustomer() != null) {
                         customerModel.setId(orderFeedback.getCustomer().getId());
                         customerModel.setAddress(orderFeedback.getCustomer().getAddress());
                         customerModel.setEmail(orderFeedback.getCustomer().getEmail());
@@ -584,24 +584,24 @@ public class Util {
                     distancePriceModel.setApplyDate(order.getDistancePrice().getApplyDate());
                     distancePriceModel.setPricePerKm(order.getDistancePrice().getPricePerKm());
 
-//                    //plant
-//                    List<com.example.thanhhoa.dtos.OrderModels.ShowPlantModel> listPlantModel = new ArrayList<>();
-//                    for(OrderDetail detail : order.getOrderDetailList()) {
-//                        com.example.thanhhoa.dtos.OrderModels.ShowPlantModel plantModel = new com.example.thanhhoa.dtos.OrderModels.ShowPlantModel();
-//                        PlantPrice newestPrice = plantPriceRepository.findFirstByPlant_IdAndStatusOrderByApplyDateDesc(detail.getPlant().getId(), Status.ACTIVE);
-//                        plantModel.setId(detail.getPlant().getId());
-//                        if(detail.getPlant().getPlantIMGList() != null && !detail.getPlant().getPlantIMGList().isEmpty()) {
-//                            plantModel.setImage(detail.getPlant().getPlantIMGList().get(0).getImgURL());
-//                        }
-//                        plantModel.setQuantity(detail.getQuantity());
-//                        plantModel.setPlantName(detail.getPlant().getName());
-//                        plantModel.setPlantPriceID(newestPrice.getId());
-//                        plantModel.setPlantPrice(newestPrice.getPrice());
-//                        plantModel.setShipPrice(detail.getPlant().getPlantShipPrice().getPricePerPlant());
-//                        listPlantModel.add(plantModel);
-//                    }
+                    //plant
+                    List<com.example.thanhhoa.dtos.OrderModels.ShowPlantModel> listPlantModel = new ArrayList<>();
+                    for(OrderDetail detail : order.getOrderDetailList()) {
+                        com.example.thanhhoa.dtos.OrderModels.ShowPlantModel plant = new com.example.thanhhoa.dtos.OrderModels.ShowPlantModel();
+                        PlantPrice newestPrice = plantPriceRepository.findFirstByPlant_IdAndStatusOrderByApplyDateDesc(detail.getPlant().getId(), Status.ACTIVE);
+                        plant.setId(detail.getPlant().getId());
+                        if(detail.getPlant().getPlantIMGList() != null && !detail.getPlant().getPlantIMGList().isEmpty()) {
+                            plant.setImage(detail.getPlant().getPlantIMGList().get(0).getImgURL());
+                        }
+                        plant.setQuantity(detail.getQuantity());
+                        plant.setPlantName(detail.getPlant().getName());
+                        plant.setPlantPriceID(newestPrice.getId());
+                        plant.setPlantPrice(newestPrice.getPrice());
+                        plant.setShipPrice(detail.getPlant().getPlantShipPrice().getPricePerPlant());
+                        listPlantModel.add(plant);
+                    }
 
-                    //orderModel.setShowPlantModel(listPlantModel);
+                    orderModel.setShowPlantModel(listPlantModel);
                     orderModel.setShowStaffModel(staffModel);
                     orderModel.setShowStoreModel(storeModel);
                     //orderModel.setShowCustomerModel(customerModel);
@@ -1209,7 +1209,7 @@ public class Util {
 
         //customer
         ShowCustomerModel customerModel = new ShowCustomerModel();
-        if(orderDetail.getTblOrder().getCustomer() != null){
+        if(orderDetail.getTblOrder().getCustomer() != null) {
             customerModel.setId(orderDetail.getTblOrder().getCustomer().getId());
             customerModel.setAddress(orderDetail.getTblOrder().getCustomer().getAddress());
             customerModel.setEmail(orderDetail.getTblOrder().getCustomer().getEmail());
@@ -1339,7 +1339,7 @@ public class Util {
 
                     //customer
                     ShowCustomerModel customerModel = new ShowCustomerModel();
-                    if(orderDetail.getTblOrder().getCustomer() != null){
+                    if(orderDetail.getTblOrder().getCustomer() != null) {
                         customerModel.setId(orderDetail.getTblOrder().getCustomer().getId());
                         customerModel.setAddress(orderDetail.getTblOrder().getCustomer().getAddress());
                         customerModel.setEmail(orderDetail.getTblOrder().getCustomer().getEmail());
@@ -1575,8 +1575,8 @@ public class Util {
     }
 
     public void createNotification(String entity, tblAccount account, String entityID, String action) throws FirebaseMessagingException {
-        if(entity.equalsIgnoreCase("ORDER")){
-            if(account.getFcmToken() != null && !(account.getFcmToken().trim().isEmpty()) && account.getFcmToken().length()>0){
+        if(entity.equalsIgnoreCase("ORDER")) {
+            if(account.getFcmToken() != null && !(account.getFcmToken().trim().isEmpty()) && account.getFcmToken().length() > 0) {
                 CreateNotificationModel notificationModel = new CreateNotificationModel();
                 notificationModel.setTitle("-- Thông báo từ ThanhHoa Gardens --");
                 notificationModel.setUserID(account.getId());
@@ -1600,8 +1600,8 @@ public class Util {
             notification.setDate(LocalDateTime.now(ZoneId.of("Asia/Ho_Chi_Minh")));
             notification.setTitle("-- Thông báo từ ThanhHoa Gardens --");
             notificationRepository.saveAndFlush(notification);
-        }else if(entity.equalsIgnoreCase("CONTRACT")){
-            if(account.getFcmToken() != null && !(account.getFcmToken().trim().isEmpty()) && account.getFcmToken().length()>0){
+        } else if(entity.equalsIgnoreCase("CONTRACT")) {
+            if(account.getFcmToken() != null && !(account.getFcmToken().trim().isEmpty()) && account.getFcmToken().length() > 0) {
                 CreateNotificationModel notificationModel = new CreateNotificationModel();
                 notificationModel.setTitle("-- Thông báo từ ThanhHoa Gardens --");
                 notificationModel.setUserID(account.getId());
@@ -1625,7 +1625,7 @@ public class Util {
             notification.setDate(LocalDateTime.now(ZoneId.of("Asia/Ho_Chi_Minh")));
             notification.setTitle("-- Thông báo từ ThanhHoa Gardens --");
             notificationRepository.saveAndFlush(notification);
-        }else{
+        } else {
 
         }
 
