@@ -17,11 +17,11 @@ public interface OrderService {
 
     String updateOrder(UpdateOrderModel updateOrderModel, Long customerID);
 
-    String deleteOrder(String orderID, String reason, Status status);
+    String deleteOrder(String orderID, String reason, Status status) throws FirebaseMessagingException;
 
-    String approveOrder(String orderID, Long userID);
+    String approveOrder(String orderID, Long userID) throws FirebaseMessagingException;
 
-    Boolean changeOrderStatus(String orderID, String receiptIMG, String status);
+    Boolean changeOrderStatus(String orderID, String receiptIMG, String status) throws FirebaseMessagingException;
 
     List<ShowOrderModel> getAllOrderByUserID(Long userID, String roleName, Pageable pageable);
 

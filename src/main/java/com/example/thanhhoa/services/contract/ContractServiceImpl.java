@@ -43,6 +43,7 @@ import com.example.thanhhoa.repositories.WorkingDateRepository;
 import com.example.thanhhoa.repositories.pagings.ContractDetailPagingRepository;
 import com.example.thanhhoa.repositories.pagings.ContractPagingRepository;
 import com.example.thanhhoa.utils.Util;
+import com.google.firebase.messaging.FirebaseMessagingException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -259,7 +260,7 @@ public class ContractServiceImpl implements ContractService {
     }
 
     @Override
-    public String createContractCustomer(CreateCustomerContractModel createCustomerContractModel, Long userID) {
+    public String createContractCustomer(CreateCustomerContractModel createCustomerContractModel, Long userID) throws FirebaseMessagingException {
         Store store = storeRepository.getById(createCustomerContractModel.getStoreID());
         tblAccount customer = userRepository.getById(userID);
         if(createCustomerContractModel.getDetailModelList() == null) {
@@ -336,16 +337,21 @@ public class ContractServiceImpl implements ContractService {
         contract.setEndedDate(endDate);
         contract.setTotal(totalPrice);
         contractRepository.save(contract);
+
+        util.createNotification("CONTRACT", customer, contract.getId(), "tạo");
+
         return "Tạo thành công.";
     }
 
     @Override
-    public String createContractManager(CreateManagerContractModel createManagerContractModel) throws IOException {
+    public String createContractManager(CreateManagerContractModel createManagerContractModel) throws IOException, FirebaseMessagingException {
         Contract contract = new Contract();
         tblAccount customer;
         if(createManagerContractModel.getCustomerID() != null) {
             customer = userRepository.getById(createManagerContractModel.getCustomerID());
             contract.setCustomer(customer);
+
+            util.createNotification("CONTRACT", customer, contract.getId(), "tạo");
         }
         Store store = storeRepository.getById(createManagerContractModel.getStoreID());
         tblAccount staff = userRepository.getById(createManagerContractModel.getStaffID());
@@ -446,6 +452,8 @@ public class ContractServiceImpl implements ContractService {
         contract.setTotal(totalPrice);
         userRepository.save(staff);
         contractRepository.save(contract);
+
+        util.createNotification("CONTRACT", staff, contract.getId(), "giao cho bạn");
         return contract.getId();
     }
 
@@ -470,7 +478,7 @@ public class ContractServiceImpl implements ContractService {
     }
 
     @Override
-    public String deleteContract(String contractID, String reason, Status status) {
+    public String deleteContract(String contractID, String reason, Status status) throws FirebaseMessagingException {
         Contract contract = contractRepository.findByIdAndStatus(contractID, Status.WAITING);
         if(contract == null) {
             return "Không thể tìm thấy Hợp đồng có trạng thái WAITING với ID là " + contractID + ".";
@@ -479,11 +487,14 @@ public class ContractServiceImpl implements ContractService {
         contract.setStatus(status);
         contract.setRejectedDate(LocalDateTime.now(ZoneId.of("Asia/Ho_Chi_Minh")));
         contractRepository.save(contract);
+
+        util.createNotification("CONTRACT", contract.getCustomer(), contract.getId(), "xóa");
+
         return "Hủy thành công.";
     }
 
     @Override
-    public String approveContract(ApproveContractModel approveContractModel) throws IOException {
+    public String approveContract(ApproveContractModel approveContractModel) throws IOException, FirebaseMessagingException {
         Contract contract = contractRepository.findByIdAndStatus(approveContractModel.getContractID(), Status.WAITING);
         if(contract == null) {
             return "Không thể tìm thấy Hợp đồng có trạng thái WAITING với ID là " + approveContractModel.getContractID() + ".";
@@ -503,6 +514,12 @@ public class ContractServiceImpl implements ContractService {
         contract.setStatus(Status.APPROVED);
         userRepository.save(staff);
         contractRepository.save(contract);
+
+        if(contract.getCustomer() != null){
+            util.createNotification("CONTRACT", contract.getCustomer(), contract.getId(), "quản lý duyệt");
+        }
+        util.createNotification("CONTRACT", contract.getStaff(), contract.getId(), "giao cho bạn");
+
         return contract.getId();
     }
 
@@ -548,7 +565,7 @@ public class ContractServiceImpl implements ContractService {
     }
 
     @Override
-    public String changeContractStatus(String contractID, Status status) {
+    public String changeContractStatus(String contractID, Status status) throws FirebaseMessagingException {
         Optional<Contract> checkExisted = contractRepository.findById(contractID);
         if(checkExisted == null) {
             return "Không thể tìm thấy Hợp đồng có trạng thái WAITING với ID là " + contractID + ".";
@@ -557,6 +574,10 @@ public class ContractServiceImpl implements ContractService {
         if(status.toString().equalsIgnoreCase("DENIED")){
             contract.setStatus(status);
             contract.setRejectedDate(LocalDateTime.now(ZoneId.of("Asia/Ho_Chi_Minh")));
+
+            if(contract.getCustomer() != null){
+                util.createNotification("CONTRACT", contract.getCustomer(), contract.getId(), "từ chối");
+            }
         }else if(status.toString().equalsIgnoreCase("DONE")){
             contract.setStatus(status);
             contract.setEndedDate(LocalDateTime.now(ZoneId.of("Asia/Ho_Chi_Minh")));

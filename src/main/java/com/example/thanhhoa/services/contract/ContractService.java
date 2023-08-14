@@ -9,6 +9,7 @@ import com.example.thanhhoa.dtos.ContractModels.ShowContractModel;
 import com.example.thanhhoa.dtos.ContractModels.ShowPaymentTypeModel;
 import com.example.thanhhoa.dtos.ContractModels.UpdateContractModel;
 import com.example.thanhhoa.enums.Status;
+import com.google.firebase.messaging.FirebaseMessagingException;
 import org.springframework.data.domain.Pageable;
 
 import java.io.IOException;
@@ -27,17 +28,17 @@ public interface ContractService {
 
     List<ShowContractDetailModel> getContractDetailByContractID(String contractID, Pageable pageable);
 
-    String createContractCustomer(CreateCustomerContractModel createCustomerContractModel, Long userID);
+    String createContractCustomer(CreateCustomerContractModel createCustomerContractModel, Long userID) throws FirebaseMessagingException;
 
-    String createContractManager(CreateManagerContractModel createManagerContractModel) throws IOException;
+    String createContractManager(CreateManagerContractModel createManagerContractModel) throws IOException, FirebaseMessagingException;
 
     String updateContract(UpdateContractModel updateContractModel, Long userID);
 
-    String deleteContract(String contractID, String reason, Status status);
+    String deleteContract(String contractID, String reason, Status status) throws FirebaseMessagingException;
 
-    String approveContract(ApproveContractModel approveContractModel) throws IOException;
+    String approveContract(ApproveContractModel approveContractModel) throws IOException, FirebaseMessagingException;
 
-    String changeContractStatus(String contractID, Status status);
+    String changeContractStatus(String contractID, Status status) throws FirebaseMessagingException;
 
     String addContractIMG(String contractID, Double deposit, String paymentTypeID, List<String> listURL);
 

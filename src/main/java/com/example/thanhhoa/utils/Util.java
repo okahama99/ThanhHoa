@@ -10,6 +10,7 @@ import com.example.thanhhoa.dtos.FeedbackModels.ShowContractFeedbackModel;
 import com.example.thanhhoa.dtos.FeedbackModels.ShowOrderFeedbackIMGModel;
 import com.example.thanhhoa.dtos.FeedbackModels.ShowOrderFeedbackModel;
 import com.example.thanhhoa.dtos.FeedbackModels.ShowRatingModel;
+import com.example.thanhhoa.dtos.NotificationModels.CreateNotificationModel;
 import com.example.thanhhoa.dtos.OrderModels.ShowCustomerModel;
 import com.example.thanhhoa.dtos.OrderModels.ShowDistancePriceModel;
 import com.example.thanhhoa.dtos.OrderModels.ShowOrderDetailModel;
@@ -35,6 +36,7 @@ import com.example.thanhhoa.entities.Contract;
 import com.example.thanhhoa.entities.ContractDetail;
 import com.example.thanhhoa.entities.ContractFeedback;
 import com.example.thanhhoa.entities.ContractIMG;
+import com.example.thanhhoa.entities.Notification;
 import com.example.thanhhoa.entities.OrderDetail;
 import com.example.thanhhoa.entities.OrderFeedback;
 import com.example.thanhhoa.entities.OrderFeedbackIMG;
@@ -56,6 +58,7 @@ import com.example.thanhhoa.entities.tblAccount;
 import com.example.thanhhoa.entities.tblOrder;
 import com.example.thanhhoa.enums.Status;
 import com.example.thanhhoa.repositories.ContractIMGRepository;
+import com.example.thanhhoa.repositories.NotificationRepository;
 import com.example.thanhhoa.repositories.OrderFeedbackRepository;
 import com.example.thanhhoa.repositories.PlantCategoryRepository;
 import com.example.thanhhoa.repositories.PlantIMGRepository;
@@ -66,7 +69,9 @@ import com.example.thanhhoa.repositories.ServiceTypeRepository;
 import com.example.thanhhoa.repositories.StoreEmployeeRepository;
 import com.example.thanhhoa.repositories.StorePlantRepository;
 import com.example.thanhhoa.repositories.WorkingDateRepository;
+import com.example.thanhhoa.services.firebase.FirebaseMessagingService;
 import com.google.common.base.Converter;
+import com.google.firebase.messaging.FirebaseMessagingException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -74,10 +79,13 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 
 import java.time.LocalDateTime;
+import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class Util {
 
@@ -103,6 +111,10 @@ public class Util {
     private ServicePriceRepository servicePriceRepository;
     @Autowired
     private StorePlantRepository storePlantRepository;
+    @Autowired
+    private FirebaseMessagingService firebaseMessagingService;
+    @Autowired
+    private NotificationRepository notificationRepository;
 
     /**
      * Small Util to return {@link Pageable} to replace dup code in serviceImpl
@@ -1560,6 +1572,63 @@ public class Util {
         } else {
             return new ArrayList<>();
         }
+    }
+
+    public void createNotification(String entity, tblAccount account, String entityID, String action) throws FirebaseMessagingException {
+        if(entity.equalsIgnoreCase("ORDER")){
+            if(account.getFcmToken() != null && !(account.getFcmToken().trim().isEmpty()) && account.getFcmToken().length()>0){
+                CreateNotificationModel notificationModel = new CreateNotificationModel();
+                notificationModel.setTitle("-- Thông báo từ ThanhHoa Gardens --");
+                notificationModel.setUserID(account.getId());
+                notificationModel.setContent("Đơn hàng có mã " + entityID + " của quý khách đã được " + action + ".");
+                Map<String, String> map = new HashMap<String, String>();
+                map.put("UserID : " + account.getId() + ", Fullname : " + account.getFullName(), "OrderID : " + entityID);
+                notificationModel.setData(map);
+                firebaseMessagingService.sendNotification(notificationModel);
+            }
+            Notification notification = new Notification();
+            Notification lastNotification = notificationRepository.findFirstByOrderByIdDesc();
+            if(lastNotification == null) {
+                notification.setId(createNewID("N"));
+            } else {
+                notification.setId(createIDFromLastID("N", 1, lastNotification.getId()));
+            }
+            notification.setTblAccount(account);
+            notification.setDescription("Đơn hàng có mã " + entityID + " của quý khách đã được " + action + ".");
+            notification.setIsRead(false);
+            notification.setLink("ORDER-" + entityID);
+            notification.setDate(LocalDateTime.now(ZoneId.of("Asia/Ho_Chi_Minh")));
+            notification.setTitle("-- Thông báo từ ThanhHoa Gardens --");
+            notificationRepository.saveAndFlush(notification);
+        }else if(entity.equalsIgnoreCase("CONTRACT")){
+            if(account.getFcmToken() != null && !(account.getFcmToken().trim().isEmpty()) && account.getFcmToken().length()>0){
+                CreateNotificationModel notificationModel = new CreateNotificationModel();
+                notificationModel.setTitle("-- Thông báo từ ThanhHoa Gardens --");
+                notificationModel.setUserID(account.getId());
+                notificationModel.setContent("Hợp đồng có mã " + entityID + " của quý khách đã được " + action + ".");
+                Map<String, String> map = new HashMap<String, String>();
+                map.put("UserID : " + account.getId() + ", Fullname : " + account.getFullName(), "ContractID : " + entityID);
+                notificationModel.setData(map);
+                firebaseMessagingService.sendNotification(notificationModel);
+            }
+            Notification notification = new Notification();
+            Notification lastNotification = notificationRepository.findFirstByOrderByIdDesc();
+            if(lastNotification == null) {
+                notification.setId(createNewID("N"));
+            } else {
+                notification.setId(createIDFromLastID("N", 1, lastNotification.getId()));
+            }
+            notification.setTblAccount(account);
+            notification.setDescription("Hợp đồng có mã " + entityID + " của quý khách đã được " + action + ".");
+            notification.setIsRead(false);
+            notification.setLink("CONTRACT-" + entityID);
+            notification.setDate(LocalDateTime.now(ZoneId.of("Asia/Ho_Chi_Minh")));
+            notification.setTitle("-- Thông báo từ ThanhHoa Gardens --");
+            notificationRepository.saveAndFlush(notification);
+        }else{
+
+        }
+
     }
 
 //    class InvalidInput extends Exception {

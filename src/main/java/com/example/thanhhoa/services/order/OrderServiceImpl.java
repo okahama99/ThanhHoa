@@ -165,30 +165,7 @@ public class OrderServiceImpl implements OrderService {
         }
         orderRepository.save(order);
 
-        if(account.getFcmToken() != null && !(account.getFcmToken().trim().isEmpty()) && account.getFcmToken().length()>0){
-            CreateNotificationModel notificationModel = new CreateNotificationModel();
-            notificationModel.setTitle("-- Thông báo từ ThanhHoa Gardens --");
-            notificationModel.setUserID(account.getId());
-            notificationModel.setContent("Đơn hàng có mã " + order.getId() + " của quý khách đã được tạo thành công.");
-            Map<String, String> map = new HashMap<String, String>();
-            map.put("UserID : " + account.getId() + ", Fullname : " + account.getFullName(), "OrderID : " + order.getId());
-            notificationModel.setData(map);
-            firebaseMessagingService.sendNotification(notificationModel);
-        }
-        Notification notification = new Notification();
-        Notification lastNotification = notificationRepository.findFirstByOrderByIdDesc();
-        if(lastNotification == null) {
-            notification.setId(util.createNewID("N"));
-        } else {
-            notification.setId(util.createIDFromLastID("N", 1, lastNotification.getId()));
-        }
-        notification.setTblAccount(account);
-        notification.setDescription("Sản phẩm bạn muốn mua đã hết hàng, vui lòng chọn sản phẩm khác.");
-        notification.setIsRead(false);
-        notification.setLink("ORDER-" + order.getId());
-        notification.setDate(LocalDateTime.now(ZoneId.of("Asia/Ho_Chi_Minh")));
-        notification.setTitle("Tạo đơn thành công.");
-        notificationRepository.saveAndFlush(notification);
+        util.createNotification("ORDER", account, order.getId(), "tạo");
 
         return order.getId();
     }
@@ -218,7 +195,6 @@ public class OrderServiceImpl implements OrderService {
         order.setCreatedDate(LocalDateTime.now(ZoneId.of("Asia/Ho_Chi_Minh")));
         order.setDistance(updateOrderModel.getDistance());
         order.setLatLong(updateOrderModel.getLatLong());
-        order.setProgressStatus(Status.WAITING);
 
         if(updateOrderModel.getStaffID() != null){
             Optional<tblAccount> checkStaff = userRepository.findById(updateOrderModel.getStaffID());
@@ -266,7 +242,7 @@ public class OrderServiceImpl implements OrderService {
     }
 
     @Override
-    public String deleteOrder(String orderID, String reason, Status status) {
+    public String deleteOrder(String orderID, String reason, Status status) throws FirebaseMessagingException {
         Optional<tblOrder> checkExistedOrder = orderRepository.findById(orderID);
         if(checkExistedOrder != null) {
             tblOrder order = checkExistedOrder.get();
@@ -277,13 +253,18 @@ public class OrderServiceImpl implements OrderService {
             order.setProgressStatus(status);
             order.setRejectDate(LocalDateTime.now(ZoneId.of("Asia/Ho_Chi_Minh")));
             orderRepository.save(checkExistedOrder.get());
+
+            tblAccount account = userRepository.getById(order.getCustomer().getId());
+
+            util.createNotification("ORDER", account, order.getId(), "xóa");
+
             return "Xóa thành công.";
         }
         return "Không tồn tại Order với ID là : " + orderID + ".";
     }
 
     @Override
-    public String approveOrder(String orderID, Long staffID) {
+    public String approveOrder(String orderID, Long staffID) throws FirebaseMessagingException {
         Optional<tblOrder> checkExistedOrder = orderRepository.findById(orderID);
         if(checkExistedOrder != null) {
             tblAccount staff = userRepository.findByIdAndStatus(staffID, Status.ACTIVE);
@@ -315,6 +296,9 @@ public class OrderServiceImpl implements OrderService {
                 storePlantRepository.save(storePlant);
                 storePlantRecordRepository.save(storePlantRecord);
             }
+
+            util.createNotification("ORDER", order.getCustomer() , order.getId(), "quản lý duyệt");
+
             orderRepository.save(checkExistedOrder.get());
             return "Chấp nhận thành công.";
         }
@@ -322,25 +306,32 @@ public class OrderServiceImpl implements OrderService {
     }
 
     @Override
-    public Boolean changeOrderStatus(String orderID, String receiptIMG, String status) {
+    public Boolean changeOrderStatus(String orderID, String receiptIMG, String status) throws FirebaseMessagingException {
         Optional<tblOrder> checkExistedOrder = orderRepository.findById(orderID);
         if(checkExistedOrder != null) {
             tblOrder order = checkExistedOrder.get();
+            String action = "";
             if(status.equalsIgnoreCase("PACKAGING")) {
                 order.setProgressStatus(Status.PACKAGING);
                 order.setPackageDate(LocalDateTime.now(ZoneId.of("Asia/Ho_Chi_Minh")));
+                action = "đóng gói";
             } else if(status.equalsIgnoreCase("DELIVERING")) {
                 order.setProgressStatus(Status.DELIVERING);
                 order.setDeliveryDate(LocalDateTime.now(ZoneId.of("Asia/Ho_Chi_Minh")));
+                action = "bắt đầu giao hàng";
             } else if(status.equalsIgnoreCase("RECEIVED")){
                 if(receiptIMG != null){
                     order.setReceiptIMG(receiptIMG);
                 }
                 order.setProgressStatus(Status.RECEIVED);
                 order.setReceivedDate(LocalDateTime.now(ZoneId.of("Asia/Ho_Chi_Minh")));
+                action = "nhận hàng";
             }else{
                 return false;
             }
+
+            util.createNotification("ORDER", order.getCustomer(), order.getId(), action);
+
             orderRepository.save(checkExistedOrder.get());
             return true;
         }
