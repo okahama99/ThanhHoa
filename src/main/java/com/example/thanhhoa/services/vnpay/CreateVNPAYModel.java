@@ -8,6 +8,6 @@ import java.io.Serializable;
 @Getter
 @Setter
 public class CreateVNPAYModel implements Serializable {
-    private Double amount;
+    private Integer amount;
     private String reason;
 }
