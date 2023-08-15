@@ -29,6 +29,7 @@ public class NotificationServiceImpl implements NotificationService{
             model.setDescription(notification.getDescription());
             model.setLink(notification.getLink());
             model.setTitle(notification.getTitle());
+            model.setIsRead(notification.getIsRead());
             modelList.add(model);
         }
         return modelList;

@@ -298,6 +298,7 @@ public class OrderServiceImpl implements OrderService {
             }
 
             util.createNotification("ORDER", order.getCustomer() , order.getId(), "quản lý duyệt");
+            util.createNotification("ORDER", order.getStaff() , order.getId(), "giao cho bạn");
 
             orderRepository.save(checkExistedOrder.get());
             return "Chấp nhận thành công.";

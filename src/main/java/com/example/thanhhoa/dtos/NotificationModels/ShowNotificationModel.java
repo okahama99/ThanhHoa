@@ -13,5 +13,6 @@ public class ShowNotificationModel implements Serializable {
     private String title;
     private String link;
     private String description;
+    private Boolean isRead;
     private LocalDateTime date;
 }
