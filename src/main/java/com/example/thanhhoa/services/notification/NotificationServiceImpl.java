@@ -36,7 +36,7 @@ public class NotificationServiceImpl implements NotificationService{
 
     @Override
     public String isRead(String notificationID) {
-        Notification notification = notificationRepository.findByIdAndIsReadIsFalse(notificationID);
+        Notification notification = notificationRepository.findByIdAndIsRead(notificationID, false);
         if(notification == null){
             return "Không tìm thấy Thông báo có ID là " + notificationID + " có isRead là false";
         }
@@ -47,7 +47,7 @@ public class NotificationServiceImpl implements NotificationService{
 
     @Override
     public String isReadAllByUserID(Long userID) {
-        List<Notification> notificationList = notificationRepository.findAllByTblAccount_IdAndIsReadIsFalse(userID);
+        List<Notification> notificationList = notificationRepository.findAllByTblAccount_IdAndIsRead(userID, false);
         if(notificationList == null && !notificationList.isEmpty()){
             return "Người dùng đã đọc hết thông báo.";
         }

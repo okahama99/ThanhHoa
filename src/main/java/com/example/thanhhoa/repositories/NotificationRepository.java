@@ -12,7 +12,7 @@ public interface NotificationRepository extends JpaRepository<Notification, Stri
 
     Notification findFirstByOrderByIdDesc();
 
-    Notification findByIdAndIsReadIsFalse(String notificationID);
+    Notification findByIdAndIsRead(String notificationID, Boolean isRead);
 
-    List<Notification> findAllByTblAccount_IdAndIsReadIsFalse(Long userID);
+    List<Notification> findAllByTblAccount_IdAndIsRead(Long userID, Boolean isRead);
 }
