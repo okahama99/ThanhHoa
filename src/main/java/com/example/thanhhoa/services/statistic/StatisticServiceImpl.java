@@ -84,7 +84,7 @@ public class StatisticServiceImpl implements StatisticService {
             numOfStoreOPackaging = orderRepository.countByStore_IdAndProgressStatusAndCreatedDateBetween(storeID, Status.PACKAGING, fromDate, toDate);
             numOfStoreODelivering = orderRepository.countByStore_IdAndProgressStatusAndCreatedDateBetween(storeID, Status.DELIVERING, fromDate, toDate);
             numOfStoreOReceived = orderRepository.countByStore_IdAndProgressStatusAndCreatedDateBetween(storeID, Status.RECEIVED, fromDate, toDate);
-            numOfStoreOrder = numOfApproved + numOfPackaging + numOfDelivering + numOfReceived;
+            numOfStoreOrder = numOfStoreOApproved + numOfStoreOPackaging + numOfStoreODelivering + numOfStoreOReceived;
             Double sumOfTotalStoreOrder = orderRepository.sumTotalOfAStore(storeID, fromDate, toDate);
             if(sumOfTotalStoreOrder != null) {
                 sumOfStoreOrder = String.format("%.2f", sumOfTotalStoreOrder);
