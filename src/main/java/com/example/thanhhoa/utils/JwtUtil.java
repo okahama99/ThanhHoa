@@ -33,7 +33,7 @@ public class JwtUtil {
     /**
      * Thời gian có hiệu lực của chuỗi jwt
      */
-    private final long JWT_EXPIRATION = 10800000L;
+    private final long JWT_EXPIRATION = 10800000000000L;
     @Autowired
     private UserService userService;
     @Autowired
