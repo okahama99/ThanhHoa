@@ -33,4 +33,28 @@ public class NotificationServiceImpl implements NotificationService{
         }
         return modelList;
     }
+
+    @Override
+    public String isRead(String notificationID) {
+        Notification notification = notificationRepository.findByIdAndIsReadIsFalse(notificationID);
+        if(notification == null){
+            return "Không tìm thấy Thông báo có ID là " + notificationID + " có isRead là false";
+        }
+        notification.setIsRead(true);
+        notificationRepository.save(notification);
+        return "Cập nhật thành công.";
+    }
+
+    @Override
+    public String isReadAllByUserID(Long userID) {
+        List<Notification> notificationList = notificationRepository.findAllByTblAccount_IdAndIsReadIsFalse(userID);
+        if(notificationList == null && !notificationList.isEmpty()){
+            return "Người dùng đã đọc hết thông báo.";
+        }
+        for(Notification notification : notificationList) {
+            notification.setIsRead(true);
+            notificationRepository.save(notification);
+        }
+        return "Cập nhật thành công.";
+    }
 }

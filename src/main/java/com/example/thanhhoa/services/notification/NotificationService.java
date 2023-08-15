@@ -6,4 +6,8 @@ import java.util.List;
 
 public interface NotificationService {
     List<ShowNotificationModel> getByUserID(Long userID);
+
+    String isRead(String notificationID);
+
+    String isReadAllByUserID(Long userID);
 }
