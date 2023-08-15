@@ -12,4 +12,6 @@ public interface ServiceTypeRepository extends JpaRepository<ServiceType, String
     List<ServiceType> findByService_IdAndStatus(String serviceID, Status status);
 
     ServiceType findByIdAndStatus(String id, Status status);
+
+    ServiceType findFirstByOrderByIdDesc();
 }

@@ -111,4 +111,14 @@ public class SearchType {
         IMPORTDATE,
         REASON
     }
+
+    public enum SERVICE_TYPE{
+        ID,
+        NAME,
+        SIZE,
+        UNIT,
+        PERCENTAGE,
+        APPLYDATE,
+        STATUS
+    }
 }

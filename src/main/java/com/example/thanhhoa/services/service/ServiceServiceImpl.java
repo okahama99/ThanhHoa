@@ -4,6 +4,7 @@ import com.example.thanhhoa.dtos.ServiceModels.CreateServiceModel;
 import com.example.thanhhoa.dtos.ServiceModels.ShowServiceModel;
 import com.example.thanhhoa.dtos.ServiceModels.ShowServiceTypeModel;
 import com.example.thanhhoa.dtos.ServiceModels.UpdateServiceModel;
+import com.example.thanhhoa.dtos.ServiceTypeModels.CreateServiceTypeModel;
 import com.example.thanhhoa.entities.PlantPrice;
 import com.example.thanhhoa.entities.Service;
 import com.example.thanhhoa.entities.ServiceIMG;
@@ -52,7 +53,7 @@ public class ServiceServiceImpl implements ServiceService {
         if(checkExisted != null) {
             return "Service với tên là " + createServiceModel.getName() + " đã tồn tại.";
         }
-        if(createServiceModel.getTypeIDList() == null) {
+        if(createServiceModel.getCreateServiceTypeModel() == null) {
             return "Service phải có ít nhất 1 ServiceType.";
         }
 
@@ -65,13 +66,22 @@ public class ServiceServiceImpl implements ServiceService {
         }
 
         // service type
-        List<ServiceType> serviceTypeList = new ArrayList<>();
-        for(String serviceTypeID : createServiceModel.getTypeIDList()) {
-            ServiceType serviceType = serviceTypeRepository.findByIdAndStatus(serviceTypeID, Status.ACTIVE);
-            if(serviceType == null) {
-                return "Không tìm thấy ServiceType với ID là " + serviceTypeID + ".";
+        for(CreateServiceTypeModel createServiceTypeModel : createServiceModel.getCreateServiceTypeModel()) {
+            ServiceType serviceType = new ServiceType();
+            ServiceType lastServiceType = serviceTypeRepository.findFirstByOrderByIdDesc();
+            if(lastServiceType == null) {
+                serviceType.setId(util.createNewID("ST"));
+            } else {
+                serviceType.setId(util.createIDFromLastID("ST", 2, lastServiceType.getId()));
             }
-            serviceTypeList.add(serviceType);
+            serviceType.setName(createServiceTypeModel.getName());
+            serviceType.setSize(createServiceTypeModel.getSize());
+            serviceType.setUnit(createServiceTypeModel.getUnit());
+            serviceType.setPercentage(createServiceTypeModel.getPercentage());
+            serviceType.setApplyDate(LocalDateTime.now(ZoneId.of("Asia/Ho_Chi_Minh")));
+            serviceType.setStatus(Status.ACTIVE);
+            serviceType.setService(service);
+            serviceTypeRepository.save(serviceType);
         }
 
         //service price
@@ -89,7 +99,6 @@ public class ServiceServiceImpl implements ServiceService {
 
         service.setName(createServiceModel.getName());
         service.setDescription(createServiceModel.getDescription());
-        service.setServiceTypeList(serviceTypeList);
         service.setStatus(Status.ACTIVE);
         service.setAtHome(createServiceModel.getAtHome());
 

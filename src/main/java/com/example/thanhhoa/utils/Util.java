@@ -695,6 +695,48 @@ public class Util {
         }
     }
 
+    public List<com.example.thanhhoa.dtos.ServiceTypeModels.ShowServiceTypeModel> serviceTypePagingConverter(Page<ServiceType> pagingResult, Pageable paging) {
+        if(pagingResult.hasContent()) {
+            double totalPage = Math.ceil((double) pagingResult.getTotalElements() / paging.getPageSize());
+            Page<com.example.thanhhoa.dtos.ServiceTypeModels.ShowServiceTypeModel> modelResult = pagingResult.map(new Converter<ServiceType, com.example.thanhhoa.dtos.ServiceTypeModels.ShowServiceTypeModel>() {
+                @Override
+                protected com.example.thanhhoa.dtos.ServiceTypeModels.ShowServiceTypeModel doForward(ServiceType serviceType) {
+
+                    // service
+                    Service service = serviceType.getService();
+                    ServicePrice newestPrice = servicePriceRepository.findFirstByService_IdAndStatusOrderByApplyDateDesc(service.getId(), Status.ACTIVE);
+                    com.example.thanhhoa.dtos.ContractModels.ShowServiceModel serviceModel = new com.example.thanhhoa.dtos.ContractModels.ShowServiceModel();
+                    serviceModel.setId(service.getId());
+                    serviceModel.setName(service.getName());
+                    serviceModel.setPriceID(newestPrice.getId());
+                    serviceModel.setPrice(newestPrice.getPrice());
+                    serviceModel.setDescription(service.getDescription());
+                    serviceModel.setAtHome(service.getAtHome());
+
+                    com.example.thanhhoa.dtos.ServiceTypeModels.ShowServiceTypeModel model = new com.example.thanhhoa.dtos.ServiceTypeModels.ShowServiceTypeModel();
+                    model.setId(serviceType.getId());
+                    model.setName(serviceType.getName());
+                    model.setApplyDate(serviceType.getApplyDate());
+                    model.setSize(serviceType.getSize());
+                    model.setUnit(serviceType.getUnit());
+                    model.setPercentage(serviceType.getPercentage());
+                    model.setStatus(serviceType.getStatus());
+                    model.setShowServiceModel(serviceModel);
+                    model.setTotalPage(totalPage);
+                    return model;
+                }
+
+                @Override
+                protected ServiceType doBackward(com.example.thanhhoa.dtos.ServiceTypeModels.ShowServiceTypeModel showServiceTypeModel) {
+                    return null;
+                }
+            });
+            return modelResult.getContent();
+        } else {
+            return new ArrayList<>();
+        }
+    }
+
     public List<ShowServiceModel> servicePagingConverter(Page<Service> pagingResult, Pageable paging) {
         if(pagingResult.hasContent()) {
             double totalPage = Math.ceil((double) pagingResult.getTotalElements() / paging.getPageSize());
