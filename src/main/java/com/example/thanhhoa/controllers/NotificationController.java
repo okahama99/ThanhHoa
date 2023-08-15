@@ -42,7 +42,8 @@ public class NotificationController {
     public @ResponseBody
     List<ShowNotificationModel> getNotification(HttpServletRequest request) {
         String roleName = jwtUtil.getRoleNameFromRequest(request);
-        if(!roleName.equalsIgnoreCase("Customer")) {
+        if(!roleName.equalsIgnoreCase("Owner") && !roleName.equalsIgnoreCase("Staff")
+        && !roleName.equalsIgnoreCase("Manager") && !roleName.equalsIgnoreCase("Customer")) {
             throw new ResponseStatusException(HttpStatus.FORBIDDEN, "-----------------------------------Người dùng không có quyền truy cập---------------------------");
         }
 
