@@ -9,6 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
@@ -31,11 +32,10 @@ public class VNPayController {
     private Util util;
 
     @PostMapping(value = "/submitOrder", produces = "application/json;charset=UTF-8")
-    public String submitOrder(@RequestParam("amount") int orderTotal,
-                              @RequestParam("reason") String reason,
+    public String submitOrder(@RequestBody CreateVNPAYModel createVNPAYModel,
                               HttpServletRequest request) {
         String baseUrl = request.getScheme() + "://" + request.getServerName() + ":" + request.getServerPort();
-        return vnPayService.createOrder(orderTotal, reason, baseUrl, request.getRemoteAddr());
+        return vnPayService.createOrder(createVNPAYModel.getAmount(), createVNPAYModel.getReason(), baseUrl, request.getRemoteAddr());
     }
 
     @GetMapping("/getPaymentInfo")

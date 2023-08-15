@@ -599,6 +599,88 @@ public class ContractServiceImpl implements ContractService {
     }
 
     @Override
+    public ShowContractModel getByID(String contractID) {
+        Optional<Contract> checkExisted = contractRepository.findById(contractID);
+        if(checkExisted == null){
+            return null;
+        }
+        Contract contract = checkExisted.get();
+        List<ContractIMG> imgList = contractIMGRepository.findByContract_Id(contract.getId());
+        List<ShowContractIMGModel> imgModelList = new ArrayList<>();
+        if(imgList != null) {
+            for(ContractIMG img : imgList) {
+                ShowContractIMGModel imgModel = new ShowContractIMGModel();
+                imgModel.setId(img.getId());
+                imgModel.setImgUrl(img.getImgURL());
+                imgModelList.add(imgModel);
+            }
+        }
+        ShowContractModel model = new ShowContractModel();
+        model.setId(contract.getId());
+        model.setFullName(contract.getFullName());
+        model.setAddress(contract.getAddress());
+        model.setEmail(contract.getEmail());
+        model.setPhone(contract.getPhone());
+        model.setTitle(contract.getTitle());
+        model.setPaymentMethod(contract.getPaymentMethod());
+        model.setReason(contract.getReason());
+        model.setCreatedDate(contract.getCreatedDate());
+        model.setApprovedDate(contract.getApprovedDate());
+        model.setRejectedDate(contract.getRejectedDate());
+        model.setStartedDate(contract.getStartedDate());
+        model.setEndedDate(contract.getEndedDate());
+        model.setDeposit(contract.getDeposit());
+        model.setTotal(contract.getTotal());
+        model.setIsFeedback(contract.getIsFeedback());
+        model.setIsSigned(contract.getIsSigned());
+        model.setIsPaid(contract.getIsPaid());
+
+        //store
+        ShowStoreModel storeModel = new ShowStoreModel();
+        storeModel.setId(contract.getStore().getId());
+        storeModel.setStoreName(contract.getStore().getStoreName());
+        storeModel.setAddress(contract.getStore().getAddress());
+        storeModel.setPhone(contract.getStore().getPhone());
+
+        //staff
+        ShowStaffModel staffModel = new ShowStaffModel();
+        if(contract.getStaff() != null) {
+            staffModel.setId(contract.getStaff().getId());
+            staffModel.setAddress(contract.getStaff().getAddress());
+            staffModel.setEmail(contract.getStaff().getEmail());
+            staffModel.setPhone(contract.getStaff().getPhone());
+            staffModel.setFullName(contract.getStaff().getFullName());
+            staffModel.setAvatar(contract.getStaff().getAvatar());
+        }
+
+        //customer
+        ShowCustomerModel customerModel = new ShowCustomerModel();
+        if(contract.getCustomer() != null) {
+            customerModel.setId(contract.getCustomer().getId());
+            customerModel.setAddress(contract.getCustomer().getAddress());
+            customerModel.setEmail(contract.getCustomer().getEmail());
+            customerModel.setPhone(contract.getCustomer().getPhone());
+            customerModel.setFullName(contract.getCustomer().getFullName());
+        }
+
+        //payment type
+        ShowPaymentTypeModel paymentTypeModel = new ShowPaymentTypeModel();
+        if(contract.getPaymentType() != null) {
+            paymentTypeModel.setId(contract.getPaymentType().getId());
+            paymentTypeModel.setName(contract.getPaymentType().getName());
+            paymentTypeModel.setValue(contract.getPaymentType().getValue());
+        }
+
+        model.setShowStaffModel(staffModel);
+        model.setShowCustomerModel(customerModel);
+        model.setShowStoreModel(storeModel);
+        model.setShowPaymentTypeModel(paymentTypeModel);
+        model.setStatus(contract.getStatus());
+        model.setImgList(imgModelList);
+        return model;
+    }
+
+    @Override
     public List<GetStaffModel> getStaffForContract() {
         List<tblAccount> listStaff = userRepository.findByStatusAndRole_RoleName(Status.ACTIVE, "Staff");
         List<GetStaffModel> modelList = new ArrayList<>();

@@ -20,7 +20,7 @@ import java.util.Map;
 @Service
 public class VNPayServiceImpl implements VNPayService {
 
-    public String createOrder(int total, String orderInfor, String urlReturn, String ipAddr) {
+    public String createOrder(Double total, String orderInfor, String urlReturn, String ipAddr) {
         String vnp_Version = "2.1.0";
         String vnp_Command = "pay";
         String vnp_TxnRef = Config.getRandomNumber(8);

@@ -155,11 +155,6 @@ public class StatisticServiceImpl implements StatisticService {
                     sumOfContract = String.format("%.2f", sumTotalContract);
                 }
 
-                Integer numOfStoreCWorking = 0;
-                Integer numOfStoreCDone = 0;
-                Integer numOfStoreContract = 0;
-                String sumOfStoreContract = null;
-
                 // order
                 Integer numOfApproved = orderRepository.countByProgressStatusAndCreatedDateBetween(Status.APPROVED, fromDate, toDate);
                 Integer numOfPackaging = orderRepository.countByProgressStatusAndCreatedDateBetween(Status.PACKAGING, fromDate, toDate);
@@ -172,12 +167,10 @@ public class StatisticServiceImpl implements StatisticService {
                     sumOfOrder = String.format("%.2f", sumOfTotalOrder);
                 }
 
-                Integer numOfStoreOApproved = 0;
-                Integer numOfStoreOPackaging = 0;
-                Integer numOfStoreODelivering = 0;
-                Integer numOfStoreOReceived = 0;
-                Integer numOfStoreOrder = 0;
-                String sumOfStoreOrder = null;
+                Integer numOfStoreCWorking = 0;
+                Integer numOfStoreCDone = 0;
+                Integer numOfStoreContract = 0;
+                String sumOfStoreContract = null;
 
                 ShowStoreModel model = new ShowStoreModel();
                 String storeID = store.getId();
@@ -189,6 +182,13 @@ public class StatisticServiceImpl implements StatisticService {
                 if(sumOfTotalStoreContract != null) {
                     sumOfStoreContract = String.format("%.2f", sumOfTotalStoreContract);
                 }
+
+                Integer numOfStoreOApproved = 0;
+                Integer numOfStoreOPackaging = 0;
+                Integer numOfStoreODelivering = 0;
+                Integer numOfStoreOReceived = 0;
+                Integer numOfStoreOrder = 0;
+                String sumOfStoreOrder = null;
 
                 //order
                 numOfStoreOApproved = orderRepository.countByStore_IdAndProgressStatusAndCreatedDateBetween(storeID, Status.APPROVED, fromDate, toDate);

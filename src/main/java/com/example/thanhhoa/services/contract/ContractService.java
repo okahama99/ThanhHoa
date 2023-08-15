@@ -44,6 +44,8 @@ public interface ContractService {
 
     List<ShowContractModel> getWaitingContract(Pageable pageable);
 
+    ShowContractModel getByID(String contractID);
+
     List<GetStaffModel> getStaffForContract();
 
     List<ShowContractModel> getContractByStoreID(String storeID, Pageable pageable);

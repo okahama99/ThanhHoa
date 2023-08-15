@@ -1,5 +1,6 @@
 package com.example.thanhhoa.controllers;
 
+import com.example.thanhhoa.dtos.CategoryModels.ShowCategoryModel;
 import com.example.thanhhoa.dtos.OrderModels.CreateOrderModel;
 import com.example.thanhhoa.dtos.OrderModels.GetStaffModel;
 import com.example.thanhhoa.dtos.OrderModels.ShowOrderDetailModel;
@@ -243,5 +244,12 @@ public class OrderController {
     String updateIsPaid(@RequestParam String orderID,
                         @RequestParam Boolean isPaid) {
         return orderService.updateIsPaid(orderID, isPaid);
+    }
+
+    @GetMapping(value = "/getByID", produces = "application/json;charset=UTF-8")
+    public @ResponseBody
+    ShowOrderModel getByID(@RequestParam String orderID) {
+        ShowOrderModel model = orderService.getByID(orderID);
+        return model;
     }
 }

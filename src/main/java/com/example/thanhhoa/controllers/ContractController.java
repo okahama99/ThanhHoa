@@ -8,6 +8,7 @@ import com.example.thanhhoa.dtos.ContractModels.ShowContractDetailModel;
 import com.example.thanhhoa.dtos.ContractModels.ShowContractModel;
 import com.example.thanhhoa.dtos.ContractModels.ShowPaymentTypeModel;
 import com.example.thanhhoa.dtos.ContractModels.UpdateContractModel;
+import com.example.thanhhoa.dtos.OrderModels.ShowOrderModel;
 import com.example.thanhhoa.enums.SearchType;
 import com.example.thanhhoa.enums.Status;
 import com.example.thanhhoa.services.contract.ContractService;
@@ -371,5 +372,12 @@ public class ContractController {
     @GetMapping(value = "/checkStartDateEndDate", produces = "application/json;charset=UTF-8")
     public void checkStartDateEndDate() throws FirebaseMessagingException {
         contractService.checkStartDateEndDate();
+    }
+
+    @GetMapping(value = "/getByID", produces = "application/json;charset=UTF-8")
+    public @ResponseBody
+    ShowContractModel getByID(@RequestParam String contractID) {
+        ShowContractModel model = contractService.getByID(contractID);
+        return model;
     }
 }

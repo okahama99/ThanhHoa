@@ -33,6 +33,8 @@ public interface OrderService {
 
     List<ShowOrderModel> getWaitingOrder(String storeID, Pageable pageable);
 
+    ShowOrderModel getByID(String orderID);
+
     List<ShowOrderDetailModel> getOrderDetailByOrderID(String orderID);
 
     List<ShowOrderDetailModel> getOrderDetailByIsFeedback(String isFeedback, Pageable pageable);
