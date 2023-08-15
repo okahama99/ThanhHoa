@@ -8,6 +8,7 @@ import com.example.thanhhoa.enums.Status;
 import com.example.thanhhoa.services.report.ReportService;
 import com.example.thanhhoa.utils.JwtUtil;
 import com.example.thanhhoa.utils.Util;
+import com.google.firebase.messaging.FirebaseMessagingException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
@@ -117,7 +118,7 @@ public class ReportController {
     public ResponseEntity<Object> changeStatus(@RequestParam String reportID,
                                                @RequestParam String status,
                                                @RequestParam(required = false) String reason,
-                                               HttpServletRequest request) {
+                                               HttpServletRequest request) throws FirebaseMessagingException {
         String roleName = jwtUtil.getRoleNameFromRequest(request);
         if(!roleName.equalsIgnoreCase("Manager")) {
             throw new ResponseStatusException(HttpStatus.FORBIDDEN, "-----------------------------------Người dùng không có quyền truy cập---------------------------");

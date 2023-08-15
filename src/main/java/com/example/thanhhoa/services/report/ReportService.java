@@ -4,6 +4,7 @@ import com.example.thanhhoa.dtos.ReportModels.CreateReportModel;
 import com.example.thanhhoa.dtos.ReportModels.ShowReportModel;
 import com.example.thanhhoa.dtos.ReportModels.UpdateReportModel;
 import com.example.thanhhoa.enums.Status;
+import com.google.firebase.messaging.FirebaseMessagingException;
 import org.springframework.data.domain.Pageable;
 
 import java.util.List;
@@ -19,7 +20,7 @@ public interface ReportService {
 
     String delete(String reportID);
 
-    String changeReportStatus(String reportID, String reason, Status status);
+    String changeReportStatus(String reportID, String reason, Status status) throws FirebaseMessagingException;
 
     List<ShowReportModel> getAllNewReport(Pageable pageable);
 }

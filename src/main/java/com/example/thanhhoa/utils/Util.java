@@ -1582,7 +1582,7 @@ public class Util {
                 notificationModel.setUserID(account.getId());
                 notificationModel.setContent("Đơn hàng có mã " + entityID + " của quý khách đã được " + action + ".");
                 Map<String, String> map = new HashMap<String, String>();
-                map.put("UserID : " + account.getId() + ", Fullname : " + account.getFullName(), "OrderID : " + entityID);
+                map.put("ORDER", entityID);
                 notificationModel.setData(map);
                 firebaseMessagingService.sendNotification(notificationModel);
             }
@@ -1607,7 +1607,7 @@ public class Util {
                 notificationModel.setUserID(account.getId());
                 notificationModel.setContent("Hợp đồng có mã " + entityID + " của quý khách đã được " + action + ".");
                 Map<String, String> map = new HashMap<String, String>();
-                map.put("UserID : " + account.getId() + ", Fullname : " + account.getFullName(), "ContractID : " + entityID);
+                map.put("CONTRACT", entityID);
                 notificationModel.setData(map);
                 firebaseMessagingService.sendNotification(notificationModel);
             }
@@ -1626,7 +1626,30 @@ public class Util {
             notification.setTitle("-- Thông báo từ ThanhHoa Gardens --");
             notificationRepository.saveAndFlush(notification);
         } else {
-
+            if(account.getFcmToken() != null && !(account.getFcmToken().trim().isEmpty()) && account.getFcmToken().length() > 0) {
+                CreateNotificationModel notificationModel = new CreateNotificationModel();
+                notificationModel.setTitle("-- Thông báo từ ThanhHoa Gardens --");
+                notificationModel.setUserID(account.getId());
+                notificationModel.setContent("Báo cáo có mã " + entityID + " của quý khách đã được " + action + ".");
+                Map<String, String> map = new HashMap<String, String>();
+                map.put("REPORT", entityID);
+                notificationModel.setData(map);
+                firebaseMessagingService.sendNotification(notificationModel);
+            }
+            Notification notification = new Notification();
+            Notification lastNotification = notificationRepository.findFirstByOrderByIdDesc();
+            if(lastNotification == null) {
+                notification.setId(createNewID("N"));
+            } else {
+                notification.setId(createIDFromLastID("N", 1, lastNotification.getId()));
+            }
+            notification.setTblAccount(account);
+            notification.setDescription("Báo cáo có mã " + entityID + " của quý khách đã được " + action + ".");
+            notification.setIsRead(false);
+            notification.setLink("REPORT-" + entityID);
+            notification.setDate(LocalDateTime.now(ZoneId.of("Asia/Ho_Chi_Minh")));
+            notification.setTitle("-- Thông báo từ ThanhHoa Gardens --");
+            notificationRepository.saveAndFlush(notification);
         }
 
     }

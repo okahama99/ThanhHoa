@@ -6,12 +6,14 @@ import com.example.thanhhoa.dtos.ReportModels.UpdateReportModel;
 import com.example.thanhhoa.entities.Cart;
 import com.example.thanhhoa.entities.ContractDetail;
 import com.example.thanhhoa.entities.Report;
+import com.example.thanhhoa.entities.tblAccount;
 import com.example.thanhhoa.enums.Status;
 import com.example.thanhhoa.repositories.ContractDetailRepository;
 import com.example.thanhhoa.repositories.ReportRepository;
 import com.example.thanhhoa.repositories.UserRepository;
 import com.example.thanhhoa.repositories.pagings.ReportPagingRepository;
 import com.example.thanhhoa.utils.Util;
+import com.google.firebase.messaging.FirebaseMessagingException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -102,11 +104,14 @@ public class ReportServiceImpl implements ReportService{
     }
 
     @Override
-    public String create(CreateReportModel createReportModel, Long userID) {
+    public String create(CreateReportModel createReportModel, Long userID){
         Optional<ContractDetail> checkExisted = contractDetailRepository.findById(createReportModel.getContractDetailID());
         if(checkExisted == null){
             return "Không tìm thấy Chi tiết hợp đồng với ID là " + createReportModel.getContractDetailID() + ".";
         }
+
+        tblAccount customer = userRepository.getById(userID);
+
         Report report = new Report();
         Report lastReport = reportRepository.findFirstByOrderByIdDesc();
         if(lastReport == null) {
@@ -117,7 +122,7 @@ public class ReportServiceImpl implements ReportService{
         report.setCreatedDate(LocalDateTime.now(ZoneId.of("Asia/Ho_Chi_Minh")));
         report.setStatus(Status.NEW);
         report.setDescription(createReportModel.getDescription());
-        report.setCustomer(userRepository.getById(userID));
+        report.setCustomer(customer);
         report.setContractDetail(checkExisted.get());
         reportRepository.save(report);
         return "Tạo thành công.";
@@ -141,7 +146,7 @@ public class ReportServiceImpl implements ReportService{
     }
 
     @Override
-    public String delete(String reportID) {
+    public String delete(String reportID){
         Optional<Report> checkExisted = reportRepository.findByIdAndStatus(reportID, Status.NEW);
         if(checkExisted == null){
             return "Không tìm thấy Báo cáo với trạng thái NEW có ID là " + reportID + ".";
@@ -153,7 +158,7 @@ public class ReportServiceImpl implements ReportService{
     }
 
     @Override
-    public String changeReportStatus(String reportID, String reason, Status status) {
+    public String changeReportStatus(String reportID, String reason, Status status) throws FirebaseMessagingException {
         Optional<Report> checkExisted = reportRepository.findByIdAndStatus(reportID, Status.NEW);
         if(checkExisted == null){
             return "Không tìm thấy Báo cáo với trạng thái NEW có ID là " + reportID + ".";
@@ -162,6 +167,9 @@ public class ReportServiceImpl implements ReportService{
         if(status.toString().equalsIgnoreCase("APPROVED")){
             report.setStatus(status);
             reportRepository.save(report);
+
+            util.createNotification("REPORT", report.getCustomer(), report.getId(), "quản lý duyệt");
+
             return "Chỉnh sửa thành công.";
         }else if(status.toString().equalsIgnoreCase("DENIED")){
             if(reason == null){
@@ -170,6 +178,9 @@ public class ReportServiceImpl implements ReportService{
             report.setStatus(status);
             report.setReason(reason);
             reportRepository.save(report);
+
+            util.createNotification("REPORT", report.getCustomer(), report.getId(), "từ chối");
+
             return "Chỉnh sửa thành công.";
         }else{
             return "Trạng thái phải là APPROVED hoặc DENIED";
