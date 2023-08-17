@@ -15,10 +15,8 @@ public class CreateManagerContractModel implements Serializable {
     private String phone;
     private String address;
     private String storeID;
-    private Double deposit;
     private String paymentMethod;
     private Long staffID;
-    private String paymentTypeID;
     private List<CreateContractDetailModel> detailModelList;
     @Nullable
     private Long customerID;

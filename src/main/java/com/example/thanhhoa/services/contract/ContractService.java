@@ -6,7 +6,6 @@ import com.example.thanhhoa.dtos.ContractModels.CreateManagerContractModel;
 import com.example.thanhhoa.dtos.ContractModels.GetStaffModel;
 import com.example.thanhhoa.dtos.ContractModels.ShowContractDetailModel;
 import com.example.thanhhoa.dtos.ContractModels.ShowContractModel;
-import com.example.thanhhoa.dtos.ContractModels.ShowPaymentTypeModel;
 import com.example.thanhhoa.dtos.ContractModels.UpdateContractModel;
 import com.example.thanhhoa.enums.Status;
 import com.google.firebase.messaging.FirebaseMessagingException;
@@ -40,7 +39,7 @@ public interface ContractService {
 
     String changeContractStatus(String contractID, Status status) throws FirebaseMessagingException;
 
-    String addContractIMG(String contractID, Double deposit, String paymentTypeID, List<String> listURL);
+    String addContractIMG(String contractID, List<String> listURL) throws FirebaseMessagingException;
 
     List<ShowContractModel> getWaitingContract(Pageable pageable);
 
@@ -51,8 +50,6 @@ public interface ContractService {
     List<ShowContractModel> getContractByStoreID(String storeID, Pageable pageable);
 
     List<ShowContractModel> getContractByStoreIDAndStatus(String storeID, Status status, Pageable pageable);
-
-    List<ShowPaymentTypeModel> getPaymentType();
 
     List<ShowContractDetailModel> getContractDetailByDateBetween(LocalDateTime from, LocalDateTime to, Long staffID, String role);
 

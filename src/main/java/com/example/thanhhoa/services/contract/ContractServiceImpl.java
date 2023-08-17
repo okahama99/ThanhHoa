@@ -8,7 +8,6 @@ import com.example.thanhhoa.dtos.ContractModels.GetStaffModel;
 import com.example.thanhhoa.dtos.ContractModels.ShowContractDetailModel;
 import com.example.thanhhoa.dtos.ContractModels.ShowContractIMGModel;
 import com.example.thanhhoa.dtos.ContractModels.ShowContractModel;
-import com.example.thanhhoa.dtos.ContractModels.ShowPaymentTypeModel;
 import com.example.thanhhoa.dtos.ContractModels.ShowServiceModel;
 import com.example.thanhhoa.dtos.ContractModels.ShowServicePackModel;
 import com.example.thanhhoa.dtos.ContractModels.ShowServiceTypeModel;
@@ -20,9 +19,6 @@ import com.example.thanhhoa.dtos.OrderModels.ShowStoreModel;
 import com.example.thanhhoa.entities.Contract;
 import com.example.thanhhoa.entities.ContractDetail;
 import com.example.thanhhoa.entities.ContractIMG;
-import com.example.thanhhoa.entities.OrderFeedbackIMG;
-import com.example.thanhhoa.entities.PaymentType;
-import com.example.thanhhoa.entities.PlantPrice;
 import com.example.thanhhoa.entities.ServicePack;
 import com.example.thanhhoa.entities.ServicePrice;
 import com.example.thanhhoa.entities.ServiceType;
@@ -33,7 +29,6 @@ import com.example.thanhhoa.enums.Status;
 import com.example.thanhhoa.repositories.ContractDetailRepository;
 import com.example.thanhhoa.repositories.ContractIMGRepository;
 import com.example.thanhhoa.repositories.ContractRepository;
-import com.example.thanhhoa.repositories.PaymentTypeRepository;
 import com.example.thanhhoa.repositories.ServicePackRepository;
 import com.example.thanhhoa.repositories.ServicePriceRepository;
 import com.example.thanhhoa.repositories.ServiceTypeRepository;
@@ -72,8 +67,6 @@ public class ContractServiceImpl implements ContractService {
     private UserRepository userRepository;
     @Autowired
     private StoreRepository storeRepository;
-    @Autowired
-    private PaymentTypeRepository paymentTypeRepository;
     @Autowired
     private ServicePackRepository servicePackRepository;
     @Autowired
@@ -182,14 +175,6 @@ public class ContractServiceImpl implements ContractService {
                     customerModel.setFullName(detail.getContract().getCustomer().getFullName());
                     customerModel.setAvatar(detail.getContract().getCustomer().getAvatar());
                 }
-                //paymenttype
-                ShowPaymentTypeModel paymentTypeModel = new ShowPaymentTypeModel();
-                if(detail.getContract().getPaymentType() != null) {
-                    paymentTypeModel.setId(detail.getContract().getPaymentType().getId());
-                    paymentTypeModel.setName(detail.getContract().getPaymentType().getName());
-                    paymentTypeModel.setValue(detail.getContract().getPaymentType().getValue());
-                }
-                contractModel.setShowPaymentTypeModel(paymentTypeModel);
                 contractModel.setShowCustomerModel(customerModel);
                 contractModel.setShowStaffModel(staffModel);
                 contractModel.setShowStoreModel(storeModel);
@@ -205,7 +190,6 @@ public class ContractServiceImpl implements ContractService {
                 contractModel.setApprovedDate(detail.getContract().getApprovedDate());
                 contractModel.setRejectedDate(detail.getContract().getRejectedDate());
                 contractModel.setEndedDate(detail.getContract().getEndedDate());
-                contractModel.setDeposit(detail.getContract().getDeposit());
                 contractModel.setTotal(detail.getContract().getTotal());
                 contractModel.setIsFeedback(detail.getContract().getIsFeedback());
                 contractModel.setIsSigned(detail.getContract().getIsSigned());
@@ -372,13 +356,6 @@ public class ContractServiceImpl implements ContractService {
         contract.setPhone(createManagerContractModel.getPhone());
         contract.setIsPaid(createManagerContractModel.getIsPaid());
 
-        PaymentType paymentType = paymentTypeRepository.getById(createManagerContractModel.getPaymentTypeID());
-        contract.setPaymentMethod(createManagerContractModel.getPaymentMethod());
-        contract.setPaymentType(paymentType);
-        contract.setStaff(staff);
-        contract.setStartedDate(LocalDateTime.now(ZoneId.of("Asia/Ho_Chi_Minh")));
-        contract.setStatus(Status.SIGNED);
-
         contract.setStore(store);
         contract.setCreatedDate(LocalDateTime.now(ZoneId.of("Asia/Ho_Chi_Minh")));
 
@@ -427,9 +404,6 @@ public class ContractServiceImpl implements ContractService {
             detail.setTotalPrice(detail.getTotalPrice());
             contractDetailRepository.save(detail);
         }
-        if(createManagerContractModel.getDeposit() > totalPrice){
-            return "Tiền trả trước ( deposit : " + createManagerContractModel.getDeposit() + " ) đang lớn hơn tổng tiền ( TotalPrice : " + totalPrice + " ).";
-        }
 
         for(String imageURL : createManagerContractModel.getListURL()) {
             ContractIMG contractIMG = new ContractIMG();
@@ -446,7 +420,6 @@ public class ContractServiceImpl implements ContractService {
 
         LocalDateTime startDate = Collections.min(startDateList);
         LocalDateTime endDate = Collections.max(endDateList);
-        contract.setDeposit(createManagerContractModel.getDeposit());
         contract.setStartedDate(startDate);
         contract.setEndedDate(endDate);
         contract.setTotal(totalPrice);
@@ -499,16 +472,10 @@ public class ContractServiceImpl implements ContractService {
         if(contract == null) {
             return "Không thể tìm thấy Hợp đồng có trạng thái WAITING với ID là " + approveContractModel.getContractID() + ".";
         }
-        if(approveContractModel.getDeposit() > contract.getTotal()){
-            return "Tiền trả trước ( deposit : " + approveContractModel.getDeposit() + " ) đang lớn hơn tổng tiền ( TotalPrice : " + contract.getTotal() + " ).";
-        }
 
         tblAccount staff = userRepository.getById(approveContractModel.getStaffID());
 
-        PaymentType paymentType = paymentTypeRepository.getById(approveContractModel.getPaymentTypeID());
-        contract.setDeposit(approveContractModel.getDeposit());
         contract.setPaymentMethod(approveContractModel.getPaymentMethod());
-        contract.setPaymentType(paymentType);
         contract.setStaff(staff);
         contract.setApprovedDate(LocalDateTime.now(ZoneId.of("Asia/Ho_Chi_Minh")));
         contract.setStatus(Status.APPROVED);
@@ -524,7 +491,7 @@ public class ContractServiceImpl implements ContractService {
     }
 
     @Override
-    public String addContractIMG(String contractID, Double deposit, String paymentTypeID, List<String> listURL){
+    public String addContractIMG(String contractID, List<String> listURL) throws FirebaseMessagingException {
         Contract contract = contractRepository.findByIdAndStatus(contractID, Status.APPROVED);
         if(contract == null) {
             return "Không thể tìm thấy Hợp đồng có trạng thái APPROVED với ID là " + contractID + ".";
@@ -541,26 +508,18 @@ public class ContractServiceImpl implements ContractService {
                 contractIMG.setId(util.createIDFromLastID("CIMG", 4, lastContractIMG.getId()));
             }
 
-            if(deposit != null){
-                contract.setDeposit(deposit);
-            }
-            if(paymentTypeID != null){
-                Optional<PaymentType> paymentType = paymentTypeRepository.findById(paymentTypeID);
-                if(paymentType == null){
-                    return "Không tìm thấy PaymentType với ID là " + paymentTypeID + ".";
-                }
-                contract.setPaymentType(paymentType.get());
-            }
             contractIMG.setContract(contract);
             contractIMG.setImgURL(imageURL);
-
-            contract.setStatus(Status.SIGNED);
-            contract.setIsSigned(true);
-            contract.setStartedDate(LocalDateTime.now(ZoneId.of("Asia/Ho_Chi_Minh")));
-
-            contractRepository.save(contract);
             contractIMGRepository.save(contractIMG);
         }
+
+        contract.setStatus(Status.SIGNED);
+        contract.setIsSigned(true);
+        contract.setStartedDate(LocalDateTime.now(ZoneId.of("Asia/Ho_Chi_Minh")));
+
+        contractRepository.save(contract);
+
+        util.createNotification("CONTRACT", contract.getCustomer(), contract.getId(), "ký tên");
         return "Thêm thành công.";
     }
 
@@ -578,11 +537,6 @@ public class ContractServiceImpl implements ContractService {
             if(contract.getCustomer() != null){
                 util.createNotification("CONTRACT", contract.getCustomer(), contract.getId(), "từ chối");
             }
-        }else if(status.toString().equalsIgnoreCase("DONE")){
-            contract.setStatus(status);
-            contract.setEndedDate(LocalDateTime.now(ZoneId.of("Asia/Ho_Chi_Minh")));
-        }else if(status.toString().equalsIgnoreCase("WORKING")){
-            contract.setStatus(status);
         }else{
             contract.setStatus(status);
         }
@@ -629,7 +583,6 @@ public class ContractServiceImpl implements ContractService {
         model.setRejectedDate(contract.getRejectedDate());
         model.setStartedDate(contract.getStartedDate());
         model.setEndedDate(contract.getEndedDate());
-        model.setDeposit(contract.getDeposit());
         model.setTotal(contract.getTotal());
         model.setIsFeedback(contract.getIsFeedback());
         model.setIsSigned(contract.getIsSigned());
@@ -663,18 +616,9 @@ public class ContractServiceImpl implements ContractService {
             customerModel.setFullName(contract.getCustomer().getFullName());
         }
 
-        //payment type
-        ShowPaymentTypeModel paymentTypeModel = new ShowPaymentTypeModel();
-        if(contract.getPaymentType() != null) {
-            paymentTypeModel.setId(contract.getPaymentType().getId());
-            paymentTypeModel.setName(contract.getPaymentType().getName());
-            paymentTypeModel.setValue(contract.getPaymentType().getValue());
-        }
-
         model.setShowStaffModel(staffModel);
         model.setShowCustomerModel(customerModel);
         model.setShowStoreModel(storeModel);
-        model.setShowPaymentTypeModel(paymentTypeModel);
         model.setStatus(contract.getStatus());
         model.setImgList(imgModelList);
         return model;
@@ -703,23 +647,6 @@ public class ContractServiceImpl implements ContractService {
     public List<ShowContractModel> getContractByStoreIDAndStatus(String storeID, Status status, Pageable pageable) {
         Page<Contract> pagingResult = contractPagingRepository.findByStore_IdAndStatus(storeID, status, pageable);
         return util.contractPagingConverter(pagingResult, pageable);
-    }
-
-    @Override
-    public List<ShowPaymentTypeModel> getPaymentType() {
-        List<PaymentType> paymentTypeList = paymentTypeRepository.findAll();
-        if(paymentTypeList == null) {
-            return null;
-        }
-        List<ShowPaymentTypeModel> listModel = new ArrayList<>();
-        for(PaymentType paymentType : paymentTypeList) {
-            ShowPaymentTypeModel model = new ShowPaymentTypeModel();
-            model.setId(paymentType.getId());
-            model.setName(paymentType.getName());
-            model.setValue(paymentType.getValue());
-            listModel.add(model);
-        }
-        return listModel;
     }
 
     @Override
@@ -792,14 +719,7 @@ public class ContractServiceImpl implements ContractService {
                 customerModel.setFullName(detail.getContract().getCustomer().getFullName());
                 customerModel.setAvatar(detail.getContract().getCustomer().getAvatar());
             }
-            //paymenttype
-            ShowPaymentTypeModel paymentTypeModel = new ShowPaymentTypeModel();
-            if(detail.getContract().getPaymentType() != null) {
-                paymentTypeModel.setId(detail.getContract().getPaymentType().getId());
-                paymentTypeModel.setName(detail.getContract().getPaymentType().getName());
-                paymentTypeModel.setValue(detail.getContract().getPaymentType().getValue());
-            }
-            contractModel.setShowPaymentTypeModel(paymentTypeModel);
+
             contractModel.setShowCustomerModel(customerModel);
             contractModel.setShowStaffModel(staffModel);
             contractModel.setShowStoreModel(storeModel);
@@ -815,7 +735,6 @@ public class ContractServiceImpl implements ContractService {
             contractModel.setApprovedDate(detail.getContract().getApprovedDate());
             contractModel.setRejectedDate(detail.getContract().getRejectedDate());
             contractModel.setEndedDate(detail.getContract().getEndedDate());
-            contractModel.setDeposit(detail.getContract().getDeposit());
             contractModel.setTotal(detail.getContract().getTotal());
             contractModel.setIsFeedback(detail.getContract().getIsFeedback());
             contractModel.setIsSigned(detail.getContract().getIsSigned());
@@ -925,14 +844,7 @@ public class ContractServiceImpl implements ContractService {
                 customerModel.setFullName(detail.getContract().getCustomer().getFullName());
                 customerModel.setAvatar(detail.getContract().getCustomer().getAvatar());
             }
-            //paymenttype
-            ShowPaymentTypeModel paymentTypeModel = new ShowPaymentTypeModel();
-            if(detail.getContract().getPaymentType() != null) {
-                paymentTypeModel.setId(detail.getContract().getPaymentType().getId());
-                paymentTypeModel.setName(detail.getContract().getPaymentType().getName());
-                paymentTypeModel.setValue(detail.getContract().getPaymentType().getValue());
-            }
-            contractModel.setShowPaymentTypeModel(paymentTypeModel);
+
             contractModel.setShowCustomerModel(customerModel);
             contractModel.setShowStaffModel(staffModel);
             contractModel.setShowStoreModel(storeModel);
@@ -948,7 +860,6 @@ public class ContractServiceImpl implements ContractService {
             contractModel.setApprovedDate(detail.getContract().getApprovedDate());
             contractModel.setRejectedDate(detail.getContract().getRejectedDate());
             contractModel.setEndedDate(detail.getContract().getEndedDate());
-            contractModel.setDeposit(detail.getContract().getDeposit());
             contractModel.setTotal(detail.getContract().getTotal());
             contractModel.setIsFeedback(detail.getContract().getIsFeedback());
             contractModel.setIsSigned(detail.getContract().getIsSigned());

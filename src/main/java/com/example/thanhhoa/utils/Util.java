@@ -4,7 +4,6 @@ import com.example.thanhhoa.dtos.CategoryModels.ShowCategoryModel;
 import com.example.thanhhoa.dtos.ContractModels.ShowContractDetailModel;
 import com.example.thanhhoa.dtos.ContractModels.ShowContractIMGModel;
 import com.example.thanhhoa.dtos.ContractModels.ShowContractModel;
-import com.example.thanhhoa.dtos.ContractModels.ShowPaymentTypeModel;
 import com.example.thanhhoa.dtos.ContractModels.ShowServicePackModel;
 import com.example.thanhhoa.dtos.FeedbackModels.ShowContractFeedbackModel;
 import com.example.thanhhoa.dtos.FeedbackModels.ShowOrderFeedbackIMGModel;
@@ -52,7 +51,6 @@ import com.example.thanhhoa.entities.ServicePrice;
 import com.example.thanhhoa.entities.ServiceType;
 import com.example.thanhhoa.entities.StoreEmployee;
 import com.example.thanhhoa.entities.StorePlant;
-import com.example.thanhhoa.entities.StorePlantRequest;
 import com.example.thanhhoa.entities.WorkingDate;
 import com.example.thanhhoa.entities.tblAccount;
 import com.example.thanhhoa.entities.tblOrder;
@@ -993,7 +991,6 @@ public class Util {
                     model.setRejectedDate(contract.getRejectedDate());
                     model.setStartedDate(contract.getStartedDate());
                     model.setEndedDate(contract.getEndedDate());
-                    model.setDeposit(contract.getDeposit());
                     model.setTotal(contract.getTotal());
                     model.setIsFeedback(contract.getIsFeedback());
                     model.setIsSigned(contract.getIsSigned());
@@ -1027,18 +1024,9 @@ public class Util {
                         customerModel.setFullName(contract.getCustomer().getFullName());
                     }
 
-                    //payment type
-                    ShowPaymentTypeModel paymentTypeModel = new ShowPaymentTypeModel();
-                    if(contract.getPaymentType() != null) {
-                        paymentTypeModel.setId(contract.getPaymentType().getId());
-                        paymentTypeModel.setName(contract.getPaymentType().getName());
-                        paymentTypeModel.setValue(contract.getPaymentType().getValue());
-                    }
-
                     model.setShowStaffModel(staffModel);
                     model.setShowCustomerModel(customerModel);
                     model.setShowStoreModel(storeModel);
-                    model.setShowPaymentTypeModel(paymentTypeModel);
                     model.setStatus(contract.getStatus());
                     model.setImgList(imgModelList);
                     model.setTotalPage(totalPage);
@@ -1117,14 +1105,6 @@ public class Util {
                         customerModel.setAvatar(detail.getContract().getCustomer().getAvatar());
                     }
 
-                    //paymenttype
-                    ShowPaymentTypeModel paymentTypeModel = new ShowPaymentTypeModel();
-                    if(detail.getContract().getPaymentType() != null) {
-                        paymentTypeModel.setId(detail.getContract().getPaymentType().getId());
-                        paymentTypeModel.setName(detail.getContract().getPaymentType().getName());
-                        paymentTypeModel.setValue(detail.getContract().getPaymentType().getValue());
-                    }
-                    contractModel.setShowPaymentTypeModel(paymentTypeModel);
                     contractModel.setShowCustomerModel(customerModel);
                     contractModel.setShowStaffModel(staffModel);
                     contractModel.setShowStoreModel(storeModel);
@@ -1140,7 +1120,6 @@ public class Util {
                     contractModel.setApprovedDate(detail.getContract().getApprovedDate());
                     contractModel.setRejectedDate(detail.getContract().getRejectedDate());
                     contractModel.setEndedDate(detail.getContract().getEndedDate());
-                    contractModel.setDeposit(detail.getContract().getDeposit());
                     contractModel.setTotal(detail.getContract().getTotal());
                     contractModel.setIsFeedback(detail.getContract().getIsFeedback());
                     contractModel.setIsSigned(detail.getContract().getIsSigned());
@@ -1534,87 +1513,87 @@ public class Util {
         }
     }
 
-    public List<ShowRequestModel> requestPagingConverter(Page<StorePlantRequest> pagingResult, Pageable paging) {
-        if(pagingResult.hasContent()) {
-            double totalPage = Math.ceil((double) pagingResult.getTotalElements() / paging.getPageSize());
-            Page<ShowRequestModel> modelResult = pagingResult.map(new Converter<StorePlantRequest, ShowRequestModel>() {
-                @Override
-                protected ShowRequestModel doForward(StorePlantRequest request) {
-                    // from store
-                    ShowStoreModel fromStoreModel = new ShowStoreModel();
-                    fromStoreModel.setId(request.getFromStore().getId());
-                    fromStoreModel.setStoreName(request.getFromStore().getStoreName());
-                    fromStoreModel.setAddress(request.getFromStore().getAddress());
-                    fromStoreModel.setPhone(request.getFromStore().getPhone());
-
-                    // to store
-                    ShowStoreModel toStoreModel = new ShowStoreModel();
-                    toStoreModel.setId(request.getToStore().getId());
-                    toStoreModel.setStoreName(request.getToStore().getStoreName());
-                    toStoreModel.setAddress(request.getToStore().getAddress());
-                    toStoreModel.setPhone(request.getToStore().getPhone());
-
-                    // from manager
-                    ShowStaffModel fromManagerModel = new ShowStaffModel();
-                    fromManagerModel.setId(request.getFromManager().getAccount().getId());
-                    fromManagerModel.setFullName(request.getFromManager().getAccount().getFullName());
-                    fromManagerModel.setAddress(request.getFromManager().getAccount().getAddress());
-                    fromManagerModel.setAvatar(request.getFromManager().getAccount().getAvatar());
-                    fromManagerModel.setGender(request.getFromManager().getAccount().getGender());
-                    fromManagerModel.setPhone(request.getFromManager().getAccount().getPhone());
-                    fromManagerModel.setStatus(request.getFromManager().getStatus());
-                    fromManagerModel.setEmail(request.getFromManager().getAccount().getFullName());
-
-                    // to manager
-                    ShowStaffModel toManagerModel = new ShowStaffModel();
-                    toManagerModel.setId(request.getToManager().getAccount().getId());
-                    toManagerModel.setFullName(request.getToManager().getAccount().getFullName());
-                    toManagerModel.setAddress(request.getToManager().getAccount().getAddress());
-                    toManagerModel.setAvatar(request.getToManager().getAccount().getAvatar());
-                    toManagerModel.setGender(request.getToManager().getAccount().getGender());
-                    toManagerModel.setPhone(request.getToManager().getAccount().getPhone());
-                    toManagerModel.setStatus(request.getToManager().getStatus());
-                    toManagerModel.setEmail(request.getToManager().getAccount().getFullName());
-
-                    //plant
-                    com.example.thanhhoa.dtos.OrderModels.ShowPlantModel plantModel = new com.example.thanhhoa.dtos.OrderModels.ShowPlantModel();
-                    PlantPrice newestPrice = plantPriceRepository.findFirstByPlant_IdAndStatusOrderByApplyDateDesc(request.getPlant().getId(), Status.ACTIVE);
-                    plantModel.setId(request.getPlant().getId());
-                    if(request.getPlant().getPlantIMGList() != null && !request.getPlant().getPlantIMGList().isEmpty()) {
-                        plantModel.setImage(request.getPlant().getPlantIMGList().get(0).getImgURL());
-                    }
-                    plantModel.setQuantity(request.getQuantity());
-                    plantModel.setPlantName(request.getPlant().getName());
-                    plantModel.setPlantPriceID(newestPrice.getId());
-                    plantModel.setPlantPrice(newestPrice.getPrice());
-                    plantModel.setShipPrice(request.getPlant().getPlantShipPrice().getPricePerPlant());
-
-                    ShowRequestModel model = new ShowRequestModel();
-                    model.setId(request.getId());
-                    model.setQuantity(request.getQuantity());
-                    model.setCreatedDate(request.getCreateDate());
-                    model.setUpdatedDate(request.getUpdateDate());
-                    model.setReason(request.getReason());
-                    model.setStatus(request.getStatus());
-                    model.setFromStoreModel(fromStoreModel);
-                    model.setToStoreModel(toStoreModel);
-                    model.setFromManagerModel(fromManagerModel);
-                    model.setToManagerModel(toManagerModel);
-                    model.setShowPlantModel(plantModel);
-                    model.setTotalPage(totalPage);
-                    return model;
-                }
-
-                @Override
-                protected StorePlantRequest doBackward(ShowRequestModel showRequestModel) {
-                    return null;
-                }
-            });
-            return modelResult.getContent();
-        } else {
-            return new ArrayList<>();
-        }
-    }
+//    public List<ShowRequestModel> requestPagingConverter(Page<StorePlantRequest> pagingResult, Pageable paging) {
+//        if(pagingResult.hasContent()) {
+//            double totalPage = Math.ceil((double) pagingResult.getTotalElements() / paging.getPageSize());
+//            Page<ShowRequestModel> modelResult = pagingResult.map(new Converter<StorePlantRequest, ShowRequestModel>() {
+//                @Override
+//                protected ShowRequestModel doForward(StorePlantRequest request) {
+//                    // from store
+//                    ShowStoreModel fromStoreModel = new ShowStoreModel();
+//                    fromStoreModel.setId(request.getFromStore().getId());
+//                    fromStoreModel.setStoreName(request.getFromStore().getStoreName());
+//                    fromStoreModel.setAddress(request.getFromStore().getAddress());
+//                    fromStoreModel.setPhone(request.getFromStore().getPhone());
+//
+//                    // to store
+//                    ShowStoreModel toStoreModel = new ShowStoreModel();
+//                    toStoreModel.setId(request.getToStore().getId());
+//                    toStoreModel.setStoreName(request.getToStore().getStoreName());
+//                    toStoreModel.setAddress(request.getToStore().getAddress());
+//                    toStoreModel.setPhone(request.getToStore().getPhone());
+//
+//                    // from manager
+//                    ShowStaffModel fromManagerModel = new ShowStaffModel();
+//                    fromManagerModel.setId(request.getFromManager().getAccount().getId());
+//                    fromManagerModel.setFullName(request.getFromManager().getAccount().getFullName());
+//                    fromManagerModel.setAddress(request.getFromManager().getAccount().getAddress());
+//                    fromManagerModel.setAvatar(request.getFromManager().getAccount().getAvatar());
+//                    fromManagerModel.setGender(request.getFromManager().getAccount().getGender());
+//                    fromManagerModel.setPhone(request.getFromManager().getAccount().getPhone());
+//                    fromManagerModel.setStatus(request.getFromManager().getStatus());
+//                    fromManagerModel.setEmail(request.getFromManager().getAccount().getFullName());
+//
+//                    // to manager
+//                    ShowStaffModel toManagerModel = new ShowStaffModel();
+//                    toManagerModel.setId(request.getToManager().getAccount().getId());
+//                    toManagerModel.setFullName(request.getToManager().getAccount().getFullName());
+//                    toManagerModel.setAddress(request.getToManager().getAccount().getAddress());
+//                    toManagerModel.setAvatar(request.getToManager().getAccount().getAvatar());
+//                    toManagerModel.setGender(request.getToManager().getAccount().getGender());
+//                    toManagerModel.setPhone(request.getToManager().getAccount().getPhone());
+//                    toManagerModel.setStatus(request.getToManager().getStatus());
+//                    toManagerModel.setEmail(request.getToManager().getAccount().getFullName());
+//
+//                    //plant
+//                    com.example.thanhhoa.dtos.OrderModels.ShowPlantModel plantModel = new com.example.thanhhoa.dtos.OrderModels.ShowPlantModel();
+//                    PlantPrice newestPrice = plantPriceRepository.findFirstByPlant_IdAndStatusOrderByApplyDateDesc(request.getPlant().getId(), Status.ACTIVE);
+//                    plantModel.setId(request.getPlant().getId());
+//                    if(request.getPlant().getPlantIMGList() != null && !request.getPlant().getPlantIMGList().isEmpty()) {
+//                        plantModel.setImage(request.getPlant().getPlantIMGList().get(0).getImgURL());
+//                    }
+//                    plantModel.setQuantity(request.getQuantity());
+//                    plantModel.setPlantName(request.getPlant().getName());
+//                    plantModel.setPlantPriceID(newestPrice.getId());
+//                    plantModel.setPlantPrice(newestPrice.getPrice());
+//                    plantModel.setShipPrice(request.getPlant().getPlantShipPrice().getPricePerPlant());
+//
+//                    ShowRequestModel model = new ShowRequestModel();
+//                    model.setId(request.getId());
+//                    model.setQuantity(request.getQuantity());
+//                    model.setCreatedDate(request.getCreateDate());
+//                    model.setUpdatedDate(request.getUpdateDate());
+//                    model.setReason(request.getReason());
+//                    model.setStatus(request.getStatus());
+//                    model.setFromStoreModel(fromStoreModel);
+//                    model.setToStoreModel(toStoreModel);
+//                    model.setFromManagerModel(fromManagerModel);
+//                    model.setToManagerModel(toManagerModel);
+//                    model.setShowPlantModel(plantModel);
+//                    model.setTotalPage(totalPage);
+//                    return model;
+//                }
+//
+//                @Override
+//                protected StorePlantRequest doBackward(ShowRequestModel showRequestModel) {
+//                    return null;
+//                }
+//            });
+//            return modelResult.getContent();
+//        } else {
+//            return new ArrayList<>();
+//        }
+//    }
 
     public void createNotification(String entity, tblAccount account, String entityID, String action) throws FirebaseMessagingException {
         if(entity.equalsIgnoreCase("ORDER")) {

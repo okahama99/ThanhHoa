@@ -6,9 +6,7 @@ import com.example.thanhhoa.dtos.ContractModels.CreateManagerContractModel;
 import com.example.thanhhoa.dtos.ContractModels.GetStaffModel;
 import com.example.thanhhoa.dtos.ContractModels.ShowContractDetailModel;
 import com.example.thanhhoa.dtos.ContractModels.ShowContractModel;
-import com.example.thanhhoa.dtos.ContractModels.ShowPaymentTypeModel;
 import com.example.thanhhoa.dtos.ContractModels.UpdateContractModel;
-import com.example.thanhhoa.dtos.OrderModels.ShowOrderModel;
 import com.example.thanhhoa.enums.SearchType;
 import com.example.thanhhoa.enums.Status;
 import com.example.thanhhoa.services.contract.ContractService;
@@ -268,14 +266,12 @@ public class ContractController {
     @PostMapping(value = "/addContractIMG", produces = "application/json;charset=UTF-8")
     public ResponseEntity<Object> addContractIMG(@RequestParam String contractID,
                                                  @RequestParam List<String> listURL,
-                                                 @RequestParam(required = false) String paymentTypeID,
-                                                 @RequestParam(required = false) Double deposit,
                                                  HttpServletRequest request) throws Exception {
         String roleName = jwtUtil.getRoleNameFromRequest(request);
         if(!roleName.equalsIgnoreCase("Manager")) {
             throw new ResponseStatusException(HttpStatus.FORBIDDEN, "-----------------------------------Người dùng không có quyền truy cập---------------------------");
         }
-        return ResponseEntity.ok().body(contractService.addContractIMG(contractID, deposit, paymentTypeID, listURL));
+        return ResponseEntity.ok().body(contractService.addContractIMG(contractID, listURL));
     }
 
     @PutMapping(produces = "application/json;charset=UTF-8")
@@ -360,13 +356,6 @@ public class ContractController {
     public @ResponseBody
     List<GetStaffModel> getStaffForContract() {
         return contractService.getStaffForContract();
-    }
-
-
-    @GetMapping(value = "/getPaymentType", produces = "application/json;charset=UTF-8")
-    public @ResponseBody
-    List<ShowPaymentTypeModel> getPaymentType() {
-        return contractService.getPaymentType();
     }
 
     @GetMapping(value = "/checkStartDateEndDate", produces = "application/json;charset=UTF-8")

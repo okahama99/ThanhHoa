@@ -30,7 +30,6 @@ public class ShowContractModel implements Serializable {
     private LocalDateTime endedDate;
     private LocalDateTime approvedDate;
     private LocalDateTime rejectedDate;
-    private Double deposit;
     private Double total;
     private Boolean isFeedback;
     private Boolean isSigned;
@@ -41,7 +40,6 @@ public class ShowContractModel implements Serializable {
     private ShowStaffModel showStaffModel;
     private ShowCustomerModel showCustomerModel;
     private ShowStoreModel showStoreModel;
-    private ShowPaymentTypeModel showPaymentTypeModel;
 
     private Double totalPage;
 }

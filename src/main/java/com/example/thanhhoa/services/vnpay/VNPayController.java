@@ -60,13 +60,13 @@ public class VNPayController {
         if(paymentStatus == 1) {
             transaction.setStatus(Status.SUCCESS);
             transactionRepository.save(transaction);
-            return ResponseEntity.ok().body(transaction);
+            return ResponseEntity.ok().body("");
         } else if(paymentStatus == 0) {
             transaction.setStatus(Status.FAIL);
             transactionRepository.save(transaction);
-            return ResponseEntity.badRequest().body(transaction);
+            return ResponseEntity.badRequest().body("");
         } else {
-            return ResponseEntity.badRequest().body("Mã Secure Hash không hợp lệ.");
+            return ResponseEntity.badRequest().body("Lỗi !!! Mã Secure Hash không hợp lệ.");
         }
     }
 }

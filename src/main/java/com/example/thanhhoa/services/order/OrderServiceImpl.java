@@ -336,6 +336,7 @@ public class OrderServiceImpl implements OrderService {
             }
 
             util.createNotification("ORDER", order.getCustomer(), order.getId(), action);
+            util.createNotification("ORDER", order.getStaff(), order.getId(), action);
 
             orderRepository.save(checkExistedOrder.get());
             return true;

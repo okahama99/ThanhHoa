@@ -60,9 +60,6 @@ public class Contract implements Serializable {
     private LocalDateTime rejectedDate;
 
     @Column
-    private Double deposit = 0.0;
-
-    @Column
     private Double total = 0.0;
 
     @Column
@@ -85,10 +82,6 @@ public class Contract implements Serializable {
     @ManyToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     @JoinColumn(name = "account_customer_id")
     private tblAccount customer;
-
-    @ManyToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-    @JoinColumn(name = "payment_type_id")
-    private PaymentType paymentType;
 
     @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY, mappedBy = "contract")
     private List<ContractDetail> contractDetailList;

@@ -116,7 +116,6 @@ public class TransactionServiceImpl implements TransactionService {
         contractModel.setRejectedDate(contract.getRejectedDate());
         contractModel.setStartedDate(contract.getStartedDate());
         contractModel.setEndedDate(contract.getEndedDate());
-        contractModel.setDeposit(contract.getDeposit());
         contractModel.setTotal(contract.getTotal());
         contractModel.setIsFeedback(contract.getIsFeedback());
         contractModel.setIsSigned(contract.getIsSigned());
@@ -198,7 +197,6 @@ public class TransactionServiceImpl implements TransactionService {
             contractModel.setRejectedDate(contract.getRejectedDate());
             contractModel.setStartedDate(contract.getStartedDate());
             contractModel.setEndedDate(contract.getEndedDate());
-            contractModel.setDeposit(contract.getDeposit());
             contractModel.setTotal(contract.getTotal());
             contractModel.setIsFeedback(contract.getIsFeedback());
             contractModel.setIsSigned(contract.getIsSigned());
