@@ -330,18 +330,21 @@ public class StoreServiceImpl implements StoreService{
             StoreEmployee storeEmployee = storeEmployeeRepository.findByAccount_Id(employeeUserID);
             if(storeEmployee != null && storeEmployee.getStatus().toString().equalsIgnoreCase("INACTIVE")){
                 storeEmployee.setStatus(Status.ACTIVE);
+                storeEmployeeRepository.save(storeEmployee);
             }else if(storeEmployee != null && storeEmployee.getStatus().toString().equalsIgnoreCase("ACTIVE")){
                 return "Tài khoản có ID là " + employeeUserID + "vẫn đang là nhân viên của cửa hàng.";
             }else{
                 StoreEmployeeId employeeId = new StoreEmployeeId();
                 employeeId.setTblAccount_id(employeeAcc.getId());
 
-                storeEmployee.setId(employeeId);
-                storeEmployee.setStore(store);
-                storeEmployee.setAccount(employeeAcc);
-                storeEmployee.setStatus(Status.ACTIVE);
+                StoreEmployee newEmployee = new StoreEmployee();
+                newEmployee.setId(employeeId);
+                newEmployee.setStore(store);
+                newEmployee.setAccount(employeeAcc);
+                newEmployee.setStatus(Status.ACTIVE);
+                storeEmployeeRepository.save(newEmployee);
             }
-            storeEmployeeRepository.save(storeEmployee);
+
         }
         return "Thêm thành công.";
     }
