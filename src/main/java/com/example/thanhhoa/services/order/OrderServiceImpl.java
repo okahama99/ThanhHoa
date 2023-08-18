@@ -117,6 +117,10 @@ public class OrderServiceImpl implements OrderService {
             order.setStaff(account);
             order.setApproveDate(LocalDateTime.now(ZoneId.of("Asia/Ho_Chi_Minh")));
             order.setProgressStatus(Status.APPROVED);
+
+            if(createOrderModel.getCustomerID() != null){
+                order.setCustomer(userRepository.getById(createOrderModel.getCustomerID()));
+            }
         }
         if(account.getRole().getRoleName().equalsIgnoreCase("Customer")){
             order.setCustomer(account);
