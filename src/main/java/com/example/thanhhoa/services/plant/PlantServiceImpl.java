@@ -8,7 +8,6 @@ import com.example.thanhhoa.dtos.PlantModels.UpdatePlantModel;
 import com.example.thanhhoa.dtos.PlantPriceModels.ShowPlantPriceModel;
 import com.example.thanhhoa.dtos.PlantShipPriceModels.ShowPlantShipPriceModel;
 import com.example.thanhhoa.entities.Category;
-import com.example.thanhhoa.entities.OrderFeedbackIMG;
 import com.example.thanhhoa.entities.Plant;
 import com.example.thanhhoa.entities.PlantCategory;
 import com.example.thanhhoa.entities.PlantIMG;
@@ -90,8 +89,8 @@ public class PlantServiceImpl implements PlantService {
         Plant plant = checkExistedPlant.get();
         List<PlantCategory> plantCategoryList = plantCategoryRepository.findAllByPlant_IdAndStatus(plant.getId(), Status.ACTIVE);
         List<ShowPlantCategory> showPlantCategoryList = new ArrayList<>();
-        ShowPlantCategory showPlantCategory = new ShowPlantCategory();
         for(PlantCategory plantCategory : plantCategoryList) {
+            ShowPlantCategory showPlantCategory = new ShowPlantCategory();
             showPlantCategory.setCategoryID(plantCategory.getCategory().getId());
             showPlantCategory.setCategoryName(plantCategory.getCategory().getName());
             showPlantCategoryList.add(showPlantCategory);
