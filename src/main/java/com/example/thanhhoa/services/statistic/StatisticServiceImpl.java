@@ -36,11 +36,17 @@ public class StatisticServiceImpl implements StatisticService {
         Integer numOfCWorking = contractRepository.countContractByStatusAndCreatedDateBetween(Status.WORKING, fromDate, toDate);
         Integer numOfCDone = contractRepository.countContractByStatusAndCreatedDateBetween(Status.DONE, fromDate, toDate);
         Integer numOfContract = numOfCWorking + numOfCDone;
-        String sumOfContract = null;
-        Double sumTotalContract = contractRepository.sumTotal(fromDate, toDate);
-        if(sumTotalContract != null) {
-            sumOfContract = String.format("%.2f", sumTotalContract);
+        String sumOfContract = "";
+        Double sumTotalContractWorking = contractRepository.sumTotal(fromDate, toDate, Status.WORKING);
+        Double sumTotalContractDone = contractRepository.sumTotal(fromDate, toDate, Status.DONE);
+        if(sumTotalContractWorking == null) {
+            sumTotalContractWorking = 0.0;
         }
+        if(sumTotalContractDone == null) {
+            sumTotalContractDone = 0.0;
+        }
+        Double sumTotalContract = sumTotalContractWorking + sumTotalContractDone;
+        sumOfContract = String.format("%.2f", sumTotalContract);
 
 
         Integer numOfStoreCWorking = 0;
@@ -54,11 +60,26 @@ public class StatisticServiceImpl implements StatisticService {
         Integer numOfDelivering = orderRepository.countByProgressStatusAndCreatedDateBetween(Status.DELIVERING, fromDate, toDate);
         Integer numOfReceived = orderRepository.countByProgressStatusAndCreatedDateBetween(Status.RECEIVED, fromDate, toDate);
         Integer numOfOrder = numOfApproved + numOfPackaging + numOfDelivering + numOfReceived;
-        Double sumOfTotalOrder = orderRepository.sumTotal(fromDate, toDate);
-        String sumOfOrder = null;
-        if(sumOfTotalOrder != null) {
-            sumOfOrder = String.format("%.2f", sumOfTotalOrder);
+        Double sumOfTotalOrderApproved = orderRepository.sumTotal(fromDate, toDate, Status.APPROVED);
+        Double sumOfTotalOrderPackaging = orderRepository.sumTotal(fromDate, toDate, Status.PACKAGING);
+        Double sumOfTotalOrderDelivering = orderRepository.sumTotal(fromDate, toDate, Status.DELIVERING);
+        Double sumOfTotalOrderReceived = orderRepository.sumTotal(fromDate, toDate, Status.RECEIVED);
+        if(sumOfTotalOrderApproved == null) {
+            sumOfTotalOrderApproved = 0.0;
         }
+        if(sumOfTotalOrderPackaging == null) {
+            sumOfTotalOrderPackaging = 0.0;
+        }
+        if(sumOfTotalOrderDelivering == null) {
+            sumOfTotalOrderDelivering = 0.0;
+        }
+        if(sumOfTotalOrderReceived == null) {
+            sumOfTotalOrderReceived = 0.0;
+        }
+        String sumOfOrder = "";
+        Double sumOfTotalOrder = sumOfTotalOrderApproved + sumOfTotalOrderPackaging + sumOfTotalOrderDelivering + sumOfTotalOrderReceived;
+        sumOfOrder = String.format("%.2f", sumOfTotalOrder);
+
 
         Integer numOfStoreOApproved = 0;
         Integer numOfStoreOPackaging = 0;
@@ -74,7 +95,15 @@ public class StatisticServiceImpl implements StatisticService {
             numOfStoreCWorking = contractRepository.countContractByStore_IdAndStatusAndCreatedDateBetween(storeID, Status.WORKING, fromDate, toDate);
             numOfStoreCDone = contractRepository.countContractByStore_IdAndStatusAndCreatedDateBetween(storeID, Status.DONE, fromDate, toDate);
             numOfStoreContract = numOfStoreCWorking + numOfStoreCDone;
-            Double sumOfTotalStoreContract = contractRepository.sumTotalOfAStore(storeID, fromDate, toDate);
+            Double sumOfTotalStoreContractWorking = contractRepository.sumTotalOfAStore(storeID, fromDate, toDate, Status.WORKING);
+            Double sumOfTotalStoreContractDone = contractRepository.sumTotalOfAStore(storeID, fromDate, toDate, Status.DONE);
+            if(sumOfTotalStoreContractWorking == null) {
+                sumOfTotalStoreContractWorking = 0.0;
+            }
+            if(sumOfTotalStoreContractDone == null) {
+                sumOfTotalStoreContractDone = 0.0;
+            }
+            Double sumOfTotalStoreContract = sumOfTotalStoreContractWorking + sumOfTotalStoreContractDone;
             if(sumOfTotalStoreContract != null) {
                 sumOfStoreContract = String.format("%.2f", sumOfTotalStoreContract);
             }
@@ -85,10 +114,24 @@ public class StatisticServiceImpl implements StatisticService {
             numOfStoreODelivering = orderRepository.countByStore_IdAndProgressStatusAndCreatedDateBetween(storeID, Status.DELIVERING, fromDate, toDate);
             numOfStoreOReceived = orderRepository.countByStore_IdAndProgressStatusAndCreatedDateBetween(storeID, Status.RECEIVED, fromDate, toDate);
             numOfStoreOrder = numOfStoreOApproved + numOfStoreOPackaging + numOfStoreODelivering + numOfStoreOReceived;
-            Double sumOfTotalStoreOrder = orderRepository.sumTotalOfAStore(storeID, fromDate, toDate);
-            if(sumOfTotalStoreOrder != null) {
-                sumOfStoreOrder = String.format("%.2f", sumOfTotalStoreOrder);
+            Double sumOfTotalStoreOrderApproved = orderRepository.sumTotalOfAStore(storeID, fromDate, toDate, Status.APPROVED);
+            Double sumOfTotalStoreOrderPackaging = orderRepository.sumTotalOfAStore(storeID, fromDate, toDate, Status.PACKAGING);
+            Double sumOfTotalStoreOrderDelivering = orderRepository.sumTotalOfAStore(storeID, fromDate, toDate, Status.DELIVERING);
+            Double sumOfTotalStoreOrderReceived = orderRepository.sumTotalOfAStore(storeID, fromDate, toDate, Status.RECEIVED);
+            if(sumOfTotalStoreOrderApproved == null) {
+                sumOfTotalStoreOrderApproved = 0.0;
             }
+            if(sumOfTotalStoreOrderPackaging == null) {
+                sumOfTotalStoreOrderPackaging = 0.0;
+            }
+            if(sumOfTotalStoreOrderDelivering == null) {
+                sumOfTotalStoreOrderDelivering = 0.0;
+            }
+            if(sumOfTotalStoreOrderReceived == null) {
+                sumOfTotalStoreOrderReceived = 0.0;
+            }
+            Double sumOfTotalStoreOrder = sumOfTotalOrderApproved + sumOfTotalOrderPackaging + sumOfTotalOrderDelivering + sumOfTotalOrderReceived;
+            sumOfStoreOrder = String.format("%.2f", sumOfTotalStoreOrder);
 
             // store
             Store store = storeRepository.getById(storeID);
@@ -150,7 +193,15 @@ public class StatisticServiceImpl implements StatisticService {
                 Integer numOfCDone = contractRepository.countContractByStatusAndCreatedDateBetween(Status.DONE, fromDate, toDate);
                 Integer numOfContract = numOfCWorking + numOfCDone;
                 String sumOfContract = null;
-                Double sumTotalContract = contractRepository.sumTotal(fromDate, toDate);
+                Double sumTotalContractWorking = contractRepository.sumTotal(fromDate, toDate, Status.WORKING);
+                Double sumTotalContractDone = contractRepository.sumTotal(fromDate, toDate, Status.DONE);
+                if(sumTotalContractWorking == null) {
+                    sumTotalContractWorking = 0.0;
+                }
+                if(sumTotalContractDone == null) {
+                    sumTotalContractDone = 0.0;
+                }
+                Double sumTotalContract = sumTotalContractWorking + sumTotalContractDone;
                 if(sumTotalContract != null) {
                     sumOfContract = String.format("%.2f", sumTotalContract);
                 }
@@ -161,11 +212,25 @@ public class StatisticServiceImpl implements StatisticService {
                 Integer numOfDelivering = orderRepository.countByProgressStatusAndCreatedDateBetween(Status.DELIVERING, fromDate, toDate);
                 Integer numOfReceived = orderRepository.countByProgressStatusAndCreatedDateBetween(Status.RECEIVED, fromDate, toDate);
                 Integer numOfOrder = numOfApproved + numOfPackaging + numOfDelivering + numOfReceived;
-                Double sumOfTotalOrder = orderRepository.sumTotal(fromDate, toDate);
-                String sumOfOrder = null;
-                if(sumOfTotalOrder != null) {
-                    sumOfOrder = String.format("%.2f", sumOfTotalOrder);
+                Double sumOfTotalOrderApproved = orderRepository.sumTotal(fromDate, toDate, Status.APPROVED);
+                Double sumOfTotalOrderPackaging = orderRepository.sumTotal(fromDate, toDate, Status.PACKAGING);
+                Double sumOfTotalOrderDelivering = orderRepository.sumTotal(fromDate, toDate, Status.DELIVERING);
+                Double sumOfTotalOrderReceived = orderRepository.sumTotal(fromDate, toDate, Status.RECEIVED);
+                if(sumOfTotalOrderApproved == null) {
+                    sumOfTotalOrderApproved = 0.0;
                 }
+                if(sumOfTotalOrderPackaging == null) {
+                    sumOfTotalOrderPackaging = 0.0;
+                }
+                if(sumOfTotalOrderDelivering == null) {
+                    sumOfTotalOrderDelivering = 0.0;
+                }
+                if(sumOfTotalOrderReceived == null) {
+                    sumOfTotalOrderReceived = 0.0;
+                }
+                String sumOfOrder = "";
+                Double sumOfTotalOrder = sumOfTotalOrderApproved + sumOfTotalOrderPackaging + sumOfTotalOrderDelivering + sumOfTotalOrderReceived;
+                sumOfOrder = String.format("%.2f", sumOfTotalOrder);
 
                 Integer numOfStoreCWorking = 0;
                 Integer numOfStoreCDone = 0;
@@ -178,7 +243,15 @@ public class StatisticServiceImpl implements StatisticService {
                 numOfStoreCWorking = contractRepository.countContractByStore_IdAndStatusAndCreatedDateBetween(storeID, Status.WORKING, fromDate, toDate);
                 numOfStoreCDone = contractRepository.countContractByStore_IdAndStatusAndCreatedDateBetween(storeID, Status.DONE, fromDate, toDate);
                 numOfStoreContract = numOfStoreCWorking + numOfStoreCDone;
-                Double sumOfTotalStoreContract = contractRepository.sumTotalOfAStore(storeID, fromDate, toDate);
+                Double sumOfTotalStoreContractWorking = contractRepository.sumTotalOfAStore(storeID, fromDate, toDate, Status.WORKING);
+                Double sumOfTotalStoreContractDone = contractRepository.sumTotalOfAStore(storeID, fromDate, toDate, Status.DONE);
+                if(sumOfTotalStoreContractWorking == null) {
+                    sumOfTotalStoreContractWorking = 0.0;
+                }
+                if(sumOfTotalStoreContractDone == null) {
+                    sumOfTotalStoreContractDone = 0.0;
+                }
+                Double sumOfTotalStoreContract = sumOfTotalStoreContractWorking + sumOfTotalStoreContractDone;
                 if(sumOfTotalStoreContract != null) {
                     sumOfStoreContract = String.format("%.2f", sumOfTotalStoreContract);
                 }
@@ -196,10 +269,26 @@ public class StatisticServiceImpl implements StatisticService {
                 numOfStoreODelivering = orderRepository.countByStore_IdAndProgressStatusAndCreatedDateBetween(storeID, Status.DELIVERING, fromDate, toDate);
                 numOfStoreOReceived = orderRepository.countByStore_IdAndProgressStatusAndCreatedDateBetween(storeID, Status.RECEIVED, fromDate, toDate);
                 numOfStoreOrder = numOfStoreOApproved + numOfStoreOPackaging + numOfStoreODelivering + numOfStoreOReceived;
-                Double sumOfTotalStoreOrder = orderRepository.sumTotalOfAStore(storeID, fromDate, toDate);
-                if(sumOfTotalStoreOrder != null) {
-                    sumOfStoreOrder = String.format("%.2f", sumOfTotalStoreOrder);
+
+                Double sumOfTotalStoreOrderApproved = orderRepository.sumTotalOfAStore(storeID, fromDate, toDate, Status.APPROVED);
+                Double sumOfTotalStoreOrderPackaging = orderRepository.sumTotalOfAStore(storeID, fromDate, toDate, Status.PACKAGING);
+                Double sumOfTotalStoreOrderDelivering = orderRepository.sumTotalOfAStore(storeID, fromDate, toDate, Status.DELIVERING);
+                Double sumOfTotalStoreOrderReceived = orderRepository.sumTotalOfAStore(storeID, fromDate, toDate, Status.RECEIVED);
+                if(sumOfTotalStoreOrderApproved == null) {
+                    sumOfTotalStoreOrderApproved = 0.0;
                 }
+                if(sumOfTotalStoreOrderPackaging == null) {
+                    sumOfTotalStoreOrderPackaging = 0.0;
+                }
+                if(sumOfTotalStoreOrderDelivering == null) {
+                    sumOfTotalStoreOrderDelivering = 0.0;
+                }
+                if(sumOfTotalStoreOrderReceived == null) {
+                    sumOfTotalStoreOrderReceived = 0.0;
+                }
+
+                Double sumOfTotalStoreOrder = sumOfTotalOrderApproved + sumOfTotalOrderPackaging + sumOfTotalOrderDelivering + sumOfTotalOrderReceived;
+                sumOfStoreOrder = String.format("%.2f", sumOfTotalStoreOrder);
 
                 // store
                 StoreEmployee manager = storeEmployeeRepository.findByStore_IdAndAccount_Role_RoleName(storeID, "Manager");
