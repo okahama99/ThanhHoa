@@ -11,6 +11,7 @@ import com.example.thanhhoa.enums.Status;
 import com.google.firebase.messaging.FirebaseMessagingException;
 import org.springframework.data.domain.Pageable;
 
+import javax.mail.MessagingException;
 import java.io.IOException;
 import java.time.LocalDateTime;
 import java.util.List;
@@ -27,7 +28,7 @@ public interface ContractService {
 
     List<ShowContractDetailModel> getContractDetailByContractID(String contractID, Pageable pageable);
 
-    String createContractCustomer(CreateCustomerContractModel createCustomerContractModel, Long userID) throws FirebaseMessagingException;
+    String createContractCustomer(CreateCustomerContractModel createCustomerContractModel, Long userID) throws FirebaseMessagingException, MessagingException;
 
     String createContractManager(CreateManagerContractModel createManagerContractModel) throws IOException, FirebaseMessagingException;
 

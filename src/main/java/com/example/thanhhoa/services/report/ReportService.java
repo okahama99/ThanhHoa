@@ -7,6 +7,7 @@ import com.example.thanhhoa.enums.Status;
 import com.google.firebase.messaging.FirebaseMessagingException;
 import org.springframework.data.domain.Pageable;
 
+import javax.mail.MessagingException;
 import java.util.List;
 
 public interface ReportService {
@@ -14,7 +15,7 @@ public interface ReportService {
 
     List<ShowReportModel> getByContractDetailID(String contractDetailID);
 
-    String create(CreateReportModel createReportModel, Long userID);
+    String create(CreateReportModel createReportModel, Long userID) throws MessagingException;
 
     String update(UpdateReportModel updateReportModel);
 

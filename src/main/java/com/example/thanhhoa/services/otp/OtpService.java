@@ -54,6 +54,15 @@ public class OtpService {
         // send generated e-mail
         return true;
     }
+
+    public Boolean generateNotificationEmailForManager(String email, String entity) throws MessagingException {
+        tblAccount user = userRepository.findByEmailAndStatus(email, Status.ACTIVE);
+        // fetch user e-mail from database
+        // generate emailDTO object
+        send(email, managerNotificationEmail(user.getUsername(), entity), "Có một " + entity + " vừa được tạo.");
+        // send generated e-mail
+        return true;
+    }
     /**
      * Method for validating provided OTP
      *
@@ -82,6 +91,14 @@ public class OtpService {
                 "<p>M&atilde; opt sẽ c&oacute; hiệu lực trong v&ograve;ng 5 ph&uacute;t.</p>\n" +
                 "<p>Nếu đ&acirc;y kh&ocirc;ng phải do qu&yacute; kh&aacute;ch thực hiện thao t&aacute;c, c&oacute; thể y&ecirc;n t&acirc;m bỏ qua nội dung mail n&agrave;y.</p>\n" +
                 "<p>Cảm ơn qu&yacute; kh&aacute;ch đ&atilde; sử dụng dịch vụ của ch&uacute;ng t&ocirc;i, xin ch&uacute;c qu&yacute; kh&aacute;ch c&oacute; một ng&agrave;y tốt l&agrave;nh.</p>\n" +
+                "<p>Xin vui l&ograve;ng kh&ocirc;ng trả lời mail từ hệ thống.</p>\n" +
+                "<p><strong>&nbsp;</strong></p>";
+    }
+
+    private String managerNotificationEmail(String name, String entity) {
+        return "<h1 style=\"color: #5e9ca0; text-align: center;\">--- Thanh Hoa ---</h1>\n" +
+                "<h2 style=\"color: #2e6c80; text-align: center;\">Xin ch&agrave;o&nbsp; "+ name +"</h2>\n" +
+                "<h4> Có một " + entity + " mới vừa được tạo ở cửa hàng của bạn</h4><br /> " +
                 "<p>Xin vui l&ograve;ng kh&ocirc;ng trả lời mail từ hệ thống.</p>\n" +
                 "<p><strong>&nbsp;</strong></p>";
     }

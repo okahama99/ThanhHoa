@@ -17,6 +17,8 @@ import com.example.thanhhoa.entities.Notification;
 import com.example.thanhhoa.entities.OrderDetail;
 import com.example.thanhhoa.entities.Plant;
 import com.example.thanhhoa.entities.PlantPrice;
+import com.example.thanhhoa.entities.Store;
+import com.example.thanhhoa.entities.StoreEmployee;
 import com.example.thanhhoa.entities.StorePlant;
 import com.example.thanhhoa.entities.StorePlantRecord;
 import com.example.thanhhoa.entities.Transaction;
@@ -30,6 +32,7 @@ import com.example.thanhhoa.repositories.OrderDetailRepository;
 import com.example.thanhhoa.repositories.OrderRepository;
 import com.example.thanhhoa.repositories.PlantPriceRepository;
 import com.example.thanhhoa.repositories.PlantRepository;
+import com.example.thanhhoa.repositories.StoreEmployeeRepository;
 import com.example.thanhhoa.repositories.StorePlantRecordRepository;
 import com.example.thanhhoa.repositories.StorePlantRepository;
 import com.example.thanhhoa.repositories.StoreRepository;
@@ -38,6 +41,7 @@ import com.example.thanhhoa.repositories.UserRepository;
 import com.example.thanhhoa.repositories.pagings.OrderDetailPagingRepository;
 import com.example.thanhhoa.repositories.pagings.OrderPagingRepository;
 import com.example.thanhhoa.services.firebase.FirebaseMessagingService;
+import com.example.thanhhoa.services.otp.OtpService;
 import com.example.thanhhoa.utils.Util;
 import com.google.firebase.messaging.FirebaseMessagingException;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -45,6 +49,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
+import javax.mail.MessagingException;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.util.ArrayList;
@@ -85,12 +90,12 @@ public class OrderServiceImpl implements OrderService {
     @Autowired
     private TransactionRepository transactionRepository;
     @Autowired
-    private FirebaseMessagingService firebaseMessagingService;
+    private OtpService otpService;
     @Autowired
-    private NotificationRepository notificationRepository;
+    private StoreEmployeeRepository storeEmployeeRepository;
 
     @Override
-    public String createOrder(CreateOrderModel createOrderModel, Long customerID) throws FirebaseMessagingException {
+    public String createOrder(CreateOrderModel createOrderModel, Long customerID) throws FirebaseMessagingException, MessagingException {
         if(createOrderModel.getDetailList() == null) {
             return "Danh sách cây không được để trống.";
         }
@@ -125,7 +130,8 @@ public class OrderServiceImpl implements OrderService {
         if(account.getRole().getRoleName().equalsIgnoreCase("Customer")){
             order.setCustomer(account);
         }
-        order.setStore(storeRepository.getById(createOrderModel.getStoreID()));
+        Store store = storeRepository.getById(createOrderModel.getStoreID());
+        order.setStore(store);
 
         DistancePrice distancePrice = distancePriceRepository.getById(createOrderModel.getDistancePriceID());
         Double totalPriceOfAPlant = 0.0;
@@ -174,6 +180,12 @@ public class OrderServiceImpl implements OrderService {
         orderRepository.save(order);
 
         util.createNotification("ORDER", account, order.getId(), "tạo");
+
+        StoreEmployee manager = storeEmployeeRepository.findByStore_IdAndAccount_Role_RoleName(store.getId(), "Manager");
+        if(manager != null){
+            otpService.generateNotificationEmailForManager(manager.getAccount().getEmail(),"Đơn hàng");
+        }
+
 
         return order.getId();
     }

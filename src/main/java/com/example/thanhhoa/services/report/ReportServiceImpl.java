@@ -6,12 +6,15 @@ import com.example.thanhhoa.dtos.ReportModels.UpdateReportModel;
 import com.example.thanhhoa.entities.Cart;
 import com.example.thanhhoa.entities.ContractDetail;
 import com.example.thanhhoa.entities.Report;
+import com.example.thanhhoa.entities.StoreEmployee;
 import com.example.thanhhoa.entities.tblAccount;
 import com.example.thanhhoa.enums.Status;
 import com.example.thanhhoa.repositories.ContractDetailRepository;
 import com.example.thanhhoa.repositories.ReportRepository;
+import com.example.thanhhoa.repositories.StoreEmployeeRepository;
 import com.example.thanhhoa.repositories.UserRepository;
 import com.example.thanhhoa.repositories.pagings.ReportPagingRepository;
+import com.example.thanhhoa.services.otp.OtpService;
 import com.example.thanhhoa.utils.Util;
 import com.google.firebase.messaging.FirebaseMessagingException;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,6 +22,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
+import javax.mail.MessagingException;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.util.ArrayList;
@@ -38,6 +42,10 @@ public class ReportServiceImpl implements ReportService{
     private ReportPagingRepository reportPagingRepository;
     @Autowired
     private Util util;
+    @Autowired
+    private OtpService otpService;
+    @Autowired
+    private StoreEmployeeRepository storeEmployeeRepository;
 
     @Override
     public List<ShowReportModel> getByUserID(Long userID) {
@@ -104,7 +112,7 @@ public class ReportServiceImpl implements ReportService{
     }
 
     @Override
-    public String create(CreateReportModel createReportModel, Long userID){
+    public String create(CreateReportModel createReportModel, Long userID) throws MessagingException {
         Optional<ContractDetail> checkExisted = contractDetailRepository.findById(createReportModel.getContractDetailID());
         if(checkExisted == null){
             return "Không tìm thấy Chi tiết hợp đồng với ID là " + createReportModel.getContractDetailID() + ".";
@@ -125,6 +133,12 @@ public class ReportServiceImpl implements ReportService{
         report.setCustomer(customer);
         report.setContractDetail(checkExisted.get());
         reportRepository.save(report);
+
+        StoreEmployee manager = storeEmployeeRepository.findByStore_IdAndAccount_Role_RoleName(checkExisted.get().getContract().getStore().getId(), "Manager");
+        if(manager != null){
+            otpService.generateNotificationEmailForManager(manager.getAccount().getEmail(),"Báo cáo");
+        }
+
         return "Tạo thành công.";
     }
 

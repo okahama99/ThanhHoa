@@ -9,11 +9,12 @@ import com.example.thanhhoa.enums.Status;
 import com.google.firebase.messaging.FirebaseMessagingException;
 import org.springframework.data.domain.Pageable;
 
+import javax.mail.MessagingException;
 import java.util.List;
 
 public interface OrderService {
 
-    String createOrder(CreateOrderModel createOrderModel, Long customerID) throws FirebaseMessagingException;
+    String createOrder(CreateOrderModel createOrderModel, Long customerID) throws FirebaseMessagingException, MessagingException;
 
     String updateOrder(UpdateOrderModel updateOrderModel, Long customerID);
 

@@ -23,6 +23,7 @@ import com.example.thanhhoa.entities.ServicePack;
 import com.example.thanhhoa.entities.ServicePrice;
 import com.example.thanhhoa.entities.ServiceType;
 import com.example.thanhhoa.entities.Store;
+import com.example.thanhhoa.entities.StoreEmployee;
 import com.example.thanhhoa.entities.WorkingDate;
 import com.example.thanhhoa.entities.tblAccount;
 import com.example.thanhhoa.enums.Status;
@@ -32,11 +33,13 @@ import com.example.thanhhoa.repositories.ContractRepository;
 import com.example.thanhhoa.repositories.ServicePackRepository;
 import com.example.thanhhoa.repositories.ServicePriceRepository;
 import com.example.thanhhoa.repositories.ServiceTypeRepository;
+import com.example.thanhhoa.repositories.StoreEmployeeRepository;
 import com.example.thanhhoa.repositories.StoreRepository;
 import com.example.thanhhoa.repositories.UserRepository;
 import com.example.thanhhoa.repositories.WorkingDateRepository;
 import com.example.thanhhoa.repositories.pagings.ContractDetailPagingRepository;
 import com.example.thanhhoa.repositories.pagings.ContractPagingRepository;
+import com.example.thanhhoa.services.otp.OtpService;
 import com.example.thanhhoa.utils.Util;
 import com.google.firebase.messaging.FirebaseMessagingException;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -44,6 +47,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
+import javax.mail.MessagingException;
 import java.io.IOException;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
@@ -81,6 +85,10 @@ public class ContractServiceImpl implements ContractService {
     private ContractDetailPagingRepository contractDetailPagingRepository;
     @Autowired
     private Util util;
+    @Autowired
+    private OtpService otpService;
+    @Autowired
+    private StoreEmployeeRepository storeEmployeeRepository;
 
     @Override
     public List<ShowContractModel> getAllContractByUserID(Long userID, String role, Pageable pageable) {
@@ -244,7 +252,7 @@ public class ContractServiceImpl implements ContractService {
     }
 
     @Override
-    public String createContractCustomer(CreateCustomerContractModel createCustomerContractModel, Long userID) throws FirebaseMessagingException {
+    public String createContractCustomer(CreateCustomerContractModel createCustomerContractModel, Long userID) throws FirebaseMessagingException, MessagingException {
         Store store = storeRepository.getById(createCustomerContractModel.getStoreID());
         tblAccount customer = userRepository.getById(userID);
         if(createCustomerContractModel.getDetailModelList() == null) {
@@ -323,6 +331,11 @@ public class ContractServiceImpl implements ContractService {
         contractRepository.save(contract);
 
         util.createNotification("CONTRACT", customer, contract.getId(), "tạo");
+
+        StoreEmployee manager = storeEmployeeRepository.findByStore_IdAndAccount_Role_RoleName(store.getId(), "Manager");
+        if(manager != null){
+            otpService.generateNotificationEmailForManager(manager.getAccount().getEmail(),"Hợp đồng");
+        }
 
         return "Tạo thành công.";
     }
