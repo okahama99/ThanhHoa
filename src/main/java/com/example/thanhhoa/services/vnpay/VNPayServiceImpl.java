@@ -1,5 +1,7 @@
 package com.example.thanhhoa.services.vnpay;
 
+import com.example.thanhhoa.repositories.TransactionRepository;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import javax.servlet.http.HttpServletRequest;
@@ -20,10 +22,18 @@ import java.util.Map;
 @Service
 public class VNPayServiceImpl implements VNPayService {
 
+    @Autowired
+    private TransactionRepository transactionRepository;
+
     public String createOrder(int total, String orderInfor, String urlReturn, String ipAddr) {
         String vnp_Version = "2.1.0";
         String vnp_Command = "pay";
         String vnp_TxnRef = Config.getRandomNumber(8);
+
+        if(transactionRepository.findByTransNo(vnp_TxnRef) != null){
+            vnp_TxnRef = Config.getRandomNumber(8);
+        }
+
 //        String vnp_IpAddr = "127.0.0.1";
         String vnp_TmnCode = Config.vnp_TmnCode;
         String orderType = "order-type";

@@ -3,17 +3,25 @@ package com.example.thanhhoa.services.transaction;
 import com.example.thanhhoa.dtos.ContractModels.ShowContractModel;
 import com.example.thanhhoa.dtos.OrderModels.ShowOrderModel;
 import com.example.thanhhoa.dtos.OrderModels.ShowStaffModel;
+import com.example.thanhhoa.dtos.TransactionModels.CreateTransactionModel;
 import com.example.thanhhoa.dtos.TransactionModels.ShowTransactionModel;
 import com.example.thanhhoa.entities.Contract;
 import com.example.thanhhoa.entities.Transaction;
 import com.example.thanhhoa.entities.tblAccount;
 import com.example.thanhhoa.entities.tblOrder;
+import com.example.thanhhoa.enums.Status;
 import com.example.thanhhoa.repositories.ContractRepository;
 import com.example.thanhhoa.repositories.OrderRepository;
 import com.example.thanhhoa.repositories.TransactionRepository;
+import com.example.thanhhoa.repositories.UserRepository;
+import com.example.thanhhoa.services.vnpay.Config;
+import com.example.thanhhoa.utils.Util;
+import com.google.firebase.messaging.FirebaseMessagingException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
+import java.time.ZoneId;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -27,6 +35,65 @@ public class TransactionServiceImpl implements TransactionService {
     private OrderRepository orderRepository;
     @Autowired
     private ContractRepository contractRepository;
+    @Autowired
+    private UserRepository userRepository;
+    @Autowired
+    private Util util;
+
+    @Override
+    public String create(CreateTransactionModel createTransactionModel) throws FirebaseMessagingException {
+        Transaction transaction = new Transaction();
+
+        // order
+        if(createTransactionModel.getOrderID() != null){
+            Optional<tblOrder> order = orderRepository.findById(createTransactionModel.getOrderID());
+            if(order == null){
+                return "Không tồn tại Order với ID là " + createTransactionModel.getOrderID() + ".";
+            }
+            transaction.setTblOrder(order.get());
+        }
+
+        // transaction
+        if(createTransactionModel.getContractID() != null){
+            Optional<Contract> contract = contractRepository.findById(createTransactionModel.getContractID());
+            if(contract == null){
+                return "Không tồn tại Contract với ID là " + createTransactionModel.getContractID() + ".";
+            }
+            transaction.setContract(contract.get());
+        }
+
+        // customer
+        if(createTransactionModel.getUserID() != null){
+            Optional<tblAccount> customer = userRepository.findById(createTransactionModel.getUserID());
+            if(customer == null){
+                return "Không tồn tại Account với ID là " + createTransactionModel.getUserID() + ".";
+            }
+            transaction.setUser(customer.get());
+        }
+
+
+        String id = Config.getRandomNumber(8);
+        if(transactionRepository.findByTransNo(id) != null){
+            id = Config.getRandomNumber(8);
+        }
+
+        transaction.setId(id);
+        transaction.setAmount(createTransactionModel.getAmount());
+        transaction.setCurrency(createTransactionModel.getCurrency());
+        transaction.setReason(createTransactionModel.getReason());
+        transaction.setCreateDate(LocalDateTime.now(ZoneId.of("Asia/Ho_Chi_Minh")));
+        transaction.setStatus(Status.SUCCESS);
+        transactionRepository.save(transaction);
+
+        if(transaction.getTblOrder() != null && transaction.getUser() != null){
+            util.createNotification("ORDER", transaction.getUser(), transaction.getId(), "tạo");
+            util.createNotification("ORDER", transaction.getTblOrder().getStaff(), transaction.getId(), "tạo");
+        }
+        if(transaction.getContract() != null && transaction.getUser() != null){
+            util.createNotification("CONTRACT", transaction.getUser(), transaction.getId(), "tạo");
+        }
+        return "Tạo thành công.";
+    }
 
     @Override
     public String updateTransaction(String transactionID, String orderID, String contractID) {

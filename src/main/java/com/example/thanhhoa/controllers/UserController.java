@@ -263,7 +263,8 @@ public class UserController {
                                              @RequestParam(required = false, defaultValue = "true") Boolean sortTypeAsc,
                                              HttpServletRequest request) {
         String roleName = jwtUtil.getRoleNameFromRequest(request);
-        if(!roleName.equalsIgnoreCase("Admin")) {
+        if(!roleName.equalsIgnoreCase("Admin") && !roleName.equalsIgnoreCase("Manager") &&
+                !roleName.equalsIgnoreCase("Staff")) {
             throw new ResponseStatusException(HttpStatus.FORBIDDEN, "-----------------------------------Người dùng không có quyền truy cập---------------------------");
         }
         Pageable paging;
