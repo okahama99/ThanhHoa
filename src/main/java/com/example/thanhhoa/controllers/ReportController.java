@@ -25,6 +25,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.server.ResponseStatusException;
 
+import javax.mail.MessagingException;
 import javax.servlet.http.HttpServletRequest;
 import java.util.List;
 
@@ -88,7 +89,7 @@ public class ReportController {
 
     @PostMapping(produces = "application/json;charset=UTF-8")
     public ResponseEntity<Object> create(@RequestBody CreateReportModel createReportModel,
-                                         HttpServletRequest request) {
+                                         HttpServletRequest request) throws MessagingException {
         String roleName = jwtUtil.getRoleNameFromRequest(request);
         if(!roleName.equalsIgnoreCase("Customer")) {
             throw new ResponseStatusException(HttpStatus.FORBIDDEN, "-----------------------------------Người dùng không có quyền truy cập---------------------------");

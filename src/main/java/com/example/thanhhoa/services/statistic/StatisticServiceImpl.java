@@ -130,7 +130,7 @@ public class StatisticServiceImpl implements StatisticService {
             if(sumOfTotalStoreOrderReceived == null) {
                 sumOfTotalStoreOrderReceived = 0.0;
             }
-            Double sumOfTotalStoreOrder = sumOfTotalOrderApproved + sumOfTotalOrderPackaging + sumOfTotalOrderDelivering + sumOfTotalOrderReceived;
+            Double sumOfTotalStoreOrder = sumOfTotalStoreOrderApproved + sumOfTotalStoreOrderPackaging + sumOfTotalStoreOrderDelivering + sumOfTotalStoreOrderReceived;
             sumOfStoreOrder = String.format("%.2f", sumOfTotalStoreOrder);
 
             // store
@@ -287,7 +287,7 @@ public class StatisticServiceImpl implements StatisticService {
                     sumOfTotalStoreOrderReceived = 0.0;
                 }
 
-                Double sumOfTotalStoreOrder = sumOfTotalOrderApproved + sumOfTotalOrderPackaging + sumOfTotalOrderDelivering + sumOfTotalOrderReceived;
+                Double sumOfTotalStoreOrder = sumOfTotalStoreOrderApproved + sumOfTotalStoreOrderPackaging + sumOfTotalStoreOrderDelivering + sumOfTotalStoreOrderReceived;
                 sumOfStoreOrder = String.format("%.2f", sumOfTotalStoreOrder);
 
                 // store

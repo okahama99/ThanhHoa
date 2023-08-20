@@ -16,9 +16,9 @@ public interface OrderRepository extends JpaRepository<tblOrder, String> {
 
     Integer  countByStore_IdAndProgressStatusAndCreatedDateBetween(String storeID, Status status, LocalDateTime from, LocalDateTime to);
 
-    @Query(value = "SELECT SUM(o.total) FROM tbl_order o WHERE o.created_date between ?1 and ?2 and ?3", nativeQuery = true)
+    @Query(value = "SELECT SUM(o.total) FROM tbl_order o WHERE o.created_date between ?1 and ?2 and o.progress_status = ?3", nativeQuery = true)
     Double sumTotal(LocalDateTime from, LocalDateTime to, Status status);
 
-    @Query(value = "SELECT SUM(o.total) FROM tbl_order o WHERE o.store_id = ?1 and o.created_date between ?2 and ?3 and ?4", nativeQuery = true)
+    @Query(value = "SELECT SUM(o.total) FROM tbl_order o WHERE o.store_id = ?1 and o.created_date between ?2 and ?3 and o.progress_status = ?4", nativeQuery = true)
     Double sumTotalOfAStore(String storeID, LocalDateTime from, LocalDateTime to, Status status);
 }
