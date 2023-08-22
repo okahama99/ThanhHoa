@@ -114,10 +114,10 @@ public class StatisticServiceImpl implements StatisticService {
             numOfStoreODelivering = orderRepository.countByStore_IdAndProgressStatusAndCreatedDateBetween(storeID, Status.DELIVERING, fromDate, toDate);
             numOfStoreOReceived = orderRepository.countByStore_IdAndProgressStatusAndCreatedDateBetween(storeID, Status.RECEIVED, fromDate, toDate);
             numOfStoreOrder = numOfStoreOApproved + numOfStoreOPackaging + numOfStoreODelivering + numOfStoreOReceived;
-            Double sumOfTotalStoreOrderApproved = orderRepository.sumTotalOfAStore(storeID, fromDate, toDate, Status.APPROVED);
-            Double sumOfTotalStoreOrderPackaging = orderRepository.sumTotalOfAStore(storeID, fromDate, toDate, Status.PACKAGING);
-            Double sumOfTotalStoreOrderDelivering = orderRepository.sumTotalOfAStore(storeID, fromDate, toDate, Status.DELIVERING);
-            Double sumOfTotalStoreOrderReceived = orderRepository.sumTotalOfAStore(storeID, fromDate, toDate, Status.RECEIVED);
+            Double sumOfTotalStoreOrderApproved = orderRepository.sumTotalOfAStoreApproved(storeID, fromDate, toDate);
+            Double sumOfTotalStoreOrderPackaging = orderRepository.sumTotalOfAStorePackaging(storeID, fromDate, toDate);
+            Double sumOfTotalStoreOrderDelivering = orderRepository.sumTotalOfAStoreDelivering(storeID, fromDate, toDate);
+            Double sumOfTotalStoreOrderReceived = orderRepository.sumTotalOfAStoreReceived(storeID, fromDate, toDate);
             if(sumOfTotalStoreOrderApproved == null) {
                 sumOfTotalStoreOrderApproved = 0.0;
             }
@@ -270,10 +270,10 @@ public class StatisticServiceImpl implements StatisticService {
                 numOfStoreOReceived = orderRepository.countByStore_IdAndProgressStatusAndCreatedDateBetween(storeID, Status.RECEIVED, fromDate, toDate);
                 numOfStoreOrder = numOfStoreOApproved + numOfStoreOPackaging + numOfStoreODelivering + numOfStoreOReceived;
 
-                Double sumOfTotalStoreOrderApproved = orderRepository.sumTotalOfAStore(storeID, fromDate, toDate, Status.APPROVED);
-                Double sumOfTotalStoreOrderPackaging = orderRepository.sumTotalOfAStore(storeID, fromDate, toDate, Status.PACKAGING);
-                Double sumOfTotalStoreOrderDelivering = orderRepository.sumTotalOfAStore(storeID, fromDate, toDate, Status.DELIVERING);
-                Double sumOfTotalStoreOrderReceived = orderRepository.sumTotalOfAStore(storeID, fromDate, toDate, Status.RECEIVED);
+                Double sumOfTotalStoreOrderApproved = orderRepository.sumTotalOfAStoreApproved(storeID, fromDate, toDate);
+                Double sumOfTotalStoreOrderPackaging = orderRepository.sumTotalOfAStorePackaging(storeID, fromDate, toDate);
+                Double sumOfTotalStoreOrderDelivering = orderRepository.sumTotalOfAStoreDelivering(storeID, fromDate, toDate);
+                Double sumOfTotalStoreOrderReceived = orderRepository.sumTotalOfAStoreReceived(storeID, fromDate, toDate);
                 if(sumOfTotalStoreOrderApproved == null) {
                     sumOfTotalStoreOrderApproved = 0.0;
                 }
