@@ -87,7 +87,7 @@ public class OrderController {
         if(!roleName.equalsIgnoreCase("Manager")) {
             throw new ResponseStatusException(HttpStatus.FORBIDDEN, "-----------------------------------Người dùng không có quyền truy cập---------------------------");
         }
-        String result = orderService.approveOrder(orderID, staffID);
+        String result = orderService.approveOrder(orderID, staffID, jwtUtil.getUserIDFromRequest(request));
         if(result.equals("Chấp nhận thành công.")) {
             return ResponseEntity.ok().body(result);
         }

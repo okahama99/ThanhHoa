@@ -57,7 +57,7 @@ public class ServiceTypeController {
             throw new ResponseStatusException(HttpStatus.FORBIDDEN, "-----------------------------------Người dùng không có quyền truy cập---------------------------");
         }
         String result = serviceTypeService.delete(serviceTypeID);
-        if(!result.equals("Xóa thành công.")) {
+        if(result.equals("Xóa thành công.")) {
             return ResponseEntity.ok().body(result);
         } else {
             return ResponseEntity.badRequest().body(result);

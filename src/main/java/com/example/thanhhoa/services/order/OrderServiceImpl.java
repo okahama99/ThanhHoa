@@ -284,7 +284,7 @@ public class OrderServiceImpl implements OrderService {
     }
 
     @Override
-    public String approveOrder(String orderID, Long staffID) throws FirebaseMessagingException {
+    public String approveOrder(String orderID, Long staffID, Long userID) throws FirebaseMessagingException {
         Optional<tblOrder> checkExistedOrder = orderRepository.findById(orderID);
         if(checkExistedOrder != null) {
             tblAccount staff = userRepository.findByIdAndStatus(staffID, Status.ACTIVE);
@@ -312,7 +312,7 @@ public class OrderServiceImpl implements OrderService {
                 storePlantRecord.setImportDate(LocalDateTime.now(ZoneId.of("Asia/Ho_Chi_Minh")));
                 storePlantRecord.setAmount(orderDetail.getQuantity());
                 storePlantRecord.setStorePlant(storePlant);
-                storePlantRecord.setReason("Chấp nhận đơn hàng với mã là : " + orderID + ".");
+                storePlantRecord.setReason("[-]ManagerID : " + userID + ", Lí do : Chấp nhận đơn hàng với mã là : " + orderID + ".");
                 storePlantRepository.save(storePlant);
                 storePlantRecordRepository.save(storePlantRecord);
             }

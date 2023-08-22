@@ -37,8 +37,8 @@ public class StatisticServiceImpl implements StatisticService {
         Integer numOfCDone = contractRepository.countContractByStatusAndCreatedDateBetween(Status.DONE, fromDate, toDate);
         Integer numOfContract = numOfCWorking + numOfCDone;
         String sumOfContract = "";
-        Double sumTotalContractWorking = contractRepository.sumTotal(fromDate, toDate, Status.WORKING);
-        Double sumTotalContractDone = contractRepository.sumTotal(fromDate, toDate, Status.DONE);
+        Double sumTotalContractWorking = contractRepository.sumTotalWorking(fromDate, toDate);
+        Double sumTotalContractDone = contractRepository.sumTotalDone(fromDate, toDate);
         if(sumTotalContractWorking == null) {
             sumTotalContractWorking = 0.0;
         }
@@ -60,10 +60,10 @@ public class StatisticServiceImpl implements StatisticService {
         Integer numOfDelivering = orderRepository.countByProgressStatusAndCreatedDateBetween(Status.DELIVERING, fromDate, toDate);
         Integer numOfReceived = orderRepository.countByProgressStatusAndCreatedDateBetween(Status.RECEIVED, fromDate, toDate);
         Integer numOfOrder = numOfApproved + numOfPackaging + numOfDelivering + numOfReceived;
-        Double sumOfTotalOrderApproved = orderRepository.sumTotal(fromDate, toDate, Status.APPROVED);
-        Double sumOfTotalOrderPackaging = orderRepository.sumTotal(fromDate, toDate, Status.PACKAGING);
-        Double sumOfTotalOrderDelivering = orderRepository.sumTotal(fromDate, toDate, Status.DELIVERING);
-        Double sumOfTotalOrderReceived = orderRepository.sumTotal(fromDate, toDate, Status.RECEIVED);
+        Double sumOfTotalOrderApproved = orderRepository.sumTotalApproved(fromDate, toDate);
+        Double sumOfTotalOrderPackaging = orderRepository.sumTotalPackaging(fromDate, toDate);
+        Double sumOfTotalOrderDelivering = orderRepository.sumTotalDelivering(fromDate, toDate);
+        Double sumOfTotalOrderReceived = orderRepository.sumTotalReceived(fromDate, toDate);
         if(sumOfTotalOrderApproved == null) {
             sumOfTotalOrderApproved = 0.0;
         }
@@ -95,8 +95,8 @@ public class StatisticServiceImpl implements StatisticService {
             numOfStoreCWorking = contractRepository.countContractByStore_IdAndStatusAndCreatedDateBetween(storeID, Status.WORKING, fromDate, toDate);
             numOfStoreCDone = contractRepository.countContractByStore_IdAndStatusAndCreatedDateBetween(storeID, Status.DONE, fromDate, toDate);
             numOfStoreContract = numOfStoreCWorking + numOfStoreCDone;
-            Double sumOfTotalStoreContractWorking = contractRepository.sumTotalOfAStore(storeID, fromDate, toDate, Status.WORKING);
-            Double sumOfTotalStoreContractDone = contractRepository.sumTotalOfAStore(storeID, fromDate, toDate, Status.DONE);
+            Double sumOfTotalStoreContractWorking = contractRepository.sumTotalOfAStoreWorking(storeID, fromDate, toDate);
+            Double sumOfTotalStoreContractDone = contractRepository.sumTotalOfAStoreDone(storeID, fromDate, toDate);
             if(sumOfTotalStoreContractWorking == null) {
                 sumOfTotalStoreContractWorking = 0.0;
             }
@@ -193,8 +193,8 @@ public class StatisticServiceImpl implements StatisticService {
                 Integer numOfCDone = contractRepository.countContractByStatusAndCreatedDateBetween(Status.DONE, fromDate, toDate);
                 Integer numOfContract = numOfCWorking + numOfCDone;
                 String sumOfContract = null;
-                Double sumTotalContractWorking = contractRepository.sumTotal(fromDate, toDate, Status.WORKING);
-                Double sumTotalContractDone = contractRepository.sumTotal(fromDate, toDate, Status.DONE);
+                Double sumTotalContractWorking = contractRepository.sumTotalWorking(fromDate, toDate);
+                Double sumTotalContractDone = contractRepository.sumTotalDone(fromDate, toDate);
                 if(sumTotalContractWorking == null) {
                     sumTotalContractWorking = 0.0;
                 }
@@ -212,10 +212,10 @@ public class StatisticServiceImpl implements StatisticService {
                 Integer numOfDelivering = orderRepository.countByProgressStatusAndCreatedDateBetween(Status.DELIVERING, fromDate, toDate);
                 Integer numOfReceived = orderRepository.countByProgressStatusAndCreatedDateBetween(Status.RECEIVED, fromDate, toDate);
                 Integer numOfOrder = numOfApproved + numOfPackaging + numOfDelivering + numOfReceived;
-                Double sumOfTotalOrderApproved = orderRepository.sumTotal(fromDate, toDate, Status.APPROVED);
-                Double sumOfTotalOrderPackaging = orderRepository.sumTotal(fromDate, toDate, Status.PACKAGING);
-                Double sumOfTotalOrderDelivering = orderRepository.sumTotal(fromDate, toDate, Status.DELIVERING);
-                Double sumOfTotalOrderReceived = orderRepository.sumTotal(fromDate, toDate, Status.RECEIVED);
+                Double sumOfTotalOrderApproved = orderRepository.sumTotalApproved(fromDate, toDate);
+                Double sumOfTotalOrderPackaging = orderRepository.sumTotalPackaging(fromDate, toDate);
+                Double sumOfTotalOrderDelivering = orderRepository.sumTotalDelivering(fromDate, toDate);
+                Double sumOfTotalOrderReceived = orderRepository.sumTotalReceived(fromDate, toDate);
                 if(sumOfTotalOrderApproved == null) {
                     sumOfTotalOrderApproved = 0.0;
                 }
@@ -243,8 +243,8 @@ public class StatisticServiceImpl implements StatisticService {
                 numOfStoreCWorking = contractRepository.countContractByStore_IdAndStatusAndCreatedDateBetween(storeID, Status.WORKING, fromDate, toDate);
                 numOfStoreCDone = contractRepository.countContractByStore_IdAndStatusAndCreatedDateBetween(storeID, Status.DONE, fromDate, toDate);
                 numOfStoreContract = numOfStoreCWorking + numOfStoreCDone;
-                Double sumOfTotalStoreContractWorking = contractRepository.sumTotalOfAStore(storeID, fromDate, toDate, Status.WORKING);
-                Double sumOfTotalStoreContractDone = contractRepository.sumTotalOfAStore(storeID, fromDate, toDate, Status.DONE);
+                Double sumOfTotalStoreContractWorking = contractRepository.sumTotalOfAStoreWorking(storeID, fromDate, toDate);
+                Double sumOfTotalStoreContractDone = contractRepository.sumTotalOfAStoreDone(storeID, fromDate, toDate);
                 if(sumOfTotalStoreContractWorking == null) {
                     sumOfTotalStoreContractWorking = 0.0;
                 }

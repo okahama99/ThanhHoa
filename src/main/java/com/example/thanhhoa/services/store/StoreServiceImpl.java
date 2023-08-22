@@ -163,7 +163,7 @@ public class StoreServiceImpl implements StoreService{
     }
 
     @Override
-    public String addStorePlant(List<AddStorePlantModel> listModel) {
+    public String addStorePlant(List<AddStorePlantModel> listModel, Long userID) {
         for( AddStorePlantModel addStorePlantModel : listModel) {
             Optional<Store> store = storeRepository.findById(addStorePlantModel.getStoreID());
             if (store == null) {
@@ -197,7 +197,7 @@ public class StoreServiceImpl implements StoreService{
                 storePlantRecord.setAmount(addStorePlantModel.getQuantity());
                 storePlantRecord.setImportDate(LocalDateTime.now(ZoneId.of("Asia/Ho_Chi_Minh")));
                 storePlantRecord.setStorePlant(newPlant);
-                storePlantRecord.setReason("Nhập thêm cây");
+                storePlantRecord.setReason("[+]ManagerID : " + userID + ", Lí do : " + "Nhập thêm cây.");
 
                 storePlantRepository.save(newPlant);
                 storePlantRecordRepository.save(storePlantRecord);
@@ -216,7 +216,7 @@ public class StoreServiceImpl implements StoreService{
             storePlantRecord.setAmount(addStorePlantModel.getQuantity());
             storePlantRecord.setImportDate(LocalDateTime.now(ZoneId.of("Asia/Ho_Chi_Minh")));
             storePlantRecord.setStorePlant(storePlant);
-            storePlantRecord.setReason("Nhập thêm cây");
+            storePlantRecord.setReason("[+]ManagerID : " + userID + ", Lí do : " + "Nhập thêm cây.");
 
             storePlantRepository.save(storePlant);
             storePlantRecordRepository.save(storePlantRecord);
@@ -224,31 +224,31 @@ public class StoreServiceImpl implements StoreService{
         return "Thêm thành công.";
     }
 
-    @Override
-    public String updateStorePlant(UpdateStorePlantModel updateStorePlantModel, Long userID) throws Exception {
-        Optional<StorePlant> checkExisted = storePlantRepository.findById(updateStorePlantModel.getStorePlantID());
-        if(checkExisted == null){
-            return "Không tìm thấy StorePlant với ID là " + updateStorePlantModel.getStorePlantID() + ".";
-        }
-        StorePlant storePlant = checkExisted.get();
-        storePlant.setQuantity(storePlant.getQuantity() + updateStorePlantModel.getQuantity());
-
-        StorePlantRecord storePlantRecord = new StorePlantRecord();
-        StorePlantRecord lastRecord = storePlantRecordRepository.findFirstByOrderByIdDesc();
-        if (lastRecord == null) {
-            storePlantRecord.setId(util.createNewID("SPR"));
-        } else {
-            storePlantRecord.setId(util.createIDFromLastID("SPR",3,lastRecord.getId()));
-        }
-        storePlantRecord.setAmount(updateStorePlantModel.getQuantity());
-        storePlantRecord.setImportDate(LocalDateTime.now(ZoneId.of("Asia/Ho_Chi_Minh")));
-        storePlantRecord.setStorePlant(storePlant);
-        storePlantRecord.setReason("ManagerID : " + userID + ", lí do :" + updateStorePlantModel.getReason());
-
-        storePlantRepository.save(storePlant);
-        storePlantRecordRepository.save(storePlantRecord);
-        return "Cập nhật thành công.";
-    }
+//    @Override
+//    public String updateStorePlant(UpdateStorePlantModel updateStorePlantModel, Long userID) throws Exception {
+//        Optional<StorePlant> checkExisted = storePlantRepository.findById(updateStorePlantModel.getStorePlantID());
+//        if(checkExisted == null){
+//            return "Không tìm thấy StorePlant với ID là " + updateStorePlantModel.getStorePlantID() + ".";
+//        }
+//        StorePlant storePlant = checkExisted.get();
+//        storePlant.setQuantity(storePlant.getQuantity() + updateStorePlantModel.getQuantity());
+//
+//        StorePlantRecord storePlantRecord = new StorePlantRecord();
+//        StorePlantRecord lastRecord = storePlantRecordRepository.findFirstByOrderByIdDesc();
+//        if (lastRecord == null) {
+//            storePlantRecord.setId(util.createNewID("SPR"));
+//        } else {
+//            storePlantRecord.setId(util.createIDFromLastID("SPR",3,lastRecord.getId()));
+//        }
+//        storePlantRecord.setAmount(updateStorePlantModel.getQuantity());
+//        storePlantRecord.setImportDate(LocalDateTime.now(ZoneId.of("Asia/Ho_Chi_Minh")));
+//        storePlantRecord.setStorePlant(storePlant);
+//        storePlantRecord.setReason("ManagerID : " + userID + ", lí do :" + updateStorePlantModel.getReason());
+//
+//        storePlantRepository.save(storePlant);
+//        storePlantRecordRepository.save(storePlantRecord);
+//        return "Cập nhật thành công.";
+//    }
 
     @Override
     public String removeStorePlant(String storePlantID, Integer quantity, String reason, Long userID){
@@ -272,7 +272,7 @@ public class StoreServiceImpl implements StoreService{
         storePlantRecord.setAmount(quantity);
         storePlantRecord.setImportDate(LocalDateTime.now(ZoneId.of("Asia/Ho_Chi_Minh")));
         storePlantRecord.setStorePlant(storePlant);
-        storePlantRecord.setReason("ManagerID : " + userID + ", lí do :" + reason);
+        storePlantRecord.setReason("[-]ManagerID : " + userID + ", Lí do : " + reason);
         storePlantRecordRepository.save(storePlantRecord);
         storePlantRepository.save(storePlant);
         return "Xóa thành công.";

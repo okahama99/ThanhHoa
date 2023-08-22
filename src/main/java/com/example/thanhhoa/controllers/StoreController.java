@@ -88,7 +88,7 @@ public class StoreController {
         if(!roleName.equalsIgnoreCase("Manager")) {
             throw new ResponseStatusException(HttpStatus.FORBIDDEN, "-----------------------------------Người dùng không có quyền truy cập---------------------------");
         }
-        String result = storeService.addStorePlant(listModel);
+        String result = storeService.addStorePlant(listModel, jwtUtil.getUserIDFromRequest(request));
         if(result.equals("Thêm thành công.")) {
             return ResponseEntity.ok().body(result);
         }
@@ -117,7 +117,7 @@ public class StoreController {
             throw new ResponseStatusException(HttpStatus.FORBIDDEN, "-----------------------------------Người dùng không có quyền truy cập---------------------------");
         }
         String result = storeService.removeStoreEmployee(employeeID);
-        if(!result.equals("Xóa thành công.")) {
+        if(result.equals("Xóa thành công.")) {
             return ResponseEntity.ok().body(result);
         } else {
             return ResponseEntity.badRequest().body(result);
@@ -134,7 +134,7 @@ public class StoreController {
             throw new ResponseStatusException(HttpStatus.FORBIDDEN, "-----------------------------------Người dùng không có quyền truy cập---------------------------");
         }
         String result = storeService.removeStorePlant(storePlantID, quantity, reason, jwtUtil.getUserIDFromRequest(request));
-        if(!result.equals("Xóa thành công.")) {
+        if(result.equals("Xóa thành công.")) {
             return ResponseEntity.ok().body(result);
         } else {
             return ResponseEntity.badRequest().body(result);
@@ -193,19 +193,19 @@ public class StoreController {
         return ResponseEntity.badRequest().body(result);
     }
 
-    @PutMapping(value = "/updateStorePlant", produces = "application/json;charset=UTF-8")
-    public ResponseEntity<Object> updateStorePlant(@RequestBody UpdateStorePlantModel updateStorePlantModel,
-                                                   HttpServletRequest request) throws Exception {
-        String roleName = jwtUtil.getRoleNameFromRequest(request);
-        if(!roleName.equalsIgnoreCase("Manager")) {
-            throw new ResponseStatusException(HttpStatus.FORBIDDEN, "-----------------------------------Người dùng không có quyền truy cập---------------------------");
-        }
-        String result = storeService.updateStorePlant(updateStorePlantModel, jwtUtil.getUserIDFromRequest(request));
-        if(result.equals("Cập nhật thành công.")) {
-            return ResponseEntity.ok().body(result);
-        }
-        return ResponseEntity.badRequest().body(result);
-    }
+//    @PutMapping(value = "/updateStorePlant", produces = "application/json;charset=UTF-8")
+//    public ResponseEntity<Object> updateStorePlant(@RequestBody UpdateStorePlantModel updateStorePlantModel,
+//                                                   HttpServletRequest request) throws Exception {
+//        String roleName = jwtUtil.getRoleNameFromRequest(request);
+//        if(!roleName.equalsIgnoreCase("Manager")) {
+//            throw new ResponseStatusException(HttpStatus.FORBIDDEN, "-----------------------------------Người dùng không có quyền truy cập---------------------------");
+//        }
+//        String result = storeService.updateStorePlant(updateStorePlantModel, jwtUtil.getUserIDFromRequest(request));
+//        if(result.equals("Cập nhật thành công.")) {
+//            return ResponseEntity.ok().body(result);
+//        }
+//        return ResponseEntity.badRequest().body(result);
+//    }
 
     @PutMapping(value = "/changeStoreStatus", produces = "application/json;charset=UTF-8")
     public ResponseEntity<Object> changeStoreStatus(@RequestParam String storeID,

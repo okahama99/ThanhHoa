@@ -20,7 +20,7 @@ public interface OrderService {
 
     String deleteOrder(String orderID, String reason, Status status) throws FirebaseMessagingException;
 
-    String approveOrder(String orderID, Long userID) throws FirebaseMessagingException;
+    String approveOrder(String orderID, Long staffID, Long userID) throws FirebaseMessagingException;
 
     Boolean changeOrderStatus(String orderID, String receiptIMG, String status) throws FirebaseMessagingException;
 

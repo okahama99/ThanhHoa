@@ -23,11 +23,17 @@ public interface ContractRepository extends JpaRepository<Contract, String> {
 
     Integer countContractByStore_IdAndStatusAndCreatedDateBetween(String storeID, Status status, LocalDateTime from, LocalDateTime to);
 
-    @Query(value = "SELECT SUM(c.total) FROM Contract c WHERE c.created_date between ?1 and ?2 and c.status = ?3", nativeQuery = true)
-    Double sumTotal(LocalDateTime from, LocalDateTime to, Status status);
+    @Query(value = "SELECT SUM(c.total) FROM heroku_0409ea84bb3cb3d.contract c WHERE c.created_date between ?1 and ?2 and c.status = 'WORKING'", nativeQuery = true)
+    Double sumTotalWorking(LocalDateTime from, LocalDateTime to);
 
-    @Query(value = "SELECT SUM(c.total) FROM Contract c WHERE c.store_id = ?1 and c.created_date between ?2 and ?3 and c.status = ?4", nativeQuery = true)
-    Double sumTotalOfAStore(String storeID, LocalDateTime from, LocalDateTime to, Status status);
+    @Query(value = "SELECT SUM(c.total) FROM heroku_0409ea84bb3cb3d.contract c WHERE c.created_date between ?1 and ?2 and c.status = 'DONE'", nativeQuery = true)
+    Double sumTotalDone(LocalDateTime from, LocalDateTime to);
+
+    @Query(value = "SELECT SUM(c.total) FROM heroku_0409ea84bb3cb3d.contract c WHERE c.store_id = ?1 and c.created_date between ?2 and ?3 and c.status = 'WORKING'", nativeQuery = true)
+    Double sumTotalOfAStoreWorking(String storeID, LocalDateTime from, LocalDateTime to);
+
+    @Query(value = "SELECT SUM(c.total) FROM heroku_0409ea84bb3cb3d.contract c WHERE c.store_id = ?1 and c.created_date between ?2 and ?3 and c.status = 'DONE'", nativeQuery = true)
+    Double sumTotalOfAStoreDone(String storeID, LocalDateTime from, LocalDateTime to);
 
     List<Contract> findAllByStartedDateLessThanEqualAndStatus(LocalDateTime date, Status status);
 
