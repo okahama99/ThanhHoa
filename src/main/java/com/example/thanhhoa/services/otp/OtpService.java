@@ -50,7 +50,7 @@ public class OtpService {
         tblAccount user = userRepository.findByEmailAndStatus(email, Status.ACTIVE);
         // fetch user e-mail from database
         // generate emailDTO object
-        send(email, buildSendOtpEmail(user.getUsername(), otpValue), "Lấy lại mật khẩu");
+        send(email, buildSendOtpEmail(user.getFullName(), otpValue), "Lấy lại mật khẩu");
         // send generated e-mail
         return true;
     }
@@ -59,7 +59,7 @@ public class OtpService {
         tblAccount user = userRepository.findByEmailAndStatus(email, Status.ACTIVE);
         // fetch user e-mail from database
         // generate emailDTO object
-        send(email, managerNotificationEmail(user.getUsername(), entity), "Có một " + entity + " vừa được tạo.");
+        send(email, managerNotificationEmail(user.getFullName(), entity), "Có một " + entity + " vừa được tạo.");
         // send generated e-mail
         return true;
     }
