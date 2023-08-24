@@ -317,7 +317,10 @@ public class OrderServiceImpl implements OrderService {
                 storePlantRecordRepository.save(storePlantRecord);
             }
 
-            util.createNotification("ORDER", order.getCustomer() , order.getId(), "quản lý duyệt");
+            if(order.getCustomer() != null){
+                util.createNotification("ORDER", order.getCustomer() , order.getId(), "quản lý duyệt");
+            }
+
             util.createNotification("ORDER", order.getStaff() , order.getId(), "giao cho bạn");
 
             orderRepository.save(checkExistedOrder.get());
@@ -351,7 +354,10 @@ public class OrderServiceImpl implements OrderService {
                 return false;
             }
 
-            util.createNotification("ORDER", order.getCustomer(), order.getId(), action);
+            if(order.getCustomer() != null){
+                util.createNotification("ORDER", order.getCustomer(), order.getId(), action);
+            }
+
             util.createNotification("ORDER", order.getStaff(), order.getId(), action);
 
             orderRepository.save(checkExistedOrder.get());

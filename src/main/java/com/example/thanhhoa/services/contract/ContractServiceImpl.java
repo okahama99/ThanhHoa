@@ -532,7 +532,9 @@ public class ContractServiceImpl implements ContractService {
 
         contractRepository.save(contract);
 
-        util.createNotification("CONTRACT", contract.getCustomer(), contract.getId(), "ký tên");
+        if(contract.getCustomer() != null){
+            util.createNotification("CONTRACT", contract.getCustomer(), contract.getId(), "ký tên");
+        }
         return "Thêm thành công.";
     }
 
