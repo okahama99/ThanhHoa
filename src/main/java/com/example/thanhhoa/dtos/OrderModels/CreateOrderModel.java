@@ -21,6 +21,8 @@ public class CreateOrderModel implements Serializable {
     private List<OrderDetailModel> detailList;
 
     @Nullable
+    private Boolean isPaid;
+    @Nullable
     private Long staffID;
     @Nullable
     private String latLong;

@@ -117,6 +117,8 @@ public class OrderServiceImpl implements OrderService {
         order.setLatLong(createOrderModel.getLatLong());
         order.setProgressStatus(Status.WAITING);
 
+        order.setIsPaid(false);
+
         tblAccount account = userRepository.getById(customerID);
         if(account.getRole().getRoleName().equalsIgnoreCase("Staff")){
             order.setStaff(account);
@@ -125,6 +127,10 @@ public class OrderServiceImpl implements OrderService {
 
             if(createOrderModel.getCustomerID() != null){
                 order.setCustomer(userRepository.getById(createOrderModel.getCustomerID()));
+            }
+
+            if(createOrderModel.getIsPaid() != null){
+                createOrderModel.setIsPaid(true);
             }
         }
         if(account.getRole().getRoleName().equalsIgnoreCase("Customer")){
