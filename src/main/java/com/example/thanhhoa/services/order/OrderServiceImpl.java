@@ -130,7 +130,7 @@ public class OrderServiceImpl implements OrderService {
             }
 
             if(createOrderModel.getIsPaid() != null){
-                createOrderModel.setIsPaid(true);
+                order.setIsPaid(true);
             }
         }
         if(account.getRole().getRoleName().equalsIgnoreCase("Customer")){
