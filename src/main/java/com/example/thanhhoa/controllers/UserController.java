@@ -263,8 +263,7 @@ public class UserController {
                                              @RequestParam(required = false, defaultValue = "true") Boolean sortTypeAsc,
                                              HttpServletRequest request) {
         String roleName = jwtUtil.getRoleNameFromRequest(request);
-        if(!roleName.equalsIgnoreCase("Admin") && !roleName.equalsIgnoreCase("Manager") &&
-                !roleName.equalsIgnoreCase("Staff")) {
+        if(!roleName.equalsIgnoreCase("Admin")) {
             throw new ResponseStatusException(HttpStatus.FORBIDDEN, "-----------------------------------Người dùng không có quyền truy cập---------------------------");
         }
         Pageable paging;
@@ -308,6 +307,66 @@ public class UserController {
         } else if(!StringUtils.isEmpty(username) && !StringUtils.isEmpty(fullName)
                 && !StringUtils.isEmpty(email) && !StringUtils.isEmpty(phone)) {
             return ResponseEntity.ok().body(userService.getUserByUsernameAndFullNameAndEmailAndPhone(username, fullName, email, phone, paging));
+        } else {
+            return ResponseEntity.badRequest().body("Không thể tìm người dùng với giá trị đã nhập.");
+        }
+    }
+
+    @GetMapping(value = "/searchCustomer", produces = "application/json;charset=UTF-8")
+    public ResponseEntity<Object> searchCustomer(@RequestParam(required = false) String username,
+                                             @RequestParam(required = false) String fullName,
+                                             @RequestParam(required = false) String email,
+                                             @RequestParam(required = false) String phone,
+                                             @RequestParam int pageNo,
+                                             @RequestParam int pageSize,
+                                             @RequestParam SearchType.USER sortBy,
+                                             @RequestParam(required = false, defaultValue = "true") Boolean sortTypeAsc,
+                                             HttpServletRequest request) {
+        String roleName = jwtUtil.getRoleNameFromRequest(request);
+        if(!roleName.equalsIgnoreCase("Manager") && !roleName.equalsIgnoreCase("Staff")) {
+            throw new ResponseStatusException(HttpStatus.FORBIDDEN, "-----------------------------------Người dùng không có quyền truy cập---------------------------");
+        }
+        Pageable paging;
+        if(sortBy.equals("FULLNAME")) {
+            paging = util.makePaging(pageNo, pageSize, "fullName", sortTypeAsc);
+        } else if(sortBy.equals("CREATEDDATE")) {
+            paging = util.makePaging(pageNo, pageSize, "createdDate", sortTypeAsc);
+        } else {
+            paging = util.makePaging(pageNo, pageSize, sortBy.toString().toLowerCase(), sortTypeAsc);
+        }
+        if(!StringUtils.isEmpty(username) && StringUtils.isEmpty(fullName)
+                && StringUtils.isEmpty(email) && StringUtils.isEmpty(phone)) {
+            return ResponseEntity.ok().body(userService.getUserByUsernameCus(username, paging));
+        } else if(StringUtils.isEmpty(username) && !StringUtils.isEmpty(fullName)
+                && StringUtils.isEmpty(email) && StringUtils.isEmpty(phone)) {
+            return ResponseEntity.ok().body(userService.getUserByFullNameCus(fullName, paging));
+        } else if(StringUtils.isEmpty(username) && StringUtils.isEmpty(fullName)
+                && !StringUtils.isEmpty(email) && StringUtils.isEmpty(phone)) {
+            return ResponseEntity.ok().body(userService.getUserByEmailCus(email, paging));
+        } else if(StringUtils.isEmpty(username) && StringUtils.isEmpty(fullName)
+                && StringUtils.isEmpty(email) && !StringUtils.isEmpty(phone)) {
+            return ResponseEntity.ok().body(userService.getUserByPhoneCus(phone, paging));
+        } else if(StringUtils.isEmpty(username) && StringUtils.isEmpty(fullName)
+                && !StringUtils.isEmpty(email) && !StringUtils.isEmpty(phone)) {
+            return ResponseEntity.ok().body(userService.getUserByEmailAndPhoneCus(email, phone, paging));
+        } else if(!StringUtils.isEmpty(username) && !StringUtils.isEmpty(fullName)
+                && StringUtils.isEmpty(email) && StringUtils.isEmpty(phone)) {
+            return ResponseEntity.ok().body(userService.getUserByUsernameAndFullNameCus(username, fullName, paging));
+        } else if(StringUtils.isEmpty(username) && !StringUtils.isEmpty(fullName)
+                && !StringUtils.isEmpty(email) && StringUtils.isEmpty(phone)) {
+            return ResponseEntity.ok().body(userService.getUserByFullNameAndEmailCus(fullName, email, paging));
+        } else if(StringUtils.isEmpty(username) && !StringUtils.isEmpty(fullName)
+                && StringUtils.isEmpty(email) && !StringUtils.isEmpty(phone)) {
+            return ResponseEntity.ok().body(userService.getUserByFullNameAndPhoneCus(fullName, phone, paging));
+        } else if(!StringUtils.isEmpty(username) && StringUtils.isEmpty(fullName)
+                && StringUtils.isEmpty(email) && !StringUtils.isEmpty(phone)) {
+            return ResponseEntity.ok().body(userService.getUserByUsernameAndPhoneCus(username, phone, paging));
+        } else if(!StringUtils.isEmpty(username) && StringUtils.isEmpty(fullName)
+                && !StringUtils.isEmpty(email) && StringUtils.isEmpty(phone)) {
+            return ResponseEntity.ok().body(userService.getUserByUsernameAndEmailCus(username, email, paging));
+        } else if(!StringUtils.isEmpty(username) && !StringUtils.isEmpty(fullName)
+                && !StringUtils.isEmpty(email) && !StringUtils.isEmpty(phone)) {
+            return ResponseEntity.ok().body(userService.getUserByUsernameAndFullNameAndEmailAndPhoneCus(username, fullName, email, phone, paging));
         } else {
             return ResponseEntity.badRequest().body("Không thể tìm người dùng với giá trị đã nhập.");
         }

@@ -33,4 +33,30 @@ public interface UserPagingRepository extends PagingAndSortingRepository<tblAcco
     Page<tblAccount> findByUsernameContainingAndFullNameContainingAndEmailContainingAndPhoneAndStatus(String username, String fullName, String email, String phone, Pageable pageable, Status status);
 
 
+    // --------------------------------------------------------------------------------------------------------------------
+
+    Page<tblAccount> findAllByRole_RoleName(String role, Pageable pageable);
+
+    Page<tblAccount> findByUsernameContainingAndStatusAndRole_RoleName(String username, Pageable pageable, Status status, String role);
+
+    Page<tblAccount> findByFullNameContainingAndStatusAndRole_RoleName(String fullName, Pageable pageable, Status status, String role);
+
+    Page<tblAccount> findByEmailContainingAndStatusAndRole_RoleName(String email, Pageable pageable, Status status, String role);
+
+    Page<tblAccount> findByPhoneAndStatusAndRole_RoleName(String phone, Pageable pageable, Status status, String role);
+
+    Page<tblAccount> findByUsernameContainingAndFullNameContainingAndStatusAndRole_RoleName(String username, String fullName, Pageable pageable, Status status, String role);
+
+    Page<tblAccount> findByFullNameContainingAndEmailContainingAndStatusAndRole_RoleName(String fullName, String email, Pageable pageable, Status status, String role);
+
+    Page<tblAccount> findByFullNameContainingAndPhoneAndStatusAndRole_RoleName(String fullName, String phone, Pageable pageable, Status status, String role);
+
+    Page<tblAccount> findByUsernameContainingAndEmailContainingAndStatusAndRole_RoleName(String username, String email, Pageable pageable, Status status, String role);
+
+    Page<tblAccount> findByUsernameContainingAndPhoneAndStatusAndRole_RoleName(String username, String phone, Pageable pageable, Status status, String role);
+
+    Page<tblAccount> findByEmailContainingAndPhoneAndStatusAndRole_RoleName(String email, String phone, Pageable pageable, Status status, String role);
+
+    Page<tblAccount> findByUsernameContainingAndFullNameContainingAndEmailContainingAndPhoneAndStatusAndRole_RoleName(String username, String fullName, String email, String phone, Pageable pageable, Status status, String role);
+
 }

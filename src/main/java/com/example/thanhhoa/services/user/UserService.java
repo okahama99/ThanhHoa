@@ -60,4 +60,29 @@ public interface UserService {
     List<ShowUserModel> getUserByUsernameAndFullNameAndEmailAndPhone(String username, String fullName, String email, String phone, Pageable paging);
 
 
+    // for manager and staff user-search
+    List<ShowUserModel> getAllCus(Pageable paging);
+
+    List<ShowUserModel> getUserByFullNameCus(String fullName, Pageable paging);
+
+    List<ShowUserModel> getUserByUsernameCus(String username, Pageable paging);
+
+    List<ShowUserModel> getUserByEmailCus(String username, Pageable paging);
+
+    List<ShowUserModel> getUserByPhoneCus(String username, Pageable paging);
+
+    List<ShowUserModel> getUserByUsernameAndFullNameCus(String username, String fullName, Pageable paging);
+
+    List<ShowUserModel> getUserByFullNameAndEmailCus(String fullName, String email, Pageable paging);
+
+    List<ShowUserModel> getUserByFullNameAndPhoneCus(String fullName, String phone, Pageable paging);
+
+    List<ShowUserModel> getUserByUsernameAndEmailCus(String username, String email, Pageable paging);
+
+    List<ShowUserModel> getUserByUsernameAndPhoneCus(String username, String phone, Pageable paging);
+
+    List<ShowUserModel> getUserByEmailAndPhoneCus(String email, String phone, Pageable paging);
+
+    List<ShowUserModel> getUserByUsernameAndFullNameAndEmailAndPhoneCus(String username, String fullName, String email, String phone, Pageable paging);
+
 }

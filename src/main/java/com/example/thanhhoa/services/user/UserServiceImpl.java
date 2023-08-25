@@ -283,4 +283,78 @@ public class UserServiceImpl implements UserService {
         Page<tblAccount> pagingResult = userPagingRepository.findByUsernameContainingAndFullNameContainingAndEmailContainingAndPhoneAndStatus(username, fullName, email, phone, paging, Status.ACTIVE);
         return util.userPagingConverter(pagingResult, paging);
     }
+
+    // ---------------------------------------------------------------------------------------------------------
+
+    @Override
+    public List<ShowUserModel> getAllCus(Pageable paging) {
+        Page<tblAccount> pagingResult = userPagingRepository.findAllByRole_RoleName("CUSTOMER",paging);
+        return util.userPagingConverter(pagingResult, paging);
+    }
+
+    @Override
+    public List<ShowUserModel> getUserByFullNameCus(String fullName, Pageable paging) {
+        Page<tblAccount> pagingResult = userPagingRepository.findByFullNameContainingAndStatusAndRole_RoleName(fullName, paging, Status.ACTIVE, "CUSTOMER");
+        return util.userPagingConverter(pagingResult, paging);
+    }
+
+    @Override
+    public List<ShowUserModel> getUserByUsernameCus(String username, Pageable paging) {
+        Page<tblAccount> pagingResult = userPagingRepository.findByUsernameContainingAndStatusAndRole_RoleName(username, paging, Status.ACTIVE, "CUSTOMER");
+        return util.userPagingConverter(pagingResult, paging);
+    }
+
+    @Override
+    public List<ShowUserModel> getUserByEmailCus(String email, Pageable paging) {
+        Page<tblAccount> pagingResult = userPagingRepository.findByEmailContainingAndStatusAndRole_RoleName(email, paging, Status.ACTIVE, "CUSTOMER");
+        return util.userPagingConverter(pagingResult, paging);
+    }
+
+    @Override
+    public List<ShowUserModel> getUserByPhoneCus(String phone, Pageable paging) {
+        Page<tblAccount> pagingResult = userPagingRepository.findByPhoneAndStatusAndRole_RoleName(phone, paging, Status.ACTIVE, "CUSTOMER");
+        return util.userPagingConverter(pagingResult, paging);
+    }
+
+    @Override
+    public List<ShowUserModel> getUserByUsernameAndFullNameCus(String username, String fullName, Pageable paging) {
+        Page<tblAccount> pagingResult = userPagingRepository.findByUsernameContainingAndFullNameContainingAndStatusAndRole_RoleName(username, fullName, paging, Status.ACTIVE, "CUSTOMER");
+        return util.userPagingConverter(pagingResult, paging);
+    }
+
+    @Override
+    public List<ShowUserModel> getUserByFullNameAndEmailCus(String fullName, String email, Pageable paging) {
+        Page<tblAccount> pagingResult = userPagingRepository.findByFullNameContainingAndEmailContainingAndStatusAndRole_RoleName(fullName, email, paging, Status.ACTIVE, "CUSTOMER");
+        return util.userPagingConverter(pagingResult, paging);
+    }
+
+    @Override
+    public List<ShowUserModel> getUserByFullNameAndPhoneCus(String fullName, String phone, Pageable paging) {
+        Page<tblAccount> pagingResult = userPagingRepository.findByFullNameContainingAndPhoneAndStatusAndRole_RoleName(fullName, phone, paging, Status.ACTIVE, "CUSTOMER");
+        return util.userPagingConverter(pagingResult, paging);
+    }
+
+    @Override
+    public List<ShowUserModel> getUserByUsernameAndEmailCus(String username, String email, Pageable paging) {
+        Page<tblAccount> pagingResult = userPagingRepository.findByUsernameContainingAndEmailContainingAndStatusAndRole_RoleName(username, email, paging, Status.ACTIVE, "CUSTOMER");
+        return util.userPagingConverter(pagingResult, paging);
+    }
+
+    @Override
+    public List<ShowUserModel> getUserByUsernameAndPhoneCus(String username, String phone, Pageable paging) {
+        Page<tblAccount> pagingResult = userPagingRepository.findByUsernameContainingAndPhoneAndStatusAndRole_RoleName(username, phone, paging, Status.ACTIVE, "CUSTOMER");
+        return util.userPagingConverter(pagingResult, paging);
+    }
+
+    @Override
+    public List<ShowUserModel> getUserByEmailAndPhoneCus(String email, String phone, Pageable paging) {
+        Page<tblAccount> pagingResult = userPagingRepository.findByEmailContainingAndPhoneAndStatusAndRole_RoleName(email, phone, paging, Status.ACTIVE, "CUSTOMER");
+        return util.userPagingConverter(pagingResult, paging);
+    }
+
+    @Override
+    public List<ShowUserModel> getUserByUsernameAndFullNameAndEmailAndPhoneCus(String username, String fullName, String email, String phone, Pageable paging) {
+        Page<tblAccount> pagingResult = userPagingRepository.findByUsernameContainingAndFullNameContainingAndEmailContainingAndPhoneAndStatusAndRole_RoleName(username, fullName, email, phone, paging, Status.ACTIVE, "CUSTOMER");
+        return util.userPagingConverter(pagingResult, paging);
+    }
 }
