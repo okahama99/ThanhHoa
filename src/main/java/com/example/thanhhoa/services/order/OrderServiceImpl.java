@@ -169,6 +169,7 @@ public class OrderServiceImpl implements OrderService {
                 cartRepository.save(cart);
             }
             total += totalPriceOfAPlant;
+            order.setProgressStatus(Status.RECEIVED);
         }else{
             for(OrderDetailModel model : createOrderModel.getDetailList()) {
                 Plant plant = plantRepository.getById(model.getPlantID());
