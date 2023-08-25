@@ -3,6 +3,7 @@ package com.example.thanhhoa.services.report;
 import com.example.thanhhoa.dtos.ReportModels.CreateReportModel;
 import com.example.thanhhoa.dtos.ReportModels.ShowReportModel;
 import com.example.thanhhoa.dtos.ReportModels.UpdateReportModel;
+import com.example.thanhhoa.dtos.WorkingDateModels.ShowWorkingDateModel;
 import com.example.thanhhoa.entities.Cart;
 import com.example.thanhhoa.entities.ContractDetail;
 import com.example.thanhhoa.entities.Report;
@@ -26,6 +27,8 @@ import javax.mail.MessagingException;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Optional;
 
@@ -53,6 +56,7 @@ public class ReportServiceImpl implements ReportService{
         if(reportList == null){
             return null;
         }
+        Collections.reverse(reportList);
         List<ShowReportModel> modelList = new ArrayList<>();
         for(Report report : reportList) {
             ShowReportModel model = new ShowReportModel();
