@@ -39,7 +39,7 @@ public class DistancePriceServiceImpl implements DistancePriceService{
 
     @Override
     public ShowDistancePriceModel getNewestDistancePrice() {
-        DistancePrice lastDistancePrice = distancePriceRepository.findByStatus(Status.ACTIVE);
+        DistancePrice lastDistancePrice = distancePriceRepository.findFirstByStatusOrderByApplyDateDesc(Status.ACTIVE);
         ShowDistancePriceModel model = new ShowDistancePriceModel();
         model.setDistancePriceID(lastDistancePrice.getId());
         model.setApplyDate(lastDistancePrice.getApplyDate());

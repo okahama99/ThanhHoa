@@ -9,5 +9,5 @@ import org.springframework.stereotype.Repository;
 public interface DistancePriceRepository extends JpaRepository<DistancePrice, String> {
     DistancePrice findFirstByOrderByIdDesc();
 
-    DistancePrice findByStatus(Status status);
+    DistancePrice findFirstByStatusOrderByApplyDateDesc(Status status);
 }

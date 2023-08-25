@@ -42,7 +42,7 @@ public class DistancePriceController {
 
     @GetMapping(produces = "application/json;charset=UTF-8")
     public @ResponseBody
-    ShowDistancePriceModel getServiceTypeByServiceID() {
+    ShowDistancePriceModel getNewestDistancePrice() {
         return distancePriceService.getNewestDistancePrice();
     }
 }
