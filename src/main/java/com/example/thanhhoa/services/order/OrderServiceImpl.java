@@ -143,33 +143,61 @@ public class OrderServiceImpl implements OrderService {
         Double totalPriceOfAPlant = 0.0;
         Double totalShipCost = 0.0;
         Double total = 0.0;
-        for(OrderDetailModel model : createOrderModel.getDetailList()) {
-            Plant plant = plantRepository.getById(model.getPlantID());
-            PlantPrice newestPrice = plantPriceRepository.findFirstByPlant_IdAndStatusOrderByApplyDateDesc(plant.getId(), Status.ACTIVE);
-            totalPriceOfAPlant += newestPrice.getPrice() * model.getQuantity();
-            totalShipCost += plant.getPlantShipPrice().getPricePerPlant() * model.getQuantity();
+        if(distancePrice.getPricePerKm() == 0.0){
+            for(OrderDetailModel model : createOrderModel.getDetailList()) {
+                Plant plant = plantRepository.getById(model.getPlantID());
+                PlantPrice newestPrice = plantPriceRepository.findFirstByPlant_IdAndStatusOrderByApplyDateDesc(plant.getId(), Status.ACTIVE);
+                totalPriceOfAPlant += newestPrice.getPrice() * model.getQuantity();
 
-            OrderDetail detail = new OrderDetail();
-            OrderDetail lastDetailRecord = orderDetailRepository.findFirstByOrderByIdDesc();
-            if(lastDetailRecord == null) {
-                detail.setId(util.createNewID("OD"));
-            } else {
-                detail.setId(util.createIDFromLastID("OD", 2, lastDetailRecord.getId()));
+                OrderDetail detail = new OrderDetail();
+                OrderDetail lastDetailRecord = orderDetailRepository.findFirstByOrderByIdDesc();
+                if(lastDetailRecord == null) {
+                    detail.setId(util.createNewID("OD"));
+                } else {
+                    detail.setId(util.createIDFromLastID("OD", 2, lastDetailRecord.getId()));
+                }
+                detail.setPrice(newestPrice.getPrice());
+                detail.setQuantity(model.getQuantity());
+                detail.setTblOrder(order);
+                detail.setPlant(plant);
+
+
+                Cart cart = cartRepository.findByPlant_IdAndAccount_Id(model.getPlantID(), customerID);
+                cart.setQuantity(0);
+
+                orderDetailRepository.save(detail);
+                cartRepository.save(cart);
             }
-            detail.setPrice(newestPrice.getPrice());
-            detail.setQuantity(model.getQuantity());
-            detail.setTblOrder(order);
-            detail.setPlant(plant);
+            total += totalPriceOfAPlant;
+        }else{
+            for(OrderDetailModel model : createOrderModel.getDetailList()) {
+                Plant plant = plantRepository.getById(model.getPlantID());
+                PlantPrice newestPrice = plantPriceRepository.findFirstByPlant_IdAndStatusOrderByApplyDateDesc(plant.getId(), Status.ACTIVE);
+                totalPriceOfAPlant += newestPrice.getPrice() * model.getQuantity();
+                totalShipCost += plant.getPlantShipPrice().getPricePerPlant() * model.getQuantity();
+
+                OrderDetail detail = new OrderDetail();
+                OrderDetail lastDetailRecord = orderDetailRepository.findFirstByOrderByIdDesc();
+                if(lastDetailRecord == null) {
+                    detail.setId(util.createNewID("OD"));
+                } else {
+                    detail.setId(util.createIDFromLastID("OD", 2, lastDetailRecord.getId()));
+                }
+                detail.setPrice(newestPrice.getPrice());
+                detail.setQuantity(model.getQuantity());
+                detail.setTblOrder(order);
+                detail.setPlant(plant);
 
 
-            Cart cart = cartRepository.findByPlant_IdAndAccount_Id(model.getPlantID(), customerID);
-            cart.setQuantity(0);
+                Cart cart = cartRepository.findByPlant_IdAndAccount_Id(model.getPlantID(), customerID);
+                cart.setQuantity(0);
 
-            orderDetailRepository.save(detail);
-            cartRepository.save(cart);
+                orderDetailRepository.save(detail);
+                cartRepository.save(cart);
+            }
+            Double totalDistancePrice = distancePrice.getPricePerKm() * createOrderModel.getDistance();
+            total += totalPriceOfAPlant + totalShipCost + totalDistancePrice;
         }
-        Double totalDistancePrice = distancePrice.getPricePerKm() * createOrderModel.getDistance();
-        total += totalPriceOfAPlant + totalShipCost + totalDistancePrice;
 
         order.setDistancePrice(distancePrice);
         order.setTotalShipCost(totalShipCost);
