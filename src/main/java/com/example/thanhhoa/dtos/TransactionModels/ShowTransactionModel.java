@@ -21,6 +21,8 @@ public class ShowTransactionModel implements Serializable {
     private Integer amount;
     private String currency;
     private String reason;
+    private String bankAccount;
+    private String refundBankCode;
     private LocalDateTime createdDate;
     private Status status;
     private ShowOrderModel showOrderModel;

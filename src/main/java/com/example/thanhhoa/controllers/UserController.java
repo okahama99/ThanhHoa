@@ -214,10 +214,10 @@ public class UserController {
     public ResponseEntity<Object> register(@RequestBody RegisterUserModel registerUserModel) {
         registerUserModel.setPassword(passwordEncoder.encode(registerUserModel.getPassword()));
         String result = userService.register(registerUserModel);
-        if(result.equals("Tạo User thành công.")) {
-            return ResponseEntity.ok().body(result);
+        if(result.equals("Lỗi tạo User.")) {
+            return ResponseEntity.badRequest().body(result);
         }
-        return ResponseEntity.badRequest().body(result);
+        return ResponseEntity.ok().body(result);
     }
 
     @PutMapping(value = "/updateProfile", produces = "application/json;charset=UTF-8")

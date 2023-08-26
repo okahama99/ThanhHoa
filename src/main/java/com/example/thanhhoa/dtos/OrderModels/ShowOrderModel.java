@@ -30,6 +30,7 @@ public class ShowOrderModel implements Serializable {
     private Double totalShipCost;
     private Double total;
     private Boolean isPaid = false;
+    private Boolean isRefund = false;
     private String receiptIMG;
 
     private ShowStaffModel showStaffModel;

@@ -282,7 +282,7 @@ public class StoreServiceImpl implements StoreService{
     public List<ShowStoreModel> getAllStore(String role) {
         List<ShowStoreModel> storeModelList = new ArrayList<>();
         List<Store> getListStore;
-        if(role.equalsIgnoreCase("OWNER")){
+        if(role.equalsIgnoreCase("OWNER") || role.equalsIgnoreCase("ADMIN")){
             getListStore = storeRepository.findAllByOrderByIdDesc();
         }else{
             getListStore = storeRepository.findAllByStatusOrderByIdDesc(Status.ACTIVE);

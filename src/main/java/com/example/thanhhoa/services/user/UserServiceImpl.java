@@ -139,7 +139,7 @@ public class UserServiceImpl implements UserService {
         user.setStatus(Status.ACTIVE);
         user.setRole(role);
         if(userRepository.saveAndFlush(user) != null) {
-            return "Tạo User thành công.";
+            return user.getId().toString();
         } else {
             return "Lỗi tạo User.";
         }

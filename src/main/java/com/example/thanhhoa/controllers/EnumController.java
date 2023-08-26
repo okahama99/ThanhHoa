@@ -74,7 +74,7 @@ public class EnumController {
     public @ResponseBody
     List<String> report() {
         List<String> list = new ArrayList<>();
-        list.add(Status.ACTIVE.toString());
+        list.add(Status.NEW.toString());
         list.add(Status.INACTIVE.toString());
         list.add(Status.DONE.toString());
         return list;

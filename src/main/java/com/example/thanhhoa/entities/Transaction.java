@@ -43,6 +43,12 @@ public class Transaction implements Serializable {
     @Column
     private String currency;
 
+    @Column
+    private String bankAccount;
+
+    @Column
+    private String refundBankCode;
+
     @Lob
     @Column
     private String reason;

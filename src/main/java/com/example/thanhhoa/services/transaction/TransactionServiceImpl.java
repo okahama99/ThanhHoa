@@ -142,6 +142,8 @@ public class TransactionServiceImpl implements TransactionService {
         model.setReason(transaction.getReason());
         model.setTransNo(transaction.getTransNo());
         model.setStatus(transaction.getStatus());
+        model.setBankAccount(transaction.getBankAccount());
+        model.setRefundBankCode(transaction.getRefundBankCode());
 
         // order
         tblOrder order = transaction.getTblOrder();
@@ -165,6 +167,7 @@ public class TransactionServiceImpl implements TransactionService {
         orderModel.setTotalShipCost(order.getTotalShipCost());
         orderModel.setTotal(order.getTotal());
         orderModel.setIsPaid(order.getIsPaid());
+        orderModel.setIsRefund(order.getIsRefund());
         orderModel.setReceiptIMG(order.getReceiptIMG());
 
         //contract
@@ -223,6 +226,8 @@ public class TransactionServiceImpl implements TransactionService {
             model.setReason(transaction.getReason());
             model.setTransNo(transaction.getTransNo());
             model.setStatus(transaction.getStatus());
+            model.setBankAccount(transaction.getBankAccount());
+            model.setRefundBankCode(transaction.getRefundBankCode());
 
             // order
             tblOrder order = transaction.getTblOrder();
@@ -246,6 +251,7 @@ public class TransactionServiceImpl implements TransactionService {
             orderModel.setTotalShipCost(order.getTotalShipCost());
             orderModel.setTotal(order.getTotal());
             orderModel.setIsPaid(order.getIsPaid());
+            orderModel.setIsRefund(order.getIsRefund());
             orderModel.setReceiptIMG(order.getReceiptIMG());
 
             //contract

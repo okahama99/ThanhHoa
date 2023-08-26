@@ -204,14 +204,29 @@ public class OrderServiceImpl implements OrderService {
         order.setTotalShipCost(totalShipCost);
         order.setTotal(total);
 
+        Transaction transaction;
         if(createOrderModel.getTransactionNo() != null){
-            Transaction transaction = transactionRepository.findByTransNo(createOrderModel.getTransactionNo());
+            transaction = transactionRepository.findByTransNo(createOrderModel.getTransactionNo());
             if(transaction == null){
                 return "TransactionNo không tồn tại";
             }
-            transaction.setTblOrder(order);
-            transactionRepository.save(transaction);
+        }else{
+            transaction = new Transaction();
+            Transaction lastTransaction = transactionRepository.findFirstByOrderByIdDesc();
+            if(lastTransaction == null) {
+                order.setId(util.createNewID("T"));
+            } else {
+                order.setId(util.createIDFromLastID("T", 1, lastTransaction.getId()));
+            }
+            transaction.setReason("Staff thanh toán");
+            transaction.setCreateDate(LocalDateTime.now(ZoneId.of("Asia/Ho_Chi_Minh")));
+            transaction.setStatus(Status.ACTIVE);
+            transaction.setCurrency("VND");
+            transaction.setAmount(Integer.parseInt(order.getTotal().toString()));
         }
+        transaction.setTblOrder(order);
+        transactionRepository.save(transaction);
+
         orderRepository.save(order);
 
         util.createNotification("ORDER", account, order.getId(), "tạo");

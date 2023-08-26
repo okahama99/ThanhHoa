@@ -239,6 +239,7 @@ public class FeedbackServiceImpl implements FeedbackService {
         orderModel.setTotalShipCost(order.getTotalShipCost());
         orderModel.setTotal(order.getTotal());
         orderModel.setIsPaid(order.getIsPaid());
+        orderModel.setIsRefund(order.getIsRefund());
         orderModel.setReceiptIMG(order.getReceiptIMG());
 
         //store
@@ -372,6 +373,7 @@ public class FeedbackServiceImpl implements FeedbackService {
         orderModel.setTotalShipCost(order.getTotalShipCost());
         orderModel.setTotal(order.getTotal());
         orderModel.setIsPaid(order.getIsPaid());
+        orderModel.setIsRefund(order.getIsRefund());
         orderModel.setReceiptIMG(order.getReceiptIMG());
 
         //store
@@ -527,6 +529,7 @@ public class FeedbackServiceImpl implements FeedbackService {
         orderModel.setTotalShipCost(order.getTotalShipCost());
         orderModel.setTotal(order.getTotal());
         orderModel.setIsPaid(order.getIsPaid());
+        orderModel.setIsRefund(order.getIsRefund());
         orderModel.setReceiptIMG(order.getReceiptIMG());
 
         //store

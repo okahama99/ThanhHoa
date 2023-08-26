@@ -43,6 +43,9 @@ public class tblOrder implements Serializable {
     @Column
     private String receiptIMG;
 
+    @Column
+    private Boolean isRefund;
+
     @Enumerated(EnumType.STRING)
     private Status progressStatus;
 

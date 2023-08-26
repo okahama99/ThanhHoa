@@ -546,6 +546,7 @@ public class Util {
                     orderModel.setTotalShipCost(order.getTotalShipCost());
                     orderModel.setTotal(order.getTotal());
                     orderModel.setIsPaid(order.getIsPaid());
+                    orderModel.setIsRefund(order.getIsRefund());
                     orderModel.setReceiptIMG(order.getReceiptIMG());
 
                     //store
@@ -887,6 +888,7 @@ public class Util {
                     model.setTotalShipCost(order.getTotalShipCost());
                     model.setTotal(order.getTotal());
                     model.setIsPaid(order.getIsPaid());
+                    model.setIsRefund(order.getIsRefund());
                     model.setReceiptIMG(order.getReceiptIMG());
 
                     //store
@@ -1226,6 +1228,7 @@ public class Util {
         orderModel.setTotalShipCost(orderDetail.getTblOrder().getTotalShipCost());
         orderModel.setTotal(orderDetail.getTblOrder().getTotal());
         orderModel.setIsPaid(orderDetail.getTblOrder().getIsPaid());
+        orderModel.setIsRefund(orderDetail.getTblOrder().getIsRefund());
         orderModel.setReceiptIMG(orderDetail.getTblOrder().getReceiptIMG());
 
         //customer
@@ -1356,6 +1359,7 @@ public class Util {
                     orderModel.setTotalShipCost(orderDetail.getTblOrder().getTotalShipCost());
                     orderModel.setTotal(orderDetail.getTblOrder().getTotal());
                     orderModel.setIsPaid(orderDetail.getTblOrder().getIsPaid());
+                    orderModel.setIsRefund(orderDetail.getTblOrder().getIsRefund());
                     orderModel.setReceiptIMG(orderDetail.getTblOrder().getReceiptIMG());
 
                     //customer
