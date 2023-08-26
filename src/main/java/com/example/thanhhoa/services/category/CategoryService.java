@@ -15,4 +15,6 @@ public interface CategoryService {
     String create(String name);
 
     String update(String id, String name);
+
+    String delete(String id);
 }

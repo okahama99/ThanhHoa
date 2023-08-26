@@ -4,6 +4,7 @@ import com.example.thanhhoa.dtos.PlantModels.CreatePlantModel;
 import com.example.thanhhoa.dtos.PlantModels.ShowPlantModel;
 import com.example.thanhhoa.dtos.PlantModels.UpdatePlantModel;
 import com.example.thanhhoa.enums.SearchType;
+import com.example.thanhhoa.services.category.CategoryService;
 import com.example.thanhhoa.services.plant.PlantService;
 import com.example.thanhhoa.utils.JwtUtil;
 import com.example.thanhhoa.utils.Util;
@@ -33,6 +34,8 @@ public class PlantController {
 
     @Autowired
     private PlantService plantService;
+    @Autowired
+    private CategoryService categoryService;
     @Autowired
     private Util util;
     @Autowired
@@ -105,6 +108,21 @@ public class PlantController {
         }
         String result = plantService.deletePlant(plantID);
         if(result.equals("Xóa cây thành công.")) {
+            return ResponseEntity.ok().body(result);
+        } else {
+            return ResponseEntity.badRequest().body(result);
+        }
+    }
+
+    @DeleteMapping(value = "/removeCategory", produces = "application/json;charset=UTF-8")
+    public ResponseEntity<Object> deleteCategory(@RequestParam String categoryID,
+                                              HttpServletRequest request) {
+        String roleName = jwtUtil.getRoleNameFromRequest(request);
+        if(!roleName.equalsIgnoreCase("Owner")) {
+            throw new ResponseStatusException(HttpStatus.FORBIDDEN, "-----------------------------------Người dùng không có quyền truy cập---------------------------");
+        }
+        String result = categoryService.delete(categoryID);
+        if(result.equals("Xóa thành công.")) {
             return ResponseEntity.ok().body(result);
         } else {
             return ResponseEntity.badRequest().body(result);

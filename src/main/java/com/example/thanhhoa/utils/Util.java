@@ -446,6 +446,7 @@ public class Util {
                     ShowCategoryModel model = new ShowCategoryModel();
                     model.setCategoryID(category.getId());
                     model.setCategoryName(category.getName());
+                    model.setStatus(category.getStatus());
                     model.setTotalPage(totalPage);
                     return model;
                 }

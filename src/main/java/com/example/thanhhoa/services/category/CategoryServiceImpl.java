@@ -2,8 +2,11 @@ package com.example.thanhhoa.services.category;
 
 import com.example.thanhhoa.dtos.CategoryModels.ShowCategoryModel;
 import com.example.thanhhoa.entities.Category;
+import com.example.thanhhoa.entities.PlantCategory;
 import com.example.thanhhoa.entities.Role;
+import com.example.thanhhoa.enums.Status;
 import com.example.thanhhoa.repositories.CategoryRepository;
+import com.example.thanhhoa.repositories.PlantCategoryRepository;
 import com.example.thanhhoa.repositories.pagings.CategoryPagingRepository;
 import com.example.thanhhoa.utils.Util;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,6 +27,8 @@ public class CategoryServiceImpl implements CategoryService{
     private CategoryPagingRepository categoryPagingRepository;
     @Autowired
     private CategoryRepository categoryRepository;
+    @Autowired
+    private PlantCategoryRepository plantCategoryRepository;
 
     @Override
     public List<ShowCategoryModel> getAllCategory(Pageable paging) {
@@ -41,6 +46,7 @@ public class CategoryServiceImpl implements CategoryService{
         ShowCategoryModel model = new ShowCategoryModel();
         model.setCategoryID(category.getId());
         model.setCategoryName(category.getName());
+        model.setStatus(category.getStatus());
         return model;
     }
 
@@ -55,6 +61,7 @@ public class CategoryServiceImpl implements CategoryService{
             ShowCategoryModel model = new ShowCategoryModel();
             model.setCategoryID(category.getId());
             model.setCategoryName(category.getName());
+            model.setStatus(category.getStatus());
             listModel.add(model);
         }
         return listModel;
@@ -92,5 +99,25 @@ public class CategoryServiceImpl implements CategoryService{
         category.setName(name);
         categoryRepository.save(category);
         return "Chỉnh sửa thành công.";
+    }
+
+    @Override
+    public String delete(String id) {
+        Optional<Category> checkExistedID = categoryRepository.findByIdAndStatus(id, Status.ACTIVE);
+        if(checkExistedID != null){
+            return "Không tìm thấy Category với ID là : " + id + ".";
+        }
+        Category category = checkExistedID.get();
+        category.setStatus(Status.INACTIVE);
+
+        List<PlantCategory> plantCategoryList = plantCategoryRepository.findByCategory_IdAndStatus(id, Status.ACTIVE);
+        if(plantCategoryList != null && !plantCategoryList.isEmpty()){
+            for(PlantCategory plantCategory : plantCategoryList) {
+                plantCategory.setStatus(Status.INACTIVE);
+                plantCategoryRepository.save(plantCategory);
+            }
+        }
+        categoryRepository.save(category);
+        return "Xóa thành công";
     }
 }
