@@ -314,14 +314,14 @@ public class UserController {
 
     @GetMapping(value = "/searchCustomer", produces = "application/json;charset=UTF-8")
     public ResponseEntity<Object> searchCustomer(@RequestParam(required = false) String username,
-                                             @RequestParam(required = false) String fullName,
-                                             @RequestParam(required = false) String email,
-                                             @RequestParam(required = false) String phone,
-                                             @RequestParam int pageNo,
-                                             @RequestParam int pageSize,
-                                             @RequestParam SearchType.USER sortBy,
-                                             @RequestParam(required = false, defaultValue = "true") Boolean sortTypeAsc,
-                                             HttpServletRequest request) {
+                                                 @RequestParam(required = false) String fullName,
+                                                 @RequestParam(required = false) String email,
+                                                 @RequestParam(required = false) String phone,
+                                                 @RequestParam int pageNo,
+                                                 @RequestParam int pageSize,
+                                                 @RequestParam SearchType.USER sortBy,
+                                                 @RequestParam(required = false, defaultValue = "true") Boolean sortTypeAsc,
+                                                 HttpServletRequest request) {
         String roleName = jwtUtil.getRoleNameFromRequest(request);
         if(!roleName.equalsIgnoreCase("Manager") && !roleName.equalsIgnoreCase("Staff")) {
             throw new ResponseStatusException(HttpStatus.FORBIDDEN, "-----------------------------------Người dùng không có quyền truy cập---------------------------");

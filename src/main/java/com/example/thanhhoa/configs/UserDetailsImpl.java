@@ -1,8 +1,6 @@
 package com.example.thanhhoa.configs;
 
 import com.example.thanhhoa.dtos.UserModels.AuthorizeModel;
-import com.example.thanhhoa.dtos.UserModels.ShowUserModel;
-import com.example.thanhhoa.entities.tblAccount;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
@@ -57,6 +55,10 @@ public class UserDetailsImpl implements org.springframework.security.core.userde
         return username;
     }
 
+    public void setUsername(String username) {
+        this.username = username;
+    }
+
     @Override
     public boolean isAccountNonExpired() {
         return true;
@@ -85,15 +87,11 @@ public class UserDetailsImpl implements org.springframework.security.core.userde
         this.userID = userID;
     }
 
-    public void setUsername(String username) {
-        this.username = username;
-    }
-
     @Override
     public boolean equals(Object obj) {
-        if (this == obj)
+        if(this == obj)
             return true;
-        if (obj == null || getClass() != obj.getClass())
+        if(obj == null || getClass() != obj.getClass())
             return false;
         UserDetailsImpl user = (UserDetailsImpl) obj;
         return Objects.equals(username, user.getUsername());

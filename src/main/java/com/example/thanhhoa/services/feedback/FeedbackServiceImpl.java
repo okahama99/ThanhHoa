@@ -448,14 +448,25 @@ public class FeedbackServiceImpl implements FeedbackService {
     }
 
     @Override
-    public List<ShowOrderFeedbackModel> getOrderFeedbackByPlantID(String plantID, Pageable pageable) {
-        Page<OrderFeedback> pagingResult = orderFeedbackPagingRepository.findByPlant_Id(plantID, pageable);
+    public List<ShowOrderFeedbackModel> getOrderFeedbackByPlantID(String plantID, String role, Pageable pageable) {
+        Page<OrderFeedback> pagingResult;
+        if(role.equalsIgnoreCase("CUSTOMER") || role.equalsIgnoreCase("STAFF")){
+            pagingResult = orderFeedbackPagingRepository.findByPlant_IdAndStatus(plantID, Status.ACTIVE, pageable);
+        }else{
+            pagingResult = orderFeedbackPagingRepository.findByPlant_Id(plantID, pageable);
+        }
+
         return util.orderFeedbackPagingConverter(pagingResult, pageable);
     }
 
     @Override
-    public List<ShowOrderFeedbackModel> getOrderFeedbackByRatingID(String ratingID, Pageable pageable) {
-        Page<OrderFeedback> pagingResult = orderFeedbackPagingRepository.findByRating_Id(ratingID, pageable);
+    public List<ShowOrderFeedbackModel> getOrderFeedbackByRatingID(String ratingID, String role, Pageable pageable) {
+        Page<OrderFeedback> pagingResult;
+        if(role.equalsIgnoreCase("CUSTOMER") || role.equalsIgnoreCase("STAFF")){
+            pagingResult = orderFeedbackPagingRepository.findByRating_IdAndStatus(ratingID, Status.ACTIVE, pageable);
+        }else{
+            pagingResult = orderFeedbackPagingRepository.findByRating_Id(ratingID, pageable);
+        }
         return util.orderFeedbackPagingConverter(pagingResult, pageable);
     }
 

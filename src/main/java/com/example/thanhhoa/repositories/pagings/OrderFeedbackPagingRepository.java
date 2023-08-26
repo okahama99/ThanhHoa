@@ -13,6 +13,10 @@ public interface OrderFeedbackPagingRepository extends PagingAndSortingRepositor
 
     Page<OrderFeedback> findByPlant_Id(String plantID, Pageable pageable);
 
+    Page<OrderFeedback> findByPlant_IdAndStatus(String plantID, Status status, Pageable pageable);
+
     Page<OrderFeedback> findByRating_Id(String plantID, Pageable pageable);
+
+    Page<OrderFeedback> findByRating_IdAndStatus(String plantID, Status status, Pageable pageable);
 
 }

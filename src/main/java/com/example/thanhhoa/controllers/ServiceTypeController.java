@@ -85,9 +85,9 @@ public class ServiceTypeController {
             paging = util.makePaging(pageNo, pageSize, sortBy.toString().toLowerCase(), sortAsc);
         }
 
-        if(serviceID != null){
+        if(serviceID != null) {
             return serviceTypeService.getByServiceID(serviceID, paging);
-        }else{
+        } else {
             return serviceTypeService.getAll(paging);
         }
 

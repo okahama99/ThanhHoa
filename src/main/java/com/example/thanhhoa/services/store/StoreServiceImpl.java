@@ -279,9 +279,15 @@ public class StoreServiceImpl implements StoreService{
     }
 
     @Override
-    public List<ShowStoreModel> getAllStore() {
-        List<Store> getListStore = storeRepository.findAllByOrderByIdDesc();
+    public List<ShowStoreModel> getAllStore(String role) {
         List<ShowStoreModel> storeModelList = new ArrayList<>();
+        List<Store> getListStore;
+        if(role.equalsIgnoreCase("OWNER")){
+            getListStore = storeRepository.findAllByOrderByIdDesc();
+        }else{
+            getListStore = storeRepository.findAllByStatusOrderByIdDesc(Status.ACTIVE);
+        }
+
         for (Store store : getListStore) {
             StoreEmployee manager = storeEmployeeRepository.findByStore_IdAndAccount_Role_RoleName(store.getId(), "Manager");
             ShowStoreModel model = new ShowStoreModel();

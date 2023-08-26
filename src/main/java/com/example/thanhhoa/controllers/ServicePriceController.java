@@ -42,9 +42,9 @@ public class ServicePriceController {
             paging = util.makePaging(pageNo, pageSize, sortBy.toString().toLowerCase(), sortAsc);
         }
 
-        if(serviceID != null){
+        if(serviceID != null) {
             return service.getAllServicePriceByServiceID(serviceID, paging);
-        }else{
+        } else {
             return service.getAllServicePrice(paging);
         }
     }

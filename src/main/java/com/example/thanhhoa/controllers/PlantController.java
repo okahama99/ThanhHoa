@@ -113,7 +113,7 @@ public class PlantController {
 
     @DeleteMapping(value = "/activatePlant", produces = "application/json;charset=UTF-8")
     public ResponseEntity<Object> activatePlant(@RequestParam String plantID,
-                                              HttpServletRequest request) throws Exception {
+                                                HttpServletRequest request) throws Exception {
         String roleName = jwtUtil.getRoleNameFromRequest(request);
         if(!roleName.equalsIgnoreCase("Owner")) {
             throw new ResponseStatusException(HttpStatus.FORBIDDEN, "-----------------------------------Người dùng không có quyền truy cập---------------------------");

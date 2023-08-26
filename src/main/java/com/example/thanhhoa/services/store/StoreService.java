@@ -32,7 +32,7 @@ public interface StoreService {
 
     String removeStorePlant(String storePlantID, Integer quantity, String reason, Long userID);
 
-    List<ShowStoreModel> getAllStore();
+    List<ShowStoreModel> getAllStore(String role);
 
     List<ShowPlantModel> getStorePlantByStoreID(String storeID, Pageable pageable);
 

@@ -39,9 +39,9 @@ public class PlantPriceController {
             paging = util.makePaging(pageNo, pageSize, sortBy.toString().toLowerCase(), sortAsc);
         }
 
-        if(plantID != null){
+        if(plantID != null) {
             return service.getAllByPlantID(plantID, paging);
-        }else{
+        } else {
             return service.getAll(paging);
         }
     }

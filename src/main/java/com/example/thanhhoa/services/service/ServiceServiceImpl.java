@@ -65,6 +65,25 @@ public class ServiceServiceImpl implements ServiceService {
             service.setId(util.createNewID("SE"));
         }
 
+        service.setName(createServiceModel.getName());
+        service.setDescription(createServiceModel.getDescription());
+        service.setStatus(Status.ACTIVE);
+        service.setAtHome(createServiceModel.getAtHome());
+
+        // service img
+        for(String imageURL : createServiceModel.getListURL()) {
+            ServiceIMG serviceIMG = new ServiceIMG();
+            ServiceIMG lastServiceIMG = serviceIMGRepository.findFirstByOrderByIdDesc();
+            if(lastServiceIMG == null) {
+                serviceIMG.setId(util.createNewID("SIMG"));
+            } else {
+                serviceIMG.setId(util.createIDFromLastID("SIMG", 4, lastServiceIMG.getId()));
+            }
+            serviceIMG.setService(service);
+            serviceIMG.setImgURL(imageURL);
+            serviceIMGRepository.save(serviceIMG);
+        }
+
         // service type
         for(CreateServiceTypeModel createServiceTypeModel : createServiceModel.getCreateServiceTypeModel()) {
             ServiceType serviceType = new ServiceType();
@@ -97,24 +116,6 @@ public class ServiceServiceImpl implements ServiceService {
         servicePrice.setService(service);
         servicePrice.setStatus(Status.ACTIVE);
 
-        service.setName(createServiceModel.getName());
-        service.setDescription(createServiceModel.getDescription());
-        service.setStatus(Status.ACTIVE);
-        service.setAtHome(createServiceModel.getAtHome());
-
-        // service img
-        for(String imageURL : createServiceModel.getListURL()) {
-            ServiceIMG serviceIMG = new ServiceIMG();
-            ServiceIMG lastServiceIMG = serviceIMGRepository.findFirstByOrderByIdDesc();
-            if(lastServiceIMG == null) {
-                serviceIMG.setId(util.createNewID("SIMG"));
-            } else {
-                serviceIMG.setId(util.createIDFromLastID("SIMG", 4, lastServiceIMG.getId()));
-            }
-            serviceIMG.setService(service);
-            serviceIMG.setImgURL(imageURL);
-            serviceIMGRepository.save(serviceIMG);
-        }
         servicePriceRepository.save(servicePrice);
         serviceRepository.save(service);
         return "Tạo thành công.";

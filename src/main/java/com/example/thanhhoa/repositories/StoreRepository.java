@@ -18,4 +18,6 @@ public interface StoreRepository extends JpaRepository<Store, String> {
     Store findByIdAndStatus(String storeID, Status status);
 
     List<Store> findAllByOrderByIdDesc();
+
+    List<Store> findAllByStatusOrderByIdDesc(Status status);
 }

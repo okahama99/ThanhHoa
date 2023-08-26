@@ -4,7 +4,6 @@ import com.example.thanhhoa.dtos.FeedbackModels.CreateContractFeedbackModel;
 import com.example.thanhhoa.dtos.FeedbackModels.CreateOrderFeedbackModel;
 import com.example.thanhhoa.dtos.FeedbackModels.ShowContractFeedbackModel;
 import com.example.thanhhoa.dtos.FeedbackModels.ShowOrderFeedbackModel;
-import com.example.thanhhoa.dtos.FeedbackModels.ShowRatingModel;
 import com.example.thanhhoa.dtos.FeedbackModels.UpdateContractFeedbackModel;
 import com.example.thanhhoa.dtos.FeedbackModels.UpdateOrderFeedbackModel;
 import com.example.thanhhoa.services.feedback.FeedbackService;
@@ -41,7 +40,7 @@ public class FeedbackController {
 
     @PostMapping(value = "/createOrderFB", produces = "application/json;charset=UTF-8")
     public ResponseEntity<Object> createOrderFeedback(@RequestBody CreateOrderFeedbackModel createOrderFeedbackModel,
-                                         HttpServletRequest request) {
+                                                      HttpServletRequest request) {
         String roleName = jwtUtil.getRoleNameFromRequest(request);
         if(!roleName.equalsIgnoreCase("Customer")) {
             throw new ResponseStatusException(HttpStatus.FORBIDDEN, "-----------------------------------Người dùng không có quyền truy cập---------------------------");
@@ -53,9 +52,9 @@ public class FeedbackController {
         return ResponseEntity.badRequest().body(result);
     }
 
-    @PutMapping(value = "/updateOrderFB",produces = "application/json;charset=UTF-8")
+    @PutMapping(value = "/updateOrderFB", produces = "application/json;charset=UTF-8")
     public ResponseEntity<Object> updateOrderFeedback(@RequestBody UpdateOrderFeedbackModel updateOrderFeedbackModel,
-                                         HttpServletRequest request) {
+                                                      HttpServletRequest request) {
         String roleName = jwtUtil.getRoleNameFromRequest(request);
         if(!roleName.equalsIgnoreCase("Customer")) {
             throw new ResponseStatusException(HttpStatus.FORBIDDEN, "-----------------------------------Người dùng không có quyền truy cập---------------------------");
@@ -69,7 +68,7 @@ public class FeedbackController {
 
     @DeleteMapping(value = "/deleteOrderFB/{orderFeedbackID}", produces = "application/json;charset=UTF-8")
     public ResponseEntity<Object> deleteOrderFeedback(@PathVariable(name = "orderFeedbackID") String orderFeedbackID,
-                                         HttpServletRequest request) {
+                                                      HttpServletRequest request) {
         String roleName = jwtUtil.getRoleNameFromRequest(request);
         if(!roleName.equalsIgnoreCase("Customer")) {
             throw new ResponseStatusException(HttpStatus.FORBIDDEN, "-----------------------------------Người dùng không có quyền truy cập---------------------------");
@@ -92,7 +91,7 @@ public class FeedbackController {
         if(!roleName.equalsIgnoreCase("Customer") && !roleName.equalsIgnoreCase("Staff")) {
             throw new ResponseStatusException(HttpStatus.FORBIDDEN, "-----------------------------------Người dùng không có quyền truy cập---------------------------");
         }
-        List<ShowOrderFeedbackModel> result = feedbackService.getAllOrderFeedback(jwtUtil.getUserIDFromRequest(request),util.makePaging(pageNo, pageSize, sortBy.toLowerCase(), sortAsc));
+        List<ShowOrderFeedbackModel> result = feedbackService.getAllOrderFeedback(jwtUtil.getUserIDFromRequest(request), util.makePaging(pageNo, pageSize, sortBy.toLowerCase(), sortAsc));
         util.getSetRatingFeedbackForModelList(result);
         return result;
     }
@@ -100,10 +99,10 @@ public class FeedbackController {
     @GetMapping(value = "/getFeedbackOwnerManager", produces = "application/json;charset=UTF-8")
     public @ResponseBody
     List<ShowOrderFeedbackModel> getFeedbackOwnerManager(@RequestParam int pageNo,
-                                                     @RequestParam int pageSize,
-                                                     @RequestParam(required = false, defaultValue = "ID") String sortBy,
-                                                     @RequestParam(required = false, defaultValue = "true") Boolean sortAsc,
-                                                     HttpServletRequest request) {
+                                                         @RequestParam int pageSize,
+                                                         @RequestParam(required = false, defaultValue = "ID") String sortBy,
+                                                         @RequestParam(required = false, defaultValue = "true") Boolean sortAsc,
+                                                         HttpServletRequest request) {
         String roleName = jwtUtil.getRoleNameFromRequest(request);
         if(!roleName.equalsIgnoreCase("Owner") && !roleName.equalsIgnoreCase("Manager")) {
             throw new ResponseStatusException(HttpStatus.FORBIDDEN, "-----------------------------------Người dùng không có quyền truy cập---------------------------");
@@ -117,7 +116,7 @@ public class FeedbackController {
     public @ResponseBody
     ResponseEntity<Object> getOrderFeedbackByID(@PathVariable("orderFeedbackID") String orderFeedbackID) {
         ShowOrderFeedbackModel model = feedbackService.getOrderFeedbackByID(orderFeedbackID);
-        if (model != null) {
+        if(model != null) {
             return ResponseEntity.ok().body(model);
         }
         return ResponseEntity.badRequest().body("Feedback không tồn tại.");
@@ -127,7 +126,7 @@ public class FeedbackController {
     public @ResponseBody
     ResponseEntity<Object> getOrderFeedbackByUsername(@PathVariable("username") String username) {
         ShowOrderFeedbackModel model = feedbackService.getOrderFeedbackByUsername(username);
-        if (model != null) {
+        if(model != null) {
             return ResponseEntity.ok().body(model);
         }
         return ResponseEntity.badRequest().body("Feedback không tồn tại.");
@@ -149,11 +148,11 @@ public class FeedbackController {
         }
 
         List<ShowOrderFeedbackModel> result;
-        if(ratingID != null){
-            result = feedbackService.getOrderFeedbackByRatingID(ratingID, util.makePaging(pageNo, pageSize, sortBy.toLowerCase(), sortAsc));
-        }else if(plantID != null){
-           result = feedbackService.getOrderFeedbackByPlantID(plantID, util.makePaging(pageNo, pageSize, sortBy.toLowerCase(), sortAsc));
-        }else{
+        if(ratingID != null) {
+            result = feedbackService.getOrderFeedbackByRatingID(ratingID, jwtUtil.getRoleNameFromRequest(request), util.makePaging(pageNo, pageSize, sortBy.toLowerCase(), sortAsc));
+        } else if(plantID != null) {
+            result = feedbackService.getOrderFeedbackByPlantID(plantID, jwtUtil.getRoleNameFromRequest(request), util.makePaging(pageNo, pageSize, sortBy.toLowerCase(), sortAsc));
+        } else {
             result = feedbackService.getAllOrderFeedback(jwtUtil.getUserIDFromRequest(request), util.makePaging(pageNo, pageSize, sortBy.toLowerCase(), sortAsc));
         }
 
@@ -165,7 +164,7 @@ public class FeedbackController {
     public @ResponseBody
     ResponseEntity<Object> getOrderFeedbackByOrderDetailID(@PathVariable("orderDetailID") String orderDetailID) {
         ShowOrderFeedbackModel model = feedbackService.getOrderFeedbackByOrderDetailID(orderDetailID);
-        if (model != null) {
+        if(model != null) {
             return ResponseEntity.ok().body(model);
         }
         return ResponseEntity.badRequest().body("Feedback không tồn tại.");
@@ -173,9 +172,9 @@ public class FeedbackController {
 
     // ------------------------------------- CONTRACT ------------------------------------------------------------
 
-    @PostMapping(value = "/createContractFB",produces = "application/json;charset=UTF-8")
+    @PostMapping(value = "/createContractFB", produces = "application/json;charset=UTF-8")
     public ResponseEntity<Object> createContractFeedback(@RequestBody CreateContractFeedbackModel createContractFeedbackModel,
-                                                      HttpServletRequest request) {
+                                                         HttpServletRequest request) {
         String roleName = jwtUtil.getRoleNameFromRequest(request);
         if(!roleName.equalsIgnoreCase("Customer")) {
             throw new ResponseStatusException(HttpStatus.FORBIDDEN, "-----------------------------------Người dùng không có quyền truy cập---------------------------");
@@ -187,9 +186,9 @@ public class FeedbackController {
         return ResponseEntity.badRequest().body(result);
     }
 
-    @PutMapping(value = "/updateContractFB",produces = "application/json;charset=UTF-8")
+    @PutMapping(value = "/updateContractFB", produces = "application/json;charset=UTF-8")
     public ResponseEntity<Object> updateContractFeedback(@RequestBody UpdateContractFeedbackModel updateContractFeedbackModel,
-                                                      HttpServletRequest request) {
+                                                         HttpServletRequest request) {
         String roleName = jwtUtil.getRoleNameFromRequest(request);
         if(!roleName.equalsIgnoreCase("Customer")) {
             throw new ResponseStatusException(HttpStatus.FORBIDDEN, "-----------------------------------Người dùng không có quyền truy cập---------------------------");
@@ -203,7 +202,7 @@ public class FeedbackController {
 
     @DeleteMapping(value = "/deleteContractFB/{contractFeedbackID}", produces = "application/json;charset=UTF-8")
     public ResponseEntity<Object> deleteContractFeedback(@PathVariable(name = "contractFeedbackID") String contractFeedbackID,
-                                                      HttpServletRequest request) {
+                                                         HttpServletRequest request) {
         String roleName = jwtUtil.getRoleNameFromRequest(request);
         if(!roleName.equalsIgnoreCase("Customer")) {
             throw new ResponseStatusException(HttpStatus.FORBIDDEN, "-----------------------------------Người dùng không có quyền truy cập---------------------------");
@@ -228,7 +227,7 @@ public class FeedbackController {
     public @ResponseBody
     ResponseEntity<Object> getContractFeedbackByID(@PathVariable("contractFeedbackID") String contractFeedbackID) {
         ShowContractFeedbackModel model = feedbackService.getContractFeedbackByID(contractFeedbackID);
-        if (model != null) {
+        if(model != null) {
             return ResponseEntity.ok().body(model);
         }
         return ResponseEntity.badRequest().body("Contract không tồn tại.");
@@ -238,7 +237,7 @@ public class FeedbackController {
     public @ResponseBody
     ResponseEntity<Object> getContractFeedbackByContractID(@PathVariable("contractID") String contractID) {
         ShowContractFeedbackModel model = feedbackService.getContractFeedbackByContractID(contractID);
-        if (model != null) {
+        if(model != null) {
             return ResponseEntity.ok().body(model);
         }
         return ResponseEntity.badRequest().body("Contract không tồn tại.");

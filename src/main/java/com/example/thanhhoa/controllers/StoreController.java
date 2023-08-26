@@ -1,7 +1,6 @@
 package com.example.thanhhoa.controllers;
 
 import com.example.thanhhoa.dtos.PlantModels.AddStorePlantModel;
-import com.example.thanhhoa.dtos.PlantModels.UpdateStorePlantModel;
 import com.example.thanhhoa.dtos.StoreModels.AddStoreEmployeeModel;
 import com.example.thanhhoa.dtos.StoreModels.CreateStoreModel;
 import com.example.thanhhoa.dtos.StoreModels.ShowDistrictModel;
@@ -45,8 +44,8 @@ public class StoreController {
 
     @GetMapping(produces = "application/json;charset=UTF-8")
     public @ResponseBody
-    List<ShowStoreModel> getAllStore() {
-        return storeService.getAllStore();
+    List<ShowStoreModel> getAllStore(HttpServletRequest request) {
+        return storeService.getAllStore(jwtUtil.getRoleNameFromRequest(request));
     }
 
     @GetMapping(value = "/getStorePlant/{storeID}", produces = "application/json;charset=UTF-8")
