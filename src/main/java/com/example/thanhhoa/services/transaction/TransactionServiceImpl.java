@@ -149,6 +149,7 @@ public class TransactionServiceImpl implements TransactionService {
         model.setStatus(transaction.getStatus());
         model.setBankAccount(transaction.getBankAccount());
         model.setRefundBankCode(transaction.getRefundBankCode());
+        model.setBankAccountNo(transaction.getBankAccountNo());
 
         // order
         tblOrder order = transaction.getTblOrder();
@@ -233,6 +234,7 @@ public class TransactionServiceImpl implements TransactionService {
             model.setStatus(transaction.getStatus());
             model.setBankAccount(transaction.getBankAccount());
             model.setRefundBankCode(transaction.getRefundBankCode());
+            model.setBankAccountNo(transaction.getBankAccountNo());
 
             // order
             tblOrder order = transaction.getTblOrder();

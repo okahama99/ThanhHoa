@@ -44,6 +44,9 @@ public class Transaction implements Serializable {
     private String currency;
 
     @Column
+    private String bankAccountNo;
+
+    @Column
     private String bankAccount;
 
     @Column
