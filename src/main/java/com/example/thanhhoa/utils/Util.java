@@ -28,6 +28,7 @@ import com.example.thanhhoa.dtos.ServiceModels.ShowServiceTypeModel;
 import com.example.thanhhoa.dtos.ServicePriceModels.ShowServicePriceModel;
 import com.example.thanhhoa.dtos.StoreModels.ShowStorePlantModel;
 import com.example.thanhhoa.dtos.StorePlantRequestModels.ShowRequestModel;
+import com.example.thanhhoa.dtos.TransactionModels.ShowTransactionModel;
 import com.example.thanhhoa.dtos.UserModels.ShowUserModel;
 import com.example.thanhhoa.dtos.WorkingDateModels.ShowWorkingDateModel;
 import com.example.thanhhoa.entities.Category;
@@ -51,6 +52,7 @@ import com.example.thanhhoa.entities.ServicePrice;
 import com.example.thanhhoa.entities.ServiceType;
 import com.example.thanhhoa.entities.StoreEmployee;
 import com.example.thanhhoa.entities.StorePlant;
+import com.example.thanhhoa.entities.Transaction;
 import com.example.thanhhoa.entities.WorkingDate;
 import com.example.thanhhoa.entities.tblAccount;
 import com.example.thanhhoa.entities.tblOrder;
@@ -1679,6 +1681,100 @@ public class Util {
             notificationRepository.saveAndFlush(notification);
         }
 
+    }
+
+    public List<ShowTransactionModel> transactionPagingConverter(Page<Transaction> pagingResult, Pageable paging) {
+        if(pagingResult.hasContent()) {
+            double totalPage = Math.ceil((double) pagingResult.getTotalElements() / paging.getPageSize());
+            Page<ShowTransactionModel> modelResult = pagingResult.map(new Converter<Transaction, ShowTransactionModel>() {
+                @Override
+                protected ShowTransactionModel doForward(Transaction transaction) {
+                    ShowTransactionModel model = new ShowTransactionModel();
+                    model.setId(transaction.getId());
+                    model.setAmount(transaction.getAmount());
+                    model.setBankCode(transaction.getBankCode());
+                    model.setBillNo(transaction.getBillNo());
+                    model.setCardType(transaction.getCardType());
+                    model.setCreatedDate(transaction.getCreateDate());
+                    model.setCurrency(transaction.getCurrency());
+                    model.setReason(transaction.getReason());
+                    model.setTransNo(transaction.getTransNo());
+                    model.setStatus(transaction.getStatus());
+                    model.setBankAccount(transaction.getBankAccount());
+                    model.setRefundBankCode(transaction.getRefundBankCode());
+
+                    // order
+                    tblOrder order = transaction.getTblOrder();
+                    ShowOrderModel orderModel = new ShowOrderModel();
+                    orderModel.setId(order.getId());
+                    orderModel.setFullName(order.getFullName());
+                    orderModel.setAddress(order.getAddress());
+                    orderModel.setEmail(order.getEmail());
+                    orderModel.setPhone(order.getPhone());
+                    orderModel.setCreatedDate(order.getCreatedDate());
+                    orderModel.setPackageDate(order.getPackageDate());
+                    orderModel.setDeliveryDate(order.getDeliveryDate());
+                    orderModel.setReceivedDate(order.getReceivedDate());
+                    orderModel.setApproveDate(order.getApproveDate());
+                    orderModel.setRejectDate(order.getRejectDate());
+                    orderModel.setPaymentMethod(order.getPaymentMethod());
+                    orderModel.setProgressStatus(order.getProgressStatus());
+                    orderModel.setReason(order.getReason());
+                    orderModel.setLatLong(order.getLatLong());
+                    orderModel.setDistance(order.getDistance());
+                    orderModel.setTotalShipCost(order.getTotalShipCost());
+                    orderModel.setTotal(order.getTotal());
+                    orderModel.setIsPaid(order.getIsPaid());
+                    orderModel.setIsRefund(order.getIsRefund());
+                    orderModel.setReceiptIMG(order.getReceiptIMG());
+
+                    //contract
+                    Contract contract = transaction.getContract();
+                    ShowContractModel contractModel = new ShowContractModel();
+                    contractModel.setId(contract.getId());
+                    contractModel.setFullName(contract.getFullName());
+                    contractModel.setAddress(contract.getAddress());
+                    contractModel.setEmail(contract.getEmail());
+                    contractModel.setPhone(contract.getPhone());
+                    contractModel.setTitle(contract.getTitle());
+                    contractModel.setPaymentMethod(contract.getPaymentMethod());
+                    contractModel.setReason(contract.getReason());
+                    contractModel.setCreatedDate(contract.getCreatedDate());
+                    contractModel.setApprovedDate(contract.getApprovedDate());
+                    contractModel.setRejectedDate(contract.getRejectedDate());
+                    contractModel.setStartedDate(contract.getStartedDate());
+                    contractModel.setEndedDate(contract.getEndedDate());
+                    contractModel.setTotal(contract.getTotal());
+                    contractModel.setIsFeedback(contract.getIsFeedback());
+                    contractModel.setIsSigned(contract.getIsSigned());
+                    contractModel.setIsPaid(contract.getIsPaid());
+
+                    // user
+                    tblAccount user = transaction.getUser();
+                    ShowStaffModel userModel = new ShowStaffModel();
+                    userModel.setId(user.getId());
+                    userModel.setAddress(user.getAddress());
+                    userModel.setEmail(user.getEmail());
+                    userModel.setPhone(user.getPhone());
+                    userModel.setFullName(user.getFullName());
+                    userModel.setAvatar(user.getAvatar());
+
+                    model.setShowOrderModel(orderModel);
+                    model.setShowContractModel(contractModel);
+                    model.setShowStaffModel(userModel);
+                    model.setTotalPage(totalPage);
+                    return model;
+                }
+
+                @Override
+                protected Transaction doBackward(ShowTransactionModel showTransactionModel) {
+                    return null;
+                }
+            });
+            return modelResult.getContent();
+        } else {
+            return new ArrayList<>();
+        }
     }
 
 //    class InvalidInput extends Exception {

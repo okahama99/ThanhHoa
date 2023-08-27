@@ -14,10 +14,13 @@ import com.example.thanhhoa.repositories.ContractRepository;
 import com.example.thanhhoa.repositories.OrderRepository;
 import com.example.thanhhoa.repositories.TransactionRepository;
 import com.example.thanhhoa.repositories.UserRepository;
+import com.example.thanhhoa.repositories.pagings.TransactionPagingRepository;
 import com.example.thanhhoa.services.vnpay.Config;
 import com.example.thanhhoa.utils.Util;
 import com.google.firebase.messaging.FirebaseMessagingException;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
@@ -37,6 +40,8 @@ public class TransactionServiceImpl implements TransactionService {
     private ContractRepository contractRepository;
     @Autowired
     private UserRepository userRepository;
+    @Autowired
+    private TransactionPagingRepository transactionPagingRepository;
     @Autowired
     private Util util;
 
@@ -292,5 +297,17 @@ public class TransactionServiceImpl implements TransactionService {
             modelList.add(model);
         }
         return modelList;
+    }
+
+    @Override
+    public List<ShowTransactionModel> getAllStoreContract(String storeID, Pageable pageable) {
+        Page<Transaction> pagingResult = transactionPagingRepository.findByContract_Store_Id(storeID, pageable);
+        return util.transactionPagingConverter(pagingResult, pageable);
+    }
+
+    @Override
+    public List<ShowTransactionModel> getAllStoreOrder(String storeID, Pageable pageable) {
+        Page<Transaction> pagingResult = transactionPagingRepository.findByTblOrder_Store_Id(storeID, pageable);
+        return util.transactionPagingConverter(pagingResult, pageable);
     }
 }

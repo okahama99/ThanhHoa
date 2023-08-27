@@ -121,4 +121,11 @@ public class SearchType {
         APPLYDATE,
         STATUS
     }
+
+    public enum TRANSACTION{
+        ID,
+        BANKCODE,
+        AMOUNT,
+        CREATEDDATE
+    }
 }

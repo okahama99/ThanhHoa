@@ -28,4 +28,5 @@ public class ShowTransactionModel implements Serializable {
     private ShowOrderModel showOrderModel;
     private ShowContractModel showContractModel;
     private ShowStaffModel showStaffModel;
+    private Double totalPage;
 }
