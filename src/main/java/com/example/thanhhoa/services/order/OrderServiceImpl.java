@@ -559,14 +559,14 @@ public class OrderServiceImpl implements OrderService {
     }
 
     @Override
-    public List<ShowOrderDetailModel> getOrderDetailByIsFeedback(String isFeedback, Pageable pageable) {
+    public List<ShowOrderDetailModel> getOrderDetailByIsFeedback(String isFeedback, Long userID, Pageable pageable) {
         Page<OrderDetail> pagingResult = null;
         if(isFeedback == null) {
-            pagingResult = orderDetailPagingRepository.findAllByTblOrder_ProgressStatus(Status.RECEIVED, pageable);
+            pagingResult = orderDetailPagingRepository.findAllByTblOrder_ProgressStatusAndTblOrder_Customer_Id(Status.RECEIVED, userID, pageable);
         } else if(isFeedback.equalsIgnoreCase("true")) {
-            pagingResult = orderDetailPagingRepository.findByIsFeedbackAndTblOrder_ProgressStatus(true, Status.RECEIVED, pageable);
+            pagingResult = orderDetailPagingRepository.findByIsFeedbackAndTblOrder_ProgressStatusAndTblOrder_Customer_Id(true, Status.RECEIVED, userID, pageable);
         } else {
-            pagingResult = orderDetailPagingRepository.findByIsFeedbackAndTblOrder_ProgressStatus(false, Status.RECEIVED, pageable);
+            pagingResult = orderDetailPagingRepository.findByIsFeedbackAndTblOrder_ProgressStatusAndTblOrder_Customer_Id(false, Status.RECEIVED, userID, pageable);
         }
         return util.orderDetailPagingConverter(pagingResult, pageable);
     }

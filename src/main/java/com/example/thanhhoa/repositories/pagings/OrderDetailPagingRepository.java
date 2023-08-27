@@ -9,7 +9,7 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 public interface OrderDetailPagingRepository extends PagingAndSortingRepository<OrderDetail, String> {
-    Page<OrderDetail> findByIsFeedbackAndTblOrder_ProgressStatus(Boolean isFeedback, Status status, Pageable pageable);
+    Page<OrderDetail> findByIsFeedbackAndTblOrder_ProgressStatusAndTblOrder_Customer_Id(Boolean isFeedback, Status status, Long userID, Pageable pageable);
 
-    Page<OrderDetail> findAllByTblOrder_ProgressStatus(Status status, Pageable pageable);
+    Page<OrderDetail> findAllByTblOrder_ProgressStatusAndTblOrder_Customer_Id(Status status, Long userID, Pageable pageable);
 }

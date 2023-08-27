@@ -38,7 +38,7 @@ public interface OrderService {
 
     List<ShowOrderDetailModel> getOrderDetailByOrderID(String orderID);
 
-    List<ShowOrderDetailModel> getOrderDetailByIsFeedback(String isFeedback, Pageable pageable);
+    List<ShowOrderDetailModel> getOrderDetailByIsFeedback(String isFeedback, Long userID, Pageable pageable);
 
     List<GetStaffModel> getStaffForOrder();
 

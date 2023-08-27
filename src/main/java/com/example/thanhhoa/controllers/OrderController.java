@@ -228,7 +228,7 @@ public class OrderController {
             paging = util.makePaging(pageNo, pageSize, sortBy.toString().toLowerCase(), sortAsc);
         }
 
-        List<ShowOrderDetailModel> model = orderService.getOrderDetailByIsFeedback(isFeedback, paging);
+        List<ShowOrderDetailModel> model = orderService.getOrderDetailByIsFeedback(isFeedback, jwtUtil.getUserIDFromRequest(request), paging);
         return model;
     }
 
