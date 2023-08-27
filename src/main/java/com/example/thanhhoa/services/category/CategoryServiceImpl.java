@@ -104,7 +104,7 @@ public class CategoryServiceImpl implements CategoryService{
     @Override
     public String delete(String id) {
         Optional<Category> checkExistedID = categoryRepository.findByIdAndStatus(id, Status.ACTIVE);
-        if(checkExistedID != null){
+        if(checkExistedID == null){
             return "Không tìm thấy Category với ID là : " + id + ".";
         }
         Category category = checkExistedID.get();
