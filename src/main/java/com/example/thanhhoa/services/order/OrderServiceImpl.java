@@ -225,7 +225,7 @@ public class OrderServiceImpl implements OrderService {
             transaction.setCreateDate(LocalDateTime.now(ZoneId.of("Asia/Ho_Chi_Minh")));
             transaction.setStatus(Status.ACTIVE);
             transaction.setCurrency("VND");
-            transaction.setAmount(Integer.parseInt(order.getTotal().toString()));
+            transaction.setAmount(order.getTotal().intValue());
         }
         transaction.setTblOrder(order);
         transactionRepository.save(transaction);
