@@ -1,6 +1,5 @@
 package com.example.thanhhoa.services.order;
 
-import com.example.thanhhoa.dtos.NotificationModels.CreateNotificationModel;
 import com.example.thanhhoa.dtos.OrderModels.CreateOrderModel;
 import com.example.thanhhoa.dtos.OrderModels.GetStaffModel;
 import com.example.thanhhoa.dtos.OrderModels.OrderDetailModel;
@@ -13,7 +12,6 @@ import com.example.thanhhoa.dtos.OrderModels.ShowStoreModel;
 import com.example.thanhhoa.dtos.OrderModels.UpdateOrderModel;
 import com.example.thanhhoa.entities.Cart;
 import com.example.thanhhoa.entities.DistancePrice;
-import com.example.thanhhoa.entities.Notification;
 import com.example.thanhhoa.entities.OrderDetail;
 import com.example.thanhhoa.entities.Plant;
 import com.example.thanhhoa.entities.PlantPrice;
@@ -27,7 +25,6 @@ import com.example.thanhhoa.entities.tblOrder;
 import com.example.thanhhoa.enums.Status;
 import com.example.thanhhoa.repositories.CartRepository;
 import com.example.thanhhoa.repositories.DistancePriceRepository;
-import com.example.thanhhoa.repositories.NotificationRepository;
 import com.example.thanhhoa.repositories.OrderDetailRepository;
 import com.example.thanhhoa.repositories.OrderRepository;
 import com.example.thanhhoa.repositories.PlantPriceRepository;
@@ -40,7 +37,6 @@ import com.example.thanhhoa.repositories.TransactionRepository;
 import com.example.thanhhoa.repositories.UserRepository;
 import com.example.thanhhoa.repositories.pagings.OrderDetailPagingRepository;
 import com.example.thanhhoa.repositories.pagings.OrderPagingRepository;
-import com.example.thanhhoa.services.firebase.FirebaseMessagingService;
 import com.example.thanhhoa.services.otp.OtpService;
 import com.example.thanhhoa.utils.Util;
 import com.google.firebase.messaging.FirebaseMessagingException;
@@ -53,9 +49,7 @@ import javax.mail.MessagingException;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.Optional;
 
 @Service
@@ -120,20 +114,20 @@ public class OrderServiceImpl implements OrderService {
         order.setIsPaid(false);
 
         tblAccount account = userRepository.getById(customerID);
-        if(account.getRole().getRoleName().equalsIgnoreCase("Staff")){
+        if(account.getRole().getRoleName().equalsIgnoreCase("Staff")) {
             order.setStaff(account);
             order.setApproveDate(LocalDateTime.now(ZoneId.of("Asia/Ho_Chi_Minh")));
             order.setProgressStatus(Status.APPROVED);
 
-            if(createOrderModel.getCustomerID() != null){
+            if(createOrderModel.getCustomerID() != null) {
                 order.setCustomer(userRepository.getById(createOrderModel.getCustomerID()));
             }
 
-            if(createOrderModel.getIsPaid() != null){
+            if(createOrderModel.getIsPaid() != null) {
                 order.setIsPaid(true);
             }
         }
-        if(account.getRole().getRoleName().equalsIgnoreCase("Customer")){
+        if(account.getRole().getRoleName().equalsIgnoreCase("Customer")) {
             order.setCustomer(account);
         }
         Store store = storeRepository.getById(createOrderModel.getStoreID());
@@ -143,7 +137,7 @@ public class OrderServiceImpl implements OrderService {
         Double totalPriceOfAPlant = 0.0;
         Double totalShipCost = 0.0;
         Double total = 0.0;
-        if(distancePrice.getPricePerKm() == 0.0){
+        if(distancePrice.getPricePerKm() == 0.0) {
             for(OrderDetailModel model : createOrderModel.getDetailList()) {
                 Plant plant = plantRepository.getById(model.getPlantID());
                 PlantPrice newestPrice = plantPriceRepository.findFirstByPlant_IdAndStatusOrderByApplyDateDesc(plant.getId(), Status.ACTIVE);
@@ -173,7 +167,7 @@ public class OrderServiceImpl implements OrderService {
             order.setPackageDate(LocalDateTime.now(ZoneId.of("Asia/Ho_Chi_Minh")));
             order.setDeliveryDate(LocalDateTime.now(ZoneId.of("Asia/Ho_Chi_Minh")));
             order.setReceivedDate(LocalDateTime.now(ZoneId.of("Asia/Ho_Chi_Minh")));
-        }else{
+        } else {
             for(OrderDetailModel model : createOrderModel.getDetailList()) {
                 Plant plant = plantRepository.getById(model.getPlantID());
                 PlantPrice newestPrice = plantPriceRepository.findFirstByPlant_IdAndStatusOrderByApplyDateDesc(plant.getId(), Status.ACTIVE);
@@ -205,21 +199,22 @@ public class OrderServiceImpl implements OrderService {
 
         order.setDistancePrice(distancePrice);
         order.setTotalShipCost(totalShipCost);
+        order.setIsRefund(false);
         order.setTotal(total);
 
         Transaction transaction;
-        if(createOrderModel.getTransactionNo() != null){
+        if(createOrderModel.getTransactionNo() != null) {
             transaction = transactionRepository.findByTransNo(createOrderModel.getTransactionNo());
-            if(transaction == null){
+            if(transaction == null) {
                 return "TransactionNo không tồn tại";
             }
-        }else{
+        } else {
             transaction = new Transaction();
             Transaction lastTransaction = transactionRepository.findFirstByOrderByIdDesc();
             if(lastTransaction == null) {
-                order.setId(util.createNewID("T"));
+                transaction.setId(util.createNewID("T"));
             } else {
-                order.setId(util.createIDFromLastID("T", 1, lastTransaction.getId()));
+                transaction.setId(util.createIDFromLastID("T", 1, lastTransaction.getId()));
             }
             transaction.setReason("Staff thanh toán");
             transaction.setCreateDate(LocalDateTime.now(ZoneId.of("Asia/Ho_Chi_Minh")));
@@ -232,11 +227,17 @@ public class OrderServiceImpl implements OrderService {
 
         orderRepository.save(order);
 
-        util.createNotification("ORDER", account, order.getId(), "tạo");
+        if(order.getStaff() != null) {
+            util.createNotification("ORDER", order.getStaff(), order.getId(), "tạo");
+        }
+        if(order.getCustomer() != null) {
+            util.createNotification("ORDER", order.getCustomer(), order.getId(), "tạo");
+        }
+
 
         StoreEmployee manager = storeEmployeeRepository.findByStore_IdAndAccount_Role_RoleName(store.getId(), "Manager");
-        if(manager != null){
-            otpService.generateNotificationEmailForManager(manager.getAccount().getEmail(),"Đơn hàng");
+        if(manager != null) {
+            otpService.generateNotificationEmailForManager(manager.getAccount().getEmail(), "Đơn hàng");
         }
 
 
@@ -269,9 +270,9 @@ public class OrderServiceImpl implements OrderService {
         order.setDistance(updateOrderModel.getDistance());
         order.setLatLong(updateOrderModel.getLatLong());
 
-        if(updateOrderModel.getStaffID() != null){
+        if(updateOrderModel.getStaffID() != null) {
             Optional<tblAccount> checkStaff = userRepository.findById(updateOrderModel.getStaffID());
-            if(checkStaff == null){
+            if(checkStaff == null) {
                 return "Không tìm thấy Staff với ID là " + updateOrderModel.getStaffID() + ".";
             }
             tblAccount staff = checkStaff.get();
@@ -341,7 +342,7 @@ public class OrderServiceImpl implements OrderService {
         Optional<tblOrder> checkExistedOrder = orderRepository.findById(orderID);
         if(checkExistedOrder != null) {
             tblAccount staff = userRepository.findByIdAndStatus(staffID, Status.ACTIVE);
-            if(staff == null){
+            if(staff == null) {
                 return "Không tìm thấy Staff với ID là : " + staffID + " có trạng thái ACTIVE.";
             }
             tblOrder order = checkExistedOrder.get();
@@ -370,11 +371,11 @@ public class OrderServiceImpl implements OrderService {
                 storePlantRecordRepository.save(storePlantRecord);
             }
 
-            if(order.getCustomer() != null){
-                util.createNotification("ORDER", order.getCustomer() , order.getId(), "quản lý duyệt");
+            if(order.getCustomer() != null) {
+                util.createNotification("ORDER", order.getCustomer(), order.getId(), "quản lý duyệt");
             }
 
-            util.createNotification("ORDER", order.getStaff() , order.getId(), "giao cho bạn");
+            util.createNotification("ORDER", order.getStaff(), order.getId(), "giao cho bạn");
 
             orderRepository.save(checkExistedOrder.get());
             return "Chấp nhận thành công.";
@@ -396,18 +397,18 @@ public class OrderServiceImpl implements OrderService {
                 order.setProgressStatus(Status.DELIVERING);
                 order.setDeliveryDate(LocalDateTime.now(ZoneId.of("Asia/Ho_Chi_Minh")));
                 action = "bắt đầu giao hàng";
-            } else if(status.equalsIgnoreCase("RECEIVED")){
-                if(receiptIMG != null){
+            } else if(status.equalsIgnoreCase("RECEIVED")) {
+                if(receiptIMG != null) {
                     order.setReceiptIMG(receiptIMG);
                 }
                 order.setProgressStatus(Status.RECEIVED);
                 order.setReceivedDate(LocalDateTime.now(ZoneId.of("Asia/Ho_Chi_Minh")));
                 action = "nhận hàng";
-            }else{
+            } else {
                 return false;
             }
 
-            if(order.getCustomer() != null){
+            if(order.getCustomer() != null) {
                 util.createNotification("ORDER", order.getCustomer(), order.getId(), action);
             }
 
@@ -422,9 +423,9 @@ public class OrderServiceImpl implements OrderService {
     @Override
     public List<ShowOrderModel> getAllOrderByUserID(Long userID, String roleName, Pageable pageable) {
         Page<tblOrder> pagingResult;
-        if(roleName.equalsIgnoreCase("Staff")){
+        if(roleName.equalsIgnoreCase("Staff")) {
             pagingResult = orderPagingRepository.findByStaff_Id(userID, pageable);
-        }else{
+        } else {
             pagingResult = orderPagingRepository.findByCustomer_Id(userID, pageable);
         }
         return util.orderPagingConverter(pagingResult, pageable);
@@ -445,9 +446,9 @@ public class OrderServiceImpl implements OrderService {
     @Override
     public List<ShowOrderModel> getAllByStatusOrderByUserID(Status status, Long userID, String roleName, Pageable pageable) {
         Page<tblOrder> pagingResult;
-        if(roleName.equalsIgnoreCase("Staff")){
+        if(roleName.equalsIgnoreCase("Staff")) {
             pagingResult = orderPagingRepository.findByStaff_IdAndProgressStatus(userID, status, pageable);
-        }else{
+        } else {
             pagingResult = orderPagingRepository.findByCustomer_IdAndProgressStatus(userID, status, pageable);
         }
         return util.orderPagingConverter(pagingResult, pageable);
@@ -462,7 +463,7 @@ public class OrderServiceImpl implements OrderService {
     @Override
     public ShowOrderModel getByID(String orderID) {
         Optional<tblOrder> checkExisted = orderRepository.findById(orderID);
-        if(checkExisted == null){
+        if(checkExisted == null) {
             return null;
         }
         tblOrder order = checkExisted.get();
@@ -588,9 +589,9 @@ public class OrderServiceImpl implements OrderService {
     }
 
     @Override
-    public String updateIsPaid(String orderID, Boolean isPaid){
+    public String updateIsPaid(String orderID, Boolean isPaid) {
         Optional<tblOrder> checkExisted = orderRepository.findById(orderID);
-        if(checkExisted == null){
+        if(checkExisted == null) {
             return "Không tìm thấy Order với ID là : " + orderID + " .";
         }
         tblOrder order = checkExisted.get();
