@@ -52,9 +52,9 @@ public class ReportController {
         return list;
     }
 
-    @GetMapping(value = "/getAllNewReport", produces = "application/json;charset=UTF-8")
+    @GetMapping(value = "/getAll", produces = "application/json;charset=UTF-8")
     public @ResponseBody
-    List<ShowReportModel> getAllNewReport(@RequestParam int pageNo,
+    List<ShowReportModel> getAll(@RequestParam int pageNo,
                                           @RequestParam int pageSize,
                                           @RequestParam(required = false, defaultValue = "ID") SearchType.REPORT sortBy,
                                           @RequestParam(required = false, defaultValue = "true") Boolean sortAsc,

@@ -318,7 +318,8 @@ public class ContractController {
                                                        @RequestParam String status,
                                                        HttpServletRequest request) throws Exception {
         String roleName = jwtUtil.getRoleNameFromRequest(request);
-        if(!roleName.equalsIgnoreCase("Manager") && !roleName.equalsIgnoreCase("Staff")) {
+        if(!roleName.equalsIgnoreCase("Manager") && !roleName.equalsIgnoreCase("Staff")
+         && !roleName.equalsIgnoreCase("Customer")) {
             throw new ResponseStatusException(HttpStatus.FORBIDDEN, "-----------------------------------Người dùng không có quyền truy cập---------------------------");
         }
         String result = contractService.changeContractStatus(contractID, Status.valueOf(status));

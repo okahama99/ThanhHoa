@@ -23,5 +23,5 @@ public interface ReportService {
 
     String changeReportStatus(String reportID, String reason, Status status) throws FirebaseMessagingException;
 
-    List<ShowReportModel> getAllNewReport(Pageable pageable);
+    List<ShowReportModel> getAll(Pageable pageable);
 }

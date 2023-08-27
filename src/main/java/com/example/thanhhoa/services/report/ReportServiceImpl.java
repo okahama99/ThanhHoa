@@ -206,8 +206,8 @@ public class ReportServiceImpl implements ReportService{
     }
 
     @Override
-    public List<ShowReportModel> getAllNewReport(Pageable pageable) {
-        Page<Report> pagingResult = reportPagingRepository.findAllByStatus(Status.NEW, pageable);
+    public List<ShowReportModel> getAll(Pageable pageable) {
+        Page<Report> pagingResult = reportPagingRepository.findAll(pageable);
         return util.reportPagingConverter(pagingResult, pageable);
     }
 }
