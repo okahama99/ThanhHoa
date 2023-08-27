@@ -78,6 +78,7 @@ public class ReportServiceImpl implements ReportService{
             model.setStaffName(report.getContractDetail().getContract().getStaff().getFullName());
             model.setContractID(report.getContractDetail().getContract().getId());
             model.setTimeWorking(report.getContractDetail().getTimeWorking());
+            model.setStoreID(report.getContractDetail().getContract().getStore().getId());
             modelList.add(model);
         }
         return modelList;
@@ -110,6 +111,7 @@ public class ReportServiceImpl implements ReportService{
             model.setStaffName(report.getContractDetail().getContract().getStaff().getFullName());
             model.setContractID(report.getContractDetail().getContract().getId());
             model.setTimeWorking(report.getContractDetail().getTimeWorking());
+            model.setStoreID(report.getContractDetail().getContract().getStore().getId());
             modelList.add(model);
         }
         return modelList;

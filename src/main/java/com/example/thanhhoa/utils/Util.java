@@ -1503,6 +1503,7 @@ public class Util {
                     model.setStaffName(report.getContractDetail().getContract().getStaff().getFullName());
                     model.setContractID(report.getContractDetail().getContract().getId());
                     model.setTimeWorking(report.getContractDetail().getTimeWorking());
+                    model.setStoreID(report.getContractDetail().getContract().getStore().getId());
                     model.setTotalPage(totalPage);
                     return model;
                 }
