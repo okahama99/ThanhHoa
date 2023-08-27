@@ -363,7 +363,7 @@ public class PlantServiceImpl implements PlantService {
 
     @Override
     public List<ShowPlantModel> getPlantByCategory(String categoryID, Pageable paging) {
-        Page<PlantCategory> plantCategoryPage = plantCategoryPagingRepository.findByCategory_Id(categoryID, paging);
+        Page<PlantCategory> plantCategoryPage = plantCategoryPagingRepository.findByCategory_IdAndStatus(categoryID, Status.ACTIVE, paging);
         Page<Plant> pagingResult = plantCategoryPage.map(plantCategory -> plantRepository.getById(plantCategory.getPlant().getId()));
         return util.plantPagingConverter(pagingResult, paging);
     }
@@ -397,7 +397,7 @@ public class PlantServiceImpl implements PlantService {
 
     @Override
     public List<ShowPlantModel> getPlantByCategoryAndName(String categoryID, String name, Pageable paging) {
-        Page<PlantCategory> plantCategoryPage = plantCategoryPagingRepository.findByCategory_IdAndPlant_NameContaining(categoryID, name, paging);
+        Page<PlantCategory> plantCategoryPage = plantCategoryPagingRepository.findByCategory_IdAndPlant_NameContainingAndStatus(categoryID, name, Status.ACTIVE, paging);
         Page<Plant> pagingResult = plantCategoryPage.map(plantCategory -> plantRepository.getById(plantCategory.getPlant().getId()));
         return util.plantPagingConverter(pagingResult, paging);
     }
@@ -411,14 +411,14 @@ public class PlantServiceImpl implements PlantService {
 
     @Override
     public List<ShowPlantModel> getPlantByCategoryAndPrice(String categoryID, Double fromPrice, Double toPrice, Pageable paging) {
-        Page<PlantCategory> plantCategoryPage = plantCategoryPagingRepository.findByCategory_Id(categoryID, paging);
+        Page<PlantCategory> plantCategoryPage = plantCategoryPagingRepository.findByCategory_IdAndStatus(categoryID, Status.ACTIVE, paging);
         Page<Plant> pagingResult = plantCategoryPage.map(plantCategory -> plantRepository.getById(plantCategory.getPlant().getId()));
         return util.plantPricePagingConverter(fromPrice, toPrice, pagingResult, paging);
     }
 
     @Override
     public List<ShowPlantModel> getPlantByCategoryAndNameAndPrice(String categoryID, String name, Double fromPrice, Double toPrice, Pageable paging) {
-        Page<PlantCategory> plantCategoryPage = plantCategoryPagingRepository.findByCategory_IdAndPlant_NameContaining(categoryID, name, paging);
+        Page<PlantCategory> plantCategoryPage = plantCategoryPagingRepository.findByCategory_IdAndPlant_NameContainingAndStatus(categoryID, name, Status.ACTIVE, paging);
         Page<Plant> pagingResult = plantCategoryPage.map(plantCategory -> plantRepository.getById(plantCategory.getPlant().getId()));
         return util.plantPricePagingConverter(fromPrice, toPrice, pagingResult, paging);
     }
