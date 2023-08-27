@@ -54,8 +54,9 @@ public class TransactionController {
 
     @GetMapping(value = "/getAll", produces = "application/json;charset=UTF-8")
     public @ResponseBody
-    List<ShowTransactionModel> getAll(@RequestParam(required = false) String orderID,
-                                      @RequestParam(required = false) String contractID,
+    List<ShowTransactionModel> getAll(@RequestParam(required = false, defaultValue = "false") Boolean byOrder,
+                                      @RequestParam(required = false, defaultValue = "false") Boolean byContract,
+                                      @RequestParam String storeID,
                                       @RequestParam int pageNo,
                                       @RequestParam int pageSize,
                                       @RequestParam(required = false, defaultValue = "ID") SearchType.TRANSACTION sortBy,
@@ -74,10 +75,10 @@ public class TransactionController {
             paging = util.makePaging(pageNo, pageSize, sortBy.toString().toLowerCase(), sortAsc);
         }
 
-        if(orderID != null){
-            return transactionService.getAllStoreOrder(orderID, paging);
-        }else if(contractID != null){
-            return transactionService.getAllStoreContract(contractID, paging);
+        if(byOrder){
+            return transactionService.getAllStoreOrder(storeID, paging);
+        }else if(byContract){
+            return transactionService.getAllStoreContract(storeID, paging);
         }else{
             return null;
         }
