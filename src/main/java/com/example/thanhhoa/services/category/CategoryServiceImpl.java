@@ -118,6 +118,6 @@ public class CategoryServiceImpl implements CategoryService{
             }
         }
         categoryRepository.save(category);
-        return "Xóa thành công";
+        return "Xóa thành công.";
     }
 }

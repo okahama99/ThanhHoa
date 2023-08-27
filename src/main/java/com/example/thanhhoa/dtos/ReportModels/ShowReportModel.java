@@ -28,5 +28,6 @@ public class ShowReportModel implements Serializable {
     private String staffName;
     private String contractID;
     private String timeWorking;
+    private String storeID;
     private Double totalPage;
 }

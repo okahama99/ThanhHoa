@@ -539,7 +539,7 @@ public class ContractServiceImpl implements ContractService {
     }
 
     @Override
-    public String changeContractStatus(String contractID, Status status) throws FirebaseMessagingException {
+    public String changeContractStatus(String contractID, String reason, Status status) throws FirebaseMessagingException {
         Optional<Contract> checkExisted = contractRepository.findById(contractID);
         if(checkExisted == null) {
             return "Không thể tìm thấy Hợp đồng có trạng thái WAITING với ID là " + contractID + ".";
@@ -552,8 +552,18 @@ public class ContractServiceImpl implements ContractService {
             if(contract.getCustomer() != null){
                 util.createNotification("CONTRACT", contract.getCustomer(), contract.getId(), "từ chối");
             }
+        }else if(status.toString().equalsIgnoreCase("CUSTOMERCANCELED")){
+            contract.setStatus(status);
+
+            if(contract.getCustomer() != null){
+                util.createNotification("CONTRACT", contract.getCustomer(), contract.getId(), "hủy");
+            }
         }else{
             contract.setStatus(status);
+        }
+
+        if(reason != null){
+            contract.setReason(reason);
         }
 
         contractRepository.save(contract);
