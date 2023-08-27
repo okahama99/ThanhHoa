@@ -70,7 +70,7 @@ public class ReportController {
         } else {
             paging = util.makePaging(pageNo, pageSize, sortBy.toString().toLowerCase(), sortAsc);
         }
-        List<ShowReportModel> list = reportService.getAllNewReport(paging);
+        List<ShowReportModel> list = reportService.getAll(paging);
         return list;
     }
 
