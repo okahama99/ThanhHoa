@@ -170,6 +170,9 @@ public class OrderServiceImpl implements OrderService {
             }
             total += totalPriceOfAPlant;
             order.setProgressStatus(Status.RECEIVED);
+            order.setPackageDate(LocalDateTime.now(ZoneId.of("Asia/Ho_Chi_Minh")));
+            order.setDeliveryDate(LocalDateTime.now(ZoneId.of("Asia/Ho_Chi_Minh")));
+            order.setReceivedDate(LocalDateTime.now(ZoneId.of("Asia/Ho_Chi_Minh")));
         }else{
             for(OrderDetailModel model : createOrderModel.getDetailList()) {
                 Plant plant = plantRepository.getById(model.getPlantID());
