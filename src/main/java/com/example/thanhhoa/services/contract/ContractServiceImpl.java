@@ -371,6 +371,7 @@ public class ContractServiceImpl implements ContractService {
 
         contract.setStore(store);
         contract.setCreatedDate(LocalDateTime.now(ZoneId.of("Asia/Ho_Chi_Minh")));
+        contract.setApprovedDate(LocalDateTime.now(ZoneId.of("Asia/Ho_Chi_Minh")));
 
         Double totalPrice = 0.0;
         List<LocalDateTime> startDateList = new ArrayList<>();
