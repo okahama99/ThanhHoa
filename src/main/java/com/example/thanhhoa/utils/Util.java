@@ -1707,48 +1707,53 @@ public class Util {
                     // order
                     tblOrder order = transaction.getTblOrder();
                     ShowOrderModel orderModel = new ShowOrderModel();
-                    orderModel.setId(order.getId());
-                    orderModel.setFullName(order.getFullName());
-                    orderModel.setAddress(order.getAddress());
-                    orderModel.setEmail(order.getEmail());
-                    orderModel.setPhone(order.getPhone());
-                    orderModel.setCreatedDate(order.getCreatedDate());
-                    orderModel.setPackageDate(order.getPackageDate());
-                    orderModel.setDeliveryDate(order.getDeliveryDate());
-                    orderModel.setReceivedDate(order.getReceivedDate());
-                    orderModel.setApproveDate(order.getApproveDate());
-                    orderModel.setRejectDate(order.getRejectDate());
-                    orderModel.setPaymentMethod(order.getPaymentMethod());
-                    orderModel.setProgressStatus(order.getProgressStatus());
-                    orderModel.setReason(order.getReason());
-                    orderModel.setLatLong(order.getLatLong());
-                    orderModel.setDistance(order.getDistance());
-                    orderModel.setTotalShipCost(order.getTotalShipCost());
-                    orderModel.setTotal(order.getTotal());
-                    orderModel.setIsPaid(order.getIsPaid());
-                    orderModel.setIsRefund(order.getIsRefund());
-                    orderModel.setReceiptIMG(order.getReceiptIMG());
+                    if(order != null){
+                        orderModel.setId(order.getId());
+                        orderModel.setFullName(order.getFullName());
+                        orderModel.setAddress(order.getAddress());
+                        orderModel.setEmail(order.getEmail());
+                        orderModel.setPhone(order.getPhone());
+                        orderModel.setCreatedDate(order.getCreatedDate());
+                        orderModel.setPackageDate(order.getPackageDate());
+                        orderModel.setDeliveryDate(order.getDeliveryDate());
+                        orderModel.setReceivedDate(order.getReceivedDate());
+                        orderModel.setApproveDate(order.getApproveDate());
+                        orderModel.setRejectDate(order.getRejectDate());
+                        orderModel.setPaymentMethod(order.getPaymentMethod());
+                        orderModel.setProgressStatus(order.getProgressStatus());
+                        orderModel.setReason(order.getReason());
+                        orderModel.setLatLong(order.getLatLong());
+                        orderModel.setDistance(order.getDistance());
+                        orderModel.setTotalShipCost(order.getTotalShipCost());
+                        orderModel.setTotal(order.getTotal());
+                        orderModel.setIsPaid(order.getIsPaid());
+                        orderModel.setIsRefund(order.getIsRefund());
+                        orderModel.setReceiptIMG(order.getReceiptIMG());
+                    }
 
                     //contract
                     Contract contract = transaction.getContract();
                     ShowContractModel contractModel = new ShowContractModel();
-                    contractModel.setId(contract.getId());
-                    contractModel.setFullName(contract.getFullName());
-                    contractModel.setAddress(contract.getAddress());
-                    contractModel.setEmail(contract.getEmail());
-                    contractModel.setPhone(contract.getPhone());
-                    contractModel.setTitle(contract.getTitle());
-                    contractModel.setPaymentMethod(contract.getPaymentMethod());
-                    contractModel.setReason(contract.getReason());
-                    contractModel.setCreatedDate(contract.getCreatedDate());
-                    contractModel.setApprovedDate(contract.getApprovedDate());
-                    contractModel.setRejectedDate(contract.getRejectedDate());
-                    contractModel.setStartedDate(contract.getStartedDate());
-                    contractModel.setEndedDate(contract.getEndedDate());
-                    contractModel.setTotal(contract.getTotal());
-                    contractModel.setIsFeedback(contract.getIsFeedback());
-                    contractModel.setIsSigned(contract.getIsSigned());
-                    contractModel.setIsPaid(contract.getIsPaid());
+                    if(contract != null){
+                        contractModel.setId(contract.getId());
+                        contractModel.setFullName(contract.getFullName());
+                        contractModel.setAddress(contract.getAddress());
+                        contractModel.setEmail(contract.getEmail());
+                        contractModel.setPhone(contract.getPhone());
+                        contractModel.setTitle(contract.getTitle());
+                        contractModel.setPaymentMethod(contract.getPaymentMethod());
+                        contractModel.setReason(contract.getReason());
+                        contractModel.setCreatedDate(contract.getCreatedDate());
+                        contractModel.setApprovedDate(contract.getApprovedDate());
+                        contractModel.setRejectedDate(contract.getRejectedDate());
+                        contractModel.setStartedDate(contract.getStartedDate());
+                        contractModel.setEndedDate(contract.getEndedDate());
+                        contractModel.setTotal(contract.getTotal());
+                        contractModel.setIsFeedback(contract.getIsFeedback());
+                        contractModel.setIsSigned(contract.getIsSigned());
+                        contractModel.setIsPaid(contract.getIsPaid());
+                    }
+
 
                     // user
                     tblAccount user = transaction.getUser();
