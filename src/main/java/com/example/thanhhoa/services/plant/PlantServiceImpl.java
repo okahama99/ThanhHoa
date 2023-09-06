@@ -13,6 +13,7 @@ import com.example.thanhhoa.entities.PlantCategory;
 import com.example.thanhhoa.entities.PlantIMG;
 import com.example.thanhhoa.entities.PlantPrice;
 import com.example.thanhhoa.entities.PlantShipPrice;
+import com.example.thanhhoa.entities.StorePlant;
 import com.example.thanhhoa.enums.Status;
 import com.example.thanhhoa.repositories.CategoryRepository;
 import com.example.thanhhoa.repositories.OrderDetailRepository;
@@ -333,9 +334,11 @@ public class PlantServiceImpl implements PlantService {
         Optional<Plant> checkingPlant = plantRepository.findById(plantID);
         if(checkingPlant != null) {
             Plant plant = checkingPlant.get();
-
-            if(orderDetailRepository.findByPlant_IdAndTblOrder_ProgressStatus(plantID, Status.WAITING) != null && !orderDetailRepository.findByPlant_IdAndTblOrder_ProgressStatus(plantID, Status.WAITING).isEmpty()) {
-                return "Không thể xóa cây đang được sử dụng.";
+            StorePlant storePlant = storePlantRepository.findByPlant_IdAndPlant_Status(plantID, Status.ONSALE);
+            if(storePlant != null){
+                if(orderDetailRepository.findByStorePlant_IdAndTblOrder_ProgressStatus(storePlant.getId(), Status.WAITING) != null && !orderDetailRepository.findByStorePlant_IdAndTblOrder_ProgressStatus(plantID, Status.WAITING).isEmpty()) {
+                    return "Không thể xóa cây đang được sử dụng.";
+                }
             }
 
             plant.setStatus(Status.INACTIVE);

@@ -38,8 +38,8 @@ public class StatisticController {
             throw new ResponseStatusException(HttpStatus.FORBIDDEN, "-----------------------------------Người dùng không có quyền truy cập---------------------------");
         }
 
-        LocalDateTime fromDate = util.isDateValid(from);
-        LocalDateTime toDate = util.isDateValid(to);
+        LocalDateTime fromDate = util.isLocalDateTimeValid(from);
+        LocalDateTime toDate = util.isLocalDateTimeValid(to);
         if(fromDate == null) {
             return ResponseEntity.badRequest().body("Nhập theo khuôn được định sẵn yyyy-MM-dd, ví dụ : 2021-12-21");
         }
@@ -61,8 +61,8 @@ public class StatisticController {
             throw new ResponseStatusException(HttpStatus.FORBIDDEN, "-----------------------------------Người dùng không có quyền truy cập---------------------------");
         }
 
-        LocalDateTime fromDate = util.isDateValid(from);
-        LocalDateTime toDate = util.isDateValid(to);
+        LocalDateTime fromDate = util.isLocalDateTimeValid(from);
+        LocalDateTime toDate = util.isLocalDateTimeValid(to);
         if(fromDate == null) {
             return ResponseEntity.badRequest().body("Nhập theo khuôn được định sẵn yyyy-MM-dd, ví dụ : 2021-12-21");
         }

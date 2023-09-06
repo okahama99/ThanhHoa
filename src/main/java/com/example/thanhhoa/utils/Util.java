@@ -78,6 +78,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
@@ -590,16 +591,16 @@ public class Util {
                     List<com.example.thanhhoa.dtos.OrderModels.ShowPlantModel> listPlantModel = new ArrayList<>();
                     for(OrderDetail detail : order.getOrderDetailList()) {
                         com.example.thanhhoa.dtos.OrderModels.ShowPlantModel plant = new com.example.thanhhoa.dtos.OrderModels.ShowPlantModel();
-                        PlantPrice newestPrice = plantPriceRepository.findFirstByPlant_IdAndStatusOrderByApplyDateDesc(detail.getPlant().getId(), Status.ACTIVE);
-                        plant.setId(detail.getPlant().getId());
-                        if(detail.getPlant().getPlantIMGList() != null && !detail.getPlant().getPlantIMGList().isEmpty()) {
-                            plant.setImage(detail.getPlant().getPlantIMGList().get(0).getImgURL());
+                        PlantPrice newestPrice = plantPriceRepository.findFirstByPlant_IdAndStatusOrderByApplyDateDesc(detail.getStorePlant().getPlant().getId(), Status.ACTIVE);
+                        plant.setId(detail.getStorePlant().getPlant().getId());
+                        if(detail.getStorePlant().getPlant().getPlantIMGList() != null && !detail.getStorePlant().getPlant().getPlantIMGList().isEmpty()) {
+                            plant.setImage(detail.getStorePlant().getPlant().getPlantIMGList().get(0).getImgURL());
                         }
                         plant.setQuantity(detail.getQuantity());
-                        plant.setPlantName(detail.getPlant().getName());
+                        plant.setPlantName(detail.getStorePlant().getPlant().getName());
                         plant.setPlantPriceID(newestPrice.getId());
                         plant.setPlantPrice(newestPrice.getPrice());
-                        plant.setShipPrice(detail.getPlant().getPlantShipPrice().getPricePerPlant());
+                        plant.setShipPrice(detail.getStorePlant().getPlant().getPlantShipPrice().getPricePerPlant());
                         listPlantModel.add(plant);
                     }
 
@@ -932,16 +933,16 @@ public class Util {
                     List<com.example.thanhhoa.dtos.OrderModels.ShowPlantModel> listPlantModel = new ArrayList<>();
                     for(OrderDetail detail : order.getOrderDetailList()) {
                         com.example.thanhhoa.dtos.OrderModels.ShowPlantModel plantModel = new com.example.thanhhoa.dtos.OrderModels.ShowPlantModel();
-                        PlantPrice newestPrice = plantPriceRepository.findFirstByPlant_IdAndStatusOrderByApplyDateDesc(detail.getPlant().getId(), Status.ACTIVE);
-                        plantModel.setId(detail.getPlant().getId());
-                        if(detail.getPlant().getPlantIMGList() != null && !detail.getPlant().getPlantIMGList().isEmpty()) {
-                            plantModel.setImage(detail.getPlant().getPlantIMGList().get(0).getImgURL());
+                        PlantPrice newestPrice = plantPriceRepository.findFirstByPlant_IdAndStatusOrderByApplyDateDesc(detail.getStorePlant().getPlant().getId(), Status.ACTIVE);
+                        plantModel.setId(detail.getStorePlant().getPlant().getId());
+                        if(detail.getStorePlant().getPlant().getPlantIMGList() != null && !detail.getStorePlant().getPlant().getPlantIMGList().isEmpty()) {
+                            plantModel.setImage(detail.getStorePlant().getPlant().getPlantIMGList().get(0).getImgURL());
                         }
                         plantModel.setQuantity(detail.getQuantity());
-                        plantModel.setPlantName(detail.getPlant().getName());
+                        plantModel.setPlantName(detail.getStorePlant().getPlant().getName());
                         plantModel.setPlantPriceID(newestPrice.getId());
                         plantModel.setPlantPrice(newestPrice.getPrice());
-                        plantModel.setShipPrice(detail.getPlant().getPlantShipPrice().getPricePerPlant());
+                        plantModel.setShipPrice(detail.getStorePlant().getPlant().getPlantShipPrice().getPricePerPlant());
                         listPlantModel.add(plantModel);
                     }
 
@@ -1191,11 +1192,21 @@ public class Util {
         return newID;
     }
 
-    public LocalDateTime isDateValid(String date) {
+    public LocalDateTime isLocalDateTimeValid(String date) {
         date += " 00:00:00";
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
         try {
             return LocalDateTime.parse(date, formatter);
+        } catch(DateTimeParseException e) {
+            e.printStackTrace();
+            return null;
+        }
+    }
+
+    public LocalDate isLocalDateValid(String date) {
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+        try {
+            return LocalDate.parse(date, formatter);
         } catch(DateTimeParseException e) {
             e.printStackTrace();
             return null;
@@ -1264,16 +1275,16 @@ public class Util {
 
         //plant
         com.example.thanhhoa.dtos.OrderModels.ShowPlantModel plantModel = new com.example.thanhhoa.dtos.OrderModels.ShowPlantModel();
-        PlantPrice newestPrice = plantPriceRepository.findFirstByPlant_IdAndStatusOrderByApplyDateDesc(orderDetail.getPlant().getId(), Status.ACTIVE);
-        plantModel.setId(orderDetail.getPlant().getId());
-        if(orderDetail.getPlant().getPlantIMGList() != null && !orderDetail.getPlant().getPlantIMGList().isEmpty()) {
-            plantModel.setImage(orderDetail.getPlant().getPlantIMGList().get(0).getImgURL());
+        PlantPrice newestPrice = plantPriceRepository.findFirstByPlant_IdAndStatusOrderByApplyDateDesc(orderDetail.getStorePlant().getPlant().getId(), Status.ACTIVE);
+        plantModel.setId(orderDetail.getStorePlant().getPlant().getId());
+        if(orderDetail.getStorePlant().getPlant().getPlantIMGList() != null && !orderDetail.getStorePlant().getPlant().getPlantIMGList().isEmpty()) {
+            plantModel.setImage(orderDetail.getStorePlant().getPlant().getPlantIMGList().get(0).getImgURL());
         }
         plantModel.setQuantity(orderDetail.getQuantity());
-        plantModel.setPlantName(orderDetail.getPlant().getName());
+        plantModel.setPlantName(orderDetail.getStorePlant().getPlant().getName());
         plantModel.setPlantPriceID(newestPrice.getId());
         plantModel.setPlantPrice(newestPrice.getPrice());
-        plantModel.setShipPrice(orderDetail.getPlant().getPlantShipPrice().getPricePerPlant());
+        plantModel.setShipPrice(orderDetail.getStorePlant().getPlant().getPlantShipPrice().getPricePerPlant());
 
         //store
         ShowStoreModel storeModel = new ShowStoreModel();
@@ -1395,16 +1406,16 @@ public class Util {
 
                     //plant
                     com.example.thanhhoa.dtos.OrderModels.ShowPlantModel plantModel = new com.example.thanhhoa.dtos.OrderModels.ShowPlantModel();
-                    PlantPrice newestPrice = plantPriceRepository.findFirstByPlant_IdAndStatusOrderByApplyDateDesc(orderDetail.getPlant().getId(), Status.ACTIVE);
-                    plantModel.setId(orderDetail.getPlant().getId());
-                    if(orderDetail.getPlant().getPlantIMGList() != null && !orderDetail.getPlant().getPlantIMGList().isEmpty()) {
-                        plantModel.setImage(orderDetail.getPlant().getPlantIMGList().get(0).getImgURL());
+                    PlantPrice newestPrice = plantPriceRepository.findFirstByPlant_IdAndStatusOrderByApplyDateDesc(orderDetail.getStorePlant().getPlant().getId(), Status.ACTIVE);
+                    plantModel.setId(orderDetail.getStorePlant().getPlant().getId());
+                    if(orderDetail.getStorePlant().getPlant().getPlantIMGList() != null && !orderDetail.getStorePlant().getPlant().getPlantIMGList().isEmpty()) {
+                        plantModel.setImage(orderDetail.getStorePlant().getPlant().getPlantIMGList().get(0).getImgURL());
                     }
                     plantModel.setQuantity(orderDetail.getQuantity());
-                    plantModel.setPlantName(orderDetail.getPlant().getName());
+                    plantModel.setPlantName(orderDetail.getStorePlant().getPlant().getName());
                     plantModel.setPlantPriceID(newestPrice.getId());
                     plantModel.setPlantPrice(newestPrice.getPrice());
-                    plantModel.setShipPrice(orderDetail.getPlant().getPlantShipPrice().getPricePerPlant());
+                    plantModel.setShipPrice(orderDetail.getStorePlant().getPlant().getPlantShipPrice().getPricePerPlant());
 
                     //store
                     ShowStoreModel storeModel = new ShowStoreModel();

@@ -6,6 +6,7 @@ import com.example.thanhhoa.enums.SearchType;
 import com.example.thanhhoa.services.workingDate.WorkingDateService;
 import com.example.thanhhoa.utils.JwtUtil;
 import com.example.thanhhoa.utils.Util;
+import com.google.firebase.messaging.FirebaseMessagingException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
@@ -19,6 +20,7 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.server.ResponseStatusException;
 
 import javax.servlet.http.HttpServletRequest;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
 
@@ -87,12 +89,25 @@ public class WorkingDateController {
         if(!roleName.equalsIgnoreCase("Staff") && !roleName.equalsIgnoreCase("Manager") && !roleName.equalsIgnoreCase("Owner")) {
             throw new ResponseStatusException(HttpStatus.FORBIDDEN, "-----------------------------------Người dùng không có quyền truy cập---------------------------");
         }
-        LocalDateTime workingDate = util.isDateValid(date);
+        LocalDateTime workingDate = util.isLocalDateTimeValid(date);
         if(workingDate == null) {
             return ResponseEntity.badRequest().body("Nhập theo khuôn được định sẵn yyyy-MM-dd, ví dụ : 2021-12-21");
         }
         return ResponseEntity.ok().body(workingDateService.getByWorkingDate(contractDetailID, workingDate));
     }
 
-
+    @GetMapping(value = "/test", produces = "application/json;charset=UTF-8")
+    public ResponseEntity<Object> test(@RequestParam String timeWorking,
+                                    @RequestParam String from,
+                                    @RequestParam String to){
+        LocalDate fromDate = util.isLocalDateValid(from);
+        if(fromDate == null) {
+            return ResponseEntity.badRequest().body("Nhập theo khuôn được định sẵn yyyy-MM-dd, ví dụ : 2021-12-21");
+        }
+        LocalDate toDate = util.isLocalDateValid(to);
+        if(toDate == null) {
+            return ResponseEntity.badRequest().body("Nhập theo khuôn được định sẵn yyyy-MM-dd, ví dụ : 2021-12-21");
+        }
+        return ResponseEntity.ok().body(workingDateService.generateWorkingSchedule(timeWorking, fromDate, toDate));
+    }
 }

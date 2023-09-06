@@ -13,5 +13,5 @@ public interface OrderDetailRepository extends JpaRepository<OrderDetail, String
 
     OrderDetail findFirstByOrderByIdDesc();
 
-    List<OrderDetail> findByPlant_IdAndTblOrder_ProgressStatus(String plantID, Status status);
+    List<OrderDetail> findByStorePlant_IdAndTblOrder_ProgressStatus(String storePlantID, Status status);
 }

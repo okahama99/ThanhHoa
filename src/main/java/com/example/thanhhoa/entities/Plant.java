@@ -53,9 +53,6 @@ public class Plant implements Serializable {
     private List<Cart> cartList;
 
     @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY, mappedBy = "plant")
-    private List<OrderDetail> orderDetailList;
-
-    @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY, mappedBy = "plant")
     private List<OrderFeedback> orderFeedbackList;
 
     @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY, mappedBy = "plant")

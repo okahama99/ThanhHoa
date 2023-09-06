@@ -26,8 +26,11 @@ public class ContractDetail implements Serializable {
     @Column(nullable = false)
     private LocalDateTime startDate;
 
-    @Column(nullable = false)
+    @Column
     private LocalDateTime endDate;
+
+    @Column
+    private LocalDateTime expectedEndDate;
 
     @Column(nullable = false)
     private Double totalPrice;

@@ -172,11 +172,11 @@ public class ContractController {
             throw new ResponseStatusException(HttpStatus.FORBIDDEN, "-----------------------------------Người dùng không có quyền truy cập---------------------------");
         }
 
-        LocalDateTime fromDate = util.isDateValid(from);
+        LocalDateTime fromDate = util.isLocalDateTimeValid(from);
         if(fromDate == null) {
             return ResponseEntity.badRequest().body("Nhập theo khuôn được định sẵn yyyy-MM-dd, ví dụ : 2021-12-21");
         }
-        LocalDateTime toDate = util.isDateValid(to);
+        LocalDateTime toDate = util.isLocalDateTimeValid(to);
         if(toDate == null) {
             return ResponseEntity.badRequest().body("Nhập theo khuôn được định sẵn yyyy-MM-dd, ví dụ : 2021-12-21");
         }
@@ -194,11 +194,11 @@ public class ContractController {
             throw new ResponseStatusException(HttpStatus.FORBIDDEN, "-----------------------------------Người dùng không có quyền truy cập---------------------------");
         }
 
-        LocalDateTime fromDate = util.isDateValid(from);
+        LocalDateTime fromDate = util.isLocalDateTimeValid(from);
         if(fromDate == null) {
             return ResponseEntity.badRequest().body("Nhập theo khuôn được định sẵn yyyy-MM-dd, ví dụ : 2021-12-21");
         }
-        LocalDateTime toDate = util.isDateValid(to);
+        LocalDateTime toDate = util.isLocalDateTimeValid(to);
         if(toDate == null) {
             return ResponseEntity.badRequest().body("Nhập theo khuôn được định sẵn yyyy-MM-dd, ví dụ : 2021-12-21");
         }

@@ -280,16 +280,16 @@ public class FeedbackServiceImpl implements FeedbackService {
         List<com.example.thanhhoa.dtos.OrderModels.ShowPlantModel> listPlantModel = new ArrayList<>();
         for(OrderDetail detail : order.getOrderDetailList()) {
             com.example.thanhhoa.dtos.OrderModels.ShowPlantModel plant = new com.example.thanhhoa.dtos.OrderModels.ShowPlantModel();
-            PlantPrice newestPrice = plantPriceRepository.findFirstByPlant_IdAndStatusOrderByApplyDateDesc(detail.getPlant().getId(), Status.ACTIVE);
-            plant.setId(detail.getPlant().getId());
-            if(detail.getPlant().getPlantIMGList() != null && !detail.getPlant().getPlantIMGList().isEmpty()) {
-                plant.setImage(detail.getPlant().getPlantIMGList().get(0).getImgURL());
+            PlantPrice newestPrice = plantPriceRepository.findFirstByPlant_IdAndStatusOrderByApplyDateDesc(detail.getStorePlant().getPlant().getId(), Status.ACTIVE);
+            plant.setId(detail.getStorePlant().getPlant().getId());
+            if(detail.getStorePlant().getPlant().getPlantIMGList() != null && !detail.getStorePlant().getPlant().getPlantIMGList().isEmpty()) {
+                plant.setImage(detail.getStorePlant().getPlant().getPlantIMGList().get(0).getImgURL());
             }
             plant.setQuantity(detail.getQuantity());
-            plant.setPlantName(detail.getPlant().getName());
+            plant.setPlantName(detail.getStorePlant().getPlant().getName());
             plant.setPlantPriceID(newestPrice.getId());
             plant.setPlantPrice(newestPrice.getPrice());
-            plant.setShipPrice(detail.getPlant().getPlantShipPrice().getPricePerPlant());
+            plant.setShipPrice(detail.getStorePlant().getPlant().getPlantShipPrice().getPricePerPlant());
             listPlantModel.add(plant);
         }
 
@@ -414,16 +414,16 @@ public class FeedbackServiceImpl implements FeedbackService {
         List<com.example.thanhhoa.dtos.OrderModels.ShowPlantModel> listPlantModel = new ArrayList<>();
         for(OrderDetail detail : order.getOrderDetailList()) {
             com.example.thanhhoa.dtos.OrderModels.ShowPlantModel plant = new com.example.thanhhoa.dtos.OrderModels.ShowPlantModel();
-            PlantPrice newestPrice = plantPriceRepository.findFirstByPlant_IdAndStatusOrderByApplyDateDesc(detail.getPlant().getId(), Status.ACTIVE);
-            plant.setId(detail.getPlant().getId());
-            if(detail.getPlant().getPlantIMGList() != null && !detail.getPlant().getPlantIMGList().isEmpty()) {
-                plant.setImage(detail.getPlant().getPlantIMGList().get(0).getImgURL());
+            PlantPrice newestPrice = plantPriceRepository.findFirstByPlant_IdAndStatusOrderByApplyDateDesc(detail.getStorePlant().getPlant().getId(), Status.ACTIVE);
+            plant.setId(detail.getStorePlant().getPlant().getId());
+            if(detail.getStorePlant().getPlant().getPlantIMGList() != null && !detail.getStorePlant().getPlant().getPlantIMGList().isEmpty()) {
+                plant.setImage(detail.getStorePlant().getPlant().getPlantIMGList().get(0).getImgURL());
             }
             plant.setQuantity(detail.getQuantity());
-            plant.setPlantName(detail.getPlant().getName());
+            plant.setPlantName(detail.getStorePlant().getPlant().getName());
             plant.setPlantPriceID(newestPrice.getId());
             plant.setPlantPrice(newestPrice.getPrice());
-            plant.setShipPrice(detail.getPlant().getPlantShipPrice().getPricePerPlant());
+            plant.setShipPrice(detail.getStorePlant().getPlant().getPlantShipPrice().getPricePerPlant());
             listPlantModel.add(plant);
         }
 
@@ -570,16 +570,16 @@ public class FeedbackServiceImpl implements FeedbackService {
         List<com.example.thanhhoa.dtos.OrderModels.ShowPlantModel> listPlantModel = new ArrayList<>();
         for(OrderDetail detail : order.getOrderDetailList()) {
             com.example.thanhhoa.dtos.OrderModels.ShowPlantModel plant = new com.example.thanhhoa.dtos.OrderModels.ShowPlantModel();
-            PlantPrice newestPrice = plantPriceRepository.findFirstByPlant_IdAndStatusOrderByApplyDateDesc(detail.getPlant().getId(), Status.ACTIVE);
-            plant.setId(detail.getPlant().getId());
-            if(detail.getPlant().getPlantIMGList() != null && !detail.getPlant().getPlantIMGList().isEmpty()) {
-                plant.setImage(detail.getPlant().getPlantIMGList().get(0).getImgURL());
+            PlantPrice newestPrice = plantPriceRepository.findFirstByPlant_IdAndStatusOrderByApplyDateDesc(detail.getStorePlant().getPlant().getId(), Status.ACTIVE);
+            plant.setId(detail.getStorePlant().getPlant().getId());
+            if(detail.getStorePlant().getPlant().getPlantIMGList() != null && !detail.getStorePlant().getPlant().getPlantIMGList().isEmpty()) {
+                plant.setImage(detail.getStorePlant().getPlant().getPlantIMGList().get(0).getImgURL());
             }
             plant.setQuantity(detail.getQuantity());
-            plant.setPlantName(detail.getPlant().getName());
+            plant.setPlantName(detail.getStorePlant().getPlant().getName());
             plant.setPlantPriceID(newestPrice.getId());
             plant.setPlantPrice(newestPrice.getPrice());
-            plant.setShipPrice(detail.getPlant().getPlantShipPrice().getPricePerPlant());
+            plant.setShipPrice(detail.getStorePlant().getPlant().getPlantShipPrice().getPricePerPlant());
             listPlantModel.add(plant);
         }
 

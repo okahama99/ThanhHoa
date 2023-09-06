@@ -28,6 +28,6 @@ public class OrderDetail implements Serializable {
     private tblOrder tblOrder;
 
     @ManyToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-    @JoinColumn(name = "plant_id")
-    private Plant plant;
+    @JoinColumn(name = "store_plant_id")
+    private StorePlant storePlant;
 }

@@ -139,7 +139,8 @@ public class OrderServiceImpl implements OrderService {
         Double total = 0.0;
         if(distancePrice.getPricePerKm() == 0.0) {
             for(OrderDetailModel model : createOrderModel.getDetailList()) {
-                Plant plant = plantRepository.getById(model.getPlantID());
+                StorePlant storePlant = storePlantRepository.getById(model.getStorePlantID());
+                Plant plant = plantRepository.getById(storePlant.getPlant().getId());
                 PlantPrice newestPrice = plantPriceRepository.findFirstByPlant_IdAndStatusOrderByApplyDateDesc(plant.getId(), Status.ACTIVE);
                 totalPriceOfAPlant += newestPrice.getPrice() * model.getQuantity();
 
@@ -153,10 +154,10 @@ public class OrderServiceImpl implements OrderService {
                 detail.setPrice(newestPrice.getPrice());
                 detail.setQuantity(model.getQuantity());
                 detail.setTblOrder(order);
-                detail.setPlant(plant);
+                detail.setStorePlant(storePlant);
 
 
-                Cart cart = cartRepository.findByPlant_IdAndAccount_Id(model.getPlantID(), customerID);
+                Cart cart = cartRepository.findByPlant_IdAndAccount_Id(plant.getId(), customerID);
                 cart.setQuantity(0);
 
                 orderDetailRepository.save(detail);
@@ -169,7 +170,8 @@ public class OrderServiceImpl implements OrderService {
             order.setReceivedDate(LocalDateTime.now(ZoneId.of("Asia/Ho_Chi_Minh")));
         } else {
             for(OrderDetailModel model : createOrderModel.getDetailList()) {
-                Plant plant = plantRepository.getById(model.getPlantID());
+                StorePlant storePlant = storePlantRepository.getById(model.getStorePlantID());
+                Plant plant = plantRepository.getById(storePlant.getPlant().getId());
                 PlantPrice newestPrice = plantPriceRepository.findFirstByPlant_IdAndStatusOrderByApplyDateDesc(plant.getId(), Status.ACTIVE);
                 totalPriceOfAPlant += newestPrice.getPrice() * model.getQuantity();
                 totalShipCost += plant.getPlantShipPrice().getPricePerPlant() * model.getQuantity();
@@ -184,10 +186,10 @@ public class OrderServiceImpl implements OrderService {
                 detail.setPrice(newestPrice.getPrice());
                 detail.setQuantity(model.getQuantity());
                 detail.setTblOrder(order);
-                detail.setPlant(plant);
+                detail.setStorePlant(storePlant);
 
 
-                Cart cart = cartRepository.findByPlant_IdAndAccount_Id(model.getPlantID(), customerID);
+                Cart cart = cartRepository.findByPlant_IdAndAccount_Id(plant.getId(), customerID);
                 cart.setQuantity(0);
 
                 orderDetailRepository.save(detail);
@@ -289,7 +291,8 @@ public class OrderServiceImpl implements OrderService {
         Double total = 0.0;
         OrderDetail lastDetailRecord = orderDetailRepository.findFirstByOrderByIdDesc();
         for(OrderDetailModel model : updateOrderModel.getDetailList()) {
-            Plant plant = plantRepository.getById(model.getPlantID());
+            StorePlant storePlant = storePlantRepository.getById(model.getStorePlantID());
+            Plant plant = plantRepository.getById(storePlant.getPlant().getId());
             PlantPrice newestPrice = plantPriceRepository.findFirstByPlant_IdAndStatusOrderByApplyDateDesc(plant.getId(), Status.ACTIVE);
             totalPriceOfAPlant += newestPrice.getPrice() * model.getQuantity();
             totalShipCost += plant.getPlantShipPrice().getPricePerPlant() * model.getQuantity();
@@ -303,7 +306,7 @@ public class OrderServiceImpl implements OrderService {
             detail.setPrice(newestPrice.getPrice());
             detail.setQuantity(model.getQuantity());
             detail.setTblOrder(order);
-            detail.setPlant(plant);
+            detail.setStorePlant(storePlant);
             orderDetailRepository.save(detail);
         }
         Double totalDistancePrice = distancePrice.getPricePerKm() * updateOrderModel.getDistance();
@@ -354,7 +357,7 @@ public class OrderServiceImpl implements OrderService {
             List<OrderDetail> orderDetailList = order.getOrderDetailList();
             for(OrderDetail orderDetail : orderDetailList) {
                 StorePlant storePlant = storePlantRepository.
-                        findByPlantIdAndStoreIdAndPlant_Status(orderDetail.getPlant().getId(), order.getStore().getId(), Status.ONSALE);
+                        findByPlantIdAndStoreIdAndPlant_Status(orderDetail.getStorePlant().getPlant().getId(), order.getStore().getId(), Status.ONSALE);
                 storePlant.setQuantity(storePlant.getQuantity() - orderDetail.getQuantity());
 
                 StorePlantRecord storePlantRecord = new StorePlantRecord();
@@ -528,16 +531,16 @@ public class OrderServiceImpl implements OrderService {
         List<com.example.thanhhoa.dtos.OrderModels.ShowPlantModel> listPlantModel = new ArrayList<>();
         for(OrderDetail detail : order.getOrderDetailList()) {
             com.example.thanhhoa.dtos.OrderModels.ShowPlantModel plantModel = new com.example.thanhhoa.dtos.OrderModels.ShowPlantModel();
-            PlantPrice newestPrice = plantPriceRepository.findFirstByPlant_IdAndStatusOrderByApplyDateDesc(detail.getPlant().getId(), Status.ACTIVE);
-            plantModel.setId(detail.getPlant().getId());
-            if(detail.getPlant().getPlantIMGList() != null && !detail.getPlant().getPlantIMGList().isEmpty()) {
-                plantModel.setImage(detail.getPlant().getPlantIMGList().get(0).getImgURL());
+            PlantPrice newestPrice = plantPriceRepository.findFirstByPlant_IdAndStatusOrderByApplyDateDesc(detail.getStorePlant().getPlant().getId(), Status.ACTIVE);
+            plantModel.setId(detail.getStorePlant().getPlant().getId());
+            if(detail.getStorePlant().getPlant().getPlantIMGList() != null && !detail.getStorePlant().getPlant().getPlantIMGList().isEmpty()) {
+                plantModel.setImage(detail.getStorePlant().getPlant().getPlantIMGList().get(0).getImgURL());
             }
             plantModel.setQuantity(detail.getQuantity());
-            plantModel.setPlantName(detail.getPlant().getName());
+            plantModel.setPlantName(detail.getStorePlant().getPlant().getName());
             plantModel.setPlantPriceID(newestPrice.getId());
             plantModel.setPlantPrice(newestPrice.getPrice());
-            plantModel.setShipPrice(detail.getPlant().getPlantShipPrice().getPricePerPlant());
+            plantModel.setShipPrice(detail.getStorePlant().getPlant().getPlantShipPrice().getPricePerPlant());
             listPlantModel.add(plantModel);
         }
 

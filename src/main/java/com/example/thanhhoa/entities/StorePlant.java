@@ -28,4 +28,7 @@ public class StorePlant implements Serializable {
 
     @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY, mappedBy = "storePlant")
     private List<StorePlantRecord> recordList;
+
+    @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY, mappedBy = "storePlant")
+    private List<OrderDetail> orderDetailList;
 }

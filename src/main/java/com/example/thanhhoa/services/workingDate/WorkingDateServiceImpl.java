@@ -12,6 +12,8 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
+import java.time.DayOfWeek;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.util.ArrayList;
@@ -39,7 +41,7 @@ public class WorkingDateServiceImpl implements WorkingDateService {
             return "Không tìm thấy Chi tiết hợp đồng với ID là " + contractDetailID + ".";
         }
         WorkingDate check = workingDateRepository.findFirstByContractDetail_IdOrderByWorkingDateDesc(contractDetailID);
-        if(check != null){
+        if(check != null) {
             if((LocalDateTime.now(ZoneId.of("Asia/Ho_Chi_Minh")).getDayOfMonth() == check.getWorkingDate().getDayOfMonth()) &&
                     (LocalDateTime.now(ZoneId.of("Asia/Ho_Chi_Minh")).getMonth() == check.getWorkingDate().getMonth()) &&
                     (LocalDateTime.now(ZoneId.of("Asia/Ho_Chi_Minh")).getYear() == check.getWorkingDate().getYear())) {
@@ -111,7 +113,7 @@ public class WorkingDateServiceImpl implements WorkingDateService {
                 model.setPackPercentage(detail.getServicePack().getPercentage());
                 model.setPackApplyDate(detail.getServicePack().getApplyDate());
                 modelList.add(model);
-                Collections.sort(modelList, Comparator.comparing(ShowWorkingDateModel ::getWorkingDate).reversed());
+                Collections.sort(modelList, Comparator.comparing(ShowWorkingDateModel::getWorkingDate).reversed());
             }
         }
         return modelList;
@@ -120,7 +122,7 @@ public class WorkingDateServiceImpl implements WorkingDateService {
     @Override
     public ShowWorkingDateModel getByWorkingDate(String contractDetailID, LocalDateTime date) {
         Optional<ContractDetail> checkExisted = contractDetailRepository.findById(contractDetailID);
-        if(checkExisted == null){
+        if(checkExisted == null) {
             return null;
         }
         ContractDetail detail = checkExisted.get();
@@ -154,5 +156,69 @@ public class WorkingDateServiceImpl implements WorkingDateService {
         model.setPackPercentage(detail.getServicePack().getPercentage());
         model.setPackApplyDate(detail.getServicePack().getApplyDate());
         return model;
+    }
+
+    @Override
+    public List<LocalDateTime> generateWorkingSchedule(String timeWorking, LocalDate from, LocalDate to) {
+        List<LocalDateTime> dateTimeList = new ArrayList<>();
+        String[] timeWorkingArr;
+        timeWorkingArr = timeWorking.split("-");
+        for(String dayInWeek : timeWorkingArr) {
+            LocalDate fromDate = from;
+            while(fromDate.isBefore(to)) {
+                DayOfWeek dow = fromDate.getDayOfWeek();
+                switch(dayInWeek.trim()) {
+                    case "Thứ 2":
+                        if(dow.name().equalsIgnoreCase("MONDAY")){
+                            dateTimeList.add(fromDate.atTime(00, 00, 00));
+                        }
+                        break;
+
+                    case "Thứ 3":
+                        if(dow.name().equalsIgnoreCase("TUESDAY")){
+                            dateTimeList.add(fromDate.atTime(00, 00, 00));
+                        }
+                        break;
+
+                    case "Thứ 4":
+                        if(dow.name().equalsIgnoreCase("WEDNESDAY")){
+                            dateTimeList.add(fromDate.atTime(00, 00, 00));
+                        }
+                        break;
+
+                    case "Thứ 5":
+                        if(dow.name().equalsIgnoreCase("THURSDAY")){
+                            dateTimeList.add(fromDate.atTime(00, 00, 00));
+                        }
+                        break;
+
+                    case "Thứ 6":
+                        if(dow.name().equalsIgnoreCase("FRIDAY")){
+                            dateTimeList.add(fromDate.atTime(00, 00, 00));
+                        }
+                        break;
+
+                    case "Thứ 7":
+                        if(dow.name().equalsIgnoreCase("SATURDAY")){
+                            dateTimeList.add(fromDate.atTime(00, 00, 00));
+                        }
+                        break;
+
+                    case "Chủ nhật":
+                        if(dow.name().equalsIgnoreCase("SUNDAY")){
+                            dateTimeList.add(fromDate.atTime(00, 00, 00));
+                        }
+                        break;
+
+                    default:
+                        // Ignore any other day-of-week.
+                        break;
+                }
+                // Set-up the next loop. Increment by one day at a time.
+                fromDate = fromDate.plusDays(1);
+            }
+        }
+        Collections.sort(dateTimeList);
+        return dateTimeList;
     }
 }
