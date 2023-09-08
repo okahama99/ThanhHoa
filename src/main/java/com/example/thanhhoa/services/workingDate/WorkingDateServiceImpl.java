@@ -3,7 +3,9 @@ package com.example.thanhhoa.services.workingDate;
 import com.example.thanhhoa.dtos.WorkingDateModels.ShowWorkingDateModel;
 import com.example.thanhhoa.entities.ContractDetail;
 import com.example.thanhhoa.entities.WorkingDate;
+import com.example.thanhhoa.enums.Status;
 import com.example.thanhhoa.repositories.ContractDetailRepository;
+import com.example.thanhhoa.repositories.UserRepository;
 import com.example.thanhhoa.repositories.WorkingDateRepository;
 import com.example.thanhhoa.repositories.pagings.WorkingDatePagingRepository;
 import com.example.thanhhoa.utils.Util;
@@ -33,31 +35,43 @@ public class WorkingDateServiceImpl implements WorkingDateService {
     private WorkingDatePagingRepository workingDatePagingRepository;
     @Autowired
     private ContractDetailRepository contractDetailRepository;
+    @Autowired
+    private UserRepository userRepository;
 
     @Override
-    public String addWorkingDate(String contractDetailID) {
-        Optional<ContractDetail> checkExisted = contractDetailRepository.findById(contractDetailID);
+    public String addStartWorkingDate(String workingDateID, String startWorkingIMG, Long staffID) {
+        Optional<WorkingDate> checkExisted = workingDateRepository.findById(workingDateID);
         if(checkExisted == null) {
-            return "Không tìm thấy Chi tiết hợp đồng với ID là " + contractDetailID + ".";
+            return "Không tìm thấy WorkingDate với ID là " + workingDateID + ".";
         }
-        WorkingDate check = workingDateRepository.findFirstByContractDetail_IdOrderByWorkingDateDesc(contractDetailID);
-        if(check != null) {
-            if((LocalDateTime.now(ZoneId.of("Asia/Ho_Chi_Minh")).getDayOfMonth() == check.getWorkingDate().getDayOfMonth()) &&
-                    (LocalDateTime.now(ZoneId.of("Asia/Ho_Chi_Minh")).getMonth() == check.getWorkingDate().getMonth()) &&
-                    (LocalDateTime.now(ZoneId.of("Asia/Ho_Chi_Minh")).getYear() == check.getWorkingDate().getYear())) {
-                return "Mỗi ngày chỉ được điểm danh 1 lần.";
-            }
+        WorkingDate workingDate = checkExisted.get();
+        if(workingDate.getStartWorking() != null) {
+            return "Ngày " + workingDate.getWorkingDate() + " đã có StartWorking Date.";
         }
 
-        WorkingDate workingDate = new WorkingDate();
-        WorkingDate lastWorkingDate = workingDateRepository.findFirstByOrderByIdDesc();
-        if(lastWorkingDate == null) {
-            workingDate.setId(util.createNewID("WD"));
-        } else {
-            workingDate.setId(util.createIDFromLastID("WD", 2, lastWorkingDate.getId()));
+        workingDate.setStaff(userRepository.getById(staffID));
+        workingDate.setStartWorkingIMG(startWorkingIMG);
+        workingDate.setStartWorking(LocalDateTime.now(ZoneId.of("Asia/Ho_Chi_Minh")));
+        workingDate.setStatus(Status.WORKING);
+        workingDateRepository.save(workingDate);
+        return "Thêm thành công.";
+    }
+
+    @Override
+    public String addEndWorkingDate(String workingDateID, String endWorkingIMG, Long staffID) {
+        Optional<WorkingDate> checkExisted = workingDateRepository.findById(workingDateID);
+        if(checkExisted == null) {
+            return "Không tìm thấy WorkingDate với ID là " + workingDateID + ".";
         }
-        workingDate.setWorkingDate(LocalDateTime.now(ZoneId.of("Asia/Ho_Chi_Minh")));
-        workingDate.setContractDetail(checkExisted.get());
+        WorkingDate workingDate = checkExisted.get();
+        if(workingDate.getEndWorking() != null) {
+            return "Ngày " + workingDate.getWorkingDate() + " đã có EndWorking Date.";
+        }
+
+        workingDate.setStaff(userRepository.getById(staffID));
+        workingDate.setEndWorkingIMG(endWorkingIMG);
+        workingDate.setEndWorking(LocalDateTime.now(ZoneId.of("Asia/Ho_Chi_Minh")));
+        workingDate.setStatus(Status.DONE);
         workingDateRepository.save(workingDate);
         return "Thêm thành công.";
     }
@@ -120,105 +134,134 @@ public class WorkingDateServiceImpl implements WorkingDateService {
     }
 
     @Override
-    public ShowWorkingDateModel getByWorkingDate(String contractDetailID, LocalDateTime date) {
+    public List<ShowWorkingDateModel> getByWorkingDate(String contractDetailID, LocalDateTime from, LocalDateTime to) {
         Optional<ContractDetail> checkExisted = contractDetailRepository.findById(contractDetailID);
         if(checkExisted == null) {
             return null;
         }
         ContractDetail detail = checkExisted.get();
-        WorkingDate workingDate = workingDateRepository.findByContractDetail_IdAndWorkingDateBetween(contractDetailID, date, date.plusDays(1L));
-        if(workingDate == null) {
+        List<WorkingDate> workingDateList = workingDateRepository.findByContractDetail_IdAndWorkingDateBetween(contractDetailID, from, to);
+        if(workingDateList == null) {
             return null;
         }
-        ShowWorkingDateModel model = new ShowWorkingDateModel();
-        model.setId(workingDate.getId());
-        model.setWorkingDate(workingDate.getWorkingDate());
-        model.setContractDetailID(detail.getId());
-        model.setNote(detail.getNote());
-        model.setTimeWorking(detail.getTimeWorking());
-        model.setEndDate(detail.getEndDate());
-        model.setStartDate(detail.getStartDate());
-        model.setTotalPrice(detail.getTotalPrice());
-        model.setContractID(detail.getContract().getId());
-        model.setAddress(detail.getContract().getAddress());
-        model.setEmail(detail.getContract().getEmail());
-        model.setPhone(detail.getContract().getPhone());
-        model.setFullName(detail.getContract().getFullName());
-        model.setServiceID(detail.getServiceType().getService().getId());
-        model.setServiceName(detail.getServiceType().getService().getName());
-        model.setServiceTypeID(detail.getServiceType().getId());
-        model.setTypeName(detail.getServiceType().getName());
-        model.setTypeSize(detail.getServiceType().getSize());
-        model.setTypePercentage(detail.getServiceType().getPercentage());
-        model.setTypeApplyDate(detail.getServiceType().getApplyDate());
-        model.setServicePackID(detail.getServicePack().getId());
-        model.setPackRange(detail.getServicePack().getRange());
-        model.setPackPercentage(detail.getServicePack().getPercentage());
-        model.setPackApplyDate(detail.getServicePack().getApplyDate());
-        return model;
+        List<ShowWorkingDateModel> modelList = new ArrayList<>();
+        for(WorkingDate workingDate : workingDateList) {
+            ShowWorkingDateModel model = new ShowWorkingDateModel();
+            model.setId(workingDate.getId());
+            model.setWorkingDate(workingDate.getWorkingDate());
+            model.setContractDetailID(detail.getId());
+            model.setNote(detail.getNote());
+            model.setTimeWorking(detail.getTimeWorking());
+            model.setEndDate(detail.getEndDate());
+            model.setStartDate(detail.getStartDate());
+            model.setTotalPrice(detail.getTotalPrice());
+            model.setContractID(detail.getContract().getId());
+            model.setAddress(detail.getContract().getAddress());
+            model.setEmail(detail.getContract().getEmail());
+            model.setPhone(detail.getContract().getPhone());
+            model.setFullName(detail.getContract().getFullName());
+            model.setServiceID(detail.getServiceType().getService().getId());
+            model.setServiceName(detail.getServiceType().getService().getName());
+            model.setServiceTypeID(detail.getServiceType().getId());
+            model.setTypeName(detail.getServiceType().getName());
+            model.setTypeSize(detail.getServiceType().getSize());
+            model.setTypePercentage(detail.getServiceType().getPercentage());
+            model.setTypeApplyDate(detail.getServiceType().getApplyDate());
+            model.setServicePackID(detail.getServicePack().getId());
+            model.setPackRange(detail.getServicePack().getRange());
+            model.setPackPercentage(detail.getServicePack().getPercentage());
+            model.setPackApplyDate(detail.getServicePack().getApplyDate());
+            modelList.add(model);
+        }
+        return modelList;
     }
 
     @Override
-    public List<LocalDateTime> generateWorkingSchedule(String timeWorking, LocalDate from, LocalDate to) {
+    public String generateWorkingSchedule(String contractDetailID, LocalDate from, LocalDate to) {
+        Optional<ContractDetail> checkExisted = contractDetailRepository.findById(contractDetailID);
+        if(checkExisted == null) {
+            return "Không tìm thấy ContractDetail với ID là " + contractDetailID + ".";
+        }
+
+        String timeWorking = checkExisted.get().getTimeWorking();
+        if(timeWorking == null){
+            return "ContractDetail không có timeWorking";
+        }
+
         List<LocalDateTime> dateTimeList = new ArrayList<>();
         String[] timeWorkingArr;
         timeWorkingArr = timeWorking.split("-");
+
+
         for(String dayInWeek : timeWorkingArr) {
             LocalDate fromDate = from;
             while(fromDate.isBefore(to)) {
                 DayOfWeek dow = fromDate.getDayOfWeek();
                 switch(dayInWeek.trim()) {
                     case "Thứ 2":
-                        if(dow.name().equalsIgnoreCase("MONDAY")){
+                        if(dow.name().equalsIgnoreCase("MONDAY")) {
                             dateTimeList.add(fromDate.atTime(00, 00, 00));
                         }
                         break;
 
                     case "Thứ 3":
-                        if(dow.name().equalsIgnoreCase("TUESDAY")){
+                        if(dow.name().equalsIgnoreCase("TUESDAY")) {
                             dateTimeList.add(fromDate.atTime(00, 00, 00));
                         }
                         break;
 
                     case "Thứ 4":
-                        if(dow.name().equalsIgnoreCase("WEDNESDAY")){
+                        if(dow.name().equalsIgnoreCase("WEDNESDAY")) {
                             dateTimeList.add(fromDate.atTime(00, 00, 00));
                         }
                         break;
 
                     case "Thứ 5":
-                        if(dow.name().equalsIgnoreCase("THURSDAY")){
+                        if(dow.name().equalsIgnoreCase("THURSDAY")) {
                             dateTimeList.add(fromDate.atTime(00, 00, 00));
                         }
                         break;
 
                     case "Thứ 6":
-                        if(dow.name().equalsIgnoreCase("FRIDAY")){
+                        if(dow.name().equalsIgnoreCase("FRIDAY")) {
                             dateTimeList.add(fromDate.atTime(00, 00, 00));
                         }
                         break;
 
                     case "Thứ 7":
-                        if(dow.name().equalsIgnoreCase("SATURDAY")){
+                        if(dow.name().equalsIgnoreCase("SATURDAY")) {
                             dateTimeList.add(fromDate.atTime(00, 00, 00));
                         }
                         break;
 
                     case "Chủ nhật":
-                        if(dow.name().equalsIgnoreCase("SUNDAY")){
+                        if(dow.name().equalsIgnoreCase("SUNDAY")) {
                             dateTimeList.add(fromDate.atTime(00, 00, 00));
                         }
                         break;
 
                     default:
-                        // Ignore any other day-of-week.
+                        // Ignore any out of range
                         break;
                 }
                 // Set-up the next loop. Increment by one day at a time.
                 fromDate = fromDate.plusDays(1);
             }
         }
+
         Collections.sort(dateTimeList);
-        return dateTimeList;
+        for(LocalDateTime date : dateTimeList) {
+            WorkingDate workingDate = new WorkingDate();
+            WorkingDate lastWorkingDate = workingDateRepository.findFirstByOrderByIdDesc();
+            if(lastWorkingDate == null) {
+                workingDate.setId(util.createNewID("WD"));
+            } else {
+                workingDate.setId(util.createIDFromLastID("WD", 2, lastWorkingDate.getId()));
+            }
+            workingDate.setWorkingDate(date);
+            workingDate.setContractDetail(checkExisted.get());
+            workingDateRepository.save(workingDate);
+        }
+        return "Tạo thành công.";
     }
 }

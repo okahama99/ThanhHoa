@@ -10,7 +10,9 @@ import java.util.List;
 
 public interface WorkingDateService {
 
-    String addWorkingDate(String contractDetailID);
+    String addStartWorkingDate(String workingDateID, String startWorkingIMG, Long staffID);
+
+    String addEndWorkingDate(String workingDateID, String endWorkingIMG, Long staffID);
 
     List<ShowWorkingDateModel> getAllByContractDetailID(String contractDetailID, Pageable pageable);
 
@@ -18,7 +20,7 @@ public interface WorkingDateService {
 
     List<ShowWorkingDateModel> getWorkingDateByStaffID(Long staffID);
 
-    ShowWorkingDateModel getByWorkingDate(String contractDetailID, LocalDateTime date);
+    List<ShowWorkingDateModel> getByWorkingDate(String contractDetailID, LocalDateTime from, LocalDateTime to);
 
-    List<LocalDateTime> generateWorkingSchedule(String timeWorking, LocalDate from, LocalDate to);
+    String generateWorkingSchedule(String timeWorking, LocalDate from, LocalDate to);
 }

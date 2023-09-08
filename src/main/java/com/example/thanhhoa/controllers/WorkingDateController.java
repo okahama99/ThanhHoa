@@ -6,7 +6,6 @@ import com.example.thanhhoa.enums.SearchType;
 import com.example.thanhhoa.services.workingDate.WorkingDateService;
 import com.example.thanhhoa.utils.JwtUtil;
 import com.example.thanhhoa.utils.Util;
-import com.google.firebase.messaging.FirebaseMessagingException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
@@ -35,14 +34,33 @@ public class WorkingDateController {
     @Autowired
     private WorkingDateService workingDateService;
 
-    @PostMapping(value = "/addWorkingDate", produces = "application/json;charset=UTF-8")
-    public ResponseEntity<Object> addWorkingDate(@RequestParam String contractDetailID,
-                                                 HttpServletRequest request) throws Exception {
+    @PostMapping(value = "/v2/addStartWorkingDate", produces = "application/json;charset=UTF-8")
+    public ResponseEntity<Object> addStartWorkingDate(@RequestParam String workingDateID,
+                                                      @RequestParam String startWorkingIMG,
+                                                      @RequestParam Long staffID,
+                                                      HttpServletRequest request){
         String roleName = jwtUtil.getRoleNameFromRequest(request);
         if(!roleName.equalsIgnoreCase("Staff")) {
             throw new ResponseStatusException(HttpStatus.FORBIDDEN, "-----------------------------------Người dùng không có quyền truy cập---------------------------");
         }
-        String result = workingDateService.addWorkingDate(contractDetailID);
+        String result = workingDateService.addStartWorkingDate(workingDateID, startWorkingIMG, staffID);
+        if(result.equals("Thêm thành công.")) {
+            return ResponseEntity.ok().body(result);
+        } else {
+            return ResponseEntity.badRequest().body(result);
+        }
+    }
+
+    @PostMapping(value = "/v2/addEndWorkingDate", produces = "application/json;charset=UTF-8")
+    public ResponseEntity<Object> addEndWorkingDate(@RequestParam String workingDateID,
+                                                      @RequestParam String endWorkingIMG,
+                                                      @RequestParam Long staffID,
+                                                      HttpServletRequest request){
+        String roleName = jwtUtil.getRoleNameFromRequest(request);
+        if(!roleName.equalsIgnoreCase("Staff")) {
+            throw new ResponseStatusException(HttpStatus.FORBIDDEN, "-----------------------------------Người dùng không có quyền truy cập---------------------------");
+        }
+        String result = workingDateService.addEndWorkingDate(workingDateID, endWorkingIMG, staffID);
         if(result.equals("Thêm thành công.")) {
             return ResponseEntity.ok().body(result);
         } else {
@@ -81,25 +99,39 @@ public class WorkingDateController {
         return ResponseEntity.ok().body(workingDateService.getWorkingDateByStaffID(jwtUtil.getUserIDFromRequest(request)));
     }
 
-    @GetMapping(value = "/getByWorkingDate", produces = "application/json;charset=UTF-8")
+    @GetMapping(value = "/v2/getByWorkingDate", produces = "application/json;charset=UTF-8")
     public ResponseEntity<Object> getByWorkingDate(@RequestParam String contractDetailID,
-                                                   @RequestParam String date,
+                                                   @RequestParam String from,
+                                                   @RequestParam String to,
                                                    HttpServletRequest request) {
         String roleName = jwtUtil.getRoleNameFromRequest(request);
-        if(!roleName.equalsIgnoreCase("Staff") && !roleName.equalsIgnoreCase("Manager") && !roleName.equalsIgnoreCase("Owner")) {
+        if(!roleName.equalsIgnoreCase("Staff") && !roleName.equalsIgnoreCase("Manager")
+                && !roleName.equalsIgnoreCase("Owner") && !roleName.equalsIgnoreCase("Customer")) {
             throw new ResponseStatusException(HttpStatus.FORBIDDEN, "-----------------------------------Người dùng không có quyền truy cập---------------------------");
         }
-        LocalDateTime workingDate = util.isLocalDateTimeValid(date);
-        if(workingDate == null) {
+
+        LocalDateTime fromDate = util.isLocalDateTimeValid(from);
+        if(fromDate == null) {
             return ResponseEntity.badRequest().body("Nhập theo khuôn được định sẵn yyyy-MM-dd, ví dụ : 2021-12-21");
         }
-        return ResponseEntity.ok().body(workingDateService.getByWorkingDate(contractDetailID, workingDate));
+        LocalDateTime toDate = util.isLocalDateTimeValid(to);
+        if(toDate == null) {
+            return ResponseEntity.badRequest().body("Nhập theo khuôn được định sẵn yyyy-MM-dd, ví dụ : 2021-12-21");
+        }
+
+        return ResponseEntity.ok().body(workingDateService.getByWorkingDate(contractDetailID, fromDate, toDate));
     }
 
-    @GetMapping(value = "/test", produces = "application/json;charset=UTF-8")
-    public ResponseEntity<Object> test(@RequestParam String timeWorking,
-                                    @RequestParam String from,
-                                    @RequestParam String to){
+    @PostMapping(value = "/v2/generateSchedule", produces = "application/json;charset=UTF-8")
+    public ResponseEntity<Object> generateSchedule(@RequestParam String contractDetailID,
+                                                   @RequestParam String from,
+                                                   @RequestParam String to,
+                                                   HttpServletRequest request) {
+        String roleName = jwtUtil.getRoleNameFromRequest(request);
+        if(!roleName.equalsIgnoreCase("Staff") && !roleName.equalsIgnoreCase("Manager")) {
+            throw new ResponseStatusException(HttpStatus.FORBIDDEN, "-----------------------------------Người dùng không có quyền truy cập---------------------------");
+        }
+
         LocalDate fromDate = util.isLocalDateValid(from);
         if(fromDate == null) {
             return ResponseEntity.badRequest().body("Nhập theo khuôn được định sẵn yyyy-MM-dd, ví dụ : 2021-12-21");
@@ -108,6 +140,6 @@ public class WorkingDateController {
         if(toDate == null) {
             return ResponseEntity.badRequest().body("Nhập theo khuôn được định sẵn yyyy-MM-dd, ví dụ : 2021-12-21");
         }
-        return ResponseEntity.ok().body(workingDateService.generateWorkingSchedule(timeWorking, fromDate, toDate));
+        return ResponseEntity.ok().body(workingDateService.generateWorkingSchedule(contractDetailID, fromDate, toDate));
     }
 }

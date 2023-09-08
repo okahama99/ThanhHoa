@@ -46,6 +46,8 @@ public interface ContractService {
 
     ShowContractModel getByID(String contractID);
 
+    ShowContractModel getByContractDetailID(String contractDetailID);
+
     List<GetStaffModel> getStaffForContract();
 
     List<ShowContractModel> getContractByStoreID(String storeID, Pageable pageable);

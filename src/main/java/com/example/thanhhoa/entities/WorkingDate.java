@@ -7,6 +7,7 @@ import lombok.Setter;
 import javax.persistence.*;
 import java.io.Serializable;
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Entity
 @Getter
@@ -16,10 +17,6 @@ public class WorkingDate implements Serializable {
     @Id
     private String id;
 
-    @Lob
-    @Column
-    private String note;
-
     @Column(nullable = false)
     private LocalDateTime workingDate;
 
@@ -28,6 +25,12 @@ public class WorkingDate implements Serializable {
 
     @Column
     private LocalDateTime endWorking;
+
+    @Column
+    private String startWorkingIMG;
+
+    @Column
+    private String endWorkingIMG;
 
     @Enumerated(EnumType.STRING)
     private Status status;

@@ -371,4 +371,11 @@ public class ContractController {
         ShowContractModel model = contractService.getByID(contractID);
         return model;
     }
+
+    @GetMapping(value = "/v2/getByContractDetailID", produces = "application/json;charset=UTF-8")
+    public @ResponseBody
+    ShowContractModel getByContractDetailID(@RequestParam String contractDetailID) {
+        ShowContractModel model = contractService.getByContractDetailID(contractDetailID);
+        return model;
+    }
 }

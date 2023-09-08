@@ -11,9 +11,7 @@ import java.util.List;
 public interface WorkingDateRepository extends JpaRepository<WorkingDate, String> {
     List<WorkingDate> findByContractDetail_IdOrderByWorkingDateDesc(String contractDetailID);
 
-    WorkingDate findByContractDetail_IdAndWorkingDateBetween(String contractDetailID, LocalDateTime fromDate, LocalDateTime toDate);
+    List<WorkingDate> findByContractDetail_IdAndWorkingDateBetween(String contractDetailID, LocalDateTime fromDate, LocalDateTime toDate);
 
     WorkingDate findFirstByOrderByIdDesc();
-
-    WorkingDate findFirstByContractDetail_IdOrderByWorkingDateDesc(String contractDetailID);
 }
