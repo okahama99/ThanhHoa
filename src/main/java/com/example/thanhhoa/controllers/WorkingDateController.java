@@ -124,22 +124,11 @@ public class WorkingDateController {
 
     @PostMapping(value = "/v2/generateSchedule", produces = "application/json;charset=UTF-8")
     public ResponseEntity<Object> generateSchedule(@RequestParam String contractDetailID,
-                                                   @RequestParam String from,
-                                                   @RequestParam String to,
                                                    HttpServletRequest request) {
         String roleName = jwtUtil.getRoleNameFromRequest(request);
         if(!roleName.equalsIgnoreCase("Staff") && !roleName.equalsIgnoreCase("Manager")) {
             throw new ResponseStatusException(HttpStatus.FORBIDDEN, "-----------------------------------Người dùng không có quyền truy cập---------------------------");
         }
-
-        LocalDate fromDate = util.isLocalDateValid(from);
-        if(fromDate == null) {
-            return ResponseEntity.badRequest().body("Nhập theo khuôn được định sẵn yyyy-MM-dd, ví dụ : 2021-12-21");
-        }
-        LocalDate toDate = util.isLocalDateValid(to);
-        if(toDate == null) {
-            return ResponseEntity.badRequest().body("Nhập theo khuôn được định sẵn yyyy-MM-dd, ví dụ : 2021-12-21");
-        }
-        return ResponseEntity.ok().body(workingDateService.generateWorkingSchedule(contractDetailID, fromDate, toDate));
+        return ResponseEntity.ok().body(workingDateService.generateWorkingSchedule(contractDetailID));
     }
 }

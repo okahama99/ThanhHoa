@@ -41,6 +41,18 @@ public class EnumController {
         return list;
     }
 
+    @GetMapping(value = "/v2/workingDate", produces = "application/json;charset=UTF-8")
+    public @ResponseBody
+    List<String> workingDate() {
+        List<String> list = new ArrayList<>();
+        list.add(Status.WAITING.toString());
+        list.add(Status.WORKING.toString());
+        list.add(Status.DONE.toString());
+        list.add(Status.CUSTOMERCANCELED.toString());
+        list.add(Status.STAFFCANCELED.toString());
+        return list;
+    }
+
     @GetMapping(value = "/plant", produces = "application/json;charset=UTF-8")
     public @ResponseBody
     List<String> plant() {

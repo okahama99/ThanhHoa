@@ -177,7 +177,7 @@ public class WorkingDateServiceImpl implements WorkingDateService {
     }
 
     @Override
-    public String generateWorkingSchedule(String contractDetailID, LocalDate from, LocalDate to) {
+    public String generateWorkingSchedule(String contractDetailID) {
         Optional<ContractDetail> checkExisted = contractDetailRepository.findById(contractDetailID);
         if(checkExisted == null) {
             return "Không tìm thấy ContractDetail với ID là " + contractDetailID + ".";
@@ -187,6 +187,9 @@ public class WorkingDateServiceImpl implements WorkingDateService {
         if(timeWorking == null){
             return "ContractDetail không có timeWorking";
         }
+
+        LocalDate from = checkExisted.get().getStartDate().toLocalDate();
+        LocalDate to = checkExisted.get().getEndDate().toLocalDate();
 
         List<LocalDateTime> dateTimeList = new ArrayList<>();
         String[] timeWorkingArr;
@@ -259,6 +262,7 @@ public class WorkingDateServiceImpl implements WorkingDateService {
                 workingDate.setId(util.createIDFromLastID("WD", 2, lastWorkingDate.getId()));
             }
             workingDate.setWorkingDate(date);
+            workingDate.setStatus(Status.WAITING);
             workingDate.setContractDetail(checkExisted.get());
             workingDateRepository.save(workingDate);
         }

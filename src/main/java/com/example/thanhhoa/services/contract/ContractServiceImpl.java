@@ -40,6 +40,7 @@ import com.example.thanhhoa.repositories.WorkingDateRepository;
 import com.example.thanhhoa.repositories.pagings.ContractDetailPagingRepository;
 import com.example.thanhhoa.repositories.pagings.ContractPagingRepository;
 import com.example.thanhhoa.services.otp.OtpService;
+import com.example.thanhhoa.services.workingDate.WorkingDateService;
 import com.example.thanhhoa.utils.Util;
 import com.google.firebase.messaging.FirebaseMessagingException;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -89,6 +90,8 @@ public class ContractServiceImpl implements ContractService {
     private OtpService otpService;
     @Autowired
     private StoreEmployeeRepository storeEmployeeRepository;
+    @Autowired
+    private WorkingDateService workingDateService;
 
     @Override
     public List<ShowContractModel> getAllContractByUserID(Long userID, String role, Pageable pageable) {
@@ -441,6 +444,9 @@ public class ContractServiceImpl implements ContractService {
         contractRepository.save(contract);
 
         util.createNotification("CONTRACT", staff, contract.getId(), "giao cho bạn");
+        for(ContractDetail detail : contract.getContractDetailList()) {
+            workingDateService.generateWorkingSchedule(detail.getId());
+        }
         return contract.getId();
     }
 
@@ -501,6 +507,9 @@ public class ContractServiceImpl implements ContractService {
         }
         util.createNotification("CONTRACT", contract.getStaff(), contract.getId(), "giao cho bạn");
 
+        for(ContractDetail detail : contract.getContractDetailList()) {
+            workingDateService.generateWorkingSchedule(detail.getId());
+        }
         return contract.getId();
     }
 
