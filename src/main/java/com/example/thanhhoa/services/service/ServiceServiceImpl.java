@@ -163,6 +163,7 @@ public class ServiceServiceImpl implements ServiceService {
         servicePrice.setApplyDate(LocalDateTime.now(ZoneId.of("Asia/Ho_Chi_Minh")));
         servicePrice.setService(service);
         servicePrice.setStatus(Status.ACTIVE);
+        servicePriceRepository.save(servicePrice);
 
         for(String imageURL : updateServiceModel.getListURL()) {
             ServiceIMG serviceIMG = new ServiceIMG();
@@ -187,7 +188,7 @@ public class ServiceServiceImpl implements ServiceService {
             Service service = checkExisted.get();
 
             for(ServiceType type : service.getServiceTypeList()) {
-                if(contractDetailRepository.findByServiceType_IdAndContract_Status(type.getId(), Status.WAITING) != null) {
+                if(contractDetailRepository.findByServiceType_IdAndContract_Status(type.getId(), Status.WAITING) != null && !contractDetailRepository.findByServiceType_IdAndContract_Status(type.getId(), Status.WAITING).isEmpty()) {
                     return "Không thể xóa dịch vụ đang được sử dụng.";
                 }
             }

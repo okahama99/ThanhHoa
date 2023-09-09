@@ -81,7 +81,7 @@ public class CategoryController {
             throw new ResponseStatusException(HttpStatus.FORBIDDEN, "-----------------------------------Người dùng không có quyền truy cập---------------------------");
         }
         String result = categoryService.update(id, name);
-        if(result.equals("Cập nhật thành công.")) {
+        if(result.equals("Chỉnh sửa thành công.")) {
             return ResponseEntity.ok().body(result);
         }
         return ResponseEntity.badRequest().body(result);

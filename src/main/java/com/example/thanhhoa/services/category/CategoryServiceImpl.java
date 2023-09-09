@@ -88,8 +88,8 @@ public class CategoryServiceImpl implements CategoryService{
     @Override
     public String update(String id, String name) {
         Optional<Category> checkExistedID = categoryRepository.findById(id);
-        if(checkExistedID != null){
-            return "Đã tồn tại Category với ID là : " + id + ".";
+        if(checkExistedID == null){
+            return "Không tìm thấy Category với ID là : " + id + ".";
         }
         Category checkExistedName = categoryRepository.findByName(name);
         if(checkExistedName != null){
