@@ -30,7 +30,7 @@ public class DistancePriceController {
     public ResponseEntity<Object> add(@RequestParam Double pricePerKm,
                                       HttpServletRequest request) throws Exception {
         String roleName = jwtUtil.getRoleNameFromRequest(request);
-        if(!roleName.equalsIgnoreCase("Owner")) {
+        if(!roleName.equalsIgnoreCase("Owner") && !roleName.equalsIgnoreCase("Manager")) {
             throw new ResponseStatusException(HttpStatus.FORBIDDEN, "-----------------------------------Người dùng không có quyền truy cập---------------------------");
         }
         String result = distancePriceService.create(pricePerKm);

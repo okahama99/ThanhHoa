@@ -87,7 +87,7 @@ public class WorkingDateController {
     @GetMapping(value = "/getWorkingDateByID", produces = "application/json;charset=UTF-8")
     public @ResponseBody
     ResponseEntity<Object> getByID(@RequestParam String workingDateID) {
-        WorkingDate result = workingDateService.getByID(workingDateID);
+        ShowWorkingDateModel result = workingDateService.getByID(workingDateID);
         if(result == null) {
             return ResponseEntity.badRequest().body(result);
         }

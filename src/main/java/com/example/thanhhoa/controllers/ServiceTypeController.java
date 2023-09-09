@@ -39,7 +39,7 @@ public class ServiceTypeController {
     public ResponseEntity<Object> create(@RequestBody CreateServiceTypeModel createServiceTypeModel,
                                          HttpServletRequest request) throws Exception {
         String roleName = jwtUtil.getRoleNameFromRequest(request);
-        if(!roleName.equalsIgnoreCase("Owner")) {
+        if(!roleName.equalsIgnoreCase("Owner") && !roleName.equalsIgnoreCase("Manager")) {
             throw new ResponseStatusException(HttpStatus.FORBIDDEN, "-----------------------------------Người dùng không có quyền truy cập---------------------------");
         }
         String result = serviceTypeService.create(createServiceTypeModel);
@@ -53,7 +53,7 @@ public class ServiceTypeController {
     public ResponseEntity<Object> delete(@PathVariable(name = "serviceTypeID") String serviceTypeID,
                                          HttpServletRequest request) {
         String roleName = jwtUtil.getRoleNameFromRequest(request);
-        if(!roleName.equalsIgnoreCase("Owner")) {
+        if(!roleName.equalsIgnoreCase("Owner") && !roleName.equalsIgnoreCase("Manager")) {
             throw new ResponseStatusException(HttpStatus.FORBIDDEN, "-----------------------------------Người dùng không có quyền truy cập---------------------------");
         }
         String result = serviceTypeService.delete(serviceTypeID);
@@ -74,7 +74,7 @@ public class ServiceTypeController {
                                       HttpServletRequest request) {
 
         String roleName = jwtUtil.getRoleNameFromRequest(request);
-        if(!roleName.equalsIgnoreCase("Owner")) {
+        if(!roleName.equalsIgnoreCase("Owner") && !roleName.equalsIgnoreCase("Manager")) {
             throw new ResponseStatusException(HttpStatus.FORBIDDEN, "-----------------------------------Người dùng không có quyền truy cập---------------------------");
         }
 

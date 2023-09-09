@@ -39,7 +39,7 @@ public class PlantShipPriceController {
     public ResponseEntity<Object> createPSP(@RequestBody CreatePlantShipPriceModel createPlantShipPriceModel,
                                             HttpServletRequest request) throws Exception {
         String roleName = jwtUtil.getRoleNameFromRequest(request);
-        if(!roleName.equalsIgnoreCase("Owner")) {
+        if(!roleName.equalsIgnoreCase("Owner") && !roleName.equalsIgnoreCase("Manager")) {
             throw new ResponseStatusException(HttpStatus.FORBIDDEN, "-----------------------------------Người dùng không có quyền truy cập---------------------------");
         }
         String result = plantShipPriceService.createPSP(createPlantShipPriceModel);
@@ -53,7 +53,7 @@ public class PlantShipPriceController {
     public ResponseEntity<Object> deletePSP(@PathVariable(name = "plantShipPriceID") String plantShipPriceID,
                                             HttpServletRequest request) {
         String roleName = jwtUtil.getRoleNameFromRequest(request);
-        if(!roleName.equalsIgnoreCase("Owner")) {
+        if(!roleName.equalsIgnoreCase("Owner") && !roleName.equalsIgnoreCase("Manager")) {
             throw new ResponseStatusException(HttpStatus.FORBIDDEN, "-----------------------------------Người dùng không có quyền truy cập---------------------------");
         }
         String result = plantShipPriceService.deletePSP(plantShipPriceID);

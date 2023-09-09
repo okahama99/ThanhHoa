@@ -63,7 +63,7 @@ public class PlantController {
     public ResponseEntity<Object> createPlant(@RequestBody CreatePlantModel createPlantModel,
                                               HttpServletRequest request) throws Exception {
         String roleName = jwtUtil.getRoleNameFromRequest(request);
-        if(!roleName.equalsIgnoreCase("Owner")) {
+        if(!roleName.equalsIgnoreCase("Owner") && !roleName.equalsIgnoreCase("Manager")) {
             throw new ResponseStatusException(HttpStatus.FORBIDDEN, "-----------------------------------Người dùng không có quyền truy cập---------------------------");
         }
 
@@ -103,7 +103,7 @@ public class PlantController {
     public ResponseEntity<Object> deletePlant(@PathVariable(name = "plantID") String plantID,
                                               HttpServletRequest request) {
         String roleName = jwtUtil.getRoleNameFromRequest(request);
-        if(!roleName.equalsIgnoreCase("Owner")) {
+        if(!roleName.equalsIgnoreCase("Owner") && !roleName.equalsIgnoreCase("Manager")) {
             throw new ResponseStatusException(HttpStatus.FORBIDDEN, "-----------------------------------Người dùng không có quyền truy cập---------------------------");
         }
         String result = plantService.deletePlant(plantID);
@@ -118,7 +118,7 @@ public class PlantController {
     public ResponseEntity<Object> deleteCategory(@RequestParam String categoryID,
                                               HttpServletRequest request) {
         String roleName = jwtUtil.getRoleNameFromRequest(request);
-        if(!roleName.equalsIgnoreCase("Owner")) {
+        if(!roleName.equalsIgnoreCase("Owner") && !roleName.equalsIgnoreCase("Manager")) {
             throw new ResponseStatusException(HttpStatus.FORBIDDEN, "-----------------------------------Người dùng không có quyền truy cập---------------------------");
         }
         String result = categoryService.delete(categoryID);
@@ -129,11 +129,11 @@ public class PlantController {
         }
     }
 
-    @DeleteMapping(value = "/activatePlant", produces = "application/json;charset=UTF-8")
+    @PutMapping(value = "/activatePlant", produces = "application/json;charset=UTF-8")
     public ResponseEntity<Object> activatePlant(@RequestParam String plantID,
                                                 HttpServletRequest request) throws Exception {
         String roleName = jwtUtil.getRoleNameFromRequest(request);
-        if(!roleName.equalsIgnoreCase("Owner")) {
+        if(!roleName.equalsIgnoreCase("Owner") && !roleName.equalsIgnoreCase("Manager")) {
             throw new ResponseStatusException(HttpStatus.FORBIDDEN, "-----------------------------------Người dùng không có quyền truy cập---------------------------");
         }
         String result = plantService.activatePlant(plantID);

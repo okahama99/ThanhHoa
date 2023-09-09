@@ -106,7 +106,7 @@ public class StoreServiceImpl implements StoreService{
         store.setStoreName(createStoreModel.getStoreName());
         store.setAddress(createStoreModel.getAddress());
         store.setDistrict(districtRepository.getById(createStoreModel.getDistrictID()));
-        store.setStatus(Status.ACTIVE);
+        store.setStatus(Status.INACTIVE);
         store.setPhone(createStoreModel.getPhone());
         storeRepository.save(store);
         return "Tạo thành công.";

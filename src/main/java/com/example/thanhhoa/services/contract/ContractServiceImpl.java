@@ -315,7 +315,7 @@ public class ContractServiceImpl implements ContractService {
             totalPrice += model.getTotalPrice();
 
             detail.setStartDate(startDate);
-            detail.setEndDate(endDate);
+            detail.setExpectedEndDate(endDate);
             detail.setNote(model.getNote());
             detail.setTimeWorking(model.getTimeWorking());
             detail.setTotalPrice(model.getTotalPrice());
@@ -329,7 +329,7 @@ public class ContractServiceImpl implements ContractService {
         LocalDateTime startDate = Collections.min(startDateList);
         LocalDateTime endDate = Collections.max(endDateList);
         contract.setStartedDate(startDate);
-        contract.setEndedDate(endDate);
+        contract.setExpectedEndedDate(endDate);
         contract.setTotal(totalPrice);
         contractRepository.save(contract);
 
@@ -346,13 +346,6 @@ public class ContractServiceImpl implements ContractService {
     @Override
     public String createContractManager(CreateManagerContractModel createManagerContractModel) throws IOException, FirebaseMessagingException {
         Contract contract = new Contract();
-        tblAccount customer;
-        if(createManagerContractModel.getCustomerID() != null) {
-            customer = userRepository.getById(createManagerContractModel.getCustomerID());
-            contract.setCustomer(customer);
-
-            util.createNotification("CONTRACT", customer, contract.getId(), "tạo");
-        }
         Store store = storeRepository.getById(createManagerContractModel.getStoreID());
         tblAccount staff = userRepository.getById(createManagerContractModel.getStaffID());
         if(createManagerContractModel.getDetailModelList() == null) {
@@ -371,10 +364,20 @@ public class ContractServiceImpl implements ContractService {
         contract.setEmail(createManagerContractModel.getEmail());
         contract.setPhone(createManagerContractModel.getPhone());
         contract.setIsPaid(createManagerContractModel.getIsPaid());
+        contract.setPaymentMethod(createManagerContractModel.getPaymentMethod());
 
         contract.setStore(store);
         contract.setCreatedDate(LocalDateTime.now(ZoneId.of("Asia/Ho_Chi_Minh")));
         contract.setApprovedDate(LocalDateTime.now(ZoneId.of("Asia/Ho_Chi_Minh")));
+        contract.setStaff(staff);
+
+        tblAccount customer;
+        if(createManagerContractModel.getCustomerID() != null) {
+            customer = userRepository.getById(createManagerContractModel.getCustomerID());
+            contract.setCustomer(customer);
+
+            util.createNotification("CONTRACT", customer, contract.getId(), "tạo");
+        }
 
         Double totalPrice = 0.0;
         List<LocalDateTime> startDateList = new ArrayList<>();
@@ -411,7 +414,7 @@ public class ContractServiceImpl implements ContractService {
             totalPrice += model.getTotalPrice();
 
             detail.setStartDate(startDate);
-            detail.setEndDate(endDate);
+            detail.setExpectedEndDate(endDate);
             detail.setNote(model.getNote());
             detail.setTimeWorking(model.getTimeWorking());
             detail.setTotalPrice(model.getTotalPrice());
@@ -420,6 +423,7 @@ public class ContractServiceImpl implements ContractService {
             detail.setServiceType(serviceType);
             detail.setTotalPrice(detail.getTotalPrice());
             contractDetailRepository.save(detail);
+            workingDateService.generateWorkingSchedule(detail.getId());
         }
 
         for(String imageURL : createManagerContractModel.getListURL()) {
@@ -438,15 +442,14 @@ public class ContractServiceImpl implements ContractService {
         LocalDateTime startDate = Collections.min(startDateList);
         LocalDateTime endDate = Collections.max(endDateList);
         contract.setStartedDate(startDate);
-        contract.setEndedDate(endDate);
+        contract.setExpectedEndedDate(endDate);
         contract.setTotal(totalPrice);
+        contract.setStatus(Status.SIGNED);
+        contract.setIsSigned(true);
         userRepository.save(staff);
         contractRepository.save(contract);
 
         util.createNotification("CONTRACT", staff, contract.getId(), "giao cho bạn");
-        for(ContractDetail detail : contract.getContractDetailList()) {
-            workingDateService.generateWorkingSchedule(detail.getId());
-        }
         return contract.getId();
     }
 

@@ -173,9 +173,51 @@ public class Util {
             Page<ShowWorkingDateModel> modelResult = pagingResult.map(new Converter<WorkingDate, ShowWorkingDateModel>() {
                 @Override
                 protected ShowWorkingDateModel doForward(WorkingDate workingDate) {
+                    ContractDetail detail = workingDate.getContractDetail();
                     ShowWorkingDateModel model = new ShowWorkingDateModel();
                     model.setId(workingDate.getId());
                     model.setWorkingDate(workingDate.getWorkingDate());
+                    model.setStartWorking(workingDate.getStartWorking());
+                    model.setEndWorking(workingDate.getEndWorking());
+                    model.setStartWorkingIMG(workingDate.getStartWorkingIMG());
+                    model.setEndWorkingIMG(workingDate.getEndWorkingIMG());
+                    model.setStatus(workingDate.getStatus());
+                    model.setContractDetailID(detail.getId());
+                    model.setNote(detail.getNote());
+                    model.setTimeWorking(detail.getTimeWorking());
+                    model.setEndDate(detail.getEndDate());
+                    model.setStartDate(detail.getStartDate());
+                    model.setExpectedEndDate(detail.getExpectedEndDate());
+                    model.setTotalPrice(detail.getTotalPrice());
+                    model.setContractID(detail.getContract().getId());
+                    model.setAddress(detail.getContract().getAddress());
+                    model.setEmail(detail.getContract().getEmail());
+                    model.setPhone(detail.getContract().getPhone());
+                    model.setFullName(detail.getContract().getFullName());
+                    model.setServiceID(detail.getServiceType().getService().getId());
+                    model.setServiceName(detail.getServiceType().getService().getName());
+                    model.setServiceTypeID(detail.getServiceType().getId());
+                    model.setTypeName(detail.getServiceType().getName());
+                    model.setTypeSize(detail.getServiceType().getSize());
+                    model.setTypePercentage(detail.getServiceType().getPercentage());
+                    model.setTypeApplyDate(detail.getServiceType().getApplyDate());
+                    model.setServicePackID(detail.getServicePack().getId());
+                    model.setPackRange(detail.getServicePack().getRange());
+                    model.setPackPercentage(detail.getServicePack().getPercentage());
+                    model.setPackApplyDate(detail.getServicePack().getApplyDate());
+
+                    //staff
+                    ShowStaffModel staffModel = new ShowStaffModel();
+                    if(workingDate.getStaff() != null) {
+                        staffModel.setId(workingDate.getStaff().getId());
+                        staffModel.setAddress(workingDate.getStaff().getAddress());
+                        staffModel.setEmail(workingDate.getStaff().getEmail());
+                        staffModel.setPhone(workingDate.getStaff().getPhone());
+                        staffModel.setFullName(workingDate.getStaff().getFullName());
+                        staffModel.setAvatar(workingDate.getStaff().getAvatar());
+                    }
+
+                    model.setShowStaffModel(staffModel);
                     model.setTotalPage(totalPage);
                     return model;
                 }
