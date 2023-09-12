@@ -242,9 +242,9 @@ public class UserController {
                                @RequestParam SearchType.USER sortBy,
                                @RequestParam(required = false, defaultValue = "true") Boolean sortTypeAsc) {
         Pageable paging;
-        if(sortBy.equals("FULLNAME")) {
+        if(sortBy.toString().equalsIgnoreCase("FULLNAME")) {
             paging = util.makePaging(pageNo, pageSize, "fullName", sortTypeAsc);
-        } else if(sortBy.equals("CREATEDDATE")) {
+        } else if(sortBy.toString().equalsIgnoreCase("CREATEDDATE")) {
             paging = util.makePaging(pageNo, pageSize, "createdDate", sortTypeAsc);
         } else {
             paging = util.makePaging(pageNo, pageSize, sortBy.toString().toLowerCase(), sortTypeAsc);
@@ -267,9 +267,9 @@ public class UserController {
             throw new ResponseStatusException(HttpStatus.FORBIDDEN, "-----------------------------------Người dùng không có quyền truy cập---------------------------");
         }
         Pageable paging;
-        if(sortBy.equals("FULLNAME")) {
+        if(sortBy.toString().equalsIgnoreCase("FULLNAME")) {
             paging = util.makePaging(pageNo, pageSize, "fullName", sortTypeAsc);
-        } else if(sortBy.equals("CREATEDDATE")) {
+        } else if(sortBy.toString().equalsIgnoreCase("CREATEDDATE")) {
             paging = util.makePaging(pageNo, pageSize, "createdDate", sortTypeAsc);
         } else {
             paging = util.makePaging(pageNo, pageSize, sortBy.toString().toLowerCase(), sortTypeAsc);
@@ -327,9 +327,9 @@ public class UserController {
             throw new ResponseStatusException(HttpStatus.FORBIDDEN, "-----------------------------------Người dùng không có quyền truy cập---------------------------");
         }
         Pageable paging;
-        if(sortBy.equals("FULLNAME")) {
+        if(sortBy.toString().equalsIgnoreCase("FULLNAME")) {
             paging = util.makePaging(pageNo, pageSize, "fullName", sortTypeAsc);
-        } else if(sortBy.equals("CREATEDDATE")) {
+        } else if(sortBy.toString().equalsIgnoreCase("CREATEDDATE")) {
             paging = util.makePaging(pageNo, pageSize, "createdDate", sortTypeAsc);
         } else {
             paging = util.makePaging(pageNo, pageSize, sortBy.toString().toLowerCase(), sortTypeAsc);

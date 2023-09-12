@@ -71,9 +71,9 @@ public class PlantShipPriceController {
                                             @RequestParam(required = false, defaultValue = "ID") SearchType.PSP sortBy,
                                             @RequestParam(required = false, defaultValue = "true") Boolean sortAsc) {
         Pageable paging;
-        if(sortBy.equals("POTSIZE")) {
+        if(sortBy.toString().equalsIgnoreCase("POTSIZE")) {
             paging = util.makePaging(pageNo, pageSize, "potSize", sortAsc);
-        } else if(sortBy.equals("PRICEPERPLANT")) {
+        } else if(sortBy.toString().equalsIgnoreCase("PRICEPERPLANT")) {
             paging = util.makePaging(pageNo, pageSize, "pricePerPlant", sortAsc);
         } else {
             paging = util.makePaging(pageNo, pageSize, sortBy.toString().toLowerCase(), sortAsc);

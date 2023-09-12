@@ -67,9 +67,9 @@ public class TransactionController {
         }
 
         Pageable paging;
-        if(sortBy.equals("CREATEDDATE")) {
+        if(sortBy.toString().equalsIgnoreCase("CREATEDDATE")) {
             paging = util.makePaging(pageNo, pageSize, "createdDate", sortAsc);
-        } else if(sortBy.equals("BANKCODE")) {
+        } else if(sortBy.toString().equalsIgnoreCase("BANKCODE")) {
             paging = util.makePaging(pageNo, pageSize, "bankCode", sortAsc);
         } else {
             paging = util.makePaging(pageNo, pageSize, sortBy.toString().toLowerCase(), sortAsc);

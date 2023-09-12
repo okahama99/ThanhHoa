@@ -76,7 +76,7 @@ public class WorkingDateController {
                                                      @RequestParam(required = false, defaultValue = "ID") SearchType.WORKING_DATE sortBy,
                                                      @RequestParam(required = false, defaultValue = "true") Boolean sortAsc) {
         Pageable paging;
-        if(sortBy.equals("WORKINGDATE")) {
+        if(sortBy.toString().equalsIgnoreCase("WORKINGDATE")) {
             paging = util.makePaging(pageNo, pageSize, "workingDate", sortAsc);
         } else {
             paging = util.makePaging(pageNo, pageSize, sortBy.toString().toLowerCase(), sortAsc);

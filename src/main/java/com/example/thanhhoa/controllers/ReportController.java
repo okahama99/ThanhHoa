@@ -65,7 +65,7 @@ public class ReportController {
         }
 
         Pageable paging;
-        if(sortBy.equals("CREATEDDATE")) {
+        if(sortBy.toString().equalsIgnoreCase("CREATEDDATE")) {
             paging = util.makePaging(pageNo, pageSize, "createdDate", sortAsc);
         } else {
             paging = util.makePaging(pageNo, pageSize, sortBy.toString().toLowerCase(), sortAsc);

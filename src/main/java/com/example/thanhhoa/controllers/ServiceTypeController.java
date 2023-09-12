@@ -79,7 +79,7 @@ public class ServiceTypeController {
         }
 
         Pageable paging;
-        if(sortBy.equals("APPLYDATE")) {
+        if(sortBy.toString().equalsIgnoreCase("APPLYDATE")) {
             paging = util.makePaging(pageNo, pageSize, "applyDate", sortAsc);
         } else {
             paging = util.makePaging(pageNo, pageSize, sortBy.toString().toLowerCase(), sortAsc);

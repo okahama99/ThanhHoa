@@ -151,9 +151,9 @@ public class ContractController {
         }
 
         Pageable paging;
-        if(sortBy.equals("CREATEDDATE")) {
+        if(sortBy.toString().equalsIgnoreCase("CREATEDDATE")) {
             paging = util.makePaging(pageNo, pageSize, "createdDate", sortAsc);
-        } else if(sortBy.equals("ENDEDDATE")) {
+        } else if(sortBy.toString().equalsIgnoreCase("ENDEDDATE")) {
             paging = util.makePaging(pageNo, pageSize, "endedDate", sortAsc);
         } else {
             paging = util.makePaging(pageNo, pageSize, sortBy.toString().toLowerCase(), sortAsc);
@@ -221,9 +221,9 @@ public class ContractController {
         }
 
         Pageable paging;
-        if(sortBy.equals("CREATEDDATE")) {
+        if(sortBy.toString().equalsIgnoreCase("CREATEDDATE")) {
             paging = util.makePaging(pageNo, pageSize, "createdDate", sortAsc);
-        } else if(sortBy.equals("ENDEDDATE")) {
+        } else if(sortBy.toString().equalsIgnoreCase("ENDEDDATE")) {
             paging = util.makePaging(pageNo, pageSize, "endedDate", sortAsc);
         } else {
             paging = util.makePaging(pageNo, pageSize, sortBy.toString().toLowerCase(), sortAsc);
@@ -343,9 +343,9 @@ public class ContractController {
         }
 
         Pageable paging;
-        if(sortBy.equals("CREATEDDATE")) {
+        if(sortBy.toString().equalsIgnoreCase("CREATEDDATE")) {
             paging = util.makePaging(pageNo, pageSize, "createdDate", sortAsc);
-        } else if(sortBy.equals("ENDEDDATE")) {
+        } else if(sortBy.toString().equalsIgnoreCase("ENDEDDATE")) {
             paging = util.makePaging(pageNo, pageSize, "endedDate", sortAsc);
         } else {
             paging = util.makePaging(pageNo, pageSize, sortBy.toString().toLowerCase(), sortAsc);

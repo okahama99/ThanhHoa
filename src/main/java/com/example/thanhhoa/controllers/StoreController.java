@@ -56,7 +56,7 @@ public class StoreController {
                                                   @RequestParam(required = false, defaultValue = "ID") SearchType.STORE sortBy,
                                                   @RequestParam(required = false, defaultValue = "true") Boolean sortAsc) {
         Pageable paging;
-        if(sortBy.equals("STORENAME")) {
+        if(sortBy.toString().equalsIgnoreCase("STORENAME")) {
             paging = util.makePaging(pageNo, pageSize, "storeName", sortAsc);
         } else {
             paging = util.makePaging(pageNo, pageSize, sortBy.toString().toLowerCase(), sortAsc);
@@ -72,7 +72,7 @@ public class StoreController {
                                          @RequestParam(required = false, defaultValue = "ID") SearchType.STORE sortBy,
                                          @RequestParam(required = false, defaultValue = "true") Boolean sortAsc) {
         Pageable paging;
-        if(sortBy.equals("STORENAME")) {
+        if(sortBy.toString().equalsIgnoreCase("STORENAME")) {
             paging = util.makePaging(pageNo, pageSize, "storeName", sortAsc);
         } else {
             paging = util.makePaging(pageNo, pageSize, sortBy.toString().toLowerCase(), sortAsc);
@@ -152,7 +152,7 @@ public class StoreController {
              HttpServletRequest request) {
 
         Pageable paging;
-        if(sortBy.equals("IMPORTDATE")) {
+        if(sortBy.toString().equalsIgnoreCase("IMPORTDATE")) {
             paging = util.makePaging(pageNo, pageSize, "importDate", sortAsc);
         } else {
             paging = util.makePaging(pageNo, pageSize, sortBy.toString().toLowerCase(), sortAsc);
