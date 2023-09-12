@@ -14,4 +14,6 @@ public interface ServicePackRepository  extends JpaRepository<ServicePack, Strin
     ServicePack findFirstByOrderByIdDesc();
 
     List<ServicePack> findByStatus(Status status);
+
+    ServicePack findFirstByStatusOrderByApplyDateDesc(Status status);
 }

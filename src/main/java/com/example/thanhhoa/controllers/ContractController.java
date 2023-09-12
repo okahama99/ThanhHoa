@@ -6,7 +6,7 @@ import com.example.thanhhoa.dtos.ContractModels.CreateManagerContractModel;
 import com.example.thanhhoa.dtos.ContractModels.GetStaffModel;
 import com.example.thanhhoa.dtos.ContractModels.ShowContractDetailModel;
 import com.example.thanhhoa.dtos.ContractModels.ShowContractModel;
-import com.example.thanhhoa.dtos.ContractModels.UpdateContractModel;
+import com.example.thanhhoa.dtos.ContractModels.UpdateContractDetailModel;
 import com.example.thanhhoa.enums.SearchType;
 import com.example.thanhhoa.enums.Status;
 import com.example.thanhhoa.services.contract.ContractService;
@@ -96,9 +96,9 @@ public class ContractController {
             paging = util.makePaging(pageNo, pageSize, sortBy.toString().toLowerCase(), sortAsc);
         }
 
-        if(status != null){
+        if(status != null) {
             return ResponseEntity.ok().body(contractService.getAllContractByUserIDAndStatus(jwtUtil.getUserIDFromRequest(request), jwtUtil.getRoleNameFromRequest(request), Status.valueOf(status), paging));
-        }else{
+        } else {
             return ResponseEntity.ok().body(contractService.getAllContractByUserID(jwtUtil.getUserIDFromRequest(request), jwtUtil.getRoleNameFromRequest(request), paging));
         }
     }
@@ -134,7 +134,31 @@ public class ContractController {
         if(!roleName.equalsIgnoreCase("Staff")) {
             throw new ResponseStatusException(HttpStatus.FORBIDDEN, "-----------------------------------Người dùng không có quyền truy cập---------------------------");
         }
-        List<ShowContractDetailModel> model = contractService.getAllContractDetailByUserID(jwtUtil.getUserIDFromRequest(request));
+        List<ShowContractDetailModel> model = contractService.getAllContractDetailByUserID(jwtUtil.getUserIDFromRequest(request), jwtUtil.getRoleNameFromRequest(request));
+        return model;
+    }
+
+    @GetMapping(value = "/v2/getContractDetailByCustomerToken", produces = "application/json;charset=UTF-8")
+    public @ResponseBody
+    List<ShowContractDetailModel> getContractDetailByCustomerToken(@RequestParam int pageNo,
+                                                                   @RequestParam int pageSize,
+                                                                   @RequestParam SearchType.CONTRACT sortBy,
+                                                                   @RequestParam(required = false, defaultValue = "true") boolean sortAsc,
+                                                                   HttpServletRequest request) {
+        String roleName = jwtUtil.getRoleNameFromRequest(request);
+        if(!roleName.equalsIgnoreCase("Customer")) {
+            throw new ResponseStatusException(HttpStatus.FORBIDDEN, "-----------------------------------Người dùng không có quyền truy cập---------------------------");
+        }
+
+        Pageable paging;
+        if(sortBy.toString().equalsIgnoreCase("CREATEDDATE")) {
+            paging = util.makePaging(pageNo, pageSize, "createdDate", sortAsc);
+        } else if(sortBy.toString().equalsIgnoreCase("ENDEDDATE")) {
+            paging = util.makePaging(pageNo, pageSize, "endedDate", sortAsc);
+        } else {
+            paging = util.makePaging(pageNo, pageSize, sortBy.toString().toLowerCase(), sortAsc);
+        }
+        List<ShowContractDetailModel> model = contractService.getAllContractDetailByUserID(jwtUtil.getUserIDFromRequest(request), jwtUtil.getRoleNameFromRequest(request));
         return model;
     }
 
@@ -274,18 +298,18 @@ public class ContractController {
         return ResponseEntity.ok().body(contractService.addContractIMG(contractID, listURL));
     }
 
-    @PutMapping(produces = "application/json;charset=UTF-8")
-    public ResponseEntity<Object> updateContract(@RequestBody UpdateContractModel updateContractModel, HttpServletRequest request) throws Exception {
-        String roleName = jwtUtil.getRoleNameFromRequest(request);
-        if(!roleName.equalsIgnoreCase("Customer")) {
-            throw new ResponseStatusException(HttpStatus.FORBIDDEN, "-----------------------------------Người dùng không có quyền truy cập---------------------------");
-        }
-        String result = contractService.updateContract(updateContractModel, jwtUtil.getUserIDFromRequest(request));
-        if(result.equals("Chỉnh sửa thành công.")) {
-            return ResponseEntity.ok().body(result);
-        }
-        return ResponseEntity.badRequest().body(result);
-    }
+//    @PutMapping(produces = "application/json;charset=UTF-8")
+//    public ResponseEntity<Object> updateContractDetail(@RequestBody UpdateContractDetailModel updateContractDetailModel, HttpServletRequest request) throws Exception {
+//        String roleName = jwtUtil.getRoleNameFromRequest(request);
+//        if(!roleName.equalsIgnoreCase("Staff")) {
+//            throw new ResponseStatusException(HttpStatus.FORBIDDEN, "-----------------------------------Người dùng không có quyền truy cập---------------------------");
+//        }
+//        String result = contractService.updateContractDetail(updateContractDetailModel, jwtUtil.getUserIDFromRequest(request));
+//        if(result.equals("Chỉnh sửa thành công.")) {
+//            return ResponseEntity.ok().body(result);
+//        }
+//        return ResponseEntity.badRequest().body(result);
+//    }
 
     @DeleteMapping(value = "/{contractID}", produces = "application/json;charset=UTF-8")
     public ResponseEntity<Object> deleteContract(@PathVariable(name = "contractID") String contractID,
@@ -320,7 +344,7 @@ public class ContractController {
                                                        HttpServletRequest request) throws Exception {
         String roleName = jwtUtil.getRoleNameFromRequest(request);
         if(!roleName.equalsIgnoreCase("Manager") && !roleName.equalsIgnoreCase("Staff")
-         && !roleName.equalsIgnoreCase("Customer")) {
+                && !roleName.equalsIgnoreCase("Customer")) {
             throw new ResponseStatusException(HttpStatus.FORBIDDEN, "-----------------------------------Người dùng không có quyền truy cập---------------------------");
         }
         String result = contractService.changeContractStatus(contractID, reason, Status.valueOf(status));

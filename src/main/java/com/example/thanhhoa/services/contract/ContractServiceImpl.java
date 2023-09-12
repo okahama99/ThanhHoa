@@ -12,7 +12,7 @@ import com.example.thanhhoa.dtos.ContractModels.ShowServiceModel;
 import com.example.thanhhoa.dtos.ContractModels.ShowServicePackModel;
 import com.example.thanhhoa.dtos.ContractModels.ShowServiceTypeModel;
 import com.example.thanhhoa.dtos.ContractModels.ShowWorkingDateModel;
-import com.example.thanhhoa.dtos.ContractModels.UpdateContractModel;
+import com.example.thanhhoa.dtos.ContractModels.UpdateContractDetailModel;
 import com.example.thanhhoa.dtos.OrderModels.ShowCustomerModel;
 import com.example.thanhhoa.dtos.OrderModels.ShowStaffModel;
 import com.example.thanhhoa.dtos.OrderModels.ShowStoreModel;
@@ -54,6 +54,7 @@ import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
+import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -124,8 +125,15 @@ public class ContractServiceImpl implements ContractService {
     }
 
     @Override
-    public List<ShowContractDetailModel> getAllContractDetailByUserID(Long userID) {
-        List<Contract> contractList = contractRepository.findByStaff_Id(userID);
+    public List<ShowContractDetailModel> getAllContractDetailByUserID(Long userID, String roleName) {
+        List<Contract> contractList = null;
+        if(roleName.equalsIgnoreCase("STAFF")){
+            contractList = contractRepository.findByStaff_Id(userID);
+        }
+        if(roleName.equalsIgnoreCase("CUSTOMER")){
+            contractList = contractRepository.findByCustomer_Id(userID);
+        }
+
         if(contractList == null) {
             return null;
         }
@@ -453,25 +461,83 @@ public class ContractServiceImpl implements ContractService {
         return contract.getId();
     }
 
-    @Override
-    public String updateContract(UpdateContractModel updateContractModel, Long userID) {
-        Contract contract = contractRepository.findByIdAndStatus(updateContractModel.getId(), Status.WAITING);
-        if(contract == null) {
-            return "Không tìm thấy Hợp đồng với ID là " + updateContractModel.getId() + " có trạng thái là đã ký tên.";
-        }
-        Store store = storeRepository.getById(updateContractModel.getStoreID());
-        tblAccount staff = userRepository.getById(updateContractModel.getStaffID());
-        contract.setAddress(updateContractModel.getAddress());
-        contract.setTitle(updateContractModel.getTitle());
-        contract.setFullName(updateContractModel.getFullName());
-        contract.setEmail(updateContractModel.getEmail());
-        contract.setPhone(updateContractModel.getPhone());
-        contract.setTotal(updateContractModel.getTotal());
-        contract.setStore(store);
-        contract.setStaff(staff);
-        contractRepository.save(contract);
-        return "Chỉnh sửa thành công.";
-    }
+//    @Override
+//    public String updateContractDetail(UpdateContractDetailModel updateContractDetailModel, Long userID) {
+//        Optional<ContractDetail> checkExisted = contractDetailRepository.findById(updateContractDetailModel.getId());
+//        if(checkExisted == null || checkExisted.isEmpty()){
+//            return "Không tìm thấy ContractDetail với ID là " + updateContractDetailModel.getId() + ".";
+//        }
+//
+//        LocalDateTime startDate = util.isLocalDateTimeValid(updateContractDetailModel.getStartDate());
+//        if(startDate == null) {
+//            return "Nhập theo khuôn được định sẵn yyyy-MM-dd, ví dụ : 2021-12-21";
+//        }
+//
+//        ServiceType serviceType = serviceTypeRepository.findByIdAndStatus(updateContractDetailModel.getServiceTypeID(), Status.ACTIVE);
+//        if(serviceType == null){
+//            return "Không tìm thấy ServiceType với ID là " + updateContractDetailModel.getServiceTypeID() + ".";
+//        }
+//
+//        ServicePack servicePack = servicePackRepository.findByIdAndStatus(updateContractDetailModel.getServicePackID(), Status.ACTIVE);
+//        if(servicePack == null){
+//            return "Không tìm thấy ServicePack với ID là " + updateContractDetailModel.getServicePackID() + ".";
+//        }
+//
+//        ContractDetail detail = checkExisted.get();
+//        detail.setNote(updateContractDetailModel.getNote());
+//        detail.setTimeWorking(updateContractDetailModel.getTimeWorking());
+//        detail.setStartDate(startDate);
+//        detail.setServiceType(serviceType);
+//        detail.setServicePack(servicePack);
+//        contractDetailRepository.save(detail);
+//
+//        Contract contract = detail.getContract();
+//        Double totalDetail = 0.0;
+//        List<LocalDateTime> startDateList = new ArrayList<>();
+//        for(ContractDetail contractDetail : contract.getContractDetailList()) {
+//            Double totalPrice = 0.0;
+//            startDateList.add(contractDetail.getStartDate());
+//
+//            // calculate month from date range
+//            Long monthsBetween = ChronoUnit.MONTHS.between(
+//                    contractDetail.getStartDate().withDayOfMonth(1),
+//                    contractDetail.getEndDate().withDayOfMonth(1));
+//
+//            ServicePrice servicePrice = servicePriceRepository.findFirstByService_IdAndStatusOrderByApplyDateDesc(contractDetail.getServiceType().getService().getId(), Status.ACTIVE);
+//            if(servicePrice == null){
+//                return "Không tìm thấy ServicePrice của Service có ID là " + contractDetail.getServiceType().getService().getId() + ".";
+//            }
+//
+//            ServiceType type = serviceTypeRepository.findFirstByService_IdAndStatusOrderByApplyDateDesc(contractDetail.getServiceType().getService().getId(), Status.ACTIVE);
+//            if(type == null){
+//                return "Không tìm thấy ServiceType của Service có ID là " + contractDetail.getServiceType().getService().getId() + ".";
+//            }
+//
+//            ServicePack pack = servicePackRepository.findFirstByStatusOrderByApplyDateDesc(Status.ACTIVE);
+//            if(pack == null){
+//                return "Không tìm thấy ServicePack của Service có ID là " + contractDetail.getServiceType().getService().getId() + ".";
+//            }
+//
+//            Double months = monthsBetween.doubleValue();
+//            Double price = servicePrice.getPrice();
+//            Double typePercentage = type.getPercentage().doubleValue();
+//            Double packPercentage = pack.getPercentage().doubleValue();
+//
+//            totalPrice += (price * months) + (price * months * typePercentage) - (price * months * packPercentage);
+//
+//            if(contractDetail.getTotalPrice() != totalPrice){
+//                contractDetail.setTotalPrice(totalPrice);
+//                contractDetailRepository.save(contractDetail);
+//            }
+//
+//            totalDetail += totalPrice;
+//        }
+//
+//        LocalDateTime minStartDate = Collections.min(startDateList);
+//        contract.setStartedDate(minStartDate);
+//        contractRepository.save(contract);
+//        return "Chỉnh sửa thành công.";
+//    }
 
     @Override
     public String deleteContract(String contractID, String reason, Status status) throws FirebaseMessagingException {

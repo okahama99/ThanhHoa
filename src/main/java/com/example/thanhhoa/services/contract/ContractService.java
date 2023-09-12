@@ -6,7 +6,7 @@ import com.example.thanhhoa.dtos.ContractModels.CreateManagerContractModel;
 import com.example.thanhhoa.dtos.ContractModels.GetStaffModel;
 import com.example.thanhhoa.dtos.ContractModels.ShowContractDetailModel;
 import com.example.thanhhoa.dtos.ContractModels.ShowContractModel;
-import com.example.thanhhoa.dtos.ContractModels.UpdateContractModel;
+import com.example.thanhhoa.dtos.ContractModels.UpdateContractDetailModel;
 import com.example.thanhhoa.enums.Status;
 import com.google.firebase.messaging.FirebaseMessagingException;
 import org.springframework.data.domain.Pageable;
@@ -18,13 +18,13 @@ import java.util.List;
 
 public interface ContractService {
 
-    List<ShowContractModel> getAllContractByUserID(Long userID,String role, Pageable pageable);
+    List<ShowContractModel> getAllContractByUserID(Long userID, String role, Pageable pageable);
 
-    List<ShowContractModel> getAllContractByUserIDAndStatus(Long userID,String role, Status status, Pageable pageable);
+    List<ShowContractModel> getAllContractByUserIDAndStatus(Long userID, String role, Status status, Pageable pageable);
 
     List<ShowContractModel> getAllContract(Pageable pageable);
 
-    List<ShowContractDetailModel> getAllContractDetailByUserID(Long userID);
+    List<ShowContractDetailModel> getAllContractDetailByUserID(Long userID, String roleName);
 
     List<ShowContractDetailModel> getContractDetailByContractID(String contractID, Pageable pageable);
 
@@ -32,7 +32,7 @@ public interface ContractService {
 
     String createContractManager(CreateManagerContractModel createManagerContractModel) throws IOException, FirebaseMessagingException;
 
-    String updateContract(UpdateContractModel updateContractModel, Long userID);
+//    String updateContractDetail(UpdateContractDetailModel updateContractDetailModel, Long userID);
 
     String deleteContract(String contractID, String reason, Status status) throws FirebaseMessagingException;
 

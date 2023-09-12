@@ -100,7 +100,7 @@ public class WorkingDateController {
     }
 
     @GetMapping(value = "/v2/getByWorkingDate", produces = "application/json;charset=UTF-8")
-    public ResponseEntity<Object> getByWorkingDate(@RequestParam String contractDetailID,
+    public ResponseEntity<Object> getByWorkingDate(@RequestParam(required = false) String contractDetailID,
                                                    @RequestParam String from,
                                                    @RequestParam String to,
                                                    HttpServletRequest request) {
@@ -119,7 +119,15 @@ public class WorkingDateController {
             return ResponseEntity.badRequest().body("Nhập theo khuôn được định sẵn yyyy-MM-dd, ví dụ : 2021-12-21");
         }
 
-        return ResponseEntity.ok().body(workingDateService.getByWorkingDate(contractDetailID, fromDate, toDate));
+        if(contractDetailID != null){
+            return ResponseEntity.ok().body(workingDateService.getByWorkingDate(contractDetailID, fromDate, toDate));
+        }else{
+            if(!roleName.equalsIgnoreCase("Customer") && !roleName.equalsIgnoreCase("Staff")){
+                return ResponseEntity.badRequest().body("Token không phải CUSTOMER/STAFF, vui lòng nhập ContractDetailID");
+            }else{
+                return ResponseEntity.ok().body(workingDateService.getByWorkingDateInRange(jwtUtil.getUserIDFromRequest(request), fromDate, toDate, roleName));
+            }
+        }
     }
 
     @PostMapping(value = "/v2/generateSchedule", produces = "application/json;charset=UTF-8")

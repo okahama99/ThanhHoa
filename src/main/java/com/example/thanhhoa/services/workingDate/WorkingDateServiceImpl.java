@@ -262,6 +262,78 @@ public class WorkingDateServiceImpl implements WorkingDateService {
     }
 
     @Override
+    public List<ShowWorkingDateModel> getByWorkingDateInRange(Long userID, LocalDateTime from, LocalDateTime to, String roleName) {
+        List<ContractDetail> detailList = null;
+        if(roleName.equalsIgnoreCase("CUSTOMER")){
+            detailList = contractDetailRepository.findByContract_Customer_Id(userID);
+        }
+        if(roleName.equalsIgnoreCase("STAFF")){
+            detailList = contractDetailRepository.findByContract_Staff_Id(userID);
+        }
+
+        if(detailList == null || detailList.isEmpty()) {
+            return null;
+        }
+
+        List<ShowWorkingDateModel> modelList = new ArrayList<>();
+        for(ContractDetail detail : detailList) {
+            List<WorkingDate> workingDateList = workingDateRepository.findByContractDetail_IdAndWorkingDateBetween(detail.getId(), from, to);
+            if(workingDateList == null) {
+                return null;
+            }
+
+            for(WorkingDate workingDate : workingDateList) {
+                ShowWorkingDateModel model = new ShowWorkingDateModel();
+                model.setId(workingDate.getId());
+                model.setWorkingDate(workingDate.getWorkingDate());
+                model.setStartWorking(workingDate.getStartWorking());
+                model.setEndWorking(workingDate.getEndWorking());
+                model.setStartWorkingIMG(workingDate.getStartWorkingIMG());
+                model.setEndWorkingIMG(workingDate.getEndWorkingIMG());
+                model.setStatus(workingDate.getStatus());
+                model.setContractDetailID(detail.getId());
+                model.setNote(detail.getNote());
+                model.setTimeWorking(detail.getTimeWorking());
+                model.setEndDate(detail.getEndDate());
+                model.setStartDate(detail.getStartDate());
+                model.setExpectedEndDate(detail.getExpectedEndDate());
+                model.setTotalPrice(detail.getTotalPrice());
+                model.setContractID(detail.getContract().getId());
+                model.setAddress(detail.getContract().getAddress());
+                model.setEmail(detail.getContract().getEmail());
+                model.setPhone(detail.getContract().getPhone());
+                model.setFullName(detail.getContract().getFullName());
+                model.setServiceID(detail.getServiceType().getService().getId());
+                model.setServiceName(detail.getServiceType().getService().getName());
+                model.setServiceTypeID(detail.getServiceType().getId());
+                model.setTypeName(detail.getServiceType().getName());
+                model.setTypeSize(detail.getServiceType().getSize());
+                model.setTypePercentage(detail.getServiceType().getPercentage());
+                model.setTypeApplyDate(detail.getServiceType().getApplyDate());
+                model.setServicePackID(detail.getServicePack().getId());
+                model.setPackRange(detail.getServicePack().getRange());
+                model.setPackPercentage(detail.getServicePack().getPercentage());
+                model.setPackApplyDate(detail.getServicePack().getApplyDate());
+
+                //staff
+                ShowStaffModel staffModel = new ShowStaffModel();
+                if(workingDate.getStaff() != null) {
+                    staffModel.setId(workingDate.getStaff().getId());
+                    staffModel.setAddress(workingDate.getStaff().getAddress());
+                    staffModel.setEmail(workingDate.getStaff().getEmail());
+                    staffModel.setPhone(workingDate.getStaff().getPhone());
+                    staffModel.setFullName(workingDate.getStaff().getFullName());
+                    staffModel.setAvatar(workingDate.getStaff().getAvatar());
+                }
+
+                model.setShowStaffModel(staffModel);
+                modelList.add(model);
+            }
+        }
+        return modelList;
+    }
+
+    @Override
     public String generateWorkingSchedule(String contractDetailID) {
         Optional<ContractDetail> checkExisted = contractDetailRepository.findById(contractDetailID);
         if(checkExisted == null) {
