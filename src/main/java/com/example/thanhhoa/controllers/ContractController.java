@@ -134,13 +134,14 @@ public class ContractController {
         if(!roleName.equalsIgnoreCase("Staff")) {
             throw new ResponseStatusException(HttpStatus.FORBIDDEN, "-----------------------------------Người dùng không có quyền truy cập---------------------------");
         }
-        List<ShowContractDetailModel> model = contractService.getAllContractDetailByUserID(jwtUtil.getUserIDFromRequest(request), jwtUtil.getRoleNameFromRequest(request));
+        List<ShowContractDetailModel> model = contractService.getAllContractDetailByStaffID(jwtUtil.getUserIDFromRequest(request));
         return model;
     }
 
     @GetMapping(value = "/v2/getContractDetailByCustomerToken", produces = "application/json;charset=UTF-8")
     public @ResponseBody
-    List<ShowContractDetailModel> getContractDetailByCustomerToken(@RequestParam int pageNo,
+    List<ShowContractDetailModel> getContractDetailByCustomerToken(@RequestParam(required = false) String timeWorking,
+                                                                   @RequestParam int pageNo,
                                                                    @RequestParam int pageSize,
                                                                    @RequestParam SearchType.CONTRACT sortBy,
                                                                    @RequestParam(required = false, defaultValue = "true") boolean sortAsc,
@@ -158,8 +159,12 @@ public class ContractController {
         } else {
             paging = util.makePaging(pageNo, pageSize, sortBy.toString().toLowerCase(), sortAsc);
         }
-        List<ShowContractDetailModel> model = contractService.getAllContractDetailByUserID(jwtUtil.getUserIDFromRequest(request), jwtUtil.getRoleNameFromRequest(request));
-        return model;
+
+        if(timeWorking != null){
+            return contractService.getAllContractDetailByCustomerIDAndTimeWorking(jwtUtil.getUserIDFromRequest(request), timeWorking, paging);
+        }else{
+            return contractService.getAllContractDetailByCustomerID(jwtUtil.getUserIDFromRequest(request), paging);
+        }
     }
 
     @GetMapping(value = "/getAll", produces = "application/json;charset=UTF-8")

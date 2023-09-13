@@ -24,7 +24,11 @@ public interface ContractService {
 
     List<ShowContractModel> getAllContract(Pageable pageable);
 
-    List<ShowContractDetailModel> getAllContractDetailByUserID(Long userID, String roleName);
+    List<ShowContractDetailModel> getAllContractDetailByStaffID(Long userID);
+
+    List<ShowContractDetailModel> getAllContractDetailByCustomerID(Long userID, Pageable pageable);
+
+    List<ShowContractDetailModel> getAllContractDetailByCustomerIDAndTimeWorking(Long userID, String timeWorking, Pageable pageable);
 
     List<ShowContractDetailModel> getContractDetailByContractID(String contractID, Pageable pageable);
 

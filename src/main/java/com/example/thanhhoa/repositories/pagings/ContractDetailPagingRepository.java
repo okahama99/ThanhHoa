@@ -9,4 +9,8 @@ import org.springframework.stereotype.Repository;
 @Repository
 public interface ContractDetailPagingRepository extends PagingAndSortingRepository<ContractDetail, String> {
     Page<ContractDetail> findByContract_Id(String contractID, Pageable pageable);
+
+    Page<ContractDetail> findByContract_Customer_Id(Long userID, Pageable pageable);
+
+    Page<ContractDetail> findByContract_Customer_IdAndTimeWorkingContaining(Long userID, String timeWorking, Pageable pageable);
 }

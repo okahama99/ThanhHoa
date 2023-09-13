@@ -125,18 +125,12 @@ public class ContractServiceImpl implements ContractService {
     }
 
     @Override
-    public List<ShowContractDetailModel> getAllContractDetailByUserID(Long userID, String roleName) {
-        List<Contract> contractList = null;
-        if(roleName.equalsIgnoreCase("STAFF")){
-            contractList = contractRepository.findByStaff_Id(userID);
-        }
-        if(roleName.equalsIgnoreCase("CUSTOMER")){
-            contractList = contractRepository.findByCustomer_Id(userID);
-        }
-
+    public List<ShowContractDetailModel> getAllContractDetailByStaffID(Long userID) {
+        List<Contract> contractList = contractRepository.findByStaff_Id(userID);
         if(contractList == null) {
             return null;
         }
+
         List<ShowContractDetailModel> modelList = new ArrayList<>();
         for(Contract contract : contractList) {
             for(ContractDetail detail : contract.getContractDetailList()) {
@@ -254,6 +248,18 @@ public class ContractServiceImpl implements ContractService {
         }
         return modelList;
 
+    }
+
+    @Override
+    public List<ShowContractDetailModel> getAllContractDetailByCustomerID(Long userID, Pageable pageable) {
+        Page<ContractDetail> pagingResult = contractDetailPagingRepository.findByContract_Customer_Id(userID, pageable);
+        return util.contractDetailPagingConverter(pagingResult, pageable);
+    }
+
+    @Override
+    public List<ShowContractDetailModel> getAllContractDetailByCustomerIDAndTimeWorking(Long userID, String timeWorking, Pageable pageable) {
+        Page<ContractDetail> pagingResult = contractDetailPagingRepository.findByContract_Customer_IdAndTimeWorkingContaining(userID, timeWorking, pageable);
+        return util.contractDetailPagingConverter(pagingResult, pageable);
     }
 
     @Override
