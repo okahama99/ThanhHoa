@@ -461,83 +461,83 @@ public class ContractServiceImpl implements ContractService {
         return contract.getId();
     }
 
-//    @Override
-//    public String updateContractDetail(UpdateContractDetailModel updateContractDetailModel, Long userID) {
-//        Optional<ContractDetail> checkExisted = contractDetailRepository.findById(updateContractDetailModel.getId());
-//        if(checkExisted == null || checkExisted.isEmpty()){
-//            return "Không tìm thấy ContractDetail với ID là " + updateContractDetailModel.getId() + ".";
-//        }
-//
-//        LocalDateTime startDate = util.isLocalDateTimeValid(updateContractDetailModel.getStartDate());
-//        if(startDate == null) {
-//            return "Nhập theo khuôn được định sẵn yyyy-MM-dd, ví dụ : 2021-12-21";
-//        }
-//
-//        ServiceType serviceType = serviceTypeRepository.findByIdAndStatus(updateContractDetailModel.getServiceTypeID(), Status.ACTIVE);
-//        if(serviceType == null){
-//            return "Không tìm thấy ServiceType với ID là " + updateContractDetailModel.getServiceTypeID() + ".";
-//        }
-//
-//        ServicePack servicePack = servicePackRepository.findByIdAndStatus(updateContractDetailModel.getServicePackID(), Status.ACTIVE);
-//        if(servicePack == null){
-//            return "Không tìm thấy ServicePack với ID là " + updateContractDetailModel.getServicePackID() + ".";
-//        }
-//
-//        ContractDetail detail = checkExisted.get();
-//        detail.setNote(updateContractDetailModel.getNote());
-//        detail.setTimeWorking(updateContractDetailModel.getTimeWorking());
-//        detail.setStartDate(startDate);
-//        detail.setServiceType(serviceType);
-//        detail.setServicePack(servicePack);
-//        contractDetailRepository.save(detail);
-//
-//        Contract contract = detail.getContract();
-//        Double totalDetail = 0.0;
-//        List<LocalDateTime> startDateList = new ArrayList<>();
-//        for(ContractDetail contractDetail : contract.getContractDetailList()) {
-//            Double totalPrice = 0.0;
-//            startDateList.add(contractDetail.getStartDate());
-//
-//            // calculate month from date range
-//            Long monthsBetween = ChronoUnit.MONTHS.between(
-//                    contractDetail.getStartDate().withDayOfMonth(1),
-//                    contractDetail.getEndDate().withDayOfMonth(1));
-//
-//            ServicePrice servicePrice = servicePriceRepository.findFirstByService_IdAndStatusOrderByApplyDateDesc(contractDetail.getServiceType().getService().getId(), Status.ACTIVE);
-//            if(servicePrice == null){
-//                return "Không tìm thấy ServicePrice của Service có ID là " + contractDetail.getServiceType().getService().getId() + ".";
-//            }
-//
-//            ServiceType type = serviceTypeRepository.findFirstByService_IdAndStatusOrderByApplyDateDesc(contractDetail.getServiceType().getService().getId(), Status.ACTIVE);
-//            if(type == null){
-//                return "Không tìm thấy ServiceType của Service có ID là " + contractDetail.getServiceType().getService().getId() + ".";
-//            }
-//
-//            ServicePack pack = servicePackRepository.findFirstByStatusOrderByApplyDateDesc(Status.ACTIVE);
-//            if(pack == null){
-//                return "Không tìm thấy ServicePack của Service có ID là " + contractDetail.getServiceType().getService().getId() + ".";
-//            }
-//
-//            Double months = monthsBetween.doubleValue();
-//            Double price = servicePrice.getPrice();
-//            Double typePercentage = type.getPercentage().doubleValue();
-//            Double packPercentage = pack.getPercentage().doubleValue();
-//
-//            totalPrice += (price * months) + (price * months * typePercentage) - (price * months * packPercentage);
-//
-//            if(contractDetail.getTotalPrice() != totalPrice){
-//                contractDetail.setTotalPrice(totalPrice);
-//                contractDetailRepository.save(contractDetail);
-//            }
-//
-//            totalDetail += totalPrice;
-//        }
-//
-//        LocalDateTime minStartDate = Collections.min(startDateList);
-//        contract.setStartedDate(minStartDate);
-//        contractRepository.save(contract);
-//        return "Chỉnh sửa thành công.";
-//    }
+    @Override
+    public String updateContractDetail(UpdateContractDetailModel updateContractDetailModel, Long userID) {
+        Optional<ContractDetail> checkExisted = contractDetailRepository.findById(updateContractDetailModel.getId());
+        if(checkExisted == null || checkExisted.isEmpty()){
+            return "Không tìm thấy ContractDetail với ID là " + updateContractDetailModel.getId() + ".";
+        }
+
+        LocalDateTime startDate = util.isLocalDateTimeValid(updateContractDetailModel.getStartDate());
+        if(startDate == null) {
+            return "Nhập theo khuôn được định sẵn yyyy-MM-dd, ví dụ : 2021-12-21";
+        }
+
+        ServiceType serviceType = serviceTypeRepository.findByIdAndStatus(updateContractDetailModel.getServiceTypeID(), Status.ACTIVE);
+        if(serviceType == null){
+            return "Không tìm thấy ServiceType với ID là " + updateContractDetailModel.getServiceTypeID() + ".";
+        }
+
+        ServicePack servicePack = servicePackRepository.findByIdAndStatus(updateContractDetailModel.getServicePackID(), Status.ACTIVE);
+        if(servicePack == null){
+            return "Không tìm thấy ServicePack với ID là " + updateContractDetailModel.getServicePackID() + ".";
+        }
+
+        ContractDetail detail = checkExisted.get();
+        detail.setNote(updateContractDetailModel.getNote());
+        detail.setTimeWorking(updateContractDetailModel.getTimeWorking());
+        detail.setStartDate(startDate);
+        detail.setServiceType(serviceType);
+        detail.setServicePack(servicePack);
+        contractDetailRepository.save(detail);
+
+        Contract contract = detail.getContract();
+        Double totalDetail = 0.0;
+        List<LocalDateTime> startDateList = new ArrayList<>();
+        for(ContractDetail contractDetail : contract.getContractDetailList()) {
+            Double totalPrice = 0.0;
+            startDateList.add(contractDetail.getStartDate());
+
+            // calculate month from date range
+            Long monthsBetween = ChronoUnit.MONTHS.between(
+                    contractDetail.getStartDate().withDayOfMonth(1),
+                    contractDetail.getEndDate().withDayOfMonth(1));
+
+            ServicePrice servicePrice = servicePriceRepository.findFirstByService_IdAndStatusOrderByApplyDateDesc(contractDetail.getServiceType().getService().getId(), Status.ACTIVE);
+            if(servicePrice == null){
+                return "Không tìm thấy ServicePrice của Service có ID là " + contractDetail.getServiceType().getService().getId() + ".";
+            }
+
+            ServiceType type = serviceTypeRepository.findFirstByService_IdAndStatusOrderByApplyDateDesc(contractDetail.getServiceType().getService().getId(), Status.ACTIVE);
+            if(type == null){
+                return "Không tìm thấy ServiceType của Service có ID là " + contractDetail.getServiceType().getService().getId() + ".";
+            }
+
+            ServicePack pack = servicePackRepository.findFirstByStatusOrderByApplyDateDesc(Status.ACTIVE);
+            if(pack == null){
+                return "Không tìm thấy ServicePack của Service có ID là " + contractDetail.getServiceType().getService().getId() + ".";
+            }
+
+            Double months = monthsBetween.doubleValue();
+            Double price = servicePrice.getPrice();
+            Double typePercentage = type.getPercentage().doubleValue();
+            Double packPercentage = pack.getPercentage().doubleValue();
+
+            totalPrice += (price * months) + (price * months * typePercentage) - (price * months * packPercentage);
+
+            if(contractDetail.getTotalPrice() != totalPrice){
+                contractDetail.setTotalPrice(totalPrice);
+                contractDetailRepository.save(contractDetail);
+            }
+
+            totalDetail += totalPrice;
+        }
+
+        LocalDateTime minStartDate = Collections.min(startDateList);
+        contract.setStartedDate(minStartDate);
+        contractRepository.save(contract);
+        return "Chỉnh sửa thành công.";
+    }
 
     @Override
     public String deleteContract(String contractID, String reason, Status status) throws FirebaseMessagingException {

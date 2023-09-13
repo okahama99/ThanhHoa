@@ -32,7 +32,7 @@ public interface ContractService {
 
     String createContractManager(CreateManagerContractModel createManagerContractModel) throws IOException, FirebaseMessagingException;
 
-//    String updateContractDetail(UpdateContractDetailModel updateContractDetailModel, Long userID);
+    String updateContractDetail(UpdateContractDetailModel updateContractDetailModel, Long userID);
 
     String deleteContract(String contractID, String reason, Status status) throws FirebaseMessagingException;
 

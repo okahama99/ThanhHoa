@@ -298,18 +298,18 @@ public class ContractController {
         return ResponseEntity.ok().body(contractService.addContractIMG(contractID, listURL));
     }
 
-//    @PutMapping(produces = "application/json;charset=UTF-8")
-//    public ResponseEntity<Object> updateContractDetail(@RequestBody UpdateContractDetailModel updateContractDetailModel, HttpServletRequest request) throws Exception {
-//        String roleName = jwtUtil.getRoleNameFromRequest(request);
-//        if(!roleName.equalsIgnoreCase("Staff")) {
-//            throw new ResponseStatusException(HttpStatus.FORBIDDEN, "-----------------------------------Người dùng không có quyền truy cập---------------------------");
-//        }
-//        String result = contractService.updateContractDetail(updateContractDetailModel, jwtUtil.getUserIDFromRequest(request));
-//        if(result.equals("Chỉnh sửa thành công.")) {
-//            return ResponseEntity.ok().body(result);
-//        }
-//        return ResponseEntity.badRequest().body(result);
-//    }
+    @PutMapping(produces = "application/json;charset=UTF-8")
+    public ResponseEntity<Object> updateContractDetail(@RequestBody UpdateContractDetailModel updateContractDetailModel, HttpServletRequest request) throws Exception {
+        String roleName = jwtUtil.getRoleNameFromRequest(request);
+        if(!roleName.equalsIgnoreCase("Staff")) {
+            throw new ResponseStatusException(HttpStatus.FORBIDDEN, "-----------------------------------Người dùng không có quyền truy cập---------------------------");
+        }
+        String result = contractService.updateContractDetail(updateContractDetailModel, jwtUtil.getUserIDFromRequest(request));
+        if(result.equals("Chỉnh sửa thành công.")) {
+            return ResponseEntity.ok().body(result);
+        }
+        return ResponseEntity.badRequest().body(result);
+    }
 
     @DeleteMapping(value = "/{contractID}", produces = "application/json;charset=UTF-8")
     public ResponseEntity<Object> deleteContract(@PathVariable(name = "contractID") String contractID,

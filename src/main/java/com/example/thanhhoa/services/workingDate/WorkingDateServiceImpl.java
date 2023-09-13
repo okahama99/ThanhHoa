@@ -107,6 +107,7 @@ public class WorkingDateServiceImpl implements WorkingDateService {
         model.setExpectedEndDate(detail.getExpectedEndDate());
         model.setTotalPrice(detail.getTotalPrice());
         model.setContractID(detail.getContract().getId());
+        model.setTitle(detail.getContract().getTitle());
         model.setAddress(detail.getContract().getAddress());
         model.setEmail(detail.getContract().getEmail());
         model.setPhone(detail.getContract().getPhone());
@@ -164,6 +165,7 @@ public class WorkingDateServiceImpl implements WorkingDateService {
                 model.setExpectedEndDate(detail.getExpectedEndDate());
                 model.setTotalPrice(detail.getTotalPrice());
                 model.setContractID(detail.getContract().getId());
+                model.setTitle(detail.getContract().getTitle());
                 model.setAddress(detail.getContract().getAddress());
                 model.setEmail(detail.getContract().getEmail());
                 model.setPhone(detail.getContract().getPhone());
@@ -228,6 +230,7 @@ public class WorkingDateServiceImpl implements WorkingDateService {
             model.setExpectedEndDate(detail.getExpectedEndDate());
             model.setTotalPrice(detail.getTotalPrice());
             model.setContractID(detail.getContract().getId());
+            model.setTitle(detail.getContract().getTitle());
             model.setAddress(detail.getContract().getAddress());
             model.setEmail(detail.getContract().getEmail());
             model.setPhone(detail.getContract().getPhone());
@@ -299,6 +302,7 @@ public class WorkingDateServiceImpl implements WorkingDateService {
                 model.setExpectedEndDate(detail.getExpectedEndDate());
                 model.setTotalPrice(detail.getTotalPrice());
                 model.setContractID(detail.getContract().getId());
+                model.setTitle(detail.getContract().getTitle());
                 model.setAddress(detail.getContract().getAddress());
                 model.setEmail(detail.getContract().getEmail());
                 model.setPhone(detail.getContract().getPhone());

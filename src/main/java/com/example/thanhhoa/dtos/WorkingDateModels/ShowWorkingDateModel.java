@@ -19,6 +19,7 @@ public class ShowWorkingDateModel implements Serializable {
     private String endWorkingIMG;
     private Status status;
     private String contractID;
+    private String title;
     private String fullName;
     private String address;
     private String phone;
