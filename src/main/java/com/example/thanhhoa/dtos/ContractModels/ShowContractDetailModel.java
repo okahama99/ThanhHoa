@@ -15,6 +15,8 @@ public class ShowContractDetailModel implements Serializable {
     private String note;
     private LocalDateTime startDate;
     private LocalDateTime endDate;
+    private LocalDateTime expectedEndDate;
+    private Double price;
     private Double totalPrice;
 
     private ShowContractModel showContractModel;

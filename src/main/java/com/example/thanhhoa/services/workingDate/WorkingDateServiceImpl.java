@@ -3,9 +3,11 @@ package com.example.thanhhoa.services.workingDate;
 import com.example.thanhhoa.dtos.OrderModels.ShowStaffModel;
 import com.example.thanhhoa.dtos.WorkingDateModels.ShowWorkingDateModel;
 import com.example.thanhhoa.entities.ContractDetail;
+import com.example.thanhhoa.entities.ServicePrice;
 import com.example.thanhhoa.entities.WorkingDate;
 import com.example.thanhhoa.enums.Status;
 import com.example.thanhhoa.repositories.ContractDetailRepository;
+import com.example.thanhhoa.repositories.ServicePriceRepository;
 import com.example.thanhhoa.repositories.UserRepository;
 import com.example.thanhhoa.repositories.WorkingDateRepository;
 import com.example.thanhhoa.repositories.pagings.WorkingDatePagingRepository;
@@ -19,6 +21,7 @@ import java.time.DayOfWeek;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
+import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
@@ -38,6 +41,8 @@ public class WorkingDateServiceImpl implements WorkingDateService {
     private ContractDetailRepository contractDetailRepository;
     @Autowired
     private UserRepository userRepository;
+    @Autowired
+    private ServicePriceRepository servicePriceRepository;
 
     @Override
     public String addStartWorkingDate(String workingDateID, String startWorkingIMG, Long staffID) {
@@ -105,7 +110,6 @@ public class WorkingDateServiceImpl implements WorkingDateService {
         model.setEndDate(detail.getEndDate());
         model.setStartDate(detail.getStartDate());
         model.setExpectedEndDate(detail.getExpectedEndDate());
-        model.setTotalPrice(detail.getTotalPrice());
         model.setContractID(detail.getContract().getId());
         model.setTitle(detail.getContract().getTitle());
         model.setAddress(detail.getContract().getAddress());
@@ -123,6 +127,21 @@ public class WorkingDateServiceImpl implements WorkingDateService {
         model.setPackRange(detail.getServicePack().getRange());
         model.setPackPercentage(detail.getServicePack().getPercentage());
         model.setPackApplyDate(detail.getServicePack().getApplyDate());
+
+        ServicePrice newestPrice = servicePriceRepository.findFirstByService_IdAndStatusOrderByApplyDateDesc(detail.getServiceType().getService().getId(), Status.ACTIVE);
+
+        // calculate month from date range
+        Long monthsBetween = ChronoUnit.MONTHS.between(
+                detail.getStartDate().withDayOfMonth(1),
+                detail.getExpectedEndDate().withDayOfMonth(1));
+
+        Double months = monthsBetween.doubleValue();
+        Double price = newestPrice.getPrice();
+        Double typePercentage = detail.getServiceType().getPercentage().doubleValue();
+        Double packPercentage = detail.getServicePack().getPercentage().doubleValue();
+
+        Double totalPrice = (price * months) + (price * months * typePercentage) - (price * months * packPercentage);
+        model.setTotalPrice(totalPrice);
 
         //staff
         ShowStaffModel staffModel = new ShowStaffModel();
@@ -163,7 +182,6 @@ public class WorkingDateServiceImpl implements WorkingDateService {
                 model.setEndDate(detail.getEndDate());
                 model.setStartDate(detail.getStartDate());
                 model.setExpectedEndDate(detail.getExpectedEndDate());
-                model.setTotalPrice(detail.getTotalPrice());
                 model.setContractID(detail.getContract().getId());
                 model.setTitle(detail.getContract().getTitle());
                 model.setAddress(detail.getContract().getAddress());
@@ -181,6 +199,21 @@ public class WorkingDateServiceImpl implements WorkingDateService {
                 model.setPackRange(detail.getServicePack().getRange());
                 model.setPackPercentage(detail.getServicePack().getPercentage());
                 model.setPackApplyDate(detail.getServicePack().getApplyDate());
+
+                ServicePrice newestPrice = servicePriceRepository.findFirstByService_IdAndStatusOrderByApplyDateDesc(detail.getServiceType().getService().getId(), Status.ACTIVE);
+
+                // calculate month from date range
+                Long monthsBetween = ChronoUnit.MONTHS.between(
+                        detail.getStartDate().withDayOfMonth(1),
+                        detail.getExpectedEndDate().withDayOfMonth(1));
+
+                Double months = monthsBetween.doubleValue();
+                Double price = newestPrice.getPrice();
+                Double typePercentage = detail.getServiceType().getPercentage().doubleValue();
+                Double packPercentage = detail.getServicePack().getPercentage().doubleValue();
+
+                Double totalPrice = (price * months) + (price * months * typePercentage) - (price * months * packPercentage);
+                model.setTotalPrice(totalPrice);
 
                 //staff
                 ShowStaffModel staffModel = new ShowStaffModel();
@@ -228,7 +261,6 @@ public class WorkingDateServiceImpl implements WorkingDateService {
             model.setEndDate(detail.getEndDate());
             model.setStartDate(detail.getStartDate());
             model.setExpectedEndDate(detail.getExpectedEndDate());
-            model.setTotalPrice(detail.getTotalPrice());
             model.setContractID(detail.getContract().getId());
             model.setTitle(detail.getContract().getTitle());
             model.setAddress(detail.getContract().getAddress());
@@ -246,6 +278,21 @@ public class WorkingDateServiceImpl implements WorkingDateService {
             model.setPackRange(detail.getServicePack().getRange());
             model.setPackPercentage(detail.getServicePack().getPercentage());
             model.setPackApplyDate(detail.getServicePack().getApplyDate());
+
+            ServicePrice newestPrice = servicePriceRepository.findFirstByService_IdAndStatusOrderByApplyDateDesc(detail.getServiceType().getService().getId(), Status.ACTIVE);
+
+            // calculate month from date range
+            Long monthsBetween = ChronoUnit.MONTHS.between(
+                    detail.getStartDate().withDayOfMonth(1),
+                    detail.getExpectedEndDate().withDayOfMonth(1));
+
+            Double months = monthsBetween.doubleValue();
+            Double price = newestPrice.getPrice();
+            Double typePercentage = detail.getServiceType().getPercentage().doubleValue();
+            Double packPercentage = detail.getServicePack().getPercentage().doubleValue();
+
+            Double totalPrice = (price * months) + (price * months * typePercentage) - (price * months * packPercentage);
+            model.setTotalPrice(totalPrice);
 
             //staff
             ShowStaffModel staffModel = new ShowStaffModel();
@@ -300,7 +347,6 @@ public class WorkingDateServiceImpl implements WorkingDateService {
                 model.setEndDate(detail.getEndDate());
                 model.setStartDate(detail.getStartDate());
                 model.setExpectedEndDate(detail.getExpectedEndDate());
-                model.setTotalPrice(detail.getTotalPrice());
                 model.setContractID(detail.getContract().getId());
                 model.setTitle(detail.getContract().getTitle());
                 model.setAddress(detail.getContract().getAddress());
@@ -318,6 +364,21 @@ public class WorkingDateServiceImpl implements WorkingDateService {
                 model.setPackRange(detail.getServicePack().getRange());
                 model.setPackPercentage(detail.getServicePack().getPercentage());
                 model.setPackApplyDate(detail.getServicePack().getApplyDate());
+
+                ServicePrice newestPrice = servicePriceRepository.findFirstByService_IdAndStatusOrderByApplyDateDesc(detail.getServiceType().getService().getId(), Status.ACTIVE);
+
+                // calculate month from date range
+                Long monthsBetween = ChronoUnit.MONTHS.between(
+                        detail.getStartDate().withDayOfMonth(1),
+                        detail.getExpectedEndDate().withDayOfMonth(1));
+
+                Double months = monthsBetween.doubleValue();
+                Double price = newestPrice.getPrice();
+                Double typePercentage = detail.getServiceType().getPercentage().doubleValue();
+                Double packPercentage = detail.getServicePack().getPercentage().doubleValue();
+
+                Double totalPrice = (price * months) + (price * months * typePercentage) - (price * months * packPercentage);
+                model.setTotalPrice(totalPrice);
 
                 //staff
                 ShowStaffModel staffModel = new ShowStaffModel();

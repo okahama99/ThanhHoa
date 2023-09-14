@@ -32,8 +32,8 @@ public class ContractDetail implements Serializable {
     @Column
     private LocalDateTime expectedEndDate;
 
-    @Column(nullable = false)
-    private Double totalPrice;
+    @Column
+    private Double price;
 
     @ManyToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     @JoinColumn(name = "contract_id")

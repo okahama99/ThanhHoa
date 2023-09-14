@@ -27,7 +27,6 @@ import com.example.thanhhoa.dtos.ServiceModels.ShowServiceModel;
 import com.example.thanhhoa.dtos.ServiceModels.ShowServiceTypeModel;
 import com.example.thanhhoa.dtos.ServicePriceModels.ShowServicePriceModel;
 import com.example.thanhhoa.dtos.StoreModels.ShowStorePlantModel;
-import com.example.thanhhoa.dtos.StorePlantRequestModels.ShowRequestModel;
 import com.example.thanhhoa.dtos.TransactionModels.ShowTransactionModel;
 import com.example.thanhhoa.dtos.UserModels.ShowUserModel;
 import com.example.thanhhoa.dtos.WorkingDateModels.ShowWorkingDateModel;
@@ -83,6 +82,7 @@ import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
+import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -188,7 +188,6 @@ public class Util {
                     model.setEndDate(detail.getEndDate());
                     model.setStartDate(detail.getStartDate());
                     model.setExpectedEndDate(detail.getExpectedEndDate());
-                    model.setTotalPrice(detail.getTotalPrice());
                     model.setContractID(detail.getContract().getId());
                     model.setTitle(detail.getContract().getTitle());
                     model.setAddress(detail.getContract().getAddress());
@@ -206,6 +205,21 @@ public class Util {
                     model.setPackRange(detail.getServicePack().getRange());
                     model.setPackPercentage(detail.getServicePack().getPercentage());
                     model.setPackApplyDate(detail.getServicePack().getApplyDate());
+
+                    ServicePrice newestPrice = servicePriceRepository.findFirstByService_IdAndStatusOrderByApplyDateDesc(detail.getServiceType().getService().getId(), Status.ACTIVE);
+
+                    // calculate month from date range
+                    Long monthsBetween = ChronoUnit.MONTHS.between(
+                            detail.getStartDate().withDayOfMonth(1),
+                            detail.getExpectedEndDate().withDayOfMonth(1));
+
+                    Double months = monthsBetween.doubleValue();
+                    Double price = newestPrice.getPrice();
+                    Double typePercentage = detail.getServiceType().getPercentage().doubleValue();
+                    Double packPercentage = detail.getServicePack().getPercentage().doubleValue();
+
+                    Double totalPrice = (price * months) + (price * months * typePercentage) - (price * months * packPercentage);
+                    model.setTotalPrice(totalPrice);
 
                     //staff
                     ShowStaffModel staffModel = new ShowStaffModel();
@@ -750,12 +764,9 @@ public class Util {
 
                     // service
                     Service service = serviceType.getService();
-                    ServicePrice newestPrice = servicePriceRepository.findFirstByService_IdAndStatusOrderByApplyDateDesc(service.getId(), Status.ACTIVE);
                     com.example.thanhhoa.dtos.ContractModels.ShowServiceModel serviceModel = new com.example.thanhhoa.dtos.ContractModels.ShowServiceModel();
                     serviceModel.setId(service.getId());
                     serviceModel.setName(service.getName());
-                    serviceModel.setPriceID(newestPrice.getId());
-                    serviceModel.setPrice(newestPrice.getPrice());
                     serviceModel.setDescription(service.getDescription());
                     serviceModel.setAtHome(service.getAtHome());
 
@@ -1112,8 +1123,23 @@ public class Util {
                     model.setNote(detail.getNote());
                     model.setTimeWorking(detail.getTimeWorking());
                     model.setEndDate(detail.getEndDate());
+                    model.setExpectedEndDate(detail.getExpectedEndDate());
                     model.setStartDate(detail.getStartDate());
-                    model.setTotalPrice(detail.getTotalPrice());
+
+                    ServicePrice newestPrice = servicePriceRepository.findFirstByService_IdAndStatusOrderByApplyDateDesc(detail.getServiceType().getService().getId(), Status.ACTIVE);
+
+                    // calculate month from date range
+                    Long monthsBetween = ChronoUnit.MONTHS.between(
+                            detail.getStartDate().withDayOfMonth(1),
+                            detail.getExpectedEndDate().withDayOfMonth(1));
+
+                    Double months = monthsBetween.doubleValue();
+                    Double price = newestPrice.getPrice();
+                    Double typePercentage = detail.getServiceType().getPercentage().doubleValue();
+                    Double packPercentage = detail.getServicePack().getPercentage().doubleValue();
+
+                    Double totalPrice = (price * months) + (price * months * typePercentage) - (price * months * packPercentage);
+                    model.setTotalPrice(totalPrice);
 
                     //contract
                     List<ContractIMG> imgList = contractIMGRepository.findByContract_Id(detail.getContract().getId());
@@ -1198,9 +1224,6 @@ public class Util {
                     com.example.thanhhoa.dtos.ContractModels.ShowServiceModel serviceModel = new com.example.thanhhoa.dtos.ContractModels.ShowServiceModel();
                     serviceModel.setId(detail.getServiceType().getService().getId());
                     serviceModel.setDescription(detail.getServiceType().getService().getDescription());
-                    ServicePrice newestPrice = servicePriceRepository.findFirstByService_IdAndStatusOrderByApplyDateDesc(detail.getServiceType().getService().getId(), Status.ACTIVE);
-                    serviceModel.setPriceID(newestPrice.getId());
-                    serviceModel.setPrice(newestPrice.getPrice());
                     serviceModel.setName(detail.getServiceType().getService().getName());
                     serviceModel.setAtHome(detail.getServiceType().getService().getAtHome());
 
@@ -1761,7 +1784,7 @@ public class Util {
                     // order
                     tblOrder order = transaction.getTblOrder();
                     ShowOrderModel orderModel = new ShowOrderModel();
-                    if(order != null){
+                    if(order != null) {
                         orderModel.setId(order.getId());
                         orderModel.setFullName(order.getFullName());
                         orderModel.setAddress(order.getAddress());
@@ -1788,7 +1811,7 @@ public class Util {
                     //contract
                     Contract contract = transaction.getContract();
                     ShowContractModel contractModel = new ShowContractModel();
-                    if(contract != null){
+                    if(contract != null) {
                         contractModel.setId(contract.getId());
                         contractModel.setFullName(contract.getFullName());
                         contractModel.setAddress(contract.getAddress());

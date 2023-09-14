@@ -10,7 +10,6 @@ import java.io.Serializable;
 public class CreateContractDetailModel implements Serializable {
     private String note;
     private String timeWorking;
-    private Double totalPrice;
     private String servicePackID;
     private String serviceTypeID;
     private String startDate;

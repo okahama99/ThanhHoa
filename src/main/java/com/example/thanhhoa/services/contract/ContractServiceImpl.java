@@ -148,7 +148,19 @@ public class ContractServiceImpl implements ContractService {
                 model.setTimeWorking(detail.getTimeWorking());
                 model.setEndDate(detail.getEndDate());
                 model.setStartDate(detail.getStartDate());
-                model.setTotalPrice(detail.getTotalPrice());
+                model.setExpectedEndDate(detail.getExpectedEndDate());
+
+                // calculate month from date range
+                Long monthsBetween = ChronoUnit.MONTHS.between(
+                        detail.getStartDate().withDayOfMonth(1),
+                        detail.getEndDate().withDayOfMonth(1));
+                Double price = detail.getPrice();
+                Double typePercentage = detail.getServiceType().getPercentage().doubleValue();
+                Double packPercentage = detail.getServicePack().getPercentage().doubleValue();
+                Double months = monthsBetween.doubleValue();
+                Double totalPrice = (price * months) + (price * months * typePercentage) - (price * months * packPercentage);
+                model.setTotalPrice(totalPrice);
+                model.setPrice(model.getPrice());
 
                 //contract
                 List<ContractIMG> imgList = contractIMGRepository.findByContract_Id(detail.getContract().getId());
@@ -180,7 +192,7 @@ public class ContractServiceImpl implements ContractService {
                 }
                 //customer
                 ShowCustomerModel customerModel = new ShowCustomerModel();
-                if(detail.getContract().getCustomer() != null){
+                if(detail.getContract().getCustomer() != null) {
                     customerModel.setId(detail.getContract().getCustomer().getId());
                     customerModel.setAddress(detail.getContract().getCustomer().getAddress());
                     customerModel.setEmail(detail.getContract().getCustomer().getEmail());
@@ -232,9 +244,6 @@ public class ContractServiceImpl implements ContractService {
                 ShowServiceModel serviceModel = new ShowServiceModel();
                 serviceModel.setId(detail.getServiceType().getService().getId());
                 serviceModel.setDescription(detail.getServiceType().getService().getDescription());
-                ServicePrice newestPrice = servicePriceRepository.findFirstByService_IdAndStatusOrderByApplyDateDesc(detail.getServiceType().getService().getId(), Status.ACTIVE);
-                serviceModel.setPriceID(newestPrice.getId());
-                serviceModel.setPrice(newestPrice.getPrice());
                 serviceModel.setName(detail.getServiceType().getService().getName());
                 serviceModel.setAtHome(detail.getServiceType().getService().getAtHome());
 
@@ -299,12 +308,9 @@ public class ContractServiceImpl implements ContractService {
         List<LocalDateTime> startDateList = new ArrayList<>();
         List<LocalDateTime> endDateList = new ArrayList<>();
         for(CreateContractDetailModel model : createCustomerContractModel.getDetailModelList()) {
-            ServicePack servicePack = new ServicePack();
-            if(model.getServicePackID() != null) {
-                servicePack = servicePackRepository.findByIdAndStatus(model.getServicePackID(), Status.ACTIVE);
-                if(servicePack == null) {
-                    return "Không tìm thấy ServicePack với ID là " + model.getServicePackID() + ".";
-                }
+            ServicePack servicePack = servicePackRepository.findByIdAndStatus(model.getServicePackID(), Status.ACTIVE);
+            if(servicePack == null) {
+                return "Không tìm thấy ServicePack với ID là " + model.getServicePackID() + ".";
             }
             ServiceType serviceType = serviceTypeRepository.findByIdAndStatus(model.getServiceTypeID(), Status.ACTIVE);
             if(serviceType == null) {
@@ -326,17 +332,27 @@ public class ContractServiceImpl implements ContractService {
                 detail.setId(util.createIDFromLastID("CTD", 3, lastContractDetail.getId()));
             }
 
-            totalPrice += model.getTotalPrice();
+            ServicePrice newestPrice = servicePriceRepository.findFirstByService_IdAndStatusOrderByApplyDateDesc(serviceType.getService().getId(), Status.ACTIVE);
+
+            // calculate month from date range
+            Long monthsBetween = ChronoUnit.MONTHS.between(
+                    startDate.withDayOfMonth(1),
+                    endDate.withDayOfMonth(1));
+
+            Double months = monthsBetween.doubleValue();
+            Double price = newestPrice.getPrice();
+            Double typePercentage = serviceType.getPercentage().doubleValue();
+            Double packPercentage = servicePack.getPercentage().doubleValue();
+
+            totalPrice += (price * months) + (price * months * typePercentage) - (price * months * packPercentage);
 
             detail.setStartDate(startDate);
             detail.setExpectedEndDate(endDate);
             detail.setNote(model.getNote());
             detail.setTimeWorking(model.getTimeWorking());
-            detail.setTotalPrice(model.getTotalPrice());
             detail.setContract(contract);
             detail.setServicePack(servicePack);
             detail.setServiceType(serviceType);
-            detail.setTotalPrice(detail.getTotalPrice());
             contractDetailRepository.save(detail);
         }
 
@@ -350,8 +366,8 @@ public class ContractServiceImpl implements ContractService {
         util.createNotification("CONTRACT", customer, contract.getId(), "tạo");
 
         StoreEmployee manager = storeEmployeeRepository.findByStore_IdAndAccount_Role_RoleName(store.getId(), "Manager");
-        if(manager != null){
-            otpService.generateNotificationEmailForManager(manager.getAccount().getEmail(),"Hợp đồng");
+        if(manager != null) {
+            otpService.generateNotificationEmailForManager(manager.getAccount().getEmail(), "Hợp đồng");
         }
 
         return "Tạo thành công.";
@@ -397,13 +413,11 @@ public class ContractServiceImpl implements ContractService {
         List<LocalDateTime> startDateList = new ArrayList<>();
         List<LocalDateTime> endDateList = new ArrayList<>();
         for(CreateContractDetailModel model : createManagerContractModel.getDetailModelList()) {
-            ServicePack servicePack = new ServicePack();
-            if(model.getServicePackID() != null) {
-                servicePack = servicePackRepository.findByIdAndStatus(model.getServicePackID(), Status.ACTIVE);
-                if(servicePack == null) {
-                    return "Không tìm thấy ServicePack với ID là " + model.getServicePackID() + ".";
-                }
+            ServicePack servicePack = servicePackRepository.findByIdAndStatus(model.getServicePackID(), Status.ACTIVE);
+            if(servicePack == null) {
+                return "Không tìm thấy ServicePack với ID là " + model.getServicePackID() + ".";
             }
+
             ServiceType serviceType = serviceTypeRepository.findByIdAndStatus(model.getServiceTypeID(), Status.ACTIVE);
             if(serviceType == null) {
                 return "Không tìm thấy ServiceType với ID là " + model.getServiceTypeID() + ".";
@@ -425,17 +439,27 @@ public class ContractServiceImpl implements ContractService {
                 detail.setId(util.createIDFromLastID("CTD", 3, lastContractDetail.getId()));
             }
 
-            totalPrice += model.getTotalPrice();
+            ServicePrice newestPrice = servicePriceRepository.findFirstByService_IdAndStatusOrderByApplyDateDesc(serviceType.getService().getId(), Status.ACTIVE);
+
+            // calculate month from date range
+            Long monthsBetween = ChronoUnit.MONTHS.between(
+                    startDate.withDayOfMonth(1),
+                    endDate.withDayOfMonth(1));
+
+            Double months = monthsBetween.doubleValue();
+            Double price = newestPrice.getPrice();
+            Double typePercentage = serviceType.getPercentage().doubleValue();
+            Double packPercentage = servicePack.getPercentage().doubleValue();
+
+            totalPrice += (price * months) + (price * months * typePercentage) - (price * months * packPercentage);
 
             detail.setStartDate(startDate);
             detail.setExpectedEndDate(endDate);
             detail.setNote(model.getNote());
             detail.setTimeWorking(model.getTimeWorking());
-            detail.setTotalPrice(model.getTotalPrice());
             detail.setContract(contract);
             detail.setServicePack(servicePack);
             detail.setServiceType(serviceType);
-            detail.setTotalPrice(detail.getTotalPrice());
             contractDetailRepository.save(detail);
             workingDateService.generateWorkingSchedule(detail.getId());
         }
@@ -470,7 +494,7 @@ public class ContractServiceImpl implements ContractService {
     @Override
     public String updateContractDetail(UpdateContractDetailModel updateContractDetailModel, Long userID) {
         Optional<ContractDetail> checkExisted = contractDetailRepository.findById(updateContractDetailModel.getId());
-        if(checkExisted == null || checkExisted.isEmpty()){
+        if(checkExisted == null || checkExisted.isEmpty()) {
             return "Không tìm thấy ContractDetail với ID là " + updateContractDetailModel.getId() + ".";
         }
 
@@ -480,12 +504,12 @@ public class ContractServiceImpl implements ContractService {
         }
 
         ServiceType serviceType = serviceTypeRepository.findByIdAndStatus(updateContractDetailModel.getServiceTypeID(), Status.ACTIVE);
-        if(serviceType == null){
+        if(serviceType == null) {
             return "Không tìm thấy ServiceType với ID là " + updateContractDetailModel.getServiceTypeID() + ".";
         }
 
         ServicePack servicePack = servicePackRepository.findByIdAndStatus(updateContractDetailModel.getServicePackID(), Status.ACTIVE);
-        if(servicePack == null){
+        if(servicePack == null) {
             return "Không tìm thấy ServicePack với ID là " + updateContractDetailModel.getServicePackID() + ".";
         }
 
@@ -498,10 +522,9 @@ public class ContractServiceImpl implements ContractService {
         contractDetailRepository.save(detail);
 
         Contract contract = detail.getContract();
-        Double totalDetail = 0.0;
         List<LocalDateTime> startDateList = new ArrayList<>();
+        Double totalPrice = 0.0;
         for(ContractDetail contractDetail : contract.getContractDetailList()) {
-            Double totalPrice = 0.0;
             startDateList.add(contractDetail.getStartDate());
 
             // calculate month from date range
@@ -509,37 +532,26 @@ public class ContractServiceImpl implements ContractService {
                     contractDetail.getStartDate().withDayOfMonth(1),
                     contractDetail.getEndDate().withDayOfMonth(1));
 
-            ServicePrice servicePrice = servicePriceRepository.findFirstByService_IdAndStatusOrderByApplyDateDesc(contractDetail.getServiceType().getService().getId(), Status.ACTIVE);
-            if(servicePrice == null){
-                return "Không tìm thấy ServicePrice của Service có ID là " + contractDetail.getServiceType().getService().getId() + ".";
-            }
-
-            ServiceType type = serviceTypeRepository.findFirstByService_IdAndStatusOrderByApplyDateDesc(contractDetail.getServiceType().getService().getId(), Status.ACTIVE);
-            if(type == null){
+            Optional<ServiceType> type = serviceTypeRepository.findById(contractDetail.getServiceType().getService().getId());
+            if(type == null) {
                 return "Không tìm thấy ServiceType của Service có ID là " + contractDetail.getServiceType().getService().getId() + ".";
             }
 
-            ServicePack pack = servicePackRepository.findFirstByStatusOrderByApplyDateDesc(Status.ACTIVE);
-            if(pack == null){
+            Optional<ServicePack> pack = servicePackRepository.findById(contractDetail.getServicePack().getId());
+            if(pack == null) {
                 return "Không tìm thấy ServicePack của Service có ID là " + contractDetail.getServiceType().getService().getId() + ".";
             }
 
             Double months = monthsBetween.doubleValue();
-            Double price = servicePrice.getPrice();
-            Double typePercentage = type.getPercentage().doubleValue();
-            Double packPercentage = pack.getPercentage().doubleValue();
+            Double price = contractDetail.getPrice();
+            Double typePercentage = type.get().getPercentage().doubleValue();
+            Double packPercentage = pack.get().getPercentage().doubleValue();
 
             totalPrice += (price * months) + (price * months * typePercentage) - (price * months * packPercentage);
-
-            if(contractDetail.getTotalPrice() != totalPrice){
-                contractDetail.setTotalPrice(totalPrice);
-                contractDetailRepository.save(contractDetail);
-            }
-
-            totalDetail += totalPrice;
         }
 
         LocalDateTime minStartDate = Collections.min(startDateList);
+        contract.setTotal(totalPrice);
         contract.setStartedDate(minStartDate);
         contractRepository.save(contract);
         return "Chỉnh sửa thành công.";
@@ -577,7 +589,7 @@ public class ContractServiceImpl implements ContractService {
         userRepository.save(staff);
         contractRepository.save(contract);
 
-        if(contract.getCustomer() != null){
+        if(contract.getCustomer() != null) {
             util.createNotification("CONTRACT", contract.getCustomer(), contract.getId(), "quản lý duyệt");
         }
         util.createNotification("CONTRACT", contract.getStaff(), contract.getId(), "giao cho bạn");
@@ -594,7 +606,7 @@ public class ContractServiceImpl implements ContractService {
         if(contract == null) {
             return "Không thể tìm thấy Hợp đồng có trạng thái APPROVED với ID là " + contractID + ".";
         }
-        if(listURL.isEmpty() || listURL == null){
+        if(listURL.isEmpty() || listURL == null) {
             return "Không tìm thấy URL trong List";
         }
         for(String imageURL : listURL) {
@@ -617,7 +629,7 @@ public class ContractServiceImpl implements ContractService {
 
         contractRepository.save(contract);
 
-        if(contract.getCustomer() != null){
+        if(contract.getCustomer() != null) {
             util.createNotification("CONTRACT", contract.getCustomer(), contract.getId(), "ký tên");
         }
         return "Thêm thành công.";
@@ -630,24 +642,24 @@ public class ContractServiceImpl implements ContractService {
             return "Không thể tìm thấy Hợp đồng có trạng thái WAITING với ID là " + contractID + ".";
         }
         Contract contract = checkExisted.get();
-        if(status.toString().equalsIgnoreCase("DENIED")){
+        if(status.toString().equalsIgnoreCase("DENIED")) {
             contract.setStatus(status);
             contract.setRejectedDate(LocalDateTime.now(ZoneId.of("Asia/Ho_Chi_Minh")));
 
-            if(contract.getCustomer() != null){
+            if(contract.getCustomer() != null) {
                 util.createNotification("CONTRACT", contract.getCustomer(), contract.getId(), "từ chối");
             }
-        }else if(status.toString().equalsIgnoreCase("CUSTOMERCANCELED")){
+        } else if(status.toString().equalsIgnoreCase("CUSTOMERCANCELED")) {
             contract.setStatus(status);
 
-            if(contract.getCustomer() != null){
+            if(contract.getCustomer() != null) {
                 util.createNotification("CONTRACT", contract.getCustomer(), contract.getId(), "hủy");
             }
-        }else{
+        } else {
             contract.setStatus(status);
         }
 
-        if(reason != null){
+        if(reason != null) {
             contract.setReason(reason);
         }
 
@@ -665,7 +677,7 @@ public class ContractServiceImpl implements ContractService {
     @Override
     public ShowContractModel getByID(String contractID) {
         Optional<Contract> checkExisted = contractRepository.findById(contractID);
-        if(checkExisted == null){
+        if(checkExisted == null) {
             return null;
         }
         Contract contract = checkExisted.get();
@@ -737,7 +749,7 @@ public class ContractServiceImpl implements ContractService {
     @Override
     public ShowContractModel getByContractDetailID(String contractDetailID) {
         Optional<ContractDetail> checkExisted = contractDetailRepository.findById(contractDetailID);
-        if(checkExisted == null){
+        if(checkExisted == null) {
             return null;
         }
         Contract contract = checkExisted.get().getContract();
@@ -834,11 +846,11 @@ public class ContractServiceImpl implements ContractService {
     @Override
     public List<ShowContractDetailModel> getContractDetailByDateBetween(LocalDateTime from, LocalDateTime to, Long staffID, String role) {
         List<ContractDetail> contractDetailList = null;
-        if(role.equalsIgnoreCase("Staff")){
+        if(role.equalsIgnoreCase("Staff")) {
             contractDetailList =
                     contractDetailRepository.findByContract_Staff_IdAndStartDateLessThanEqualAndEndDateGreaterThanEqual(staffID, from, to);
         }
-        if(role.equalsIgnoreCase("Customer")){
+        if(role.equalsIgnoreCase("Customer")) {
             contractDetailList =
                     contractDetailRepository.findByContract_Customer_IdAndStartDateLessThanEqualAndEndDateGreaterThanEqual(staffID, from, to);
         }
@@ -861,7 +873,22 @@ public class ContractServiceImpl implements ContractService {
             model.setTimeWorking(detail.getTimeWorking());
             model.setEndDate(detail.getEndDate());
             model.setStartDate(detail.getStartDate());
-            model.setTotalPrice(detail.getTotalPrice());
+            model.setExpectedEndDate(detail.getExpectedEndDate());
+
+            ServicePrice newestPrice = servicePriceRepository.findFirstByService_IdAndStatusOrderByApplyDateDesc(detail.getServiceType().getService().getId(), Status.ACTIVE);
+
+            // calculate month from date range
+            Long monthsBetween = ChronoUnit.MONTHS.between(
+                    detail.getStartDate().withDayOfMonth(1),
+                    detail.getExpectedEndDate().withDayOfMonth(1));
+
+            Double months = monthsBetween.doubleValue();
+            Double price = newestPrice.getPrice();
+            Double typePercentage = detail.getServiceType().getPercentage().doubleValue();
+            Double packPercentage = detail.getServicePack().getPercentage().doubleValue();
+
+            Double totalPrice = (price * months) + (price * months * typePercentage) - (price * months * packPercentage);
+            model.setTotalPrice(totalPrice);
 
             //contract
             List<ContractIMG> imgList = contractIMGRepository.findByContract_Id(detail.getContract().getId());
@@ -893,7 +920,7 @@ public class ContractServiceImpl implements ContractService {
             }
             //customer
             ShowCustomerModel customerModel = new ShowCustomerModel();
-            if(detail.getContract().getCustomer() != null){
+            if(detail.getContract().getCustomer() != null) {
                 customerModel.setId(detail.getContract().getCustomer().getId());
                 customerModel.setAddress(detail.getContract().getCustomer().getAddress());
                 customerModel.setEmail(detail.getContract().getCustomer().getEmail());
@@ -946,9 +973,6 @@ public class ContractServiceImpl implements ContractService {
             ShowServiceModel serviceModel = new ShowServiceModel();
             serviceModel.setId(detail.getServiceType().getService().getId());
             serviceModel.setDescription(detail.getServiceType().getService().getDescription());
-            ServicePrice newestPrice = servicePriceRepository.findFirstByService_IdAndStatusOrderByApplyDateDesc(detail.getServiceType().getService().getId(), Status.ACTIVE);
-            serviceModel.setPriceID(newestPrice.getId());
-            serviceModel.setPrice(newestPrice.getPrice());
             serviceModel.setName(detail.getServiceType().getService().getName());
             serviceModel.setAtHome(detail.getServiceType().getService().getAtHome());
 
@@ -986,7 +1010,22 @@ public class ContractServiceImpl implements ContractService {
             model.setTimeWorking(detail.getTimeWorking());
             model.setEndDate(detail.getEndDate());
             model.setStartDate(detail.getStartDate());
-            model.setTotalPrice(detail.getTotalPrice());
+            model.setExpectedEndDate(detail.getExpectedEndDate());
+
+            ServicePrice newestPrice = servicePriceRepository.findFirstByService_IdAndStatusOrderByApplyDateDesc(detail.getServiceType().getService().getId(), Status.ACTIVE);
+
+            // calculate month from date range
+            Long monthsBetween = ChronoUnit.MONTHS.between(
+                    detail.getStartDate().withDayOfMonth(1),
+                    detail.getExpectedEndDate().withDayOfMonth(1));
+
+            Double months = monthsBetween.doubleValue();
+            Double price = newestPrice.getPrice();
+            Double typePercentage = detail.getServiceType().getPercentage().doubleValue();
+            Double packPercentage = detail.getServicePack().getPercentage().doubleValue();
+
+            Double totalPrice = (price * months) + (price * months * typePercentage) - (price * months * packPercentage);
+            model.setTotalPrice(totalPrice);
 
             //contract
             List<ContractIMG> imgList = contractIMGRepository.findByContract_Id(detail.getContract().getId());
@@ -1018,7 +1057,7 @@ public class ContractServiceImpl implements ContractService {
             }
             //customer
             ShowCustomerModel customerModel = new ShowCustomerModel();
-            if(detail.getContract().getCustomer() != null){
+            if(detail.getContract().getCustomer() != null) {
                 customerModel.setId(detail.getContract().getCustomer().getId());
                 customerModel.setAddress(detail.getContract().getCustomer().getAddress());
                 customerModel.setEmail(detail.getContract().getCustomer().getEmail());
@@ -1071,9 +1110,6 @@ public class ContractServiceImpl implements ContractService {
             ShowServiceModel serviceModel = new ShowServiceModel();
             serviceModel.setId(detail.getServiceType().getService().getId());
             serviceModel.setDescription(detail.getServiceType().getService().getDescription());
-            ServicePrice newestPrice = servicePriceRepository.findFirstByService_IdAndStatusOrderByApplyDateDesc(detail.getServiceType().getService().getId(), Status.ACTIVE);
-            serviceModel.setPriceID(newestPrice.getId());
-            serviceModel.setPrice(newestPrice.getPrice());
             serviceModel.setName(detail.getServiceType().getService().getName());
             serviceModel.setAtHome(detail.getServiceType().getService().getAtHome());
 
@@ -1091,7 +1127,7 @@ public class ContractServiceImpl implements ContractService {
     @Override
     public void checkStartDateEndDate() throws FirebaseMessagingException {
         List<Contract> workingList = contractRepository.findAllByStartedDateLessThanEqualAndStatus(LocalDateTime.now(ZoneId.of("Asia/Ho_Chi_Minh")), Status.SIGNED);
-        if(workingList != null && !workingList.isEmpty()){
+        if(workingList != null && !workingList.isEmpty()) {
             for(Contract contract : workingList) {
                 contract.setStatus(Status.WORKING);
                 contractRepository.save(contract);
@@ -1100,7 +1136,7 @@ public class ContractServiceImpl implements ContractService {
         }
 
         List<Contract> doneList = contractRepository.findAllByEndedDateLessThanEqualAndStatus(LocalDateTime.now(ZoneId.of("Asia/Ho_Chi_Minh")), Status.WORKING);
-        if(doneList != null && !doneList.isEmpty()){
+        if(doneList != null && !doneList.isEmpty()) {
             for(Contract contract : doneList) {
                 contract.setStatus(Status.DONE);
                 contractRepository.save(contract);
