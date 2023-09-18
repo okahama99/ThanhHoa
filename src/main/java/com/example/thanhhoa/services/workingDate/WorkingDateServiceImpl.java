@@ -121,10 +121,12 @@ public class WorkingDateServiceImpl implements WorkingDateService {
         model.setServiceTypeID(detail.getServiceType().getId());
         model.setTypeName(detail.getServiceType().getName());
         model.setTypeSize(detail.getServiceType().getSize());
+        model.setTypeUnit(detail.getServiceType().getUnit());
         model.setTypePercentage(detail.getServiceType().getPercentage());
         model.setTypeApplyDate(detail.getServiceType().getApplyDate());
         model.setServicePackID(detail.getServicePack().getId());
         model.setPackRange(detail.getServicePack().getRange());
+        model.setPackUnit(detail.getServicePack().getUnit());
         model.setPackPercentage(detail.getServicePack().getPercentage());
         model.setPackApplyDate(detail.getServicePack().getApplyDate());
 
@@ -140,7 +142,7 @@ public class WorkingDateServiceImpl implements WorkingDateService {
         Double typePercentage = detail.getServiceType().getPercentage().doubleValue();
         Double packPercentage = detail.getServicePack().getPercentage().doubleValue();
 
-        Double totalPrice = (price * months) + (price * months * typePercentage) - (price * months * packPercentage);
+        Double totalPrice = (price * months) + (price * months * (typePercentage / 100) ) - (price * months * (packPercentage / 100) );
         model.setTotalPrice(totalPrice);
 
         //staff
@@ -171,6 +173,7 @@ public class WorkingDateServiceImpl implements WorkingDateService {
                 ShowWorkingDateModel model = new ShowWorkingDateModel();
                 model.setId(workingDate.getId());
                 model.setWorkingDate(workingDate.getWorkingDate());
+                model.setStatus(workingDate.getStatus());
                 model.setStartWorking(workingDate.getStartWorking());
                 model.setEndWorking(workingDate.getEndWorking());
                 model.setStartWorkingIMG(workingDate.getStartWorkingIMG());
@@ -193,10 +196,12 @@ public class WorkingDateServiceImpl implements WorkingDateService {
                 model.setServiceTypeID(detail.getServiceType().getId());
                 model.setTypeName(detail.getServiceType().getName());
                 model.setTypeSize(detail.getServiceType().getSize());
+                model.setTypeUnit(detail.getServiceType().getUnit());
                 model.setTypePercentage(detail.getServiceType().getPercentage());
                 model.setTypeApplyDate(detail.getServiceType().getApplyDate());
                 model.setServicePackID(detail.getServicePack().getId());
                 model.setPackRange(detail.getServicePack().getRange());
+                model.setPackUnit(detail.getServicePack().getUnit());
                 model.setPackPercentage(detail.getServicePack().getPercentage());
                 model.setPackApplyDate(detail.getServicePack().getApplyDate());
 
@@ -212,7 +217,7 @@ public class WorkingDateServiceImpl implements WorkingDateService {
                 Double typePercentage = detail.getServiceType().getPercentage().doubleValue();
                 Double packPercentage = detail.getServicePack().getPercentage().doubleValue();
 
-                Double totalPrice = (price * months) + (price * months * typePercentage) - (price * months * packPercentage);
+                Double totalPrice = (price * months) + (price * months * (typePercentage / 100) ) - (price * months * (packPercentage / 100) );
                 model.setTotalPrice(totalPrice);
 
                 //staff
@@ -272,10 +277,12 @@ public class WorkingDateServiceImpl implements WorkingDateService {
             model.setServiceTypeID(detail.getServiceType().getId());
             model.setTypeName(detail.getServiceType().getName());
             model.setTypeSize(detail.getServiceType().getSize());
+            model.setTypeUnit(detail.getServiceType().getUnit());
             model.setTypePercentage(detail.getServiceType().getPercentage());
             model.setTypeApplyDate(detail.getServiceType().getApplyDate());
             model.setServicePackID(detail.getServicePack().getId());
             model.setPackRange(detail.getServicePack().getRange());
+            model.setPackUnit(detail.getServicePack().getUnit());
             model.setPackPercentage(detail.getServicePack().getPercentage());
             model.setPackApplyDate(detail.getServicePack().getApplyDate());
 
@@ -291,7 +298,7 @@ public class WorkingDateServiceImpl implements WorkingDateService {
             Double typePercentage = detail.getServiceType().getPercentage().doubleValue();
             Double packPercentage = detail.getServicePack().getPercentage().doubleValue();
 
-            Double totalPrice = (price * months) + (price * months * typePercentage) - (price * months * packPercentage);
+            Double totalPrice = (price * months) + (price * months * (typePercentage / 100) ) - (price * months * (packPercentage / 100) );
             model.setTotalPrice(totalPrice);
 
             //staff
@@ -358,10 +365,12 @@ public class WorkingDateServiceImpl implements WorkingDateService {
                 model.setServiceTypeID(detail.getServiceType().getId());
                 model.setTypeName(detail.getServiceType().getName());
                 model.setTypeSize(detail.getServiceType().getSize());
+                model.setTypeUnit(detail.getServiceType().getUnit());
                 model.setTypePercentage(detail.getServiceType().getPercentage());
                 model.setTypeApplyDate(detail.getServiceType().getApplyDate());
                 model.setServicePackID(detail.getServicePack().getId());
                 model.setPackRange(detail.getServicePack().getRange());
+                model.setPackUnit(detail.getServicePack().getUnit());
                 model.setPackPercentage(detail.getServicePack().getPercentage());
                 model.setPackApplyDate(detail.getServicePack().getApplyDate());
 
@@ -377,7 +386,7 @@ public class WorkingDateServiceImpl implements WorkingDateService {
                 Double typePercentage = detail.getServiceType().getPercentage().doubleValue();
                 Double packPercentage = detail.getServicePack().getPercentage().doubleValue();
 
-                Double totalPrice = (price * months) + (price * months * typePercentage) - (price * months * packPercentage);
+                Double totalPrice = (price * months) + (price * months * (typePercentage / 100) ) - (price * months * (packPercentage / 100) );
                 model.setTotalPrice(totalPrice);
 
                 //staff

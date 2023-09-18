@@ -37,9 +37,11 @@ public class ShowWorkingDateModel implements Serializable {
     private String typeName;
     private Integer typePercentage;
     private String typeSize;
+    private String typeUnit;
     private LocalDateTime typeApplyDate;
     private String servicePackID;
     private String packRange;
+    private String packUnit;
     private Integer packPercentage;
     private LocalDateTime packApplyDate;
     private ShowStaffModel showStaffModel;
