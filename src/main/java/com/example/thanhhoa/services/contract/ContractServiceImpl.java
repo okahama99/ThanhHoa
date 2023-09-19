@@ -1177,6 +1177,7 @@ public class ContractServiceImpl implements ContractService {
         if(doneList != null && !doneList.isEmpty()) {
             for(Contract contract : doneList) {
                 contract.setStatus(Status.DONE);
+                contract.setEndedDate(LocalDateTime.now(ZoneId.of("Asia/Ho_Chi_Minh")));
                 contractRepository.save(contract);
                 util.createNotification("CONTRACT", contract.getStaff(), contract.getId(), "kết thúc");
             }
