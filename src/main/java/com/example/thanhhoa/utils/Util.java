@@ -220,7 +220,7 @@ public class Util {
                     Double typePercentage = detail.getServiceType().getPercentage().doubleValue();
                     Double packPercentage = detail.getServicePack().getPercentage().doubleValue();
 
-                    Double totalPrice = (price * months) + (price * months * (typePercentage / 100) ) - (price * months * (packPercentage / 100) );
+                    Double totalPrice = (price * months) + ((price * typePercentage / 100) * months) - ((price * packPercentage / 100) * months);
                     model.setTotalPrice(totalPrice);
 
                     //staff
@@ -1139,7 +1139,7 @@ public class Util {
                     Double typePercentage = detail.getServiceType().getPercentage().doubleValue();
                     Double packPercentage = detail.getServicePack().getPercentage().doubleValue();
 
-                    Double totalPrice = (price * months) + (price * months * (typePercentage / 100) ) - (price * months * (packPercentage / 100) );
+                    Double totalPrice = (price * months) + ((price * typePercentage / 100) * months) - ((price * packPercentage / 100) * months);
                     model.setTotalPrice(totalPrice);
 
                     //contract

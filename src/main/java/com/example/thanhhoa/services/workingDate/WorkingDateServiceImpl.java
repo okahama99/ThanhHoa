@@ -142,7 +142,7 @@ public class WorkingDateServiceImpl implements WorkingDateService {
         Double typePercentage = detail.getServiceType().getPercentage().doubleValue();
         Double packPercentage = detail.getServicePack().getPercentage().doubleValue();
 
-        Double totalPrice = (price * months) + (price * months * (typePercentage / 100) ) - (price * months * (packPercentage / 100) );
+        Double totalPrice = (price * months) + ((price * typePercentage / 100) * months) - ((price * packPercentage / 100) * months);
         model.setTotalPrice(totalPrice);
 
         //staff
@@ -217,7 +217,7 @@ public class WorkingDateServiceImpl implements WorkingDateService {
                 Double typePercentage = detail.getServiceType().getPercentage().doubleValue();
                 Double packPercentage = detail.getServicePack().getPercentage().doubleValue();
 
-                Double totalPrice = (price * months) + (price * months * (typePercentage / 100) ) - (price * months * (packPercentage / 100) );
+                Double totalPrice = (price * months) + ((price * typePercentage / 100) * months) - ((price * packPercentage / 100) * months);
                 model.setTotalPrice(totalPrice);
 
                 //staff
@@ -298,7 +298,7 @@ public class WorkingDateServiceImpl implements WorkingDateService {
             Double typePercentage = detail.getServiceType().getPercentage().doubleValue();
             Double packPercentage = detail.getServicePack().getPercentage().doubleValue();
 
-            Double totalPrice = (price * months) + (price * months * (typePercentage / 100) ) - (price * months * (packPercentage / 100) );
+            Double totalPrice = (price * months) + ((price * typePercentage / 100) * months) - ((price * packPercentage / 100) * months);
             model.setTotalPrice(totalPrice);
 
             //staff
@@ -321,10 +321,10 @@ public class WorkingDateServiceImpl implements WorkingDateService {
     @Override
     public List<ShowWorkingDateModel> getByWorkingDateInRange(Long userID, LocalDateTime from, LocalDateTime to, String roleName) {
         List<ContractDetail> detailList = null;
-        if(roleName.equalsIgnoreCase("CUSTOMER")){
+        if(roleName.equalsIgnoreCase("CUSTOMER")) {
             detailList = contractDetailRepository.findByContract_Customer_Id(userID);
         }
-        if(roleName.equalsIgnoreCase("STAFF")){
+        if(roleName.equalsIgnoreCase("STAFF")) {
             detailList = contractDetailRepository.findByContract_Staff_Id(userID);
         }
 
@@ -386,7 +386,7 @@ public class WorkingDateServiceImpl implements WorkingDateService {
                 Double typePercentage = detail.getServiceType().getPercentage().doubleValue();
                 Double packPercentage = detail.getServicePack().getPercentage().doubleValue();
 
-                Double totalPrice = (price * months) + (price * months * (typePercentage / 100) ) - (price * months * (packPercentage / 100) );
+                Double totalPrice = (price * months) + ((price * typePercentage / 100) * months) - ((price * packPercentage / 100) * months);
                 model.setTotalPrice(totalPrice);
 
                 //staff
@@ -415,7 +415,7 @@ public class WorkingDateServiceImpl implements WorkingDateService {
         }
 
         String timeWorking = checkExisted.get().getTimeWorking();
-        if(timeWorking == null){
+        if(timeWorking == null) {
             return "ContractDetail không có timeWorking";
         }
 

@@ -171,7 +171,7 @@ public class ContractServiceImpl implements ContractService {
                 Double typePercentage = detail.getServiceType().getPercentage().doubleValue();
                 Double packPercentage = detail.getServicePack().getPercentage().doubleValue();
                 Double months = monthsBetween.doubleValue();
-                Double totalPrice = (price * months) + (price * months * (typePercentage / 100) ) - (price * months * (packPercentage / 100) );
+                Double totalPrice = (price * months) + ((price * typePercentage / 100) * months) - ((price * packPercentage / 100) * months);
                 model.setTotalPrice(totalPrice);
                 model.setPrice(model.getPrice());
 
@@ -357,8 +357,8 @@ public class ContractServiceImpl implements ContractService {
             Double typePercentage = serviceType.getPercentage().doubleValue();
             Double packPercentage = servicePack.getPercentage().doubleValue();
 
-            totalPrice += (price * months) + (price * months * typePercentage) - (price * months * packPercentage);
-
+            totalPrice = (price * months) + ((price * typePercentage / 100) * months) - ((price * packPercentage / 100) * months);
+            detail.setPrice(newestPrice.getPrice());
             detail.setStartDate(startDate);
             detail.setExpectedEndDate(endDate);
             detail.setNote(model.getNote());
@@ -464,8 +464,8 @@ public class ContractServiceImpl implements ContractService {
             Double typePercentage = serviceType.getPercentage().doubleValue();
             Double packPercentage = servicePack.getPercentage().doubleValue();
 
-            totalPrice += (price * months) + (price * months * typePercentage) - (price * months * packPercentage);
-
+            totalPrice = (price * months) + ((price * typePercentage / 100) * months) - ((price * packPercentage / 100) * months);
+            detail.setPrice(newestPrice.getPrice());
             detail.setStartDate(startDate);
             detail.setExpectedEndDate(endDate);
             detail.setNote(model.getNote());
@@ -560,7 +560,7 @@ public class ContractServiceImpl implements ContractService {
             Double typePercentage = type.get().getPercentage().doubleValue();
             Double packPercentage = pack.get().getPercentage().doubleValue();
 
-            totalPrice += (price * months) + (price * months * typePercentage) - (price * months * packPercentage);
+            totalPrice = (price * months) + ((price * typePercentage / 100) * months) - ((price * packPercentage / 100) * months);
         }
 
         LocalDateTime minStartDate = Collections.min(startDateList);
@@ -677,11 +677,11 @@ public class ContractServiceImpl implements ContractService {
         } else if(status.toString().equalsIgnoreCase("CONFIRMING")) {
             contract.setStatus(status);
 
-            if(staffID == null){
+            if(staffID == null) {
                 return "StaffID đang bị trống";
             }
             StoreEmployee staff = storeEmployeeRepository.findByAccount_IdAndStatus(staffID, Status.ACTIVE);
-            if(staff == null){
+            if(staff == null) {
                 return "Không tìm thấy StoreEmployee với StaffID là " + staffID + ".";
             }
             contract.setStaff(staff.getAccount());
@@ -924,7 +924,7 @@ public class ContractServiceImpl implements ContractService {
             Double typePercentage = detail.getServiceType().getPercentage().doubleValue();
             Double packPercentage = detail.getServicePack().getPercentage().doubleValue();
 
-            Double totalPrice = (price * months) + (price * months * (typePercentage / 100) ) - (price * months * (packPercentage / 100) );
+            Double totalPrice = (price * months) + ((price * typePercentage / 100) * months) - ((price * packPercentage / 100) * months);
             model.setTotalPrice(totalPrice);
 
             //contract
@@ -1062,7 +1062,7 @@ public class ContractServiceImpl implements ContractService {
             Double typePercentage = detail.getServiceType().getPercentage().doubleValue();
             Double packPercentage = detail.getServicePack().getPercentage().doubleValue();
 
-            Double totalPrice = (price * months) + (price * months * (typePercentage / 100) ) - (price * months * (packPercentage / 100) );
+            Double totalPrice = (price * months) + ((price * typePercentage / 100) * months) - ((price * packPercentage / 100) * months);
             model.setTotalPrice(totalPrice);
 
             //contract
