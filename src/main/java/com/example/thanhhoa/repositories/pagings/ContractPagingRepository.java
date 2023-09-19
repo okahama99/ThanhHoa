@@ -11,11 +11,9 @@ import org.springframework.stereotype.Repository;
 public interface ContractPagingRepository extends PagingAndSortingRepository<Contract, String> {
     Page<Contract> findByStatus(Status status, Pageable pageable);
 
-    Page<Contract> findByStatusNot(Status status, Pageable pageable);
+    Page<Contract> findByStatusOrStatusOrStatus(Status status1, Status status2, Status status3, Pageable pageable);
 
-    Page<Contract> findByStatusOrStatus(Status status1, Status status2, Pageable pageable);
-
-    Page<Contract> findByStatusNotAndStatusNot(Status status1, Status status2, Pageable pageable);
+    Page<Contract> findByStatusNotAndStatusNotAndStatusNot(Status status1, Status status2, Status status3, Pageable pageable);
 
     Page<Contract> findByStore_Id(String storeID, Pageable pageable);
 

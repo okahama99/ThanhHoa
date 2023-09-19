@@ -22,7 +22,7 @@ public interface ContractService {
 
     List<ShowContractModel> getAllContractByUserIDAndStatus(Long userID, String role, Status status, Pageable pageable);
 
-    List<ShowContractModel> getAllContractByStatus(String choice, Pageable pageable);
+    List<ShowContractModel> getAllContractByStatus(String type, Pageable pageable);
 
     List<ShowContractModel> getAllContract(Pageable pageable);
 

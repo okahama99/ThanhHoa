@@ -119,16 +119,12 @@ public class ContractServiceImpl implements ContractService {
     }
 
     @Override
-    public List<ShowContractModel> getAllContractByStatus(String choice, Pageable pageable) {
+    public List<ShowContractModel> getAllContractByStatus(String type, Pageable pageable) {
         Page<Contract> pagingResult;
-        if(choice.equalsIgnoreCase("WAITING")) {
-            pagingResult = contractPagingRepository.findByStatus(Status.WAITING, pageable);
-        } else if(choice.equalsIgnoreCase("CONFIRMING")){
-            pagingResult = contractPagingRepository.findByStatus(Status.CONFIRMING, pageable);
-        } else if(choice.equalsIgnoreCase("BOTH")){
-            pagingResult = contractPagingRepository.findByStatusOrStatus(Status.WAITING, Status.CONFIRMING, pageable);
+        if(type.equalsIgnoreCase("REQUEST")) {
+            pagingResult = contractPagingRepository.findByStatusOrStatusOrStatus(Status.WAITING, Status.CONFIRMING, Status.APPROVED, pageable);
         } else {
-            pagingResult = contractPagingRepository.findByStatusNotAndStatusNot(Status.WAITING, Status.CONFIRMING, pageable);
+            pagingResult = contractPagingRepository.findByStatusNotAndStatusNotAndStatusNot(Status.WAITING, Status.CONFIRMING, Status.APPROVED, pageable);
         }
         return util.contractPagingConverter(pagingResult, pageable);
 

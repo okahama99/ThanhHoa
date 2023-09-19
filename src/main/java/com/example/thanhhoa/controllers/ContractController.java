@@ -105,7 +105,7 @@ public class ContractController {
 
     @GetMapping(value = "/v2/getAllContractByStatus", produces = "application/json;charset=UTF-8")
     public @ResponseBody
-    ResponseEntity<Object> getAllContractForOwner(@RequestParam SearchType.CONTRACT_STATUS choice,
+    ResponseEntity<Object> getAllContractForOwner(@RequestParam SearchType.CONTRACT_TYPE type,
                                                   @RequestParam int pageNo,
                                                   @RequestParam int pageSize,
                                                   @RequestParam SearchType.CONTRACT sortBy,
@@ -125,7 +125,7 @@ public class ContractController {
             paging = util.makePaging(pageNo, pageSize, sortBy.toString().toLowerCase(), sortAsc);
         }
 
-        return ResponseEntity.ok().body(contractService.getAllContractByStatus(choice.toString(), paging));
+        return ResponseEntity.ok().body(contractService.getAllContractByStatus(type.toString(), paging));
     }
 
     @GetMapping(value = "/contractDetail/{contractID}", produces = "application/json;charset=UTF-8")
