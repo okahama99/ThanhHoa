@@ -39,6 +39,7 @@ public class EnumController {
         list.add(Status.WORKING.toString());
         list.add(Status.DONE.toString());
         list.add(Status.CUSTOMERCANCELED.toString());
+        list.add(Status.STAFFCANCELED.toString());
         return list;
     }
 

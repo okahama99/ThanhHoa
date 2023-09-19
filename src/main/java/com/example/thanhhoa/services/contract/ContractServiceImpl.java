@@ -668,6 +668,12 @@ public class ContractServiceImpl implements ContractService {
             if(contract.getCustomer() != null) {
                 util.createNotification("CONTRACT", contract.getCustomer(), contract.getId(), "hủy");
             }
+        } else if(status.toString().equalsIgnoreCase("STAFFCANCELED")) {
+            contract.setStatus(status);
+
+            if(contract.getCustomer() != null) {
+                util.createNotification("CONTRACT", contract.getCustomer(), contract.getId(), "hủy");
+            }
         } else if(status.toString().equalsIgnoreCase("CONFIRMING")) {
             contract.setStatus(status);
 
