@@ -637,7 +637,7 @@ public class ContractServiceImpl implements ContractService {
     }
 
     @Override
-    public String changeContractStatus(String contractID, String reason, Status status) throws FirebaseMessagingException {
+    public String changeContractStatus(String contractID, Long staffID, String reason, Status status) throws FirebaseMessagingException {
         Optional<Contract> checkExisted = contractRepository.findById(contractID);
         if(checkExisted == null) {
             return "Không thể tìm thấy Hợp đồng có trạng thái WAITING với ID là " + contractID + ".";
@@ -652,6 +652,23 @@ public class ContractServiceImpl implements ContractService {
             }
         } else if(status.toString().equalsIgnoreCase("CUSTOMERCANCELED")) {
             contract.setStatus(status);
+
+            if(contract.getCustomer() != null) {
+                util.createNotification("CONTRACT", contract.getCustomer(), contract.getId(), "hủy");
+            }
+        } else if(status.toString().equalsIgnoreCase("CONFIRMING")) {
+            contract.setStatus(status);
+
+            if(staffID == null){
+                return "StaffID đang bị trống";
+            }
+            StoreEmployee staff = storeEmployeeRepository.findByAccount_IdAndStatus(staffID, Status.ACTIVE);
+            if(staff == null){
+                return "Không tìm thấy StoreEmployee với StaffID là " + staffID + ".";
+            }
+            contract.setStaff(staff.getAccount());
+
+            util.createNotification("CONTRACT", staff.getAccount(), contract.getId(), "giao cho bạn");
 
             if(contract.getCustomer() != null) {
                 util.createNotification("CONTRACT", contract.getCustomer(), contract.getId(), "hủy");

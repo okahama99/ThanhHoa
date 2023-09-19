@@ -42,7 +42,7 @@ public interface ContractService {
 
     String approveContract(ApproveContractModel approveContractModel) throws IOException, FirebaseMessagingException;
 
-    String changeContractStatus(String contractID, String reason, Status status) throws FirebaseMessagingException;
+    String changeContractStatus(String contractID, Long staffID, String reason, Status status) throws FirebaseMessagingException;
 
     String addContractIMG(String contractID, List<String> listURL) throws FirebaseMessagingException;
 

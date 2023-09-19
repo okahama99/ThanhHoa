@@ -344,6 +344,7 @@ public class ContractController {
 
     @PutMapping(value = "/changeContractStatus", produces = "application/json;charset=UTF-8")
     public ResponseEntity<Object> changeContractStatus(@RequestParam String contractID,
+                                                       @RequestParam(required = false) Long staffID,
                                                        @RequestParam(required = false) String reason,
                                                        @RequestParam String status,
                                                        HttpServletRequest request) throws Exception {
@@ -352,7 +353,7 @@ public class ContractController {
                 && !roleName.equalsIgnoreCase("Customer")) {
             throw new ResponseStatusException(HttpStatus.FORBIDDEN, "-----------------------------------Người dùng không có quyền truy cập---------------------------");
         }
-        String result = contractService.changeContractStatus(contractID, reason, Status.valueOf(status));
+        String result = contractService.changeContractStatus(contractID, staffID, reason, Status.valueOf(status));
         if(result.equals("Chỉnh sửa thành công.")) {
             return ResponseEntity.ok().body(result);
         } else {
