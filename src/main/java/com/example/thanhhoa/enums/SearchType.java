@@ -45,6 +45,13 @@ public class SearchType {
         STATUS
     }
 
+    public enum CONTRACT_STATUS{
+        WAITING,
+        CONFIRMING,
+        BOTH,
+        ELSE
+    }
+
     public enum CONTRACT_DETAIL{
         ID,
         STARTDATE,

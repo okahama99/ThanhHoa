@@ -103,6 +103,31 @@ public class ContractController {
         }
     }
 
+    @GetMapping(value = "/v2/getAllContractByStatus", produces = "application/json;charset=UTF-8")
+    public @ResponseBody
+    ResponseEntity<Object> getAllContractForOwner(@RequestParam SearchType.CONTRACT_STATUS choice,
+                                                  @RequestParam int pageNo,
+                                                  @RequestParam int pageSize,
+                                                  @RequestParam SearchType.CONTRACT sortBy,
+                                                  @RequestParam(required = false, defaultValue = "true") boolean sortAsc,
+                                                  HttpServletRequest request) {
+        String roleName = jwtUtil.getRoleNameFromRequest(request);
+        if(!roleName.equalsIgnoreCase("Manager")) {
+            throw new ResponseStatusException(HttpStatus.FORBIDDEN, "-----------------------------------Người dùng không có quyền truy cập---------------------------");
+        }
+
+        Pageable paging;
+        if(sortBy.toString().equalsIgnoreCase("CREATEDDATE")) {
+            paging = util.makePaging(pageNo, pageSize, "createdDate", sortAsc);
+        } else if(sortBy.toString().equalsIgnoreCase("ENDEDDATE")) {
+            paging = util.makePaging(pageNo, pageSize, "endedDate", sortAsc);
+        } else {
+            paging = util.makePaging(pageNo, pageSize, sortBy.toString().toLowerCase(), sortAsc);
+        }
+
+        return ResponseEntity.ok().body(contractService.getAllContractByStatus(choice.toString(), paging));
+    }
+
     @GetMapping(value = "/contractDetail/{contractID}", produces = "application/json;charset=UTF-8")
     public @ResponseBody
     List<ShowContractDetailModel> getContractDetailByContractID(@PathVariable("contractID") String contractID,
@@ -160,9 +185,9 @@ public class ContractController {
             paging = util.makePaging(pageNo, pageSize, sortBy.toString().toLowerCase(), sortAsc);
         }
 
-        if(timeWorking != null){
+        if(timeWorking != null) {
             return contractService.getAllContractDetailByCustomerIDAndTimeWorking(jwtUtil.getUserIDFromRequest(request), timeWorking, paging);
-        }else{
+        } else {
             return contractService.getAllContractDetailByCustomerID(jwtUtil.getUserIDFromRequest(request), paging);
         }
     }
