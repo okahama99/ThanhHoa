@@ -357,7 +357,7 @@ public class ContractServiceImpl implements ContractService {
             Double typePercentage = serviceType.getPercentage().doubleValue();
             Double packPercentage = servicePack.getPercentage().doubleValue();
 
-            totalPrice = (price * months) + ((price * typePercentage / 100) * months) - ((price * packPercentage / 100) * months);
+            totalPrice += (price * months) + ((price * typePercentage / 100) * months) - ((price * packPercentage / 100) * months);
             detail.setPrice(newestPrice.getPrice());
             detail.setStartDate(startDate);
             detail.setExpectedEndDate(endDate);
@@ -464,7 +464,7 @@ public class ContractServiceImpl implements ContractService {
             Double typePercentage = serviceType.getPercentage().doubleValue();
             Double packPercentage = servicePack.getPercentage().doubleValue();
 
-            totalPrice = (price * months) + ((price * typePercentage / 100) * months) - ((price * packPercentage / 100) * months);
+            totalPrice += (price * months) + ((price * typePercentage / 100) * months) - ((price * packPercentage / 100) * months);
             detail.setPrice(newestPrice.getPrice());
             detail.setStartDate(startDate);
             detail.setExpectedEndDate(endDate);
@@ -560,7 +560,7 @@ public class ContractServiceImpl implements ContractService {
             Double typePercentage = type.get().getPercentage().doubleValue();
             Double packPercentage = pack.get().getPercentage().doubleValue();
 
-            totalPrice = (price * months) + ((price * typePercentage / 100) * months) - ((price * packPercentage / 100) * months);
+            totalPrice += (price * months) + ((price * typePercentage / 100) * months) - ((price * packPercentage / 100) * months);
         }
 
         LocalDateTime minStartDate = Collections.min(startDateList);
