@@ -599,7 +599,6 @@ public class ContractServiceImpl implements ContractService {
         contract.setStaff(staff);
         contract.setApprovedDate(LocalDateTime.now(ZoneId.of("Asia/Ho_Chi_Minh")));
         contract.setStatus(Status.APPROVED);
-        userRepository.save(staff);
         contractRepository.save(contract);
 
         if(contract.getCustomer() != null) {
