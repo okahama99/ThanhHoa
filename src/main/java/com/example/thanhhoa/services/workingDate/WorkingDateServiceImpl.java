@@ -21,7 +21,6 @@ import java.time.DayOfWeek;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
-import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
@@ -80,6 +79,24 @@ public class WorkingDateServiceImpl implements WorkingDateService {
         workingDate.setStatus(Status.DONE);
         workingDateRepository.save(workingDate);
         return "Thêm thành công.";
+    }
+
+    @Override
+    public String updateWorkingDateStaffID(String workingDateID, Long staffID) {
+        Optional<WorkingDate> checkExisted = workingDateRepository.findById(workingDateID);
+        if(checkExisted == null) {
+            return "Không tìm thấy WorkingDate với ID là " + workingDateID + ".";
+        }
+        WorkingDate workingDate = checkExisted.get();
+
+        if(!workingDate.getStatus().toString().equalsIgnoreCase("WAITING") ||
+                !workingDate.getStatus().toString().equalsIgnoreCase("WORKING")) {
+            return " Chỉ có thể thay đổi WorkingDate với Status là WAITING hoặc WORKING.";
+        }
+
+        workingDate.setStaff(userRepository.getById(staffID));
+        workingDateRepository.save(workingDate);
+        return "Chỉnh sửa thành công.";
     }
 
     @Override
@@ -398,6 +415,83 @@ public class WorkingDateServiceImpl implements WorkingDateService {
     }
 
     @Override
+    public List<ShowWorkingDateModel> getByStaffID(Long userID) {
+        List<ShowWorkingDateModel> modelList = new ArrayList<>();
+        List<WorkingDate> workingDateList = workingDateRepository.findByStaff_Id(userID);
+        if(workingDateList == null) {
+            return null;
+        }
+
+        for(WorkingDate workingDate : workingDateList) {
+            ContractDetail detail = workingDate.getContractDetail();
+            ShowWorkingDateModel model = new ShowWorkingDateModel();
+            model.setId(workingDate.getId());
+            model.setWorkingDate(workingDate.getWorkingDate());
+            model.setStartWorking(workingDate.getStartWorking());
+            model.setEndWorking(workingDate.getEndWorking());
+            model.setStartWorkingIMG(workingDate.getStartWorkingIMG());
+            model.setEndWorkingIMG(workingDate.getEndWorkingIMG());
+            model.setStatus(workingDate.getStatus());
+            model.setContractDetailID(detail.getId());
+            model.setNote(detail.getNote());
+            model.setTimeWorking(detail.getTimeWorking());
+            model.setEndDate(detail.getEndDate());
+            model.setStartDate(detail.getStartDate());
+            model.setExpectedEndDate(detail.getExpectedEndDate());
+            model.setContractID(detail.getContract().getId());
+            model.setTitle(detail.getContract().getTitle());
+            model.setAddress(detail.getContract().getAddress());
+            model.setEmail(detail.getContract().getEmail());
+            model.setPhone(detail.getContract().getPhone());
+            model.setFullName(detail.getContract().getFullName());
+            model.setServiceID(detail.getServiceType().getService().getId());
+            model.setServiceName(detail.getServiceType().getService().getName());
+            model.setServiceTypeID(detail.getServiceType().getId());
+            model.setTypeName(detail.getServiceType().getName());
+            model.setTypeSize(detail.getServiceType().getSize());
+            model.setTypeUnit(detail.getServiceType().getUnit());
+            model.setTypePercentage(detail.getServiceType().getPercentage());
+            model.setTypeApplyDate(detail.getServiceType().getApplyDate());
+            model.setServicePackID(detail.getServicePack().getId());
+            model.setPackRange(detail.getServicePack().getRange());
+            model.setPackUnit(detail.getServicePack().getUnit());
+            model.setPackPercentage(detail.getServicePack().getPercentage());
+            model.setPackApplyDate(detail.getServicePack().getApplyDate());
+
+            ServicePrice newestPrice = servicePriceRepository.findFirstByService_IdAndStatusOrderByApplyDateDesc(detail.getServiceType().getService().getId(), Status.ACTIVE);
+
+//                // calculate month from date range
+//                Long monthsBetween = ChronoUnit.MONTHS.between(
+//                        detail.getStartDate().withDayOfMonth(1),
+//                        detail.getExpectedEndDate().withDayOfMonth(1));
+
+            Double months = util.getMonthsBetween(detail.getServicePack());
+            Double price = newestPrice.getPrice();
+            Double typePercentage = detail.getServiceType().getPercentage().doubleValue();
+            Double packPercentage = detail.getServicePack().getPercentage().doubleValue();
+
+            Double totalPrice = (price * months) + ((price * typePercentage / 100) * months) - ((price * packPercentage / 100) * months);
+            model.setTotalPrice(totalPrice);
+
+            //staff
+            ShowStaffModel staffModel = new ShowStaffModel();
+            if(workingDate.getStaff() != null) {
+                staffModel.setId(workingDate.getStaff().getId());
+                staffModel.setAddress(workingDate.getStaff().getAddress());
+                staffModel.setEmail(workingDate.getStaff().getEmail());
+                staffModel.setPhone(workingDate.getStaff().getPhone());
+                staffModel.setFullName(workingDate.getStaff().getFullName());
+                staffModel.setAvatar(workingDate.getStaff().getAvatar());
+            }
+
+            model.setShowStaffModel(staffModel);
+            modelList.add(model);
+        }
+
+        return modelList;
+    }
+
+    @Override
     public String generateWorkingSchedule(String contractDetailID) {
         Optional<ContractDetail> checkExisted = contractDetailRepository.findById(contractDetailID);
         if(checkExisted == null) {
@@ -485,6 +579,7 @@ public class WorkingDateServiceImpl implements WorkingDateService {
             workingDate.setWorkingDate(date);
             workingDate.setStatus(Status.WAITING);
             workingDate.setContractDetail(checkExisted.get());
+            workingDate.setStaff(checkExisted.get().getContract().getStaff());
             workingDateRepository.save(workingDate);
         }
         return "Tạo thành công.";

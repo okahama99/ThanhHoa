@@ -14,6 +14,8 @@ public interface WorkingDateService {
 
     String addEndWorkingDate(String workingDateID, String endWorkingIMG, Long staffID);
 
+    String updateWorkingDateStaffID(String workingDateID, Long staffID);
+
     List<ShowWorkingDateModel> getAllByContractDetailID(String contractDetailID, Pageable pageable);
 
     ShowWorkingDateModel getByID(String workingDateID);
@@ -23,6 +25,8 @@ public interface WorkingDateService {
     List<ShowWorkingDateModel> getByWorkingDate(String contractDetailID, LocalDateTime from, LocalDateTime to);
 
     List<ShowWorkingDateModel> getByWorkingDateInRange(Long userID, LocalDateTime from, LocalDateTime to, String roleName);
+
+    List<ShowWorkingDateModel> getByStaffID(Long userID);
 
     String generateWorkingSchedule(String contractDetailID);
 }
