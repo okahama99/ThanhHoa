@@ -132,12 +132,7 @@ public class WorkingDateServiceImpl implements WorkingDateService {
 
         ServicePrice newestPrice = servicePriceRepository.findFirstByService_IdAndStatusOrderByApplyDateDesc(detail.getServiceType().getService().getId(), Status.ACTIVE);
 
-        // calculate month from date range
-        Long monthsBetween = ChronoUnit.MONTHS.between(
-                detail.getStartDate().withDayOfMonth(1),
-                detail.getExpectedEndDate().withDayOfMonth(1));
-
-        Double months = monthsBetween.doubleValue();
+        Double months = util.getMonthsBetween(detail.getServicePack());
         Double price = newestPrice.getPrice();
         Double typePercentage = detail.getServiceType().getPercentage().doubleValue();
         Double packPercentage = detail.getServicePack().getPercentage().doubleValue();
@@ -207,12 +202,7 @@ public class WorkingDateServiceImpl implements WorkingDateService {
 
                 ServicePrice newestPrice = servicePriceRepository.findFirstByService_IdAndStatusOrderByApplyDateDesc(detail.getServiceType().getService().getId(), Status.ACTIVE);
 
-                // calculate month from date range
-                Long monthsBetween = ChronoUnit.MONTHS.between(
-                        detail.getStartDate().withDayOfMonth(1),
-                        detail.getExpectedEndDate().withDayOfMonth(1));
-
-                Double months = monthsBetween.doubleValue();
+                Double months = util.getMonthsBetween(detail.getServicePack());
                 Double price = newestPrice.getPrice();
                 Double typePercentage = detail.getServiceType().getPercentage().doubleValue();
                 Double packPercentage = detail.getServicePack().getPercentage().doubleValue();
@@ -288,12 +278,12 @@ public class WorkingDateServiceImpl implements WorkingDateService {
 
             ServicePrice newestPrice = servicePriceRepository.findFirstByService_IdAndStatusOrderByApplyDateDesc(detail.getServiceType().getService().getId(), Status.ACTIVE);
 
-            // calculate month from date range
-            Long monthsBetween = ChronoUnit.MONTHS.between(
-                    detail.getStartDate().withDayOfMonth(1),
-                    detail.getExpectedEndDate().withDayOfMonth(1));
+//            // calculate month from date range
+//            Long monthsBetween = ChronoUnit.MONTHS.between(
+//                    detail.getStartDate().withDayOfMonth(1),
+//                    detail.getExpectedEndDate().withDayOfMonth(1));
 
-            Double months = monthsBetween.doubleValue();
+            Double months = util.getMonthsBetween(detail.getServicePack());
             Double price = newestPrice.getPrice();
             Double typePercentage = detail.getServiceType().getPercentage().doubleValue();
             Double packPercentage = detail.getServicePack().getPercentage().doubleValue();
@@ -376,12 +366,12 @@ public class WorkingDateServiceImpl implements WorkingDateService {
 
                 ServicePrice newestPrice = servicePriceRepository.findFirstByService_IdAndStatusOrderByApplyDateDesc(detail.getServiceType().getService().getId(), Status.ACTIVE);
 
-                // calculate month from date range
-                Long monthsBetween = ChronoUnit.MONTHS.between(
-                        detail.getStartDate().withDayOfMonth(1),
-                        detail.getExpectedEndDate().withDayOfMonth(1));
+//                // calculate month from date range
+//                Long monthsBetween = ChronoUnit.MONTHS.between(
+//                        detail.getStartDate().withDayOfMonth(1),
+//                        detail.getExpectedEndDate().withDayOfMonth(1));
 
-                Double months = monthsBetween.doubleValue();
+                Double months = util.getMonthsBetween(detail.getServicePack());
                 Double price = newestPrice.getPrice();
                 Double typePercentage = detail.getServiceType().getPercentage().doubleValue();
                 Double packPercentage = detail.getServicePack().getPercentage().doubleValue();
@@ -420,7 +410,7 @@ public class WorkingDateServiceImpl implements WorkingDateService {
         }
 
         LocalDate from = checkExisted.get().getStartDate().toLocalDate();
-        LocalDate to = checkExisted.get().getEndDate().toLocalDate();
+        LocalDate to = checkExisted.get().getExpectedEndDate().toLocalDate();
 
         List<LocalDateTime> dateTimeList = new ArrayList<>();
         String[] timeWorkingArr;

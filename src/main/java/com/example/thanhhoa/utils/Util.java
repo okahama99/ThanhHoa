@@ -47,6 +47,7 @@ import com.example.thanhhoa.entities.PlantShipPrice;
 import com.example.thanhhoa.entities.Report;
 import com.example.thanhhoa.entities.Service;
 import com.example.thanhhoa.entities.ServiceIMG;
+import com.example.thanhhoa.entities.ServicePack;
 import com.example.thanhhoa.entities.ServicePrice;
 import com.example.thanhhoa.entities.ServiceType;
 import com.example.thanhhoa.entities.StoreEmployee;
@@ -210,12 +211,12 @@ public class Util {
 
                     ServicePrice newestPrice = servicePriceRepository.findFirstByService_IdAndStatusOrderByApplyDateDesc(detail.getServiceType().getService().getId(), Status.ACTIVE);
 
-                    // calculate month from date range
-                    Long monthsBetween = ChronoUnit.MONTHS.between(
-                            detail.getStartDate().withDayOfMonth(1),
-                            detail.getExpectedEndDate().withDayOfMonth(1));
+//                    // calculate month from date range
+//                    Long monthsBetween = ChronoUnit.MONTHS.between(
+//                            detail.getStartDate().withDayOfMonth(1),
+//                            detail.getExpectedEndDate().withDayOfMonth(1));
 
-                    Double months = monthsBetween.doubleValue();
+                    Double months = getMonthsBetween(detail.getServicePack());
                     Double price = newestPrice.getPrice();
                     Double typePercentage = detail.getServiceType().getPercentage().doubleValue();
                     Double packPercentage = detail.getServicePack().getPercentage().doubleValue();
@@ -1129,12 +1130,12 @@ public class Util {
                     model.setExpectedEndDate(detail.getExpectedEndDate());
                     model.setStartDate(detail.getStartDate());
 
-                    // calculate month from date range
-                    Long monthsBetween = ChronoUnit.MONTHS.between(
-                            detail.getStartDate().withDayOfMonth(1),
-                            detail.getExpectedEndDate().withDayOfMonth(1));
+//                    // calculate month from date range
+//                    Long monthsBetween = ChronoUnit.MONTHS.between(
+//                            detail.getStartDate().withDayOfMonth(1),
+//                            detail.getExpectedEndDate().withDayOfMonth(1));
 
-                    Double months = monthsBetween.doubleValue();
+                    Double months = getMonthsBetween(detail.getServicePack());
                     Double price = detail.getPrice();
                     Double typePercentage = detail.getServiceType().getPercentage().doubleValue();
                     Double packPercentage = detail.getServicePack().getPercentage().doubleValue();
@@ -1858,6 +1859,18 @@ public class Util {
             return modelResult.getContent();
         } else {
             return new ArrayList<>();
+        }
+    }
+
+    public Double getMonthsBetween(ServicePack pack){
+        switch(pack.getUnit().toLowerCase()){
+            case "tháng":
+                return Double.parseDouble(pack.getRange());
+
+            case "năm":
+                return Double.parseDouble(pack.getRange()) * 12;
+            default:
+                return null;
         }
     }
 

@@ -163,14 +163,10 @@ public class ContractServiceImpl implements ContractService {
                 model.setStartDate(detail.getStartDate());
                 model.setExpectedEndDate(detail.getExpectedEndDate());
 
-                // calculate month from date range
-                Long monthsBetween = ChronoUnit.MONTHS.between(
-                        detail.getStartDate().withDayOfMonth(1),
-                        detail.getEndDate().withDayOfMonth(1));
                 Double price = detail.getPrice();
                 Double typePercentage = detail.getServiceType().getPercentage().doubleValue();
                 Double packPercentage = detail.getServicePack().getPercentage().doubleValue();
-                Double months = monthsBetween.doubleValue();
+                Double months = util.getMonthsBetween(detail.getServicePack());
                 Double totalPrice = (price * months) + ((price * typePercentage / 100) * months) - ((price * packPercentage / 100) * months);
                 model.setTotalPrice(totalPrice);
                 model.setPrice(model.getPrice());
@@ -347,12 +343,7 @@ public class ContractServiceImpl implements ContractService {
 
             ServicePrice newestPrice = servicePriceRepository.findFirstByService_IdAndStatusOrderByApplyDateDesc(serviceType.getService().getId(), Status.ACTIVE);
 
-            // calculate month from date range
-            Long monthsBetween = ChronoUnit.MONTHS.between(
-                    startDate.withDayOfMonth(1),
-                    endDate.withDayOfMonth(1));
-
-            Double months = monthsBetween.doubleValue();
+            Double months = util.getMonthsBetween(servicePack);
             Double price = newestPrice.getPrice();
             Double typePercentage = serviceType.getPercentage().doubleValue();
             Double packPercentage = servicePack.getPercentage().doubleValue();
@@ -454,12 +445,7 @@ public class ContractServiceImpl implements ContractService {
 
             ServicePrice newestPrice = servicePriceRepository.findFirstByService_IdAndStatusOrderByApplyDateDesc(serviceType.getService().getId(), Status.ACTIVE);
 
-            // calculate month from date range
-            Long monthsBetween = ChronoUnit.MONTHS.between(
-                    startDate.withDayOfMonth(1),
-                    endDate.withDayOfMonth(1));
-
-            Double months = monthsBetween.doubleValue();
+            Double months = util.getMonthsBetween(servicePack);
             Double price = newestPrice.getPrice();
             Double typePercentage = serviceType.getPercentage().doubleValue();
             Double packPercentage = servicePack.getPercentage().doubleValue();
@@ -540,11 +526,6 @@ public class ContractServiceImpl implements ContractService {
         for(ContractDetail contractDetail : contract.getContractDetailList()) {
             startDateList.add(contractDetail.getStartDate());
 
-            // calculate month from date range
-            Long monthsBetween = ChronoUnit.MONTHS.between(
-                    contractDetail.getStartDate().withDayOfMonth(1),
-                    contractDetail.getEndDate().withDayOfMonth(1));
-
             Optional<ServiceType> type = serviceTypeRepository.findById(contractDetail.getServiceType().getService().getId());
             if(type == null) {
                 return "Không tìm thấy ServiceType của Service có ID là " + contractDetail.getServiceType().getService().getId() + ".";
@@ -555,7 +536,7 @@ public class ContractServiceImpl implements ContractService {
                 return "Không tìm thấy ServicePack của Service có ID là " + contractDetail.getServiceType().getService().getId() + ".";
             }
 
-            Double months = monthsBetween.doubleValue();
+            Double months = util.getMonthsBetween(pack.get());
             Double price = contractDetail.getPrice();
             Double typePercentage = type.get().getPercentage().doubleValue();
             Double packPercentage = pack.get().getPercentage().doubleValue();
@@ -913,12 +894,7 @@ public class ContractServiceImpl implements ContractService {
 
             ServicePrice newestPrice = servicePriceRepository.findFirstByService_IdAndStatusOrderByApplyDateDesc(detail.getServiceType().getService().getId(), Status.ACTIVE);
 
-            // calculate month from date range
-            Long monthsBetween = ChronoUnit.MONTHS.between(
-                    detail.getStartDate().withDayOfMonth(1),
-                    detail.getExpectedEndDate().withDayOfMonth(1));
-
-            Double months = monthsBetween.doubleValue();
+            Double months = util.getMonthsBetween(detail.getServicePack());
             Double price = newestPrice.getPrice();
             Double typePercentage = detail.getServiceType().getPercentage().doubleValue();
             Double packPercentage = detail.getServicePack().getPercentage().doubleValue();
@@ -1051,12 +1027,7 @@ public class ContractServiceImpl implements ContractService {
 
             ServicePrice newestPrice = servicePriceRepository.findFirstByService_IdAndStatusOrderByApplyDateDesc(detail.getServiceType().getService().getId(), Status.ACTIVE);
 
-            // calculate month from date range
-            Long monthsBetween = ChronoUnit.MONTHS.between(
-                    detail.getStartDate().withDayOfMonth(1),
-                    detail.getExpectedEndDate().withDayOfMonth(1));
-
-            Double months = monthsBetween.doubleValue();
+            Double months = util.getMonthsBetween(detail.getServicePack());
             Double price = newestPrice.getPrice();
             Double typePercentage = detail.getServiceType().getPercentage().doubleValue();
             Double packPercentage = detail.getServicePack().getPercentage().doubleValue();
