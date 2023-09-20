@@ -659,6 +659,7 @@ public class ContractServiceImpl implements ContractService {
                 util.createNotification("CONTRACT", contract.getCustomer(), contract.getId(), "hủy");
             }
         } else if(status.toString().equalsIgnoreCase("CONFIRMING")) {
+            contract.setApprovedDate(LocalDateTime.now(ZoneId.of("Asia/Ho_Chi_Minh")));
             contract.setStatus(status);
 
             if(staffID == null) {
