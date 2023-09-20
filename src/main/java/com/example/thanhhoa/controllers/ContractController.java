@@ -322,7 +322,7 @@ public class ContractController {
                                                  @RequestParam List<String> listURL,
                                                  HttpServletRequest request) throws Exception {
         String roleName = jwtUtil.getRoleNameFromRequest(request);
-        if(!roleName.equalsIgnoreCase("Manager")) {
+        if(!roleName.equalsIgnoreCase("Staff")) {
             throw new ResponseStatusException(HttpStatus.FORBIDDEN, "-----------------------------------Người dùng không có quyền truy cập---------------------------");
         }
         return ResponseEntity.ok().body(contractService.addContractIMG(contractID, listURL));

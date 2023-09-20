@@ -622,6 +622,10 @@ public class ContractServiceImpl implements ContractService {
 
         contractRepository.save(contract);
 
+        for(ContractDetail detail : contract.getContractDetailList()) {
+            workingDateService.generateWorkingSchedule(detail.getId());
+        }
+
         if(contract.getCustomer() != null) {
             util.createNotification("CONTRACT", contract.getCustomer(), contract.getId(), "ký tên");
         }
