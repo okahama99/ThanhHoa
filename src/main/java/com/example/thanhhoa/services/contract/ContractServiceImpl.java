@@ -359,8 +359,6 @@ public class ContractServiceImpl implements ContractService {
             detail.setContract(contract);
             detail.setServicePack(servicePack);
             detail.setServiceType(serviceType);
-            detail.setPlantStatus(model.getPlantStatus());
-            detail.setPlantIMG(model.getPlantIMG());
             contractDetailRepository.save(detail);
         }
 
@@ -463,8 +461,6 @@ public class ContractServiceImpl implements ContractService {
             detail.setContract(contract);
             detail.setServicePack(servicePack);
             detail.setServiceType(serviceType);
-            detail.setPlantStatus(model.getPlantStatus());
-            detail.setPlantIMG(model.getPlantIMG());
             contractDetailRepository.save(detail);
         }
 

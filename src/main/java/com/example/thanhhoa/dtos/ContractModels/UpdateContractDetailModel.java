@@ -3,6 +3,7 @@ package com.example.thanhhoa.dtos.ContractModels;
 import lombok.Getter;
 import lombok.Setter;
 
+import javax.annotation.Nullable;
 import java.io.Serializable;
 
 @Getter
@@ -14,6 +15,8 @@ public class UpdateContractDetailModel implements Serializable {
     private String startDate;
     private String servicePackID;
     private String serviceTypeID;
+    @Nullable
     private String plantStatus;
+    @Nullable
     private String plantIMG;
 }
