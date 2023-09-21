@@ -127,6 +127,8 @@ public class WorkingDateServiceImpl implements WorkingDateService {
         model.setEndDate(detail.getEndDate());
         model.setStartDate(detail.getStartDate());
         model.setExpectedEndDate(detail.getExpectedEndDate());
+        model.setPlantStatus(detail.getPlantStatus());
+        model.setPlantIMG(detail.getPlantIMG());
         model.setContractID(detail.getContract().getId());
         model.setTitle(detail.getContract().getTitle());
         model.setAddress(detail.getContract().getAddress());
@@ -197,6 +199,8 @@ public class WorkingDateServiceImpl implements WorkingDateService {
                 model.setEndDate(detail.getEndDate());
                 model.setStartDate(detail.getStartDate());
                 model.setExpectedEndDate(detail.getExpectedEndDate());
+                model.setPlantStatus(detail.getPlantStatus());
+                model.setPlantIMG(detail.getPlantIMG());
                 model.setContractID(detail.getContract().getId());
                 model.setTitle(detail.getContract().getTitle());
                 model.setAddress(detail.getContract().getAddress());
@@ -273,6 +277,8 @@ public class WorkingDateServiceImpl implements WorkingDateService {
             model.setEndDate(detail.getEndDate());
             model.setStartDate(detail.getStartDate());
             model.setExpectedEndDate(detail.getExpectedEndDate());
+            model.setPlantStatus(detail.getPlantStatus());
+            model.setPlantIMG(detail.getPlantIMG());
             model.setContractID(detail.getContract().getId());
             model.setTitle(detail.getContract().getTitle());
             model.setAddress(detail.getContract().getAddress());
@@ -361,6 +367,8 @@ public class WorkingDateServiceImpl implements WorkingDateService {
                 model.setEndDate(detail.getEndDate());
                 model.setStartDate(detail.getStartDate());
                 model.setExpectedEndDate(detail.getExpectedEndDate());
+                model.setPlantStatus(detail.getPlantStatus());
+                model.setPlantIMG(detail.getPlantIMG());
                 model.setContractID(detail.getContract().getId());
                 model.setTitle(detail.getContract().getTitle());
                 model.setAddress(detail.getContract().getAddress());
@@ -438,6 +446,8 @@ public class WorkingDateServiceImpl implements WorkingDateService {
             model.setEndDate(detail.getEndDate());
             model.setStartDate(detail.getStartDate());
             model.setExpectedEndDate(detail.getExpectedEndDate());
+            model.setPlantStatus(detail.getPlantStatus());
+            model.setPlantIMG(detail.getPlantIMG());
             model.setContractID(detail.getContract().getId());
             model.setTitle(detail.getContract().getTitle());
             model.setAddress(detail.getContract().getAddress());

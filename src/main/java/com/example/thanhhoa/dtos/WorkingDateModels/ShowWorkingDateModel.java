@@ -31,6 +31,8 @@ public class ShowWorkingDateModel implements Serializable {
     private LocalDateTime endDate;
     private LocalDateTime expectedEndDate;
     private Double totalPrice;
+    private String plantStatus;
+    private String plantIMG;
     private String serviceID;
     private String serviceName;
     private String serviceTypeID;

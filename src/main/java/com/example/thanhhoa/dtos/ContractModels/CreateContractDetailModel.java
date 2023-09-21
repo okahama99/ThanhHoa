@@ -14,4 +14,6 @@ public class CreateContractDetailModel implements Serializable {
     private String serviceTypeID;
     private String startDate;
     private String endDate;
+    private String plantStatus;
+    private String plantIMG;
 }

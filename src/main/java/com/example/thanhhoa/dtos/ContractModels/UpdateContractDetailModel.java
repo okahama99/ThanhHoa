@@ -14,4 +14,6 @@ public class UpdateContractDetailModel implements Serializable {
     private String startDate;
     private String servicePackID;
     private String serviceTypeID;
+    private String plantStatus;
+    private String plantIMG;
 }

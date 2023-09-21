@@ -35,6 +35,12 @@ public class ContractDetail implements Serializable {
     @Column
     private Double price;
 
+    @Column
+    private String plantStatus;
+
+    @Column
+    private String plantIMG;
+
     @ManyToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     @JoinColumn(name = "contract_id")
     private Contract contract;

@@ -189,6 +189,8 @@ public class Util {
                     model.setEndDate(detail.getEndDate());
                     model.setStartDate(detail.getStartDate());
                     model.setExpectedEndDate(detail.getExpectedEndDate());
+                    model.setPlantStatus(detail.getPlantStatus());
+                    model.setPlantIMG(detail.getPlantIMG());
                     model.setContractID(detail.getContract().getId());
                     model.setTitle(detail.getContract().getTitle());
                     model.setAddress(detail.getContract().getAddress());
@@ -1128,6 +1130,8 @@ public class Util {
                     model.setTimeWorking(detail.getTimeWorking());
                     model.setEndDate(detail.getEndDate());
                     model.setExpectedEndDate(detail.getExpectedEndDate());
+                    model.setPlantStatus(detail.getPlantStatus());
+                    model.setPlantIMG(detail.getPlantIMG());
                     model.setStartDate(detail.getStartDate());
 
 //                    // calculate month from date range

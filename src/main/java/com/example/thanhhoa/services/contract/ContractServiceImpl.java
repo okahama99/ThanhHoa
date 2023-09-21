@@ -162,6 +162,8 @@ public class ContractServiceImpl implements ContractService {
                 model.setEndDate(detail.getEndDate());
                 model.setStartDate(detail.getStartDate());
                 model.setExpectedEndDate(detail.getExpectedEndDate());
+                model.setPlantStatus(detail.getPlantStatus());
+                model.setPlantIMG(detail.getPlantIMG());
 
                 Double price = detail.getPrice();
                 Double typePercentage = detail.getServiceType().getPercentage().doubleValue();
@@ -357,6 +359,8 @@ public class ContractServiceImpl implements ContractService {
             detail.setContract(contract);
             detail.setServicePack(servicePack);
             detail.setServiceType(serviceType);
+            detail.setPlantStatus(model.getPlantStatus());
+            detail.setPlantIMG(model.getPlantIMG());
             contractDetailRepository.save(detail);
         }
 
@@ -459,29 +463,30 @@ public class ContractServiceImpl implements ContractService {
             detail.setContract(contract);
             detail.setServicePack(servicePack);
             detail.setServiceType(serviceType);
+            detail.setPlantStatus(model.getPlantStatus());
+            detail.setPlantIMG(model.getPlantIMG());
             contractDetailRepository.save(detail);
-            workingDateService.generateWorkingSchedule(detail.getId());
         }
 
-        for(String imageURL : createManagerContractModel.getListURL()) {
-            ContractIMG contractIMG = new ContractIMG();
-            ContractIMG lastContractIMG = contractIMGRepository.findFirstByOrderByIdDesc();
-            if(lastContractIMG == null) {
-                contractIMG.setId(util.createNewID("CIMG"));
-            } else {
-                contractIMG.setId(util.createIDFromLastID("CIMG", 4, lastContractIMG.getId()));
-            }
-            contractIMG.setContract(contract);
-            contractIMG.setImgURL(imageURL);
-            contractIMGRepository.save(contractIMG);
-        }
+//        for(String imageURL : createManagerContractModel.getListURL()) {
+//            ContractIMG contractIMG = new ContractIMG();
+//            ContractIMG lastContractIMG = contractIMGRepository.findFirstByOrderByIdDesc();
+//            if(lastContractIMG == null) {
+//                contractIMG.setId(util.createNewID("CIMG"));
+//            } else {
+//                contractIMG.setId(util.createIDFromLastID("CIMG", 4, lastContractIMG.getId()));
+//            }
+//            contractIMG.setContract(contract);
+//            contractIMG.setImgURL(imageURL);
+//            contractIMGRepository.save(contractIMG);
+//        }
 
         LocalDateTime startDate = Collections.min(startDateList);
         LocalDateTime endDate = Collections.max(endDateList);
         contract.setStartedDate(startDate);
         contract.setExpectedEndedDate(endDate);
         contract.setTotal(totalPrice);
-        contract.setStatus(Status.SIGNED);
+        contract.setStatus(Status.CONFIRMING);
         contract.setIsSigned(true);
         userRepository.save(staff);
         contractRepository.save(contract);
@@ -518,6 +523,8 @@ public class ContractServiceImpl implements ContractService {
         detail.setStartDate(startDate);
         detail.setServiceType(serviceType);
         detail.setServicePack(servicePack);
+        detail.setPlantStatus(updateContractDetailModel.getPlantStatus());
+        detail.setPlantIMG(updateContractDetailModel.getPlantIMG());
         contractDetailRepository.save(detail);
 
         Contract contract = detail.getContract();
@@ -896,6 +903,8 @@ public class ContractServiceImpl implements ContractService {
             model.setEndDate(detail.getEndDate());
             model.setStartDate(detail.getStartDate());
             model.setExpectedEndDate(detail.getExpectedEndDate());
+            model.setPlantStatus(detail.getPlantStatus());
+            model.setPlantIMG(detail.getPlantIMG());
 
             ServicePrice newestPrice = servicePriceRepository.findFirstByService_IdAndStatusOrderByApplyDateDesc(detail.getServiceType().getService().getId(), Status.ACTIVE);
 
@@ -1029,6 +1038,8 @@ public class ContractServiceImpl implements ContractService {
             model.setEndDate(detail.getEndDate());
             model.setStartDate(detail.getStartDate());
             model.setExpectedEndDate(detail.getExpectedEndDate());
+            model.setPlantStatus(detail.getPlantStatus());
+            model.setPlantIMG(detail.getPlantIMG());
 
             ServicePrice newestPrice = servicePriceRepository.findFirstByService_IdAndStatusOrderByApplyDateDesc(detail.getServiceType().getService().getId(), Status.ACTIVE);
 
