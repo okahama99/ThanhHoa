@@ -89,7 +89,7 @@ public class WorkingDateServiceImpl implements WorkingDateService {
         }
         WorkingDate workingDate = checkExisted.get();
 
-        if(!workingDate.getStatus().toString().equalsIgnoreCase("WAITING") ||
+        if(!workingDate.getStatus().toString().equalsIgnoreCase("WAITING") &&
                 !workingDate.getStatus().toString().equalsIgnoreCase("WORKING")) {
             return " Chỉ có thể thay đổi WorkingDate với Status là WAITING hoặc WORKING.";
         }
