@@ -595,7 +595,7 @@ public class ContractServiceImpl implements ContractService {
 
     @Override
     public String addContractIMG(String contractID, List<String> listURL) throws FirebaseMessagingException {
-        Contract contract = contractRepository.findByIdAndStatus(contractID, Status.APPROVED);
+        Contract contract = contractRepository.findByIdAndStatus(contractID, Status.CONFIRMING);
         if(contract == null) {
             return "Không thể tìm thấy Hợp đồng có trạng thái APPROVED với ID là " + contractID + ".";
         }
