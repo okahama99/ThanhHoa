@@ -165,6 +165,7 @@ public class ContractServiceImpl implements ContractService {
                 model.setExpectedEndDate(detail.getExpectedEndDate());
                 model.setPlantStatus(detail.getPlantStatus());
                 model.setPlantIMG(detail.getPlantIMG());
+                model.setPrice(detail.getPrice());
 
                 Double price = detail.getPrice();
                 Double typePercentage = detail.getServiceType().getPercentage().doubleValue();
@@ -903,6 +904,7 @@ public class ContractServiceImpl implements ContractService {
             model.setExpectedEndDate(detail.getExpectedEndDate());
             model.setPlantStatus(detail.getPlantStatus());
             model.setPlantIMG(detail.getPlantIMG());
+            model.setPrice(detail.getPrice());
 
             ServicePrice newestPrice = servicePriceRepository.findFirstByService_IdAndStatusOrderByApplyDateDesc(detail.getServiceType().getService().getId(), Status.ACTIVE);
 
@@ -1039,6 +1041,7 @@ public class ContractServiceImpl implements ContractService {
             model.setExpectedEndDate(detail.getExpectedEndDate());
             model.setPlantStatus(detail.getPlantStatus());
             model.setPlantIMG(detail.getPlantIMG());
+            model.setPrice(detail.getPrice());
 
             ServicePrice newestPrice = servicePriceRepository.findFirstByService_IdAndStatusOrderByApplyDateDesc(detail.getServiceType().getService().getId(), Status.ACTIVE);
 

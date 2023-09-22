@@ -1134,6 +1134,7 @@ public class Util {
                     model.setPlantStatus(detail.getPlantStatus());
                     model.setPlantIMG(detail.getPlantIMG());
                     model.setStartDate(detail.getStartDate());
+                    model.setPrice(detail.getPrice());
 
 //                    // calculate month from date range
 //                    Long monthsBetween = ChronoUnit.MONTHS.between(
