@@ -17,6 +17,7 @@ public class ShowWorkingDateModel implements Serializable {
     private LocalDateTime endWorking;
     private String startWorkingIMG;
     private String endWorkingIMG;
+    private Boolean isReported;
     private Status status;
     private String contractID;
     private String title;

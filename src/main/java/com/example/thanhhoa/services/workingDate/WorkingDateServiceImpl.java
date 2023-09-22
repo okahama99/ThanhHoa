@@ -116,6 +116,7 @@ public class WorkingDateServiceImpl implements WorkingDateService {
         ShowWorkingDateModel model = new ShowWorkingDateModel();
         model.setId(workingDate.getId());
         model.setWorkingDate(workingDate.getWorkingDate());
+        model.setIsReported(workingDate.getIsReported());
         model.setStartWorking(workingDate.getStartWorking());
         model.setEndWorking(workingDate.getEndWorking());
         model.setStartWorkingIMG(workingDate.getStartWorkingIMG());
@@ -187,6 +188,7 @@ public class WorkingDateServiceImpl implements WorkingDateService {
                 ShowWorkingDateModel model = new ShowWorkingDateModel();
                 model.setId(workingDate.getId());
                 model.setWorkingDate(workingDate.getWorkingDate());
+                model.setIsReported(workingDate.getIsReported());
                 model.setStatus(workingDate.getStatus());
                 model.setStartWorking(workingDate.getStartWorking());
                 model.setEndWorking(workingDate.getEndWorking());
@@ -266,6 +268,7 @@ public class WorkingDateServiceImpl implements WorkingDateService {
             ShowWorkingDateModel model = new ShowWorkingDateModel();
             model.setId(workingDate.getId());
             model.setWorkingDate(workingDate.getWorkingDate());
+            model.setIsReported(workingDate.getIsReported());
             model.setStartWorking(workingDate.getStartWorking());
             model.setEndWorking(workingDate.getEndWorking());
             model.setStartWorkingIMG(workingDate.getStartWorkingIMG());
@@ -356,6 +359,7 @@ public class WorkingDateServiceImpl implements WorkingDateService {
                 ShowWorkingDateModel model = new ShowWorkingDateModel();
                 model.setId(workingDate.getId());
                 model.setWorkingDate(workingDate.getWorkingDate());
+                model.setIsReported(workingDate.getIsReported());
                 model.setStartWorking(workingDate.getStartWorking());
                 model.setEndWorking(workingDate.getEndWorking());
                 model.setStartWorkingIMG(workingDate.getStartWorkingIMG());
@@ -435,6 +439,7 @@ public class WorkingDateServiceImpl implements WorkingDateService {
             ShowWorkingDateModel model = new ShowWorkingDateModel();
             model.setId(workingDate.getId());
             model.setWorkingDate(workingDate.getWorkingDate());
+            model.setIsReported(workingDate.getIsReported());
             model.setStartWorking(workingDate.getStartWorking());
             model.setEndWorking(workingDate.getEndWorking());
             model.setStartWorkingIMG(workingDate.getStartWorkingIMG());
@@ -588,6 +593,7 @@ public class WorkingDateServiceImpl implements WorkingDateService {
             }
             workingDate.setWorkingDate(date);
             workingDate.setStatus(Status.WAITING);
+            workingDate.setIsReported(false);
             workingDate.setContractDetail(checkExisted.get());
             workingDate.setStaff(checkExisted.get().getContract().getStaff());
             workingDateRepository.save(workingDate);

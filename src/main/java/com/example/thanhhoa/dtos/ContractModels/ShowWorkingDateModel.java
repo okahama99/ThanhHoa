@@ -12,5 +12,6 @@ import java.time.LocalDateTime;
 public class ShowWorkingDateModel implements Serializable {
     private String id;
     private LocalDateTime workingDate;
+    private Boolean isReported;
     private Status status;
 }

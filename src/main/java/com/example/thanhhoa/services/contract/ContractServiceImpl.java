@@ -152,6 +152,7 @@ public class ContractServiceImpl implements ContractService {
                     ShowWorkingDateModel model = new ShowWorkingDateModel();
                     model.setId(workingDate.getId());
                     model.setWorkingDate(workingDate.getWorkingDate());
+                    model.setIsReported(workingDate.getIsReported());
                     model.setStatus(workingDate.getStatus());
                     dateModelList.add(model);
                 }
@@ -889,6 +890,7 @@ public class ContractServiceImpl implements ContractService {
                 ShowWorkingDateModel model = new ShowWorkingDateModel();
                 model.setId(workingDate.getId());
                 model.setWorkingDate(workingDate.getWorkingDate());
+                model.setIsReported(workingDate.getIsReported());
                 model.setStatus(workingDate.getStatus());
                 dateModelList.add(model);
             }
@@ -1024,6 +1026,7 @@ public class ContractServiceImpl implements ContractService {
                 ShowWorkingDateModel model = new ShowWorkingDateModel();
                 model.setId(workingDate.getId());
                 model.setWorkingDate(workingDate.getWorkingDate());
+                model.setIsReported(workingDate.getIsReported());
                 model.setStatus(workingDate.getStatus());
                 dateModelList.add(model);
             }

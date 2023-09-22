@@ -137,6 +137,9 @@ public class ReportServiceImpl implements ReportService {
         report.setDescription(createReportModel.getDescription());
         report.setCustomer(customer);
         report.setWorkingDate(checkExisted.get());
+
+        checkExisted.get().setIsReported(true);
+        workingDateRepository.save(checkExisted.get());
         reportRepository.save(report);
 
         StoreEmployee manager = storeEmployeeRepository.findByStore_IdAndAccount_Role_RoleName("S002", "Manager");
@@ -172,6 +175,11 @@ public class ReportServiceImpl implements ReportService {
         }
         Report report = checkExisted.get();
         report.setStatus(Status.INACTIVE);
+
+        WorkingDate workingDate = report.getWorkingDate();
+        workingDate.setIsReported(false);
+
+        workingDateRepository.save(workingDate);
         reportRepository.save(report);
         return "Xóa thành công.";
     }
@@ -196,6 +204,11 @@ public class ReportServiceImpl implements ReportService {
             }
             report.setStatus(status);
             report.setReason(reason);
+
+            WorkingDate workingDate = report.getWorkingDate();
+            workingDate.setIsReported(false);
+
+            workingDateRepository.save(workingDate);
             reportRepository.save(report);
 
             util.createNotification("REPORT", report.getCustomer(), report.getId(), "từ chối");

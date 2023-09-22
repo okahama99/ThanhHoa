@@ -177,6 +177,7 @@ public class Util {
                     ShowWorkingDateModel model = new ShowWorkingDateModel();
                     model.setId(workingDate.getId());
                     model.setWorkingDate(workingDate.getWorkingDate());
+                    model.setIsReported(workingDate.getIsReported());
                     model.setStartWorking(workingDate.getStartWorking());
                     model.setEndWorking(workingDate.getEndWorking());
                     model.setStartWorkingIMG(workingDate.getStartWorkingIMG());
@@ -1120,6 +1121,7 @@ public class Util {
                         com.example.thanhhoa.dtos.ContractModels.ShowWorkingDateModel model = new com.example.thanhhoa.dtos.ContractModels.ShowWorkingDateModel();
                         model.setId(workingDate.getId());
                         model.setWorkingDate(workingDate.getWorkingDate());
+                        model.setIsReported(workingDate.getIsReported());
                         model.setStatus(workingDate.getStatus());
                         dateModelList.add(model);
                     }
