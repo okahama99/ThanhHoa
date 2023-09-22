@@ -9,5 +9,5 @@ import java.io.Serializable;
 @Setter
 public class CreateReportModel implements Serializable {
     private String description;
-    private String contractDetailID;
+    private String workingDateID;
 }

@@ -32,6 +32,9 @@ public class WorkingDate implements Serializable {
     @Column
     private String endWorkingIMG;
 
+    @Column
+    private Boolean isReported = false;
+
     @Enumerated(EnumType.STRING)
     private Status status;
 

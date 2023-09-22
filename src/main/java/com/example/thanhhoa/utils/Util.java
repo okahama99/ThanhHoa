@@ -83,7 +83,6 @@ import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
-import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -1572,11 +1571,13 @@ public class Util {
                     ShowReportModel model = new ShowReportModel();
                     model.setId(report.getId());
                     model.setCreatedDate(report.getCreatedDate());
-                    model.setContractDetailID(report.getContractDetail().getId());
-                    model.setServiceTypeID(report.getContractDetail().getServiceType().getId());
-                    model.setServiceTypeName(report.getContractDetail().getServiceType().getName());
-                    model.setServiceID(report.getContractDetail().getServiceType().getService().getId());
-                    model.setServiceName(report.getContractDetail().getServiceType().getService().getName());
+                    model.setWorkingDateID(report.getWorkingDate().getId());
+                    model.setWorkingDate(report.getWorkingDate().getWorkingDate());
+                    model.setContractDetailID(report.getWorkingDate().getContractDetail().getId());
+                    model.setServiceTypeID(report.getWorkingDate().getContractDetail().getServiceType().getId());
+                    model.setServiceTypeName(report.getWorkingDate().getContractDetail().getServiceType().getName());
+                    model.setServiceID(report.getWorkingDate().getContractDetail().getServiceType().getService().getId());
+                    model.setServiceName(report.getWorkingDate().getContractDetail().getServiceType().getService().getName());
                     model.setDescription(report.getDescription());
                     model.setCustomerID(report.getCustomer().getId());
                     model.setFullName(report.getCustomer().getFullName());
@@ -1584,11 +1585,10 @@ public class Util {
                     model.setPhone(report.getCustomer().getPhone());
                     model.setReason(report.getReason());
                     model.setStatus(report.getStatus());
-                    model.setStaffID(report.getContractDetail().getContract().getStaff().getId());
-                    model.setStaffName(report.getContractDetail().getContract().getStaff().getFullName());
-                    model.setContractID(report.getContractDetail().getContract().getId());
-                    model.setTimeWorking(report.getContractDetail().getTimeWorking());
-                    model.setStoreID(report.getContractDetail().getContract().getStore().getId());
+                    model.setStaffID(report.getWorkingDate().getStaff().getId());
+                    model.setStaffName(report.getWorkingDate().getStaff().getFullName());
+                    model.setContractID(report.getWorkingDate().getContractDetail().getContract().getId());
+                    model.setTimeWorking(report.getWorkingDate().getContractDetail().getTimeWorking());
                     model.setTotalPage(totalPage);
                     return model;
                 }
@@ -1866,8 +1866,8 @@ public class Util {
         }
     }
 
-    public Double getMonthsBetween(ServicePack pack){
-        switch(pack.getUnit().toLowerCase()){
+    public Double getMonthsBetween(ServicePack pack) {
+        switch(pack.getUnit().toLowerCase()) {
             case "tháng":
                 return Double.parseDouble(pack.getRange());
 

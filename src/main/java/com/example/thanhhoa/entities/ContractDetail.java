@@ -46,9 +46,6 @@ public class ContractDetail implements Serializable {
     private Contract contract;
 
     @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY, mappedBy = "contractDetail")
-    private List<Report> reportList;
-
-    @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY, mappedBy = "contractDetail")
     private List<WorkingDate> workingDateList;
 
     @ManyToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)

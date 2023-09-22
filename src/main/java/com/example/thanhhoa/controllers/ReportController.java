@@ -74,16 +74,16 @@ public class ReportController {
         return list;
     }
 
-    @GetMapping(value = "/getByContractDetailID", produces = "application/json;charset=UTF-8")
+    @GetMapping(value = "/v2/getByWorkingDateID", produces = "application/json;charset=UTF-8")
     public @ResponseBody
-    List<ShowReportModel> getByContractDetailID(@RequestParam String contractDetailID,
+    List<ShowReportModel> getByWorkingDateID(@RequestParam String workingDateID,
                                                 HttpServletRequest request) {
         String roleName = jwtUtil.getRoleNameFromRequest(request);
         if(!roleName.equalsIgnoreCase("Customer") && !roleName.equalsIgnoreCase("Staff") && !roleName.equalsIgnoreCase("Manager")) {
             throw new ResponseStatusException(HttpStatus.FORBIDDEN, "-----------------------------------Người dùng không có quyền truy cập---------------------------");
         }
 
-        List<ShowReportModel> list = reportService.getByContractDetailID(contractDetailID);
+        List<ShowReportModel> list = reportService.getByWorkingDateID(workingDateID);
         return list;
     }
 

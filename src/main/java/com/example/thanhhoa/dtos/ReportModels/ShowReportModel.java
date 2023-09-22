@@ -15,6 +15,8 @@ public class ShowReportModel implements Serializable {
     private String reason;
     private Status status;
     private LocalDateTime createdDate;
+    private String workingDateID;
+    private LocalDateTime workingDate;
     private String contractDetailID;
     private String serviceTypeID;
     private String serviceTypeName;
@@ -28,6 +30,5 @@ public class ShowReportModel implements Serializable {
     private String staffName;
     private String contractID;
     private String timeWorking;
-    private String storeID;
     private Double totalPage;
 }

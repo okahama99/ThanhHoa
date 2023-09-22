@@ -3,17 +3,15 @@ package com.example.thanhhoa.services.report;
 import com.example.thanhhoa.dtos.ReportModels.CreateReportModel;
 import com.example.thanhhoa.dtos.ReportModels.ShowReportModel;
 import com.example.thanhhoa.dtos.ReportModels.UpdateReportModel;
-import com.example.thanhhoa.dtos.WorkingDateModels.ShowWorkingDateModel;
-import com.example.thanhhoa.entities.Cart;
-import com.example.thanhhoa.entities.ContractDetail;
 import com.example.thanhhoa.entities.Report;
 import com.example.thanhhoa.entities.StoreEmployee;
+import com.example.thanhhoa.entities.WorkingDate;
 import com.example.thanhhoa.entities.tblAccount;
 import com.example.thanhhoa.enums.Status;
-import com.example.thanhhoa.repositories.ContractDetailRepository;
 import com.example.thanhhoa.repositories.ReportRepository;
 import com.example.thanhhoa.repositories.StoreEmployeeRepository;
 import com.example.thanhhoa.repositories.UserRepository;
+import com.example.thanhhoa.repositories.WorkingDateRepository;
 import com.example.thanhhoa.repositories.pagings.ReportPagingRepository;
 import com.example.thanhhoa.services.otp.OtpService;
 import com.example.thanhhoa.utils.Util;
@@ -28,17 +26,14 @@ import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.Comparator;
 import java.util.List;
 import java.util.Optional;
 
 @Service
-public class ReportServiceImpl implements ReportService{
+public class ReportServiceImpl implements ReportService {
 
     @Autowired
     private ReportRepository reportRepository;
-    @Autowired
-    private ContractDetailRepository contractDetailRepository;
     @Autowired
     private UserRepository userRepository;
     @Autowired
@@ -49,11 +44,13 @@ public class ReportServiceImpl implements ReportService{
     private OtpService otpService;
     @Autowired
     private StoreEmployeeRepository storeEmployeeRepository;
+    @Autowired
+    private WorkingDateRepository workingDateRepository;
 
     @Override
     public List<ShowReportModel> getByUserID(Long userID) {
         List<Report> reportList = reportRepository.findByCustomer_IdAndStatusNot(userID, Status.INACTIVE);
-        if(reportList == null){
+        if(reportList == null) {
             return null;
         }
         Collections.reverse(reportList);
@@ -62,11 +59,13 @@ public class ReportServiceImpl implements ReportService{
             ShowReportModel model = new ShowReportModel();
             model.setId(report.getId());
             model.setCreatedDate(report.getCreatedDate());
-            model.setContractDetailID(report.getContractDetail().getId());
-            model.setServiceTypeID(report.getContractDetail().getServiceType().getId());
-            model.setServiceTypeName(report.getContractDetail().getServiceType().getName());
-            model.setServiceID(report.getContractDetail().getServiceType().getService().getId());
-            model.setServiceName(report.getContractDetail().getServiceType().getService().getName());
+            model.setWorkingDateID(report.getWorkingDate().getId());
+            model.setWorkingDate(report.getWorkingDate().getWorkingDate());
+            model.setContractDetailID(report.getWorkingDate().getContractDetail().getId());
+            model.setServiceTypeID(report.getWorkingDate().getContractDetail().getServiceType().getId());
+            model.setServiceTypeName(report.getWorkingDate().getContractDetail().getServiceType().getName());
+            model.setServiceID(report.getWorkingDate().getContractDetail().getServiceType().getService().getId());
+            model.setServiceName(report.getWorkingDate().getContractDetail().getServiceType().getService().getName());
             model.setDescription(report.getDescription());
             model.setCustomerID(report.getCustomer().getId());
             model.setFullName(report.getCustomer().getFullName());
@@ -74,20 +73,19 @@ public class ReportServiceImpl implements ReportService{
             model.setPhone(report.getCustomer().getPhone());
             model.setReason(report.getReason());
             model.setStatus(report.getStatus());
-            model.setStaffID(report.getContractDetail().getContract().getStaff().getId());
-            model.setStaffName(report.getContractDetail().getContract().getStaff().getFullName());
-            model.setContractID(report.getContractDetail().getContract().getId());
-            model.setTimeWorking(report.getContractDetail().getTimeWorking());
-            model.setStoreID(report.getContractDetail().getContract().getStore().getId());
+            model.setStaffID(report.getWorkingDate().getStaff().getId());
+            model.setStaffName(report.getWorkingDate().getStaff().getFullName());
+            model.setContractID(report.getWorkingDate().getContractDetail().getContract().getId());
+            model.setTimeWorking(report.getWorkingDate().getContractDetail().getTimeWorking());
             modelList.add(model);
         }
         return modelList;
     }
 
     @Override
-    public List<ShowReportModel> getByContractDetailID(String contractDetailID) {
-        List<Report> reportList = reportRepository.findByContractDetail_IdAndStatusNot(contractDetailID, Status.INACTIVE);
-        if(reportList == null){
+    public List<ShowReportModel> getByWorkingDateID(String workingDateID) {
+        List<Report> reportList = reportRepository.findByWorkingDate_IdAndStatus(workingDateID, Status.INACTIVE);
+        if(reportList == null) {
             return null;
         }
         List<ShowReportModel> modelList = new ArrayList<>();
@@ -95,11 +93,13 @@ public class ReportServiceImpl implements ReportService{
             ShowReportModel model = new ShowReportModel();
             model.setId(report.getId());
             model.setCreatedDate(report.getCreatedDate());
-            model.setContractDetailID(report.getContractDetail().getId());
-            model.setServiceTypeID(report.getContractDetail().getServiceType().getId());
-            model.setServiceTypeName(report.getContractDetail().getServiceType().getName());
-            model.setServiceID(report.getContractDetail().getServiceType().getService().getId());
-            model.setServiceName(report.getContractDetail().getServiceType().getService().getName());
+            model.setWorkingDateID(report.getWorkingDate().getId());
+            model.setWorkingDate(report.getWorkingDate().getWorkingDate());
+            model.setContractDetailID(report.getWorkingDate().getContractDetail().getId());
+            model.setServiceTypeID(report.getWorkingDate().getContractDetail().getServiceType().getId());
+            model.setServiceTypeName(report.getWorkingDate().getContractDetail().getServiceType().getName());
+            model.setServiceID(report.getWorkingDate().getContractDetail().getServiceType().getService().getId());
+            model.setServiceName(report.getWorkingDate().getContractDetail().getServiceType().getService().getName());
             model.setDescription(report.getDescription());
             model.setCustomerID(report.getCustomer().getId());
             model.setFullName(report.getCustomer().getFullName());
@@ -107,11 +107,10 @@ public class ReportServiceImpl implements ReportService{
             model.setPhone(report.getCustomer().getPhone());
             model.setReason(report.getReason());
             model.setStatus(report.getStatus());
-            model.setStaffID(report.getContractDetail().getContract().getStaff().getId());
-            model.setStaffName(report.getContractDetail().getContract().getStaff().getFullName());
-            model.setContractID(report.getContractDetail().getContract().getId());
-            model.setTimeWorking(report.getContractDetail().getTimeWorking());
-            model.setStoreID(report.getContractDetail().getContract().getStore().getId());
+            model.setStaffID(report.getWorkingDate().getStaff().getId());
+            model.setStaffName(report.getWorkingDate().getStaff().getFullName());
+            model.setContractID(report.getWorkingDate().getContractDetail().getContract().getId());
+            model.setTimeWorking(report.getWorkingDate().getContractDetail().getTimeWorking());
             modelList.add(model);
         }
         return modelList;
@@ -119,9 +118,9 @@ public class ReportServiceImpl implements ReportService{
 
     @Override
     public String create(CreateReportModel createReportModel, Long userID) throws MessagingException {
-        Optional<ContractDetail> checkExisted = contractDetailRepository.findById(createReportModel.getContractDetailID());
-        if(checkExisted == null){
-            return "Không tìm thấy Chi tiết hợp đồng với ID là " + createReportModel.getContractDetailID() + ".";
+        Optional<WorkingDate> checkExisted = workingDateRepository.findById(createReportModel.getWorkingDateID());
+        if(checkExisted == null) {
+            return "Không tìm thấy WorkingDate với ID là " + createReportModel.getWorkingDateID() + ".";
         }
 
         tblAccount customer = userRepository.getById(userID);
@@ -137,12 +136,12 @@ public class ReportServiceImpl implements ReportService{
         report.setStatus(Status.NEW);
         report.setDescription(createReportModel.getDescription());
         report.setCustomer(customer);
-        report.setContractDetail(checkExisted.get());
+        report.setWorkingDate(checkExisted.get());
         reportRepository.save(report);
 
-        StoreEmployee manager = storeEmployeeRepository.findByStore_IdAndAccount_Role_RoleName(checkExisted.get().getContract().getStore().getId(), "Manager");
-        if(manager != null){
-            otpService.generateNotificationEmailForManager(manager.getAccount().getEmail(),"Báo cáo");
+        StoreEmployee manager = storeEmployeeRepository.findByStore_IdAndAccount_Role_RoleName("S002", "Manager");
+        if(manager != null) {
+            otpService.generateNotificationEmailForManager(manager.getAccount().getEmail(), "Báo cáo");
         }
 
         return "Tạo thành công.";
@@ -151,24 +150,24 @@ public class ReportServiceImpl implements ReportService{
     @Override
     public String update(UpdateReportModel updateReportModel) {
         Optional<Report> checkExisted = reportRepository.findByIdAndStatus(updateReportModel.getId(), Status.NEW);
-        if(checkExisted == null){
+        if(checkExisted == null) {
             return "Không tìm thấy Báo cáo với trạng thái NEW có ID là " + updateReportModel.getId() + ".";
         }
-        Optional<ContractDetail> contractDetail = contractDetailRepository.findById(updateReportModel.getContractDetailID());
-        if(contractDetail == null){
-            return "Không tìm thấy Chi tiết hợp đồng với ID là " + updateReportModel.getContractDetailID() + ".";
+        Optional<WorkingDate> workingDate = workingDateRepository.findById(updateReportModel.getWorkingDateID());
+        if(checkExisted == null) {
+            return "Không tìm thấy WorkingDate với ID là " + updateReportModel.getWorkingDateID() + ".";
         }
         Report report = checkExisted.get();
         report.setDescription(updateReportModel.getDescription());
-        report.setContractDetail(contractDetail.get());
+        report.setWorkingDate(workingDate.get());
         reportRepository.save(report);
         return "Chỉnh sửa thành công.";
     }
 
     @Override
-    public String delete(String reportID){
+    public String delete(String reportID) {
         Optional<Report> checkExisted = reportRepository.findByIdAndStatus(reportID, Status.NEW);
-        if(checkExisted == null){
+        if(checkExisted == null) {
             return "Không tìm thấy Báo cáo với trạng thái NEW có ID là " + reportID + ".";
         }
         Report report = checkExisted.get();
@@ -180,19 +179,19 @@ public class ReportServiceImpl implements ReportService{
     @Override
     public String changeReportStatus(String reportID, String reason, Status status) throws FirebaseMessagingException {
         Optional<Report> checkExisted = reportRepository.findByIdAndStatus(reportID, Status.NEW);
-        if(checkExisted == null){
+        if(checkExisted == null) {
             return "Không tìm thấy Báo cáo với trạng thái NEW có ID là " + reportID + ".";
         }
         Report report = checkExisted.get();
-        if(status.toString().equalsIgnoreCase("APPROVED")){
+        if(status.toString().equalsIgnoreCase("APPROVED")) {
             report.setStatus(status);
             reportRepository.save(report);
 
             util.createNotification("REPORT", report.getCustomer(), report.getId(), "quản lý duyệt");
 
             return "Chỉnh sửa thành công.";
-        }else if(status.toString().equalsIgnoreCase("DENIED")){
-            if(reason == null){
+        } else if(status.toString().equalsIgnoreCase("DENIED")) {
+            if(reason == null) {
                 return "Phải có Lí do khi từ chối báo cáo";
             }
             report.setStatus(status);
@@ -202,7 +201,7 @@ public class ReportServiceImpl implements ReportService{
             util.createNotification("REPORT", report.getCustomer(), report.getId(), "từ chối");
 
             return "Chỉnh sửa thành công.";
-        }else{
+        } else {
             return "Trạng thái phải là APPROVED hoặc DENIED";
         }
     }

@@ -13,7 +13,7 @@ import java.util.List;
 public interface ReportService {
     List<ShowReportModel> getByUserID(Long userID);
 
-    List<ShowReportModel> getByContractDetailID(String contractDetailID);
+    List<ShowReportModel> getByWorkingDateID(String workingDateID);
 
     String create(CreateReportModel createReportModel, Long userID) throws MessagingException;
 

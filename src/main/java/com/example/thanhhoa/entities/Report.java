@@ -32,10 +32,10 @@ public class Report implements Serializable {
     private Status status; // new, approve, deny
 
     @ManyToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-    @JoinColumn(name = "contract_detail_id")
-    private ContractDetail contractDetail;
-
-    @ManyToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     @JoinColumn(name = "customer_id")
     private tblAccount customer;
+
+    @OneToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @JoinColumn(name = "working_date_id")
+    private WorkingDate workingDate;
 }
