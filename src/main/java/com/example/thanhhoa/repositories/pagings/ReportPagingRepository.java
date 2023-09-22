@@ -10,4 +10,6 @@ import org.springframework.stereotype.Repository;
 @Repository
 public interface ReportPagingRepository extends PagingAndSortingRepository<Report, String> {
     Page<Report> findAllByStatus(Status status, Pageable pageable);
+
+    Page<Report> findByWorkingDate_ContractDetail_Id(String contractDetailID, Pageable pageable);
 }

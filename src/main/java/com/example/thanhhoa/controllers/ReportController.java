@@ -55,12 +55,12 @@ public class ReportController {
     @GetMapping(value = "/getAll", produces = "application/json;charset=UTF-8")
     public @ResponseBody
     List<ShowReportModel> getAll(@RequestParam int pageNo,
-                                          @RequestParam int pageSize,
-                                          @RequestParam(required = false, defaultValue = "ID") SearchType.REPORT sortBy,
-                                          @RequestParam(required = false, defaultValue = "true") Boolean sortAsc,
-                                          HttpServletRequest request) {
+                                 @RequestParam int pageSize,
+                                 @RequestParam(required = false, defaultValue = "ID") SearchType.REPORT sortBy,
+                                 @RequestParam(required = false, defaultValue = "true") Boolean sortAsc,
+                                 HttpServletRequest request) {
         String roleName = jwtUtil.getRoleNameFromRequest(request);
-        if(!roleName.equalsIgnoreCase("Manager")) {
+        if(!roleName.equalsIgnoreCase("Manager") && !roleName.equalsIgnoreCase("Owner")) {
             throw new ResponseStatusException(HttpStatus.FORBIDDEN, "-----------------------------------Người dùng không có quyền truy cập---------------------------");
         }
 
@@ -74,12 +74,36 @@ public class ReportController {
         return list;
     }
 
+    @GetMapping(value = "/v2/getByContractDetailID", produces = "application/json;charset=UTF-8")
+    public @ResponseBody
+    List<ShowReportModel> getByContractDetailID(@RequestParam String contractDetailID,
+                                                @RequestParam int pageNo,
+                                                @RequestParam int pageSize,
+                                                @RequestParam(required = false, defaultValue = "ID") SearchType.REPORT sortBy,
+                                                @RequestParam(required = false, defaultValue = "true") Boolean sortAsc,
+                                                HttpServletRequest request) {
+        String roleName = jwtUtil.getRoleNameFromRequest(request);
+        if(!roleName.equalsIgnoreCase("Manager") && !roleName.equalsIgnoreCase("Owner")) {
+            throw new ResponseStatusException(HttpStatus.FORBIDDEN, "-----------------------------------Người dùng không có quyền truy cập---------------------------");
+        }
+
+        Pageable paging;
+        if(sortBy.toString().equalsIgnoreCase("CREATEDDATE")) {
+            paging = util.makePaging(pageNo, pageSize, "createdDate", sortAsc);
+        } else {
+            paging = util.makePaging(pageNo, pageSize, sortBy.toString().toLowerCase(), sortAsc);
+        }
+        List<ShowReportModel> list = reportService.getByContractDetailID(contractDetailID, paging);
+        return list;
+    }
+
     @GetMapping(value = "/v2/getByWorkingDateID", produces = "application/json;charset=UTF-8")
     public @ResponseBody
     List<ShowReportModel> getByWorkingDateID(@RequestParam String workingDateID,
-                                                HttpServletRequest request) {
+                                             HttpServletRequest request) {
         String roleName = jwtUtil.getRoleNameFromRequest(request);
-        if(!roleName.equalsIgnoreCase("Customer") && !roleName.equalsIgnoreCase("Staff") && !roleName.equalsIgnoreCase("Manager")) {
+        if(!roleName.equalsIgnoreCase("Customer") && !roleName.equalsIgnoreCase("Staff")
+                && !roleName.equalsIgnoreCase("Manager") && !roleName.equalsIgnoreCase("Owner")) {
             throw new ResponseStatusException(HttpStatus.FORBIDDEN, "-----------------------------------Người dùng không có quyền truy cập---------------------------");
         }
 
@@ -121,7 +145,7 @@ public class ReportController {
                                                @RequestParam(required = false) String reason,
                                                HttpServletRequest request) throws FirebaseMessagingException {
         String roleName = jwtUtil.getRoleNameFromRequest(request);
-        if(!roleName.equalsIgnoreCase("Manager")) {
+        if(!roleName.equalsIgnoreCase("Manager") && !roleName.equalsIgnoreCase("Owner")) {
             throw new ResponseStatusException(HttpStatus.FORBIDDEN, "-----------------------------------Người dùng không có quyền truy cập---------------------------");
         }
         String result = reportService.changeReportStatus(reportID, reason, Status.valueOf(status));

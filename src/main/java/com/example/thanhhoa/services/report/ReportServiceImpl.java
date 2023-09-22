@@ -211,4 +211,10 @@ public class ReportServiceImpl implements ReportService {
         Page<Report> pagingResult = reportPagingRepository.findAll(pageable);
         return util.reportPagingConverter(pagingResult, pageable);
     }
+
+    @Override
+    public List<ShowReportModel> getByContractDetailID(String contractDetailID, Pageable pageable) {
+        Page<Report> pagingResult = reportPagingRepository.findByWorkingDate_ContractDetail_Id(contractDetailID, pageable);
+        return util.reportPagingConverter(pagingResult, pageable);
+    }
 }
