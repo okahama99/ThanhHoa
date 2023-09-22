@@ -25,6 +25,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
+import java.util.Locale;
 import java.util.Optional;
 
 @Service
@@ -530,44 +531,44 @@ public class WorkingDateServiceImpl implements WorkingDateService {
             LocalDate fromDate = from;
             while(fromDate.isBefore(to)) {
                 DayOfWeek dow = fromDate.getDayOfWeek();
-                switch(dayInWeek.trim()) {
-                    case "Thứ 2":
+                switch(dayInWeek.trim().toLowerCase()) {
+                    case "thứ 2":
                         if(dow.name().equalsIgnoreCase("MONDAY")) {
                             dateTimeList.add(fromDate.atTime(00, 00, 00));
                         }
                         break;
 
-                    case "Thứ 3":
+                    case "thứ 3":
                         if(dow.name().equalsIgnoreCase("TUESDAY")) {
                             dateTimeList.add(fromDate.atTime(00, 00, 00));
                         }
                         break;
 
-                    case "Thứ 4":
+                    case "thứ 4":
                         if(dow.name().equalsIgnoreCase("WEDNESDAY")) {
                             dateTimeList.add(fromDate.atTime(00, 00, 00));
                         }
                         break;
 
-                    case "Thứ 5":
+                    case "thứ 5":
                         if(dow.name().equalsIgnoreCase("THURSDAY")) {
                             dateTimeList.add(fromDate.atTime(00, 00, 00));
                         }
                         break;
 
-                    case "Thứ 6":
+                    case "thứ 6":
                         if(dow.name().equalsIgnoreCase("FRIDAY")) {
                             dateTimeList.add(fromDate.atTime(00, 00, 00));
                         }
                         break;
 
-                    case "Thứ 7":
+                    case "thứ 7":
                         if(dow.name().equalsIgnoreCase("SATURDAY")) {
                             dateTimeList.add(fromDate.atTime(00, 00, 00));
                         }
                         break;
 
-                    case "Chủ nhật":
+                    case "chủ nhật":
                         if(dow.name().equalsIgnoreCase("SUNDAY")) {
                             dateTimeList.add(fromDate.atTime(00, 00, 00));
                         }
