@@ -533,12 +533,12 @@ public class ContractServiceImpl implements ContractService {
 
             Optional<ServiceType> type = serviceTypeRepository.findById(contractDetail.getServiceType().getId());
             if(type == null) {
-                return "Không tìm thấy ServiceType của Service có ID là " + contractDetail.getServiceType().getService().getId() + ".";
+                return "Không tìm thấy ServiceType của Service có ID là " + contractDetail.getServiceType().getId() + ".";
             }
 
             Optional<ServicePack> pack = servicePackRepository.findById(contractDetail.getServicePack().getId());
             if(pack == null) {
-                return "Không tìm thấy ServicePack của Service có ID là " + contractDetail.getServiceType().getService().getId() + ".";
+                return "Không tìm thấy ServicePack của Service có ID là " + contractDetail.getServicePack().getId() + ".";
             }
 
             Double months = util.getMonthsBetween(pack.get());
