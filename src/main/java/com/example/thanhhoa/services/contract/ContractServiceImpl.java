@@ -563,6 +563,7 @@ public class ContractServiceImpl implements ContractService {
         contract.setTotal(totalPrice);
         contract.setStartedDate(minStartDate);
         contract.setExpectedEndedDate(maxEndDate);
+        contract.setUpdatedDate(LocalDateTime.now(ZoneId.of("Asia/Ho_Chi_Minh")));
         contractRepository.save(contract);
         return "Chỉnh sửa thành công.";
     }
@@ -594,6 +595,7 @@ public class ContractServiceImpl implements ContractService {
 
         contract.setPaymentMethod(approveContractModel.getPaymentMethod());
         contract.setStaff(staff);
+        contract.setUpdatedDate(LocalDateTime.now(ZoneId.of("Asia/Ho_Chi_Minh")));
         contract.setApprovedDate(LocalDateTime.now(ZoneId.of("Asia/Ho_Chi_Minh")));
         contract.setStatus(Status.APPROVED);
         contractRepository.save(contract);
@@ -635,7 +637,7 @@ public class ContractServiceImpl implements ContractService {
         contract.setStatus(Status.SIGNED);
         contract.setIsSigned(true);
         contract.setStartedDate(LocalDateTime.now(ZoneId.of("Asia/Ho_Chi_Minh")));
-
+        contract.setUpdatedDate(LocalDateTime.now(ZoneId.of("Asia/Ho_Chi_Minh")));
         contractRepository.save(contract);
 
         List<String> listID = new ArrayList<>();
@@ -707,6 +709,7 @@ public class ContractServiceImpl implements ContractService {
             contract.setReason(reason);
         }
 
+        contract.setUpdatedDate(LocalDateTime.now(ZoneId.of("Asia/Ho_Chi_Minh")));
         contractRepository.save(contract);
         return "Chỉnh sửa thành công.";
     }
@@ -984,6 +987,7 @@ public class ContractServiceImpl implements ContractService {
             contractModel.setTitle(detail.getContract().getTitle());
             contractModel.setPaymentMethod(detail.getContract().getPaymentMethod());
             contractModel.setCreatedDate(detail.getContract().getCreatedDate());
+            contractModel.setUpdatedDate(detail.getContract().getUpdatedDate());
             contractModel.setStartedDate(detail.getContract().getStartedDate());
             contractModel.setApprovedDate(detail.getContract().getApprovedDate());
             contractModel.setRejectedDate(detail.getContract().getRejectedDate());
@@ -1122,6 +1126,7 @@ public class ContractServiceImpl implements ContractService {
             contractModel.setTitle(detail.getContract().getTitle());
             contractModel.setPaymentMethod(detail.getContract().getPaymentMethod());
             contractModel.setCreatedDate(detail.getContract().getCreatedDate());
+            contractModel.setUpdatedDate(detail.getContract().getUpdatedDate());
             contractModel.setStartedDate(detail.getContract().getStartedDate());
             contractModel.setApprovedDate(detail.getContract().getApprovedDate());
             contractModel.setRejectedDate(detail.getContract().getRejectedDate());

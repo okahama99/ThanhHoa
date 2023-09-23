@@ -188,6 +188,7 @@ public class TransactionServiceImpl implements TransactionService {
         contractModel.setPaymentMethod(contract.getPaymentMethod());
         contractModel.setReason(contract.getReason());
         contractModel.setCreatedDate(contract.getCreatedDate());
+        contractModel.setUpdatedDate(contract.getUpdatedDate());
         contractModel.setApprovedDate(contract.getApprovedDate());
         contractModel.setRejectedDate(contract.getRejectedDate());
         contractModel.setStartedDate(contract.getStartedDate());
@@ -274,6 +275,7 @@ public class TransactionServiceImpl implements TransactionService {
             contractModel.setPaymentMethod(contract.getPaymentMethod());
             contractModel.setReason(contract.getReason());
             contractModel.setCreatedDate(contract.getCreatedDate());
+            contractModel.setUpdatedDate(contract.getUpdatedDate());
             contractModel.setApprovedDate(contract.getApprovedDate());
             contractModel.setRejectedDate(contract.getRejectedDate());
             contractModel.setStartedDate(contract.getStartedDate());

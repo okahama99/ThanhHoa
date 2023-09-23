@@ -1052,6 +1052,7 @@ public class Util {
                     model.setPaymentMethod(contract.getPaymentMethod());
                     model.setReason(contract.getReason());
                     model.setCreatedDate(contract.getCreatedDate());
+                    model.setUpdatedDate(contract.getUpdatedDate());
                     model.setApprovedDate(contract.getApprovedDate());
                     model.setRejectedDate(contract.getRejectedDate());
                     model.setStartedDate(contract.getStartedDate());
@@ -1200,6 +1201,7 @@ public class Util {
                     contractModel.setTitle(detail.getContract().getTitle());
                     contractModel.setPaymentMethod(detail.getContract().getPaymentMethod());
                     contractModel.setCreatedDate(detail.getContract().getCreatedDate());
+                    contractModel.setUpdatedDate(detail.getContract().getUpdatedDate());
                     contractModel.setStartedDate(detail.getContract().getStartedDate());
                     contractModel.setApprovedDate(detail.getContract().getApprovedDate());
                     contractModel.setRejectedDate(detail.getContract().getRejectedDate());
@@ -1832,6 +1834,7 @@ public class Util {
                         contractModel.setPaymentMethod(contract.getPaymentMethod());
                         contractModel.setReason(contract.getReason());
                         contractModel.setCreatedDate(contract.getCreatedDate());
+                        contractModel.setUpdatedDate(contract.getUpdatedDate());
                         contractModel.setApprovedDate(contract.getApprovedDate());
                         contractModel.setRejectedDate(contract.getRejectedDate());
                         contractModel.setStartedDate(contract.getStartedDate());

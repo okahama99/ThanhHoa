@@ -48,6 +48,9 @@ public class Contract implements Serializable {
     private LocalDateTime createdDate;
 
     @Column
+    private LocalDateTime updatedDate;
+
+    @Column
     private LocalDateTime startedDate;
 
     @Column

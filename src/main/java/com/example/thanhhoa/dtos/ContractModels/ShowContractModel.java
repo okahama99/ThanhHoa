@@ -26,6 +26,7 @@ public class ShowContractModel implements Serializable {
     private String paymentMethod;
     private String reason;
     private LocalDateTime createdDate;
+    private LocalDateTime updatedDate;
     private LocalDateTime startedDate;
     private LocalDateTime endedDate;
     private LocalDateTime expectedEndedDate;
