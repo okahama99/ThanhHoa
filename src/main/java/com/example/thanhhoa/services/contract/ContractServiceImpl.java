@@ -506,6 +506,11 @@ public class ContractServiceImpl implements ContractService {
             return "Nhập theo khuôn được định sẵn yyyy-MM-dd, ví dụ : 2021-12-21";
         }
 
+        LocalDateTime endDate = util.isLocalDateTimeValid(updateContractDetailModel.getEndDate());
+        if(endDate == null) {
+            return "Nhập theo khuôn được định sẵn yyyy-MM-dd, ví dụ : 2021-12-21";
+        }
+
         ServiceType serviceType = serviceTypeRepository.findByIdAndStatus(updateContractDetailModel.getServiceTypeID(), Status.ACTIVE);
         if(serviceType == null) {
             return "Không tìm thấy ServiceType với ID là " + updateContractDetailModel.getServiceTypeID() + ".";
@@ -520,6 +525,7 @@ public class ContractServiceImpl implements ContractService {
         detail.setNote(updateContractDetailModel.getNote());
         detail.setTimeWorking(updateContractDetailModel.getTimeWorking());
         detail.setStartDate(startDate);
+        detail.setExpectedEndDate(endDate);
         detail.setServiceType(serviceType);
         detail.setServicePack(servicePack);
         detail.setPlantStatus(updateContractDetailModel.getPlantStatus());
@@ -532,7 +538,7 @@ public class ContractServiceImpl implements ContractService {
         Double totalPrice = 0.0;
         for(ContractDetail contractDetail : contract.getContractDetailList()) {
             startDateList.add(contractDetail.getStartDate());
-            endDateList.add(contractDetail.getEndDate());
+            endDateList.add(contractDetail.getExpectedEndDate());
 
             Optional<ServiceType> type = serviceTypeRepository.findById(contractDetail.getServiceType().getId());
             if(type == null) {
