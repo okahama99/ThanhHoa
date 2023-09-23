@@ -527,9 +527,11 @@ public class ContractServiceImpl implements ContractService {
 
         Contract contract = detail.getContract();
         List<LocalDateTime> startDateList = new ArrayList<>();
+        List<LocalDateTime> endDateList = new ArrayList<>();
         Double totalPrice = 0.0;
         for(ContractDetail contractDetail : contract.getContractDetailList()) {
             startDateList.add(contractDetail.getStartDate());
+            endDateList.add(contractDetail.getEndDate());
 
             Optional<ServiceType> type = serviceTypeRepository.findById(contractDetail.getServiceType().getId());
             if(type == null) {
@@ -550,8 +552,10 @@ public class ContractServiceImpl implements ContractService {
         }
 
         LocalDateTime minStartDate = Collections.min(startDateList);
+        LocalDateTime maxEndDate = Collections.max(endDateList);
         contract.setTotal(totalPrice);
         contract.setStartedDate(minStartDate);
+        contract.setExpectedEndedDate(maxEndDate);
         contractRepository.save(contract);
         return "Chỉnh sửa thành công.";
     }

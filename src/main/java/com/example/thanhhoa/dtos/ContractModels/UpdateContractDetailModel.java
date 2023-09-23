@@ -13,6 +13,7 @@ public class UpdateContractDetailModel implements Serializable {
     private String note;
     private String timeWorking;
     private String startDate;
+    private String endDate;
     private String servicePackID;
     private String serviceTypeID;
     @Nullable
