@@ -50,6 +50,16 @@ public class ServicePackServiceImpl implements ServicePackService {
     }
 
     @Override
+    public String updateStatus(String id) {
+        ServicePack servicePack = servicePackRepository.findByIdAndStatus(id, Status.INACTIVE);
+        if(servicePack == null){
+            return "Không tìm thấy Gói dịch vụ với ID là " + id + " đang INACTIVE.";
+        }
+        servicePack.setStatus(Status.ACTIVE);
+        return "Cập nhật thành công.";
+    }
+
+    @Override
     public List<ShowServicePackModel> getAll() {
         List<ServicePack> servicePacks = servicePackRepository.findAll();
         if(servicePacks == null){

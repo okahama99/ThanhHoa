@@ -330,6 +330,17 @@ public class PlantServiceImpl implements PlantService {
     }
 
     @Override
+    public String activatePlantCategory(String plantCategoryID) throws Exception {
+        PlantCategory plantCategory = plantCategoryRepository.findByIdAndStatus(plantCategoryID, Status.INACTIVE);
+        if(plantCategory != null) {
+            plantCategory.setStatus(Status.ACTIVE);
+            plantCategoryRepository.save(plantCategory);
+            return "Cập nhật thành công.";
+        }
+        return "Không tìm thấy PlantCategory với ID là " + plantCategoryID + " có trạng thái INACTIVE.";
+    }
+
+    @Override
     public String deletePlant(String plantID) {
         Optional<Plant> checkingPlant = plantRepository.findById(plantID);
         if(checkingPlant != null) {
@@ -346,6 +357,19 @@ public class PlantServiceImpl implements PlantService {
             return "Xóa cây thành công.";
         }
         return "Không tìm thấy cây với ID là " + plantID + ".";
+    }
+
+    @Override
+    public String deletePlantIMG(String id) {
+        Optional<PlantIMG> checkExisted = plantIMGRepository.findById(id);
+        if(checkExisted != null) {
+            PlantIMG plantIMG = checkExisted.get();
+            plantIMG.setPlant(null);
+            plantIMG.setImgURL(null);
+            plantIMGRepository.save(plantIMG);
+            return "Xóa thành công.";
+        }
+        return "Không tìm thấy PlantIMG với ID là " + id + ".";
     }
 
     @Override

@@ -1,5 +1,6 @@
 package com.example.thanhhoa.dtos.WorkingDateModels;
 
+import com.example.thanhhoa.dtos.ContractModels.ShowPlantStatusIMGModel;
 import com.example.thanhhoa.dtos.OrderModels.ShowStaffModel;
 import com.example.thanhhoa.enums.Status;
 import lombok.Getter;
@@ -7,6 +8,7 @@ import lombok.Setter;
 
 import java.io.Serializable;
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Getter
 @Setter
@@ -33,7 +35,6 @@ public class ShowWorkingDateModel implements Serializable {
     private LocalDateTime expectedEndDate;
     private Double totalPrice;
     private String plantStatus;
-    private String plantIMG;
     private String serviceID;
     private String serviceName;
     private String serviceTypeID;
@@ -48,5 +49,7 @@ public class ShowWorkingDateModel implements Serializable {
     private Integer packPercentage;
     private LocalDateTime packApplyDate;
     private ShowStaffModel showStaffModel;
+
+    private List<ShowPlantStatusIMGModel> plantStatusIMGModelList;
     private Double totalPage;
 }

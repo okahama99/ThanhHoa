@@ -4,6 +4,7 @@ import com.example.thanhhoa.dtos.CategoryModels.ShowCategoryModel;
 import com.example.thanhhoa.dtos.ContractModels.ShowContractDetailModel;
 import com.example.thanhhoa.dtos.ContractModels.ShowContractIMGModel;
 import com.example.thanhhoa.dtos.ContractModels.ShowContractModel;
+import com.example.thanhhoa.dtos.ContractModels.ShowPlantStatusIMGModel;
 import com.example.thanhhoa.dtos.ContractModels.ShowServicePackModel;
 import com.example.thanhhoa.dtos.FeedbackModels.ShowContractFeedbackModel;
 import com.example.thanhhoa.dtos.FeedbackModels.ShowOrderFeedbackIMGModel;
@@ -44,6 +45,7 @@ import com.example.thanhhoa.entities.PlantCategory;
 import com.example.thanhhoa.entities.PlantIMG;
 import com.example.thanhhoa.entities.PlantPrice;
 import com.example.thanhhoa.entities.PlantShipPrice;
+import com.example.thanhhoa.entities.PlantStatusIMG;
 import com.example.thanhhoa.entities.Report;
 import com.example.thanhhoa.entities.Service;
 import com.example.thanhhoa.entities.ServiceIMG;
@@ -190,7 +192,18 @@ public class Util {
                     model.setStartDate(detail.getStartDate());
                     model.setExpectedEndDate(detail.getExpectedEndDate());
                     model.setPlantStatus(detail.getPlantStatus());
-                    model.setPlantIMG(detail.getPlantIMG());
+
+                    List<ShowPlantStatusIMGModel> plantStatusIMGModelList = new ArrayList<>();
+                    if(detail.getPlantStatusIMGList() != null && !detail.getPlantStatusIMGList().isEmpty()){
+                        for(PlantStatusIMG plantStatusIMG : detail.getPlantStatusIMGList()){
+                            ShowPlantStatusIMGModel plantStatusIMGModel = new ShowPlantStatusIMGModel();
+                            plantStatusIMGModel.setId(plantStatusIMG.getId());
+                            plantStatusIMGModel.setImgUrl(plantStatusIMG.getImgURL());
+                            plantStatusIMGModelList.add(plantStatusIMGModel);
+                        }
+                    }
+                    model.setPlantStatusIMGModelList(plantStatusIMGModelList);
+
                     model.setContractID(detail.getContract().getId());
                     model.setTitle(detail.getContract().getTitle());
                     model.setAddress(detail.getContract().getAddress());
@@ -1135,7 +1148,18 @@ public class Util {
                     model.setEndDate(detail.getEndDate());
                     model.setExpectedEndDate(detail.getExpectedEndDate());
                     model.setPlantStatus(detail.getPlantStatus());
-                    model.setPlantIMG(detail.getPlantIMG());
+
+                    List<ShowPlantStatusIMGModel> plantStatusIMGModelList = new ArrayList<>();
+                    if(detail.getPlantStatusIMGList() != null && !detail.getPlantStatusIMGList().isEmpty()){
+                        for(PlantStatusIMG plantStatusIMG : detail.getPlantStatusIMGList()){
+                            ShowPlantStatusIMGModel plantStatusIMGModel = new ShowPlantStatusIMGModel();
+                            plantStatusIMGModel.setId(plantStatusIMG.getId());
+                            plantStatusIMGModel.setImgUrl(plantStatusIMG.getImgURL());
+                            plantStatusIMGModelList.add(plantStatusIMGModel);
+                        }
+                    }
+                    model.setPlantStatusIMGModelList(plantStatusIMGModelList);
+
                     model.setStartDate(detail.getStartDate());
                     model.setPrice(detail.getPrice());
 

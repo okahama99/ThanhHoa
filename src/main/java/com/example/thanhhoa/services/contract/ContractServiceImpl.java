@@ -8,6 +8,7 @@ import com.example.thanhhoa.dtos.ContractModels.GetStaffModel;
 import com.example.thanhhoa.dtos.ContractModels.ShowContractDetailModel;
 import com.example.thanhhoa.dtos.ContractModels.ShowContractIMGModel;
 import com.example.thanhhoa.dtos.ContractModels.ShowContractModel;
+import com.example.thanhhoa.dtos.ContractModels.ShowPlantStatusIMGModel;
 import com.example.thanhhoa.dtos.ContractModels.ShowServiceModel;
 import com.example.thanhhoa.dtos.ContractModels.ShowServicePackModel;
 import com.example.thanhhoa.dtos.ContractModels.ShowServiceTypeModel;
@@ -19,6 +20,7 @@ import com.example.thanhhoa.dtos.OrderModels.ShowStoreModel;
 import com.example.thanhhoa.entities.Contract;
 import com.example.thanhhoa.entities.ContractDetail;
 import com.example.thanhhoa.entities.ContractIMG;
+import com.example.thanhhoa.entities.PlantStatusIMG;
 import com.example.thanhhoa.entities.ServicePack;
 import com.example.thanhhoa.entities.ServicePrice;
 import com.example.thanhhoa.entities.ServiceType;
@@ -30,6 +32,7 @@ import com.example.thanhhoa.enums.Status;
 import com.example.thanhhoa.repositories.ContractDetailRepository;
 import com.example.thanhhoa.repositories.ContractIMGRepository;
 import com.example.thanhhoa.repositories.ContractRepository;
+import com.example.thanhhoa.repositories.PlantStatusIMGRepository;
 import com.example.thanhhoa.repositories.ServicePackRepository;
 import com.example.thanhhoa.repositories.ServicePriceRepository;
 import com.example.thanhhoa.repositories.ServiceTypeRepository;
@@ -54,7 +57,6 @@ import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
-import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -93,6 +95,8 @@ public class ContractServiceImpl implements ContractService {
     private StoreEmployeeRepository storeEmployeeRepository;
     @Autowired
     private WorkingDateService workingDateService;
+    @Autowired
+    private PlantStatusIMGRepository plantStatusIMGRepository;
 
     @Override
     public List<ShowContractModel> getAllContractByUserID(Long userID, String role, Pageable pageable) {
@@ -164,8 +168,19 @@ public class ContractServiceImpl implements ContractService {
                 model.setStartDate(detail.getStartDate());
                 model.setExpectedEndDate(detail.getExpectedEndDate());
                 model.setPlantStatus(detail.getPlantStatus());
-                model.setPlantIMG(detail.getPlantIMG());
                 model.setPrice(detail.getPrice());
+
+                List<ShowPlantStatusIMGModel> plantStatusIMGModelList = new ArrayList<>();
+                if(detail.getPlantStatusIMGList() != null && !detail.getPlantStatusIMGList().isEmpty()){
+                    for(PlantStatusIMG plantStatusIMG : detail.getPlantStatusIMGList()){
+                        ShowPlantStatusIMGModel plantStatusIMGModel = new ShowPlantStatusIMGModel();
+                        plantStatusIMGModel.setId(plantStatusIMG.getId());
+                        plantStatusIMGModel.setImgUrl(plantStatusIMG.getImgURL());
+                        plantStatusIMGModelList.add(plantStatusIMGModel);
+                    }
+                }
+                model.setPlantStatusIMGModelList(plantStatusIMGModelList);
+
 
                 Double price = detail.getPrice();
                 Double typePercentage = detail.getServiceType().getPercentage().doubleValue();
@@ -521,7 +536,25 @@ public class ContractServiceImpl implements ContractService {
             return "Không tìm thấy ServicePack với ID là " + updateContractDetailModel.getServicePackID() + ".";
         }
 
+        if(updateContractDetailModel.getPlantIMG() == null || updateContractDetailModel.getPlantIMG().isEmpty()) {
+            return "Phải có hình ảnh cây.";
+        }
+
+
         ContractDetail detail = checkExisted.get();
+        for(String imageURL : updateContractDetailModel.getPlantIMG()) {
+            PlantStatusIMG plantStatusIMGIMG = new PlantStatusIMG();
+            PlantStatusIMG lastPlantStatusIMGIMG = plantStatusIMGRepository.findFirstByOrderByIdDesc();
+            if(lastPlantStatusIMGIMG == null) {
+                plantStatusIMGIMG.setId(util.createNewID("PSIMG"));
+            } else {
+                plantStatusIMGIMG.setId(util.createIDFromLastID("PSIMG", 5, lastPlantStatusIMGIMG.getId()));
+            }
+            plantStatusIMGIMG.setContractDetail(detail);
+            plantStatusIMGIMG.setImgURL(imageURL);
+            plantStatusIMGRepository.save(plantStatusIMGIMG);
+        }
+
         detail.setNote(updateContractDetailModel.getNote());
         detail.setTimeWorking(updateContractDetailModel.getTimeWorking());
         detail.setStartDate(startDate);
@@ -529,7 +562,6 @@ public class ContractServiceImpl implements ContractService {
         detail.setServiceType(serviceType);
         detail.setServicePack(servicePack);
         detail.setPlantStatus(updateContractDetailModel.getPlantStatus());
-        detail.setPlantIMG(updateContractDetailModel.getPlantIMG());
         contractDetailRepository.save(detail);
 
         Contract contract = detail.getContract();
@@ -644,7 +676,7 @@ public class ContractServiceImpl implements ContractService {
             listID.add(detail.getId());
         }
 
-        if(listID != null){
+        if(listID != null) {
             for(String id : listID) {
                 workingDateService.generateWorkingSchedule(id);
             }
@@ -923,8 +955,18 @@ public class ContractServiceImpl implements ContractService {
             model.setStartDate(detail.getStartDate());
             model.setExpectedEndDate(detail.getExpectedEndDate());
             model.setPlantStatus(detail.getPlantStatus());
-            model.setPlantIMG(detail.getPlantIMG());
             model.setPrice(detail.getPrice());
+
+            List<ShowPlantStatusIMGModel> plantStatusIMGModelList = new ArrayList<>();
+            if(detail.getPlantStatusIMGList() != null && !detail.getPlantStatusIMGList().isEmpty()){
+                for(PlantStatusIMG plantStatusIMG : detail.getPlantStatusIMGList()){
+                    ShowPlantStatusIMGModel plantStatusIMGModel = new ShowPlantStatusIMGModel();
+                    plantStatusIMGModel.setId(plantStatusIMG.getId());
+                    plantStatusIMGModel.setImgUrl(plantStatusIMG.getImgURL());
+                    plantStatusIMGModelList.add(plantStatusIMGModel);
+                }
+            }
+            model.setPlantStatusIMGModelList(plantStatusIMGModelList);
 
             ServicePrice newestPrice = servicePriceRepository.findFirstByService_IdAndStatusOrderByApplyDateDesc(detail.getServiceType().getService().getId(), Status.ACTIVE);
 
@@ -1063,8 +1105,18 @@ public class ContractServiceImpl implements ContractService {
             model.setStartDate(detail.getStartDate());
             model.setExpectedEndDate(detail.getExpectedEndDate());
             model.setPlantStatus(detail.getPlantStatus());
-            model.setPlantIMG(detail.getPlantIMG());
             model.setPrice(detail.getPrice());
+
+            List<ShowPlantStatusIMGModel> plantStatusIMGModelList = new ArrayList<>();
+            if(detail.getPlantStatusIMGList() != null && !detail.getPlantStatusIMGList().isEmpty()){
+                for(PlantStatusIMG plantStatusIMG : detail.getPlantStatusIMGList()){
+                    ShowPlantStatusIMGModel plantStatusIMGModel = new ShowPlantStatusIMGModel();
+                    plantStatusIMGModel.setId(plantStatusIMG.getId());
+                    plantStatusIMGModel.setImgUrl(plantStatusIMG.getImgURL());
+                    plantStatusIMGModelList.add(plantStatusIMGModel);
+                }
+            }
+            model.setPlantStatusIMGModelList(plantStatusIMGModelList);
 
             ServicePrice newestPrice = servicePriceRepository.findFirstByService_IdAndStatusOrderByApplyDateDesc(detail.getServiceType().getService().getId(), Status.ACTIVE);
 

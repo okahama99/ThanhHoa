@@ -19,4 +19,6 @@ public interface PlantCategoryRepository extends JpaRepository<PlantCategory, St
     List<PlantCategory> findByCategory_IdAndPlant_NameContainingAndStatus(String categoryID, String plantName, Status status);
 
     PlantCategory findFirstByOrderByIdDesc();
+
+    PlantCategory findByIdAndStatus(String plantCategoryID, Status status);
 }

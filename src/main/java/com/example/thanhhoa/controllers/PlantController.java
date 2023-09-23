@@ -114,9 +114,24 @@ public class PlantController {
         }
     }
 
+    @DeleteMapping(value = "/v2/deletePlantIMG", produces = "application/json;charset=UTF-8")
+    public ResponseEntity<Object> deletePlantIMG(@RequestParam String id,
+                                                 HttpServletRequest request) {
+        String roleName = jwtUtil.getRoleNameFromRequest(request);
+        if(!roleName.equalsIgnoreCase("Owner") && !roleName.equalsIgnoreCase("Manager")) {
+            throw new ResponseStatusException(HttpStatus.FORBIDDEN, "-----------------------------------Người dùng không có quyền truy cập---------------------------");
+        }
+        String result = plantService.deletePlantIMG(id);
+        if(result.equals("Xóa thành công.")) {
+            return ResponseEntity.ok().body(result);
+        } else {
+            return ResponseEntity.badRequest().body(result);
+        }
+    }
+
     @DeleteMapping(value = "/removeCategory", produces = "application/json;charset=UTF-8")
     public ResponseEntity<Object> deleteCategory(@RequestParam String categoryID,
-                                              HttpServletRequest request) {
+                                                 HttpServletRequest request) {
         String roleName = jwtUtil.getRoleNameFromRequest(request);
         if(!roleName.equalsIgnoreCase("Owner") && !roleName.equalsIgnoreCase("Manager")) {
             throw new ResponseStatusException(HttpStatus.FORBIDDEN, "-----------------------------------Người dùng không có quyền truy cập---------------------------");
@@ -137,6 +152,21 @@ public class PlantController {
             throw new ResponseStatusException(HttpStatus.FORBIDDEN, "-----------------------------------Người dùng không có quyền truy cập---------------------------");
         }
         String result = plantService.activatePlant(plantID);
+        if(result.equals("Cập nhật thành công.")) {
+            return ResponseEntity.ok().body(result);
+        } else {
+            return ResponseEntity.badRequest().body(result);
+        }
+    }
+
+    @PutMapping(value = "/v2/activatePlantCategory", produces = "application/json;charset=UTF-8")
+    public ResponseEntity<Object> activatePlantCategory(@RequestParam String plantCategoryID,
+                                                        HttpServletRequest request) throws Exception {
+        String roleName = jwtUtil.getRoleNameFromRequest(request);
+        if(!roleName.equalsIgnoreCase("Owner") && !roleName.equalsIgnoreCase("Manager")) {
+            throw new ResponseStatusException(HttpStatus.FORBIDDEN, "-----------------------------------Người dùng không có quyền truy cập---------------------------");
+        }
+        String result = plantService.activatePlantCategory(plantCategoryID);
         if(result.equals("Cập nhật thành công.")) {
             return ResponseEntity.ok().body(result);
         } else {

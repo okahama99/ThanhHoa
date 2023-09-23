@@ -1,8 +1,10 @@
 package com.example.thanhhoa.services.workingDate;
 
+import com.example.thanhhoa.dtos.ContractModels.ShowPlantStatusIMGModel;
 import com.example.thanhhoa.dtos.OrderModels.ShowStaffModel;
 import com.example.thanhhoa.dtos.WorkingDateModels.ShowWorkingDateModel;
 import com.example.thanhhoa.entities.ContractDetail;
+import com.example.thanhhoa.entities.PlantStatusIMG;
 import com.example.thanhhoa.entities.ServicePrice;
 import com.example.thanhhoa.entities.WorkingDate;
 import com.example.thanhhoa.enums.Status;
@@ -130,7 +132,18 @@ public class WorkingDateServiceImpl implements WorkingDateService {
         model.setStartDate(detail.getStartDate());
         model.setExpectedEndDate(detail.getExpectedEndDate());
         model.setPlantStatus(detail.getPlantStatus());
-        model.setPlantIMG(detail.getPlantIMG());
+
+        List<ShowPlantStatusIMGModel> plantStatusIMGModelList = new ArrayList<>();
+        if(detail.getPlantStatusIMGList() != null && !detail.getPlantStatusIMGList().isEmpty()){
+            for(PlantStatusIMG plantStatusIMG : detail.getPlantStatusIMGList()){
+                ShowPlantStatusIMGModel plantStatusIMGModel = new ShowPlantStatusIMGModel();
+                plantStatusIMGModel.setId(plantStatusIMG.getId());
+                plantStatusIMGModel.setImgUrl(plantStatusIMG.getImgURL());
+                plantStatusIMGModelList.add(plantStatusIMGModel);
+            }
+        }
+        model.setPlantStatusIMGModelList(plantStatusIMGModelList);
+
         model.setContractID(detail.getContract().getId());
         model.setTitle(detail.getContract().getTitle());
         model.setAddress(detail.getContract().getAddress());
@@ -203,7 +216,18 @@ public class WorkingDateServiceImpl implements WorkingDateService {
                 model.setStartDate(detail.getStartDate());
                 model.setExpectedEndDate(detail.getExpectedEndDate());
                 model.setPlantStatus(detail.getPlantStatus());
-                model.setPlantIMG(detail.getPlantIMG());
+
+                List<ShowPlantStatusIMGModel> plantStatusIMGModelList = new ArrayList<>();
+                if(detail.getPlantStatusIMGList() != null && !detail.getPlantStatusIMGList().isEmpty()){
+                    for(PlantStatusIMG plantStatusIMG : detail.getPlantStatusIMGList()){
+                        ShowPlantStatusIMGModel plantStatusIMGModel = new ShowPlantStatusIMGModel();
+                        plantStatusIMGModel.setId(plantStatusIMG.getId());
+                        plantStatusIMGModel.setImgUrl(plantStatusIMG.getImgURL());
+                        plantStatusIMGModelList.add(plantStatusIMGModel);
+                    }
+                }
+                model.setPlantStatusIMGModelList(plantStatusIMGModelList);
+
                 model.setContractID(detail.getContract().getId());
                 model.setTitle(detail.getContract().getTitle());
                 model.setAddress(detail.getContract().getAddress());
@@ -282,7 +306,18 @@ public class WorkingDateServiceImpl implements WorkingDateService {
             model.setStartDate(detail.getStartDate());
             model.setExpectedEndDate(detail.getExpectedEndDate());
             model.setPlantStatus(detail.getPlantStatus());
-            model.setPlantIMG(detail.getPlantIMG());
+
+            List<ShowPlantStatusIMGModel> plantStatusIMGModelList = new ArrayList<>();
+            if(detail.getPlantStatusIMGList() != null && !detail.getPlantStatusIMGList().isEmpty()){
+                for(PlantStatusIMG plantStatusIMG : detail.getPlantStatusIMGList()){
+                    ShowPlantStatusIMGModel plantStatusIMGModel = new ShowPlantStatusIMGModel();
+                    plantStatusIMGModel.setId(plantStatusIMG.getId());
+                    plantStatusIMGModel.setImgUrl(plantStatusIMG.getImgURL());
+                    plantStatusIMGModelList.add(plantStatusIMGModel);
+                }
+            }
+            model.setPlantStatusIMGModelList(plantStatusIMGModelList);
+
             model.setContractID(detail.getContract().getId());
             model.setTitle(detail.getContract().getTitle());
             model.setAddress(detail.getContract().getAddress());
@@ -373,7 +408,18 @@ public class WorkingDateServiceImpl implements WorkingDateService {
                 model.setStartDate(detail.getStartDate());
                 model.setExpectedEndDate(detail.getExpectedEndDate());
                 model.setPlantStatus(detail.getPlantStatus());
-                model.setPlantIMG(detail.getPlantIMG());
+
+                List<ShowPlantStatusIMGModel> plantStatusIMGModelList = new ArrayList<>();
+                if(detail.getPlantStatusIMGList() != null && !detail.getPlantStatusIMGList().isEmpty()){
+                    for(PlantStatusIMG plantStatusIMG : detail.getPlantStatusIMGList()){
+                        ShowPlantStatusIMGModel plantStatusIMGModel = new ShowPlantStatusIMGModel();
+                        plantStatusIMGModel.setId(plantStatusIMG.getId());
+                        plantStatusIMGModel.setImgUrl(plantStatusIMG.getImgURL());
+                        plantStatusIMGModelList.add(plantStatusIMGModel);
+                    }
+                }
+                model.setPlantStatusIMGModelList(plantStatusIMGModelList);
+
                 model.setContractID(detail.getContract().getId());
                 model.setTitle(detail.getContract().getTitle());
                 model.setAddress(detail.getContract().getAddress());
@@ -453,7 +499,18 @@ public class WorkingDateServiceImpl implements WorkingDateService {
             model.setStartDate(detail.getStartDate());
             model.setExpectedEndDate(detail.getExpectedEndDate());
             model.setPlantStatus(detail.getPlantStatus());
-            model.setPlantIMG(detail.getPlantIMG());
+
+            List<ShowPlantStatusIMGModel> plantStatusIMGModelList = new ArrayList<>();
+            if(detail.getPlantStatusIMGList() != null && !detail.getPlantStatusIMGList().isEmpty()){
+                for(PlantStatusIMG plantStatusIMG : detail.getPlantStatusIMGList()){
+                    ShowPlantStatusIMGModel plantStatusIMGModel = new ShowPlantStatusIMGModel();
+                    plantStatusIMGModel.setId(plantStatusIMG.getId());
+                    plantStatusIMGModel.setImgUrl(plantStatusIMG.getImgURL());
+                    plantStatusIMGModelList.add(plantStatusIMGModel);
+                }
+            }
+            model.setPlantStatusIMGModelList(plantStatusIMGModelList);
+
             model.setContractID(detail.getContract().getId());
             model.setTitle(detail.getContract().getTitle());
             model.setAddress(detail.getContract().getAddress());

@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
@@ -53,6 +54,21 @@ public class ServicePackController {
         }
         String result = servicePackService.delete(servicePackID);
         if(result.equals("Xóa thành công.")) {
+            return ResponseEntity.ok().body(result);
+        } else {
+            return ResponseEntity.badRequest().body(result);
+        }
+    }
+
+    @PutMapping(value = "/v2/updateStatus", produces = "application/json;charset=UTF-8")
+    public ResponseEntity<Object> updateStatus(@PathVariable(name = "servicePackID") String servicePackID,
+                                               HttpServletRequest request) {
+        String roleName = jwtUtil.getRoleNameFromRequest(request);
+        if(!roleName.equalsIgnoreCase("Owner") && !roleName.equalsIgnoreCase("Manager")) {
+            throw new ResponseStatusException(HttpStatus.FORBIDDEN, "-----------------------------------Người dùng không có quyền truy cập---------------------------");
+        }
+        String result = servicePackService.updateStatus(servicePackID);
+        if(result.equals("Cập nhật thành công.")) {
             return ResponseEntity.ok().body(result);
         } else {
             return ResponseEntity.badRequest().body(result);

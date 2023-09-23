@@ -10,5 +10,7 @@ public interface ServicePackService {
 
     String delete(String id);
 
+    String updateStatus(String id);
+
     List<ShowServicePackModel> getAll();
 }

@@ -5,6 +5,7 @@ import lombok.Setter;
 
 import javax.annotation.Nullable;
 import java.io.Serializable;
+import java.util.List;
 
 @Getter
 @Setter
@@ -19,5 +20,5 @@ public class UpdateContractDetailModel implements Serializable {
     @Nullable
     private String plantStatus;
     @Nullable
-    private String plantIMG;
+    private List<String> plantIMG;
 }
