@@ -531,7 +531,7 @@ public class ContractServiceImpl implements ContractService {
         for(ContractDetail contractDetail : contract.getContractDetailList()) {
             startDateList.add(contractDetail.getStartDate());
 
-            Optional<ServiceType> type = serviceTypeRepository.findById(contractDetail.getServiceType().getService().getId());
+            Optional<ServiceType> type = serviceTypeRepository.findById(contractDetail.getServiceType().getId());
             if(type == null) {
                 return "Không tìm thấy ServiceType của Service có ID là " + contractDetail.getServiceType().getService().getId() + ".";
             }
