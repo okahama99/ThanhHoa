@@ -28,6 +28,7 @@ public class ShowContractModel implements Serializable {
     private LocalDateTime createdDate;
     private LocalDateTime startedDate;
     private LocalDateTime endedDate;
+    private LocalDateTime expectedEndedDate;
     private LocalDateTime approvedDate;
     private LocalDateTime rejectedDate;
     private Double total;

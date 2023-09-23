@@ -228,6 +228,7 @@ public class ContractServiceImpl implements ContractService {
                 contractModel.setApprovedDate(detail.getContract().getApprovedDate());
                 contractModel.setRejectedDate(detail.getContract().getRejectedDate());
                 contractModel.setEndedDate(detail.getContract().getEndedDate());
+                contractModel.setExpectedEndedDate(detail.getContract().getExpectedEndedDate());
                 contractModel.setTotal(detail.getContract().getTotal());
                 contractModel.setIsFeedback(detail.getContract().getIsFeedback());
                 contractModel.setIsSigned(detail.getContract().getIsSigned());
@@ -974,6 +975,7 @@ public class ContractServiceImpl implements ContractService {
             contractModel.setApprovedDate(detail.getContract().getApprovedDate());
             contractModel.setRejectedDate(detail.getContract().getRejectedDate());
             contractModel.setEndedDate(detail.getContract().getEndedDate());
+            contractModel.setExpectedEndedDate(detail.getContract().getExpectedEndedDate());
             contractModel.setTotal(detail.getContract().getTotal());
             contractModel.setIsFeedback(detail.getContract().getIsFeedback());
             contractModel.setIsSigned(detail.getContract().getIsSigned());
@@ -1111,6 +1113,7 @@ public class ContractServiceImpl implements ContractService {
             contractModel.setApprovedDate(detail.getContract().getApprovedDate());
             contractModel.setRejectedDate(detail.getContract().getRejectedDate());
             contractModel.setEndedDate(detail.getContract().getEndedDate());
+            contractModel.setExpectedEndedDate(detail.getContract().getExpectedEndedDate());
             contractModel.setTotal(detail.getContract().getTotal());
             contractModel.setIsFeedback(detail.getContract().getIsFeedback());
             contractModel.setIsSigned(detail.getContract().getIsSigned());

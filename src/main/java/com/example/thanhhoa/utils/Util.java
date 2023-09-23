@@ -1056,6 +1056,7 @@ public class Util {
                     model.setRejectedDate(contract.getRejectedDate());
                     model.setStartedDate(contract.getStartedDate());
                     model.setEndedDate(contract.getEndedDate());
+                    model.setExpectedEndedDate(contract.getExpectedEndedDate());
                     model.setTotal(contract.getTotal());
                     model.setIsFeedback(contract.getIsFeedback());
                     model.setIsSigned(contract.getIsSigned());
@@ -1203,6 +1204,7 @@ public class Util {
                     contractModel.setApprovedDate(detail.getContract().getApprovedDate());
                     contractModel.setRejectedDate(detail.getContract().getRejectedDate());
                     contractModel.setEndedDate(detail.getContract().getEndedDate());
+                    contractModel.setExpectedEndedDate(detail.getContract().getExpectedEndedDate());
                     contractModel.setTotal(detail.getContract().getTotal());
                     contractModel.setIsFeedback(detail.getContract().getIsFeedback());
                     contractModel.setIsSigned(detail.getContract().getIsSigned());
@@ -1834,6 +1836,7 @@ public class Util {
                         contractModel.setRejectedDate(contract.getRejectedDate());
                         contractModel.setStartedDate(contract.getStartedDate());
                         contractModel.setEndedDate(contract.getEndedDate());
+                        contractModel.setExpectedEndedDate(contract.getExpectedEndedDate());
                         contractModel.setTotal(contract.getTotal());
                         contractModel.setIsFeedback(contract.getIsFeedback());
                         contractModel.setIsSigned(contract.getIsSigned());
