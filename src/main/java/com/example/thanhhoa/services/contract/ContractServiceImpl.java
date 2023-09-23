@@ -635,6 +635,7 @@ public class ContractServiceImpl implements ContractService {
         contract.setStatus(Status.SIGNED);
         contract.setIsSigned(true);
         contract.setStartedDate(LocalDateTime.now(ZoneId.of("Asia/Ho_Chi_Minh")));
+        contract.setSignedDate(LocalDateTime.now(ZoneId.of("Asia/Ho_Chi_Minh")));
 
         contractRepository.save(contract);
 
@@ -683,6 +684,7 @@ public class ContractServiceImpl implements ContractService {
             }
         } else if(status.toString().equalsIgnoreCase("CONFIRMING")) {
             contract.setApprovedDate(LocalDateTime.now(ZoneId.of("Asia/Ho_Chi_Minh")));
+            contract.setConfirmedDate(LocalDateTime.now(ZoneId.of("Asia/Ho_Chi_Minh")));
             contract.setStatus(status);
 
             if(staffID == null) {
@@ -984,6 +986,8 @@ public class ContractServiceImpl implements ContractService {
             contractModel.setTitle(detail.getContract().getTitle());
             contractModel.setPaymentMethod(detail.getContract().getPaymentMethod());
             contractModel.setCreatedDate(detail.getContract().getCreatedDate());
+            contractModel.setConfirmedDate(detail.getContract().getConfirmedDate());
+            contractModel.setSignedDate(detail.getContract().getSignedDate());
             contractModel.setStartedDate(detail.getContract().getStartedDate());
             contractModel.setApprovedDate(detail.getContract().getApprovedDate());
             contractModel.setRejectedDate(detail.getContract().getRejectedDate());
@@ -1122,6 +1126,8 @@ public class ContractServiceImpl implements ContractService {
             contractModel.setTitle(detail.getContract().getTitle());
             contractModel.setPaymentMethod(detail.getContract().getPaymentMethod());
             contractModel.setCreatedDate(detail.getContract().getCreatedDate());
+            contractModel.setConfirmedDate(detail.getContract().getConfirmedDate());
+            contractModel.setSignedDate(detail.getContract().getSignedDate());
             contractModel.setStartedDate(detail.getContract().getStartedDate());
             contractModel.setApprovedDate(detail.getContract().getApprovedDate());
             contractModel.setRejectedDate(detail.getContract().getRejectedDate());
