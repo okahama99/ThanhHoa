@@ -632,8 +632,15 @@ public class ContractServiceImpl implements ContractService {
 
         contractRepository.save(contract);
 
+        List<String> listID = new ArrayList<>();
         for(ContractDetail detail : contract.getContractDetailList()) {
-            workingDateService.generateWorkingSchedule(detail.getId());
+            listID.add(detail.getId());
+        }
+
+        if(listID != null){
+            for(String id : listID) {
+                workingDateService.generateWorkingSchedule(id);
+            }
         }
 
         if(contract.getCustomer() != null) {
