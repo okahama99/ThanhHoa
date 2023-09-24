@@ -36,6 +36,8 @@ public interface StoreService {
 
     List<ShowPlantModel> getStorePlantByStoreID(String storeID, Pageable pageable);
 
+    List<ShowPlantModel> getStorePlantV2(String storeID, Pageable pageable);
+
     String addStoreEmployee(AddStoreEmployeeModel addStoreEmployeeModel);
 
     String removeStoreEmployee(Long employeeID);

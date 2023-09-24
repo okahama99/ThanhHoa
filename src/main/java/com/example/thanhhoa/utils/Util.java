@@ -447,6 +447,98 @@ public class Util {
         }
     }
 
+    public List<com.example.thanhhoa.dtos.StoreModels.ShowPlantModel> storePlantPagingConverterV2(Page<StorePlant> pagingResult, Pageable paging) {
+        if(pagingResult.hasContent()) {
+            double totalPage = Math.ceil((double) pagingResult.getTotalElements() / paging.getPageSize());
+            Page<com.example.thanhhoa.dtos.StoreModels.ShowPlantModel> modelResult = pagingResult.map(new Converter<StorePlant, com.example.thanhhoa.dtos.StoreModels.ShowPlantModel>() {
+                @Override
+                protected com.example.thanhhoa.dtos.StoreModels.ShowPlantModel doForward(StorePlant storePlant) {
+                    Plant plant = storePlant.getPlant();
+                    List<PlantCategory> plantCategoryList = plantCategoryRepository.findAllByPlant_IdAndStatus(plant.getId(), Status.ACTIVE);
+                    List<ShowPlantCategory> showPlantCategoryList = new ArrayList<>();
+                    for(PlantCategory plantCategory : plantCategoryList) {
+                        ShowPlantCategory showPlantCategory = new ShowPlantCategory();
+                        showPlantCategory.setCategoryID(plantCategory.getCategory().getId());
+                        showPlantCategory.setCategoryName(plantCategory.getCategory().getName());
+                        showPlantCategoryList.add(showPlantCategory);
+                    }
+
+                    List<ShowPlantIMGModel> showPlantIMGList = new ArrayList<>();
+                    List<PlantIMG> plantIMGList = plantIMGRepository.findByPlant_Id(plant.getId());
+                    if(plantIMGList != null) {
+                        for(PlantIMG img : plantIMGList) {
+                            ShowPlantIMGModel model = new ShowPlantIMGModel();
+                            model.setId(img.getId());
+                            model.setUrl(img.getImgURL());
+                            showPlantIMGList.add(model);
+                        }
+                    }
+
+                    ShowPlantShipPriceModel showPlantShipPriceModel = new ShowPlantShipPriceModel();
+                    showPlantShipPriceModel.setId(plant.getPlantShipPrice().getId());
+                    showPlantShipPriceModel.setPotSize(plant.getPlantShipPrice().getPotSize());
+                    showPlantShipPriceModel.setPricePerPlant(plant.getPlantShipPrice().getPricePerPlant());
+
+                    PlantPrice newestPrice = plantPriceRepository.findFirstByPlant_IdAndStatusOrderByApplyDateDesc(plant.getId(), Status.ACTIVE);
+                    ShowPlantPriceModel showPlantPriceModel = new ShowPlantPriceModel();
+                    showPlantPriceModel.setId(newestPrice.getId());
+                    showPlantPriceModel.setPrice(newestPrice.getPrice());
+                    showPlantPriceModel.setApplyDate(newestPrice.getApplyDate());
+                    showPlantPriceModel.setStatus(newestPrice.getStatus());
+
+                    Integer totalPlant = storePlantRepository.sumQuantity(plant.getId());
+                    Double totalRating = 0.0;
+                    Double totalFeedback = 0.0;
+                    Double avgRatingFeedback = 0.0;
+                    List<OrderFeedback> list = orderFeedbackRepository.findAllByStatusAndPlant_Id(Status.ACTIVE, plant.getId());
+                    if(list != null && !list.isEmpty()) {
+                        for(OrderFeedback ofb : list) {
+                            totalRating += Double.parseDouble(ofb.getRating().getDescription());
+                        }
+                        totalFeedback = Double.valueOf(list.size());
+                    }
+
+                    if(totalRating > 0.0 && totalFeedback > 0.0) {
+                        avgRatingFeedback = totalRating / totalFeedback;
+                    }
+
+                    ShowStorePlantModel storePlantModel = new ShowStorePlantModel();
+                    storePlantModel.setId(storePlant.getId());
+                    storePlantModel.setQuantity(storePlant.getQuantity());
+
+                    com.example.thanhhoa.dtos.StoreModels.ShowPlantModel model = new com.example.thanhhoa.dtos.StoreModels.ShowPlantModel();
+
+                    model.setTotalRating(totalRating);
+                    model.setTotalFeedback(totalRating);
+                    model.setAvgRatingFeedback(avgRatingFeedback);
+                    model.setTotalPlant(totalPlant);
+
+                    model.setName(plant.getName());
+                    model.setHeight(plant.getHeight());
+                    model.setWithPot(plant.getWithPot());
+                    model.setShowPlantShipPriceModel(showPlantShipPriceModel);
+                    model.setPlantCategoryList(showPlantCategoryList);
+                    model.setShowPlantPriceModel(showPlantPriceModel);
+                    model.setPlantIMGList(showPlantIMGList);
+                    model.setDescription(plant.getDescription());
+                    model.setCareNote(plant.getCareNote());
+                    model.setStatus(plant.getStatus());
+                    model.setShowStorePlantModel(storePlantModel);
+                    model.setTotalPage(totalPage);
+                    return model;
+                }
+
+                @Override
+                protected StorePlant doBackward(com.example.thanhhoa.dtos.StoreModels.ShowPlantModel showPlantModel) {
+                    return null;
+                }
+            });
+            return modelResult.getContent();
+        } else {
+            return new ArrayList<>();
+        }
+    }
+
     public List<ShowPlantModel> plantPricePagingConverter(Double fromPrice, Double toPrice, Page<Plant> pagingResult, Pageable paging) {
         if(pagingResult.hasContent()) {
             double totalPage = Math.ceil((double) pagingResult.getTotalElements() / paging.getPageSize());
