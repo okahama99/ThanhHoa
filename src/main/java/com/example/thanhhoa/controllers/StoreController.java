@@ -64,22 +64,6 @@ public class StoreController {
         return ResponseEntity.ok().body(storeService.getStorePlantByStoreID(storeID, paging));
     }
 
-    @GetMapping(value = "/v2/getStorePlant", produces = "application/json;charset=UTF-8")
-    public @ResponseBody
-    ResponseEntity<Object> getStorePlantV2(@RequestParam String storeID,
-                                           @RequestParam int pageNo,
-                                           @RequestParam int pageSize,
-                                           @RequestParam(required = false, defaultValue = "ID") SearchType.STORE sortBy,
-                                           @RequestParam(required = false, defaultValue = "true") Boolean sortAsc) {
-        Pageable paging;
-        if(sortBy.toString().equalsIgnoreCase("STORENAME")) {
-            paging = util.makePaging(pageNo, pageSize, "storeName", sortAsc);
-        } else {
-            paging = util.makePaging(pageNo, pageSize, sortBy.toString().toLowerCase(), sortAsc);
-        }
-        return ResponseEntity.ok().body(storeService.getStorePlantV2(storeID, paging));
-    }
-
     @GetMapping(value = "/getStoreStaff", produces = "application/json;charset=UTF-8")
     public @ResponseBody
     ResponseEntity<Object> getStoreStaff(@RequestParam String storeID,

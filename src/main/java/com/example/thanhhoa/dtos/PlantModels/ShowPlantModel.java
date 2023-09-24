@@ -2,6 +2,7 @@ package com.example.thanhhoa.dtos.PlantModels;
 
 import com.example.thanhhoa.dtos.PlantPriceModels.ShowPlantPriceModel;
 import com.example.thanhhoa.dtos.PlantShipPriceModels.ShowPlantShipPriceModel;
+import com.example.thanhhoa.dtos.StoreModels.ShowStorePlantModel;
 import com.example.thanhhoa.enums.Status;
 import lombok.Getter;
 import lombok.Setter;
@@ -29,4 +30,5 @@ public class ShowPlantModel {
     private ShowPlantPriceModel showPlantPriceModel;
     private List<ShowPlantIMGModel> plantIMGList;
     private List<ShowPlantCategory> plantCategoryList;
+    private ShowStorePlantModel showStorePlantModel;
 }

@@ -5,15 +5,15 @@ import com.example.thanhhoa.dtos.PlantModels.ShowPlantModel;
 import com.example.thanhhoa.dtos.PlantModels.UpdatePlantModel;
 import com.example.thanhhoa.entities.Plant;
 import org.springframework.data.domain.Pageable;
-import org.springframework.web.multipart.MultipartFile;
 
-import java.io.IOException;
 import java.util.List;
 
 public interface PlantService {
     List<ShowPlantModel> getAllPlant(Pageable paging);
 
     List<ShowPlantModel> getAllPlantWithInactive(Pageable paging);
+
+    List<ShowPlantModel> getPlantV2(String storeID, Pageable pageable);
 
     ShowPlantModel getPlantByID(String plantID);
 

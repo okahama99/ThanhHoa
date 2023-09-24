@@ -31,8 +31,8 @@ import com.example.thanhhoa.utils.Util;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
-import org.springframework.security.core.parameters.P;
 import org.springframework.stereotype.Service;
+
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.util.ArrayList;
@@ -79,6 +79,12 @@ public class PlantServiceImpl implements PlantService {
     public List<ShowPlantModel> getAllPlantWithInactive(Pageable paging) {
         Page<Plant> pagingResult = plantPagingRepository.findAll(paging);
         return util.plantPagingConverter(pagingResult, paging);
+    }
+
+    @Override
+    public List<ShowPlantModel> getPlantV2(String storeID, Pageable pageable) {
+        Page<Plant> pagingResult = plantPagingRepository.findAll(pageable);
+        return util.plantPagingConverterV2(storeID, pagingResult, pageable);
     }
 
     @Override
@@ -229,13 +235,13 @@ public class PlantServiceImpl implements PlantService {
             if(plantShipPrice == null) {
                 return "Không tìm thấy dữ liệu với ShipPriceID = " + updatePlantModel.getShipPriceID() + ".";
             }
-            if(updatePlantModel.getCategoryIDList() == null){
+            if(updatePlantModel.getCategoryIDList() == null) {
                 return "Phải có ít nhất 1 category.";
             }
 
             Plant plant = checkPlant.get();
 
-            if(updatePlantModel.getName() != null){
+            if(updatePlantModel.getName() != null) {
                 plant.setName(updatePlantModel.getName());
             }
 
@@ -247,7 +253,7 @@ public class PlantServiceImpl implements PlantService {
 
 
             List<PlantCategory> plantCategoryList = plantCategoryRepository.findAllByPlant_IdAndStatus(updatePlantModel.getPlantID(), Status.ACTIVE);
-            if(plantCategoryList != null){
+            if(plantCategoryList != null) {
                 for(PlantCategory plantCategory : plantCategoryList) {
                     plantCategory.setStatus(Status.INACTIVE);
                     plantCategoryRepository.save(plantCategory);
@@ -256,7 +262,7 @@ public class PlantServiceImpl implements PlantService {
 
             for(String categoryID : updatePlantModel.getCategoryIDList()) {
                 Optional<Category> category = categoryRepository.findById(categoryID);
-                if(category == null){
+                if(category == null) {
                     return "Không tìm thấy Category với ID là " + categoryID + ".";
                 }
                 PlantCategory plantCategory = new PlantCategory();
@@ -346,7 +352,7 @@ public class PlantServiceImpl implements PlantService {
         if(checkingPlant != null) {
             Plant plant = checkingPlant.get();
             StorePlant storePlant = storePlantRepository.findByPlant_IdAndPlant_Status(plantID, Status.ONSALE);
-            if(storePlant != null){
+            if(storePlant != null) {
                 if(orderDetailRepository.findByStorePlant_IdAndTblOrder_ProgressStatus(storePlant.getId(), Status.WAITING) != null && !orderDetailRepository.findByStorePlant_IdAndTblOrder_ProgressStatus(plantID, Status.WAITING).isEmpty()) {
                     return "Không thể xóa cây đang được sử dụng.";
                 }

@@ -447,13 +447,12 @@ public class Util {
         }
     }
 
-    public List<com.example.thanhhoa.dtos.StoreModels.ShowPlantModel> storePlantPagingConverterV2(Page<StorePlant> pagingResult, Pageable paging) {
+    public List<ShowPlantModel> plantPagingConverterV2(String storeID, Page<Plant> pagingResult, Pageable paging) {
         if(pagingResult.hasContent()) {
             double totalPage = Math.ceil((double) pagingResult.getTotalElements() / paging.getPageSize());
-            Page<com.example.thanhhoa.dtos.StoreModels.ShowPlantModel> modelResult = pagingResult.map(new Converter<StorePlant, com.example.thanhhoa.dtos.StoreModels.ShowPlantModel>() {
+            Page<ShowPlantModel> modelResult = pagingResult.map(new Converter<Plant, ShowPlantModel>() {
                 @Override
-                protected com.example.thanhhoa.dtos.StoreModels.ShowPlantModel doForward(StorePlant storePlant) {
-                    Plant plant = storePlant.getPlant();
+                protected ShowPlantModel doForward(Plant plant) {
                     List<PlantCategory> plantCategoryList = plantCategoryRepository.findAllByPlant_IdAndStatus(plant.getId(), Status.ACTIVE);
                     List<ShowPlantCategory> showPlantCategoryList = new ArrayList<>();
                     for(PlantCategory plantCategory : plantCategoryList) {
@@ -502,11 +501,12 @@ public class Util {
                         avgRatingFeedback = totalRating / totalFeedback;
                     }
 
+                    StorePlant storePlant = storePlantRepository.findByPlantIdAndStoreId(plant.getId(), storeID);
                     ShowStorePlantModel storePlantModel = new ShowStorePlantModel();
                     storePlantModel.setId(storePlant.getId());
                     storePlantModel.setQuantity(storePlant.getQuantity());
 
-                    com.example.thanhhoa.dtos.StoreModels.ShowPlantModel model = new com.example.thanhhoa.dtos.StoreModels.ShowPlantModel();
+                    ShowPlantModel model = new ShowPlantModel();
 
                     model.setTotalRating(totalRating);
                     model.setTotalFeedback(totalRating);
@@ -530,7 +530,7 @@ public class Util {
                 }
 
                 @Override
-                protected StorePlant doBackward(com.example.thanhhoa.dtos.StoreModels.ShowPlantModel showPlantModel) {
+                protected Plant doBackward(ShowPlantModel showPlantModel) {
                     return null;
                 }
             });

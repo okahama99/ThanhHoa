@@ -314,12 +314,6 @@ public class StoreServiceImpl implements StoreService{
     }
 
     @Override
-    public List<ShowPlantModel> getStorePlantV2(String storeID, Pageable pageable) {
-        Page<StorePlant> pagingResult = storePlantPagingRepository.findByStore_IdAndStore_Status(storeID, Status.ACTIVE, pageable);
-        return util.storePlantPagingConverterV2(pagingResult,pageable);
-    }
-
-    @Override
     public String addStoreEmployee(AddStoreEmployeeModel addStoreEmployeeModel) {
         Optional<Store> checkExistedStore = storeRepository.findById(addStoreEmployeeModel.getStoreID());
         if(checkExistedStore == null){
