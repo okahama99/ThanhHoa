@@ -336,17 +336,6 @@ public class PlantServiceImpl implements PlantService {
     }
 
     @Override
-    public String activatePlantCategory(String plantCategoryID) throws Exception {
-        PlantCategory plantCategory = plantCategoryRepository.findByIdAndStatus(plantCategoryID, Status.INACTIVE);
-        if(plantCategory != null) {
-            plantCategory.setStatus(Status.ACTIVE);
-            plantCategoryRepository.save(plantCategory);
-            return "Cập nhật thành công.";
-        }
-        return "Không tìm thấy PlantCategory với ID là " + plantCategoryID + " có trạng thái INACTIVE.";
-    }
-
-    @Override
     public String deletePlant(String plantID) {
         Optional<Plant> checkingPlant = plantRepository.findById(plantID);
         if(checkingPlant != null) {

@@ -12,6 +12,8 @@ public interface CategoryService {
 
     List<ShowCategoryModel> getCategory();
 
+    String activateCategory(String categoryID) throws Exception;
+
     String create(String name);
 
     String update(String id, String name);

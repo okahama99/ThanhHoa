@@ -58,6 +58,21 @@ public class CategoryController {
         return ResponseEntity.ok().body(categoryService.getAllCategory(paging));
     }
 
+    @PutMapping(value = "/v2/activateCategory", produces = "application/json;charset=UTF-8")
+    public ResponseEntity<Object> activateCategory(@RequestParam String categoryID,
+                                                   HttpServletRequest request) throws Exception {
+        String roleName = jwtUtil.getRoleNameFromRequest(request);
+        if(!roleName.equalsIgnoreCase("Owner") && !roleName.equalsIgnoreCase("Manager")) {
+            throw new ResponseStatusException(HttpStatus.FORBIDDEN, "-----------------------------------Người dùng không có quyền truy cập---------------------------");
+        }
+        String result = categoryService.activateCategory(categoryID);
+        if(result.equals("Cập nhật thành công.")) {
+            return ResponseEntity.ok().body(result);
+        } else {
+            return ResponseEntity.badRequest().body(result);
+        }
+    }
+
     @PostMapping(produces = "application/json;charset=UTF-8")
     public ResponseEntity<Object> create(@RequestParam String name,
                                          HttpServletRequest request) throws Exception {

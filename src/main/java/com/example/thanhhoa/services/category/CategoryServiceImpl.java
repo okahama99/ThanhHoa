@@ -68,6 +68,18 @@ public class CategoryServiceImpl implements CategoryService{
     }
 
     @Override
+    public String activateCategory(String categoryID) throws Exception {
+        Optional<Category> checkExisted = categoryRepository.findByIdAndStatus(categoryID, Status.INACTIVE);
+        if(checkExisted != null) {
+            Category category = checkExisted.get();
+            category.setStatus(Status.ACTIVE);
+            categoryRepository.save(category);
+            return "Cập nhật thành công.";
+        }
+        return "Không tìm thấy Category với ID là " + categoryID + " có trạng thái INACTIVE.";
+    }
+
+    @Override
     public String create(String name) {
         Category checkExisted = categoryRepository.findByName(name);
         if(checkExisted != null){

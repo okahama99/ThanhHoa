@@ -23,8 +23,6 @@ public interface PlantService {
 
     String activatePlant(String plantID) throws Exception;
 
-    String activatePlantCategory(String plantCategoryID) throws Exception;
-
     String deletePlant(String plantID);
 
     String deletePlantIMG(String plantIMG);
