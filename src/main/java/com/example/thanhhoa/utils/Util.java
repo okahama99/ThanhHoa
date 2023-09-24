@@ -513,6 +513,7 @@ public class Util {
                     model.setAvgRatingFeedback(avgRatingFeedback);
                     model.setTotalPlant(totalPlant);
 
+                    model.setPlantID(plant.getId());
                     model.setName(plant.getName());
                     model.setHeight(plant.getHeight());
                     model.setWithPot(plant.getWithPot());

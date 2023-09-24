@@ -315,7 +315,7 @@ public class StoreServiceImpl implements StoreService{
 
     @Override
     public List<ShowPlantModel> getStorePlantV2(String storeID, Pageable pageable) {
-        Page<StorePlant> pagingResult = storePlantPagingRepository.findByStore_IdAndPlant_StatusAndStore_Status(storeID, Status.ONSALE, Status.ACTIVE, pageable);
+        Page<StorePlant> pagingResult = storePlantPagingRepository.findByStore_IdAndStore_Status(storeID, Status.ACTIVE, pageable);
         return util.storePlantPagingConverterV2(pagingResult,pageable);
     }
 

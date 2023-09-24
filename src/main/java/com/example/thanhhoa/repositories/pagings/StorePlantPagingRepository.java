@@ -10,4 +10,6 @@ import org.springframework.stereotype.Repository;
 @Repository
 public interface StorePlantPagingRepository extends PagingAndSortingRepository<StorePlant, String> {
     Page<StorePlant> findByStore_IdAndPlant_StatusAndStore_Status(String storeID, Status pStatus, Status sStatus, Pageable pageable);
+
+    Page<StorePlant> findByStore_IdAndStore_Status(String storeID, Status sStatus, Pageable pageable);
 }
