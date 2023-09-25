@@ -84,7 +84,7 @@ public class ReportServiceImpl implements ReportService {
 
     @Override
     public List<ShowReportModel> getByWorkingDateID(String workingDateID) {
-        List<Report> reportList = reportRepository.findByWorkingDate_IdAndStatus(workingDateID, Status.INACTIVE);
+        List<Report> reportList = reportRepository.findByWorkingDate_Id(workingDateID);
         if(reportList == null) {
             return null;
         }

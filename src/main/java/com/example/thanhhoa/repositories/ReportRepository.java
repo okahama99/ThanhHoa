@@ -12,7 +12,7 @@ import java.util.Optional;
 public interface ReportRepository extends JpaRepository<Report, String> {
     List<Report> findByCustomer_IdAndStatusNot(Long userID, Status status);
 
-    List<Report> findByWorkingDate_IdAndStatus(String workingDateID, Status status);
+    List<Report> findByWorkingDate_Id(String workingDateID);
 
     Report findFirstByOrderByIdDesc();
 
