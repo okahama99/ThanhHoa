@@ -279,31 +279,29 @@ public class PlantServiceImpl implements PlantService {
             }
 
             if(updatePlantModel.getPrice() != null) {
-                PlantPrice checkExisted = plantPriceRepository.findByPriceAndStatus(updatePlantModel.getPrice(), Status.ACTIVE);
-                if(checkExisted == null) {
-                    PlantPrice plantPrice = new PlantPrice();
-                    List<PlantPrice> checkExistedPrice = plantPriceRepository.findByPlant_IdAndStatus(plant.getId(), Status.ACTIVE);
-                    if(checkExistedPrice != null) {
-                        for(PlantPrice pPrice : checkExistedPrice) {
-                            pPrice.setStatus(Status.INACTIVE);
-                            plantPriceRepository.save(pPrice);
-                        }
+                PlantPrice plantPrice = new PlantPrice();
+                List<PlantPrice> checkExistedPrice = plantPriceRepository.findByPlant_IdAndStatus(plant.getId(), Status.ACTIVE);
+                if(checkExistedPrice != null) {
+                    for(PlantPrice pPrice : checkExistedPrice) {
+                        pPrice.setStatus(Status.INACTIVE);
+                        plantPriceRepository.save(pPrice);
                     }
-                    PlantPrice lastPlantPrice = plantPriceRepository.findFirstByOrderByIdDesc();
-                    if(lastPlantPrice == null) {
-                        plantPrice.setId(util.createNewID("PP"));
-                    } else {
-                        plantPrice.setId(util.createIDFromLastID("PP", 2, lastPlantPrice.getId()));
-                    }
-                    plantPrice.setPrice(updatePlantModel.getPrice());
-                    plantPrice.setApplyDate(LocalDateTime.now(ZoneId.of("Asia/Ho_Chi_Minh")));
-                    plantPrice.setPlant(plant);
-                    plantPrice.setStatus(Status.ACTIVE);
-                    plantPriceRepository.save(plantPrice);
-
-                    plant.getPlantPriceList().add(plantPrice);
                 }
+                PlantPrice lastPlantPrice = plantPriceRepository.findFirstByOrderByIdDesc();
+                if(lastPlantPrice == null) {
+                    plantPrice.setId(util.createNewID("PP"));
+                } else {
+                    plantPrice.setId(util.createIDFromLastID("PP", 2, lastPlantPrice.getId()));
+                }
+                plantPrice.setPrice(updatePlantModel.getPrice());
+                plantPrice.setApplyDate(LocalDateTime.now(ZoneId.of("Asia/Ho_Chi_Minh")));
+                plantPrice.setPlant(plant);
+                plantPrice.setStatus(Status.ACTIVE);
+                plantPriceRepository.save(plantPrice);
+
+                plant.getPlantPriceList().add(plantPrice);
             }
+            
 
             for(String imageURL : updatePlantModel.getListURL()) {
                 PlantIMG plantIMG = new PlantIMG();
