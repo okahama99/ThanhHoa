@@ -139,9 +139,8 @@ public class OrderServiceImpl implements OrderService {
         Double total = 0.0;
         if(distancePrice.getPricePerKm() == 0.0) {
             for(OrderDetailModel model : createOrderModel.getDetailList()) {
-                StorePlant storePlant = storePlantRepository.getById(model.getStorePlantID());
-                Plant plant = plantRepository.getById(storePlant.getPlant().getId());
-                PlantPrice newestPrice = plantPriceRepository.findFirstByPlant_IdAndStatusOrderByApplyDateDesc(plant.getId(), Status.ACTIVE);
+                StorePlant storePlant = storePlantRepository.findByPlantIdAndStoreId(model.getPlantID(), createOrderModel.getStoreID());
+                PlantPrice newestPrice = plantPriceRepository.findFirstByPlant_IdAndStatusOrderByApplyDateDesc(model.getPlantID(), Status.ACTIVE);
                 totalPriceOfAPlant += newestPrice.getPrice() * model.getQuantity();
 
                 OrderDetail detail = new OrderDetail();
@@ -157,7 +156,7 @@ public class OrderServiceImpl implements OrderService {
                 detail.setStorePlant(storePlant);
 
 
-                Cart cart = cartRepository.findByPlant_IdAndAccount_Id(plant.getId(), customerID);
+                Cart cart = cartRepository.findByPlant_IdAndAccount_Id(model.getPlantID(), customerID);
                 cart.setQuantity(0);
 
                 orderDetailRepository.save(detail);
@@ -170,11 +169,10 @@ public class OrderServiceImpl implements OrderService {
             order.setReceivedDate(LocalDateTime.now(ZoneId.of("Asia/Ho_Chi_Minh")));
         } else {
             for(OrderDetailModel model : createOrderModel.getDetailList()) {
-                StorePlant storePlant = storePlantRepository.getById(model.getStorePlantID());
-                Plant plant = plantRepository.getById(storePlant.getPlant().getId());
-                PlantPrice newestPrice = plantPriceRepository.findFirstByPlant_IdAndStatusOrderByApplyDateDesc(plant.getId(), Status.ACTIVE);
+                StorePlant storePlant = storePlantRepository.findByPlantIdAndStoreId(model.getPlantID(), createOrderModel.getStoreID());
+                PlantPrice newestPrice = plantPriceRepository.findFirstByPlant_IdAndStatusOrderByApplyDateDesc(model.getPlantID(), Status.ACTIVE);
                 totalPriceOfAPlant += newestPrice.getPrice() * model.getQuantity();
-                totalShipCost += plant.getPlantShipPrice().getPricePerPlant() * model.getQuantity();
+                totalShipCost += storePlant.getPlant().getPlantShipPrice().getPricePerPlant() * model.getQuantity();
 
                 OrderDetail detail = new OrderDetail();
                 OrderDetail lastDetailRecord = orderDetailRepository.findFirstByOrderByIdDesc();
@@ -189,7 +187,7 @@ public class OrderServiceImpl implements OrderService {
                 detail.setStorePlant(storePlant);
 
 
-                Cart cart = cartRepository.findByPlant_IdAndAccount_Id(plant.getId(), customerID);
+                Cart cart = cartRepository.findByPlant_IdAndAccount_Id(model.getPlantID(), customerID);
                 cart.setQuantity(0);
 
                 orderDetailRepository.save(detail);
@@ -291,11 +289,10 @@ public class OrderServiceImpl implements OrderService {
         Double total = 0.0;
         OrderDetail lastDetailRecord = orderDetailRepository.findFirstByOrderByIdDesc();
         for(OrderDetailModel model : updateOrderModel.getDetailList()) {
-            StorePlant storePlant = storePlantRepository.getById(model.getStorePlantID());
-            Plant plant = plantRepository.getById(storePlant.getPlant().getId());
-            PlantPrice newestPrice = plantPriceRepository.findFirstByPlant_IdAndStatusOrderByApplyDateDesc(plant.getId(), Status.ACTIVE);
+            StorePlant storePlant = storePlantRepository.findByPlantIdAndStoreId(model.getPlantID(), updateOrderModel.getStoreID());
+            PlantPrice newestPrice = plantPriceRepository.findFirstByPlant_IdAndStatusOrderByApplyDateDesc(model.getPlantID(), Status.ACTIVE);
             totalPriceOfAPlant += newestPrice.getPrice() * model.getQuantity();
-            totalShipCost += plant.getPlantShipPrice().getPricePerPlant() * model.getQuantity();
+            totalShipCost += storePlant.getPlant().getPlantShipPrice().getPricePerPlant() * model.getQuantity();
 
             OrderDetail detail = new OrderDetail();
             if(lastDetailRecord == null) {

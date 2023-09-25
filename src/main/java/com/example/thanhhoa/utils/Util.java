@@ -503,8 +503,10 @@ public class Util {
 
                     StorePlant storePlant = storePlantRepository.findByPlantIdAndStoreId(plant.getId(), storeID);
                     ShowStorePlantModel storePlantModel = new ShowStorePlantModel();
-                    storePlantModel.setId(storePlant.getId());
-                    storePlantModel.setQuantity(storePlant.getQuantity());
+                    if(storePlant != null){
+                        storePlantModel.setId(storePlant.getId());
+                        storePlantModel.setQuantity(storePlant.getQuantity());
+                    }
 
                     ShowPlantModel model = new ShowPlantModel();
 
