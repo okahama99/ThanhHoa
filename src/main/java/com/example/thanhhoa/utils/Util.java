@@ -178,6 +178,7 @@ public class Util {
                     ContractDetail detail = workingDate.getContractDetail();
                     ShowWorkingDateModel model = new ShowWorkingDateModel();
                     model.setId(workingDate.getId());
+                    model.setNoteWorkingDate(workingDate.getNote());
                     model.setWorkingDate(workingDate.getWorkingDate());
                     model.setIsReported(workingDate.getIsReported());
                     model.setStartWorking(workingDate.getStartWorking());

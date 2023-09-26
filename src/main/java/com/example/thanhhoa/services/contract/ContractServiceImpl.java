@@ -600,6 +600,42 @@ public class ContractServiceImpl implements ContractService {
     }
 
     @Override
+    public String updateContractStaff(String contractID, Long staffID) throws FirebaseMessagingException {
+        Optional<Contract> checkExisted = contractRepository.findById(contractID);
+        if(checkExisted == null) {
+            return "Không thể tìm thấy Contract với ID là " + contractID + ".";
+        }
+        Contract contract = checkExisted.get();
+        tblAccount oldStaff = contract.getStaff();
+
+        tblAccount newStaff = userRepository.findByIdAndStatus(staffID, Status.ACTIVE);
+        if(newStaff == null) {
+            return "Không thể tìm thấy Staff status ACTIVE với ID là " + staffID + ".";
+        }
+
+        contract.setStaff(newStaff);
+
+        for(ContractDetail detail : contract.getContractDetailList()){
+            for(WorkingDate workingDate : detail.getWorkingDateList()){
+                if(workingDate.getStatus().toString().equalsIgnoreCase("WAITING")){
+                    workingDate.setStaff(newStaff);
+                    workingDateRepository.save(workingDate);
+                }
+            }
+        }
+
+        contractRepository.save(contract);
+
+        util.createNotification("CONTRACT", oldStaff, contract.getId(), "giao cho nhân viên khác");
+        util.createNotification("CONTRACT", newStaff, contract.getId(), "giao cho bạn");
+        if(contract.getCustomer() != null){
+            util.createNotification("CONTRACT", contract.getCustomer(), contract.getId(), "giao cho nhân viên khác");
+        }
+
+        return "Chỉnh sửa thành công.";
+    }
+
+    @Override
     public String deleteContract(String contractID, String reason, Status status) throws FirebaseMessagingException {
         Contract contract = contractRepository.findByIdAndStatus(contractID, Status.WAITING);
         if(contract == null) {

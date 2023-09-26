@@ -14,6 +14,7 @@ import java.util.List;
 @Setter
 public class ShowWorkingDateModel implements Serializable {
     private String id;
+    private String noteWorkingDate;
     private LocalDateTime workingDate;
     private LocalDateTime startWorking;
     private LocalDateTime endWorking;

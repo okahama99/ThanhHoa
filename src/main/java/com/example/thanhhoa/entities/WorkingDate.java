@@ -17,6 +17,9 @@ public class WorkingDate implements Serializable {
     @Id
     private String id;
 
+    @Column
+    private String note;
+
     @Column(nullable = false)
     private LocalDateTime workingDate;
 

@@ -40,6 +40,8 @@ public interface ContractService {
 
     String updateContractDetail(UpdateContractDetailModel updateContractDetailModel, Long userID);
 
+    String updateContractStaff(String contractID, Long staffID) throws FirebaseMessagingException;
+
     String deleteContract(String contractID, String reason, Status status) throws FirebaseMessagingException;
 
     String approveContract(ApproveContractModel approveContractModel) throws IOException, FirebaseMessagingException;

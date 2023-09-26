@@ -85,7 +85,7 @@ public class WorkingDateServiceImpl implements WorkingDateService {
     }
 
     @Override
-    public String updateWorkingDateStaffID(String workingDateID, Long staffID) {
+    public String updateWorkingDateStaffID(String workingDateID, String note, Long staffID) {
         Optional<WorkingDate> checkExisted = workingDateRepository.findById(workingDateID);
         if(checkExisted == null) {
             return "Không tìm thấy WorkingDate với ID là " + workingDateID + ".";
@@ -98,6 +98,7 @@ public class WorkingDateServiceImpl implements WorkingDateService {
         }
 
         workingDate.setStaff(userRepository.getById(staffID));
+        workingDate.setNote(note);
         workingDateRepository.save(workingDate);
         return "Chỉnh sửa thành công.";
     }
@@ -105,6 +106,12 @@ public class WorkingDateServiceImpl implements WorkingDateService {
     @Override
     public List<ShowWorkingDateModel> getAllByContractDetailID(String contractDetailID, Pageable pageable) {
         Page<WorkingDate> pagingResult = workingDatePagingRepository.findByContractDetail_IdOrderByWorkingDateDesc(contractDetailID, pageable);
+        return util.workingDatePagingConverter(pagingResult, pageable);
+    }
+
+    @Override
+    public List<ShowWorkingDateModel> getAllByContractID(String contractID, Pageable pageable) {
+        Page<WorkingDate> pagingResult = workingDatePagingRepository.findByContractDetail_Contract_IdOrderByWorkingDateDesc(contractID, pageable);
         return util.workingDatePagingConverter(pagingResult, pageable);
     }
 
@@ -118,6 +125,7 @@ public class WorkingDateServiceImpl implements WorkingDateService {
         ContractDetail detail = workingDate.getContractDetail();
         ShowWorkingDateModel model = new ShowWorkingDateModel();
         model.setId(workingDate.getId());
+        model.setNoteWorkingDate(workingDate.getNote());
         model.setWorkingDate(workingDate.getWorkingDate());
         model.setIsReported(workingDate.getIsReported());
         model.setStartWorking(workingDate.getStartWorking());
@@ -201,6 +209,7 @@ public class WorkingDateServiceImpl implements WorkingDateService {
             for(WorkingDate workingDate : workingDateList) {
                 ShowWorkingDateModel model = new ShowWorkingDateModel();
                 model.setId(workingDate.getId());
+                model.setNoteWorkingDate(workingDate.getNote());
                 model.setWorkingDate(workingDate.getWorkingDate());
                 model.setIsReported(workingDate.getIsReported());
                 model.setStatus(workingDate.getStatus());
@@ -292,6 +301,7 @@ public class WorkingDateServiceImpl implements WorkingDateService {
         for(WorkingDate workingDate : workingDateList) {
             ShowWorkingDateModel model = new ShowWorkingDateModel();
             model.setId(workingDate.getId());
+            model.setNoteWorkingDate(workingDate.getNote());
             model.setWorkingDate(workingDate.getWorkingDate());
             model.setIsReported(workingDate.getIsReported());
             model.setStartWorking(workingDate.getStartWorking());
@@ -394,6 +404,7 @@ public class WorkingDateServiceImpl implements WorkingDateService {
             for(WorkingDate workingDate : workingDateList) {
                 ShowWorkingDateModel model = new ShowWorkingDateModel();
                 model.setId(workingDate.getId());
+                model.setNoteWorkingDate(workingDate.getNote());
                 model.setWorkingDate(workingDate.getWorkingDate());
                 model.setIsReported(workingDate.getIsReported());
                 model.setStartWorking(workingDate.getStartWorking());
@@ -485,6 +496,7 @@ public class WorkingDateServiceImpl implements WorkingDateService {
             ContractDetail detail = workingDate.getContractDetail();
             ShowWorkingDateModel model = new ShowWorkingDateModel();
             model.setId(workingDate.getId());
+            model.setNoteWorkingDate(workingDate.getNote());
             model.setWorkingDate(workingDate.getWorkingDate());
             model.setIsReported(workingDate.getIsReported());
             model.setStartWorking(workingDate.getStartWorking());

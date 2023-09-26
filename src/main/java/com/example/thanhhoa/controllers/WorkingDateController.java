@@ -70,12 +70,13 @@ public class WorkingDateController {
     @PutMapping(value = "/v2/updateWorkingDateStaffID", produces = "application/json;charset=UTF-8")
     public ResponseEntity<Object> updateWorkingDateStaffID(@RequestParam String workingDateID,
                                                            @RequestParam Long staffID,
+                                                           @RequestParam String note,
                                                            HttpServletRequest request) {
         String roleName = jwtUtil.getRoleNameFromRequest(request);
         if(!roleName.equalsIgnoreCase("Owner") && !roleName.equalsIgnoreCase("Manager")) {
             throw new ResponseStatusException(HttpStatus.FORBIDDEN, "-----------------------------------Người dùng không có quyền truy cập---------------------------");
         }
-        String result = workingDateService.updateWorkingDateStaffID(workingDateID, staffID);
+        String result = workingDateService.updateWorkingDateStaffID(workingDateID, note, staffID);
         if(result.equals("Chỉnh sửa thành công.")) {
             return ResponseEntity.ok().body(result);
         } else {
@@ -97,6 +98,22 @@ public class WorkingDateController {
             paging = util.makePaging(pageNo, pageSize, sortBy.toString().toLowerCase(), sortAsc);
         }
         return workingDateService.getAllByContractDetailID(contractDetailID, paging);
+    }
+
+    @GetMapping(value = "/v2/getAllByContractID", produces = "application/json;charset=UTF-8")
+    public @ResponseBody
+    List<ShowWorkingDateModel> getAllByContractID(@RequestParam String contractID,
+                                                  @RequestParam int pageNo,
+                                                  @RequestParam int pageSize,
+                                                  @RequestParam(required = false, defaultValue = "ID") SearchType.WORKING_DATE sortBy,
+                                                  @RequestParam(required = false, defaultValue = "true") Boolean sortAsc) {
+        Pageable paging;
+        if(sortBy.toString().equalsIgnoreCase("WORKINGDATE")) {
+            paging = util.makePaging(pageNo, pageSize, "workingDate", sortAsc);
+        } else {
+            paging = util.makePaging(pageNo, pageSize, sortBy.toString().toLowerCase(), sortAsc);
+        }
+        return workingDateService.getAllByContractID(contractID, paging);
     }
 
     @GetMapping(value = "/getWorkingDateByID", produces = "application/json;charset=UTF-8")

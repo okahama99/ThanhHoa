@@ -9,4 +9,6 @@ import org.springframework.stereotype.Repository;
 @Repository
 public interface WorkingDatePagingRepository extends PagingAndSortingRepository<WorkingDate, String>{
     Page<WorkingDate> findByContractDetail_IdOrderByWorkingDateDesc(String contractDetailID, Pageable pageable);
+
+    Page<WorkingDate> findByContractDetail_Contract_IdOrderByWorkingDateDesc(String contractID, Pageable pageable);
 }

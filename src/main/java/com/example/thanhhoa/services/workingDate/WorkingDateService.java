@@ -14,9 +14,11 @@ public interface WorkingDateService {
 
     String addEndWorkingDate(String workingDateID, String endWorkingIMG, Long staffID);
 
-    String updateWorkingDateStaffID(String workingDateID, Long staffID);
+    String updateWorkingDateStaffID(String workingDateID, String note, Long staffID);
 
     List<ShowWorkingDateModel> getAllByContractDetailID(String contractDetailID, Pageable pageable);
+
+    List<ShowWorkingDateModel> getAllByContractID(String contractID, Pageable pageable);
 
     ShowWorkingDateModel getByID(String workingDateID);
 
