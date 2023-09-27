@@ -47,7 +47,8 @@ public class SearchType {
 
     public enum CONTRACT_TYPE{
         REQUEST,
-        CONTRACT
+        CONTRACT,
+        CANCEL
     }
 
     public enum CONTRACT_DETAIL{

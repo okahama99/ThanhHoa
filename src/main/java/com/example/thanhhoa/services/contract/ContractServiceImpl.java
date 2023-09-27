@@ -127,6 +127,8 @@ public class ContractServiceImpl implements ContractService {
         Page<Contract> pagingResult;
         if(type.equalsIgnoreCase("REQUEST")) {
             pagingResult = contractPagingRepository.findByStatusOrStatusOrStatus(Status.WAITING, Status.CONFIRMING, Status.APPROVED, pageable);
+        }else if(type.equalsIgnoreCase("CANCEL")) {
+            pagingResult = contractPagingRepository.findByStatusOrStatusOrStatus(Status.DENIED, Status.CUSTOMERCANCELED, Status.STAFFCANCELED, pageable);
         } else {
             pagingResult = contractPagingRepository.findByStatusNotAndStatusNotAndStatusNot(Status.WAITING, Status.CONFIRMING, Status.APPROVED, pageable);
         }
