@@ -34,7 +34,7 @@ public class EnumController {
         list.add(Status.WAITING.toString());
         list.add(Status.CONFIRMING.toString());
         list.add(Status.DENIED.toString());
-        list.add(Status.APPROVED.toString());
+//        list.add(Status.APPROVED.toString());
         list.add(Status.SIGNED.toString());
         list.add(Status.WORKING.toString());
         list.add(Status.DONE.toString());
