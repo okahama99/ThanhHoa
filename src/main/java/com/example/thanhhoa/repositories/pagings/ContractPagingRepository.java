@@ -13,7 +13,7 @@ public interface ContractPagingRepository extends PagingAndSortingRepository<Con
 
     Page<Contract> findByStatusOrStatusOrStatus(Status status1, Status status2, Status status3, Pageable pageable);
 
-    Page<Contract> findByStatusNotAndStatusNotAndStatusNot(Status status1, Status status2, Status status3, Pageable pageable);
+    Page<Contract> findByStatusNotAndStatusNotAndStatusNotAndStatusNotAndStatusNotAndStatusNot(Status status1, Status status2, Status status3, Status status4, Status status5, Status status6, Pageable pageable);
 
     Page<Contract> findByStore_Id(String storeID, Pageable pageable);
 
