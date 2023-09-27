@@ -166,7 +166,7 @@ public class PlantServiceImpl implements PlantService {
         plant.setHeight(createPlantModel.getHeight());
         plant.setCareNote(createPlantModel.getCareNote());
         plant.setWithPot(createPlantModel.getWithPot());
-        plant.setStatus(Status.ONSALE);
+        plant.setStatus(Status.INACTIVE);
         plant.setPlantShipPrice(plantShipPrice.get());
 
         for(String categoryID : createPlantModel.getCategoryIDList()) {

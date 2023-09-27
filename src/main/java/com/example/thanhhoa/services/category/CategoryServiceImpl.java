@@ -93,7 +93,7 @@ public class CategoryServiceImpl implements CategoryService{
             category.setId(util.createIDFromLastID("C", 1, lastCategory.getId()));
         }
         category.setName(name);
-        category.setStatus(Status.ACTIVE);
+        category.setStatus(Status.INACTIVE);
         categoryRepository.save(category);
         return "Tạo thành công.";
     }

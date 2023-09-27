@@ -67,7 +67,7 @@ public class ServiceServiceImpl implements ServiceService {
 
         service.setName(createServiceModel.getName());
         service.setDescription(createServiceModel.getDescription());
-        service.setStatus(Status.ACTIVE);
+        service.setStatus(Status.INACTIVE);
         service.setAtHome(createServiceModel.getAtHome());
 
         // service img

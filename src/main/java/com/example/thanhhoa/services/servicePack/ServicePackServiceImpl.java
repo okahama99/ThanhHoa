@@ -26,15 +26,15 @@ public class ServicePackServiceImpl implements ServicePackService {
         ServicePack servicePack = new ServicePack();
         ServicePack lastServicePack = servicePackRepository.findFirstByOrderByIdDesc();
         if(lastServicePack == null) {
-            servicePack.setId(util.createNewID("SPK"));
+            servicePack.setId(util.createNewID("SP"));
         } else {
-            servicePack.setId(util.createIDFromLastID("SPK", 3, lastServicePack.getId()));
+            servicePack.setId(util.createIDFromLastID("SP", 2, lastServicePack.getId()));
         }
         servicePack.setRange(range);
         servicePack.setPercentage(percentage);
         servicePack.setUnit(unit);
         servicePack.setApplyDate(LocalDateTime.now(ZoneId.of("Asia/Ho_Chi_Minh")));
-        servicePack.setStatus(Status.ACTIVE);
+        servicePack.setStatus(Status.INACTIVE);
         servicePackRepository.save(servicePack);
         return "Tạo thành công.";
     }
