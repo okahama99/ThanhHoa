@@ -13,6 +13,7 @@ import com.example.thanhhoa.entities.PlantCategory;
 import com.example.thanhhoa.entities.PlantIMG;
 import com.example.thanhhoa.entities.PlantPrice;
 import com.example.thanhhoa.entities.PlantShipPrice;
+import com.example.thanhhoa.entities.ServiceIMG;
 import com.example.thanhhoa.entities.StorePlant;
 import com.example.thanhhoa.enums.Status;
 import com.example.thanhhoa.repositories.CategoryRepository;
@@ -206,6 +207,13 @@ public class PlantServiceImpl implements PlantService {
         plantPrice.setPlant(plant);
         plantPrice.setStatus(Status.ACTIVE);
 
+        if(plant.getPlantIMGList() != null){
+            for(PlantIMG image : plant.getPlantIMGList()) {
+                plantIMGRepository.deleteById(image.getId());
+            }
+        }
+
+
         for(String imageURL : createPlantModel.getListURL()) {
             PlantIMG plantIMG = new PlantIMG();
             PlantIMG lastPlantIMG = plantIMGRepository.findFirstByOrderByIdDesc();
@@ -302,6 +310,11 @@ public class PlantServiceImpl implements PlantService {
                 plant.getPlantPriceList().add(plantPrice);
             }
 
+            if(plant.getPlantIMGList()  != null){
+                for(PlantIMG image : plant.getPlantIMGList()) {
+                    plantIMGRepository.deleteById(image.getId());
+                }
+            }
 
             for(String imageURL : updatePlantModel.getListURL()) {
                 PlantIMG plantIMG = new PlantIMG();
@@ -357,9 +370,7 @@ public class PlantServiceImpl implements PlantService {
         Optional<PlantIMG> checkExisted = plantIMGRepository.findById(id);
         if(checkExisted != null) {
             PlantIMG plantIMG = checkExisted.get();
-            plantIMG.setPlant(null);
-            plantIMG.setImgURL(null);
-            plantIMGRepository.save(plantIMG);
+            plantIMGRepository.deleteById(plantIMG.getId());
             return "Xóa thành công.";
         }
         return "Không tìm thấy PlantIMG với ID là " + id + ".";

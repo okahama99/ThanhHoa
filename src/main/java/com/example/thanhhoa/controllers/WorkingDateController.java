@@ -182,4 +182,9 @@ public class WorkingDateController {
         }
         return ResponseEntity.ok().body(workingDateService.generateWorkingSchedule(contractDetailID));
     }
+
+    @GetMapping(value = "/v2/checkMissedDate", produces = "application/json;charset=UTF-8")
+    public void checkWorkingDate() {
+        workingDateService.checkWorkingDate();
+    }
 }

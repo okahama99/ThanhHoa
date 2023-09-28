@@ -501,7 +501,7 @@ public class ContractServiceImpl implements ContractService {
         contract.setExpectedEndedDate(endDate);
         contract.setTotal(totalPrice);
         contract.setStatus(Status.CONFIRMING);
-        contract.setIsSigned(true);
+        contract.setIsSigned(false);
         userRepository.save(staff);
         contractRepository.save(contract);
 
@@ -542,6 +542,12 @@ public class ContractServiceImpl implements ContractService {
 
 
         ContractDetail detail = checkExisted.get();
+        if(detail.getPlantStatusIMGList() != null){
+            for(PlantStatusIMG image : detail.getPlantStatusIMGList()) {
+                plantStatusIMGRepository.deleteById(image.getId());
+            }
+        }
+
         for(String imageURL : updateContractDetailModel.getPlantIMG()) {
             PlantStatusIMG plantStatusIMGIMG = new PlantStatusIMG();
             PlantStatusIMG lastPlantStatusIMGIMG = plantStatusIMGRepository.findFirstByOrderByIdDesc();
@@ -626,10 +632,14 @@ public class ContractServiceImpl implements ContractService {
 
         contractRepository.save(contract);
 
-        util.createNotification("CONTRACT", oldStaff, contract.getId(), "giao cho nhân viên khác");
-        util.createNotification("CONTRACT", newStaff, contract.getId(), "giao cho bạn");
-        if(contract.getCustomer() != null){
-            util.createNotification("CONTRACT", contract.getCustomer(), contract.getId(), "giao cho nhân viên khác");
+        try {
+            util.createNotification("CONTRACT", oldStaff, contract.getId(), "giao cho nhân viên khác");
+            util.createNotification("CONTRACT", newStaff, contract.getId(), "giao cho bạn");
+            if(contract.getCustomer() != null){
+                util.createNotification("CONTRACT", contract.getCustomer(), contract.getId(), "giao cho nhân viên khác");
+            }
+        }catch(Exception e){
+            e.toString();
         }
 
         return "Chỉnh sửa thành công.";
@@ -686,6 +696,14 @@ public class ContractServiceImpl implements ContractService {
         if(listURL.isEmpty() || listURL == null) {
             return "Không tìm thấy URL trong List";
         }
+
+        if(contract.getContractIMGList() != null){
+            for(ContractIMG image : contract.getContractIMGList()) {
+                contractIMGRepository.deleteById(image.getId());
+            }
+        }
+
+
         for(String imageURL : listURL) {
             ContractIMG contractIMG = new ContractIMG();
             ContractIMG lastContractIMG = contractIMGRepository.findFirstByOrderByIdDesc();

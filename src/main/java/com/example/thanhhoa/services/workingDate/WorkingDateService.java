@@ -31,4 +31,6 @@ public interface WorkingDateService {
     List<ShowWorkingDateModel> getByStaffID(Long userID);
 
     String generateWorkingSchedule(String contractDetailID);
+
+    void checkWorkingDate();
 }

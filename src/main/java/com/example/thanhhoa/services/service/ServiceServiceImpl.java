@@ -6,6 +6,7 @@ import com.example.thanhhoa.dtos.ServiceModels.ShowServiceTypeModel;
 import com.example.thanhhoa.dtos.ServiceModels.UpdateServiceModel;
 import com.example.thanhhoa.dtos.ServiceTypeModels.CreateServiceTypeModel;
 import com.example.thanhhoa.entities.PlantPrice;
+import com.example.thanhhoa.entities.PlantStatusIMG;
 import com.example.thanhhoa.entities.Service;
 import com.example.thanhhoa.entities.ServiceIMG;
 import com.example.thanhhoa.entities.ServicePrice;
@@ -69,6 +70,12 @@ public class ServiceServiceImpl implements ServiceService {
         service.setDescription(createServiceModel.getDescription());
         service.setStatus(Status.INACTIVE);
         service.setAtHome(createServiceModel.getAtHome());
+
+        if(service.getServiceIMGList() != null){
+            for(ServiceIMG image : service.getServiceIMGList()) {
+                serviceIMGRepository.deleteById(image.getId());
+            }
+        }
 
         // service img
         for(String imageURL : createServiceModel.getListURL()) {
@@ -164,6 +171,12 @@ public class ServiceServiceImpl implements ServiceService {
         servicePrice.setService(service);
         servicePrice.setStatus(Status.ACTIVE);
         servicePriceRepository.save(servicePrice);
+
+        if(service.getServiceIMGList() != null){
+            for(ServiceIMG image : service.getServiceIMGList()) {
+                serviceIMGRepository.deleteById(image.getId());
+            }
+        }
 
         for(String imageURL : updateServiceModel.getListURL()) {
             ServiceIMG serviceIMG = new ServiceIMG();

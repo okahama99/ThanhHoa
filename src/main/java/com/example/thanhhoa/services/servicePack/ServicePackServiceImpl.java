@@ -57,6 +57,7 @@ public class ServicePackServiceImpl implements ServicePackService {
             return "Không tìm thấy Gói dịch vụ với ID là " + id + " đang INACTIVE.";
         }
         servicePack.setStatus(Status.ACTIVE);
+        servicePackRepository.save(servicePack);
         return "Cập nhật thành công.";
     }
 

@@ -102,6 +102,12 @@ public class FeedbackServiceImpl implements FeedbackService {
         orderDetail.get().setIsFeedback(true);
         orderFeedback.setOrderDetail(orderDetail.get());
 
+        if(orderFeedback.getOrderFeedbackIMGList() != null){
+            for(OrderFeedbackIMG image : orderFeedback.getOrderFeedbackIMGList()) {
+                orderFeedbackIMGRepository.deleteById(image.getId());
+            }
+        }
+
         for(String imageURL : createOrderFeedbackModel.getListURL()) {
             OrderFeedbackIMG orderFeedbackIMG = new OrderFeedbackIMG();
             OrderFeedbackIMG lastOrderFeedbackIMG = orderFeedbackIMGRepository.findFirstByOrderByIdDesc();
@@ -138,6 +144,12 @@ public class FeedbackServiceImpl implements FeedbackService {
         orderFeedback.setRating(ratingRepository.getById(updateOrderFeedbackModel.getRatingID()));
         orderDetail.get().setIsFeedback(true);
         orderFeedback.setOrderDetail(orderDetail.get());
+
+        if(orderFeedback.getOrderFeedbackIMGList() != null){
+            for(OrderFeedbackIMG image : orderFeedback.getOrderFeedbackIMGList()) {
+                orderFeedbackIMGRepository.deleteById(image.getId());
+            }
+        }
 
         for(String imageURL : updateOrderFeedbackModel.getListURL()) {
             OrderFeedbackIMG orderFeedbackIMG = new OrderFeedbackIMG();

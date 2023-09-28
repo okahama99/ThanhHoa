@@ -13,6 +13,8 @@ public interface WorkingDateRepository extends JpaRepository<WorkingDate, String
 
     List<WorkingDate> findByStaff_Id(Long staffID);
 
+    List<WorkingDate> findByWorkingDateBefore(LocalDateTime date);
+
     List<WorkingDate> findByContractDetail_IdAndWorkingDateBetween(String contractDetailID, LocalDateTime fromDate, LocalDateTime toDate);
 
     WorkingDate findFirstByOrderByIdDesc();

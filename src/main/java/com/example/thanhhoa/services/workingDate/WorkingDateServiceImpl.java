@@ -670,4 +670,15 @@ public class WorkingDateServiceImpl implements WorkingDateService {
         }
         return "Tạo thành công.";
     }
+
+    public void checkWorkingDate(){
+        List<WorkingDate> list = workingDateRepository.findByWorkingDateBefore(LocalDateTime.now(ZoneId.of("Asia/Ho_Chi_Minh")));
+        if(list == null || list.isEmpty()){
+        }else{
+            for(WorkingDate workingDate : list) {
+                workingDate.setStatus(Status.MISSED);
+                workingDateRepository.save(workingDate);
+            }
+        }
+    }
 }
