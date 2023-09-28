@@ -32,7 +32,7 @@ public class Notification implements Serializable {
     @Column
     private Boolean isRead = false;
 
-    @ManyToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @ManyToOne(cascade = { CascadeType.MERGE, CascadeType.PERSIST , CascadeType.DETACH, CascadeType.REFRESH}, fetch = FetchType.LAZY)
     @JoinColumn(name = "account_id")
     private tblAccount tblAccount;
 }

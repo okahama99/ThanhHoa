@@ -18,6 +18,6 @@ public class Province implements Serializable {
     @Column(nullable = false, length = 50)
     private String provinceName;
 
-    @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY, mappedBy = "province")
+    @OneToMany(cascade = { CascadeType.MERGE, CascadeType.PERSIST , CascadeType.DETACH, CascadeType.REFRESH}, fetch = FetchType.LAZY, mappedBy = "province")
     private List<District> districtList;
 }

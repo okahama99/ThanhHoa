@@ -25,7 +25,7 @@ public class ServiceIMG implements Serializable {
     @Column(nullable = false)
     private String imgURL;
 
-    @ManyToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @ManyToOne(cascade = { CascadeType.MERGE, CascadeType.PERSIST , CascadeType.DETACH, CascadeType.REFRESH}, fetch = FetchType.LAZY)
     @JoinColumn(name = "service_id")
     private Service service;
 }
