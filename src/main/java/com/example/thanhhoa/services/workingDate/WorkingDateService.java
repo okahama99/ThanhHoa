@@ -10,6 +10,10 @@ import java.util.List;
 
 public interface WorkingDateService {
 
+    String swapWorkingDate(String workingDateID);
+
+    String compensateWorkingDate(String workingDateID, String date);
+
     String addStartWorkingDate(String workingDateID, String startWorkingIMG, Long staffID);
 
     String addEndWorkingDate(String workingDateID, String endWorkingIMG, Long staffID);

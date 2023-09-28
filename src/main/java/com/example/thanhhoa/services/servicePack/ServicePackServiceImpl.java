@@ -63,6 +63,26 @@ public class ServicePackServiceImpl implements ServicePackService {
 
     @Override
     public List<ShowServicePackModel> getAll() {
+        List<ServicePack> servicePacks = servicePackRepository.findByStatus(Status.ACTIVE);
+        if(servicePacks == null){
+            return null;
+        }
+        List<ShowServicePackModel> listModel = new ArrayList<>();
+        for(ServicePack servicePack : servicePacks){
+            ShowServicePackModel model = new ShowServicePackModel();
+            model.setId(servicePack.getId());
+            model.setRange(servicePack.getRange());
+            model.setUnit(servicePack.getUnit());
+            model.setPercentage(servicePack.getPercentage());
+            model.setApplyDate(servicePack.getApplyDate());
+            model.setStatus(servicePack.getStatus());
+            listModel.add(model);
+        }
+        return listModel;
+    }
+
+    @Override
+    public List<ShowServicePackModel> getAllForOwner() {
         List<ServicePack> servicePacks = servicePackRepository.findAll();
         if(servicePacks == null){
             return null;

@@ -13,4 +13,6 @@ public interface ServicePackService {
     String updateStatus(String id);
 
     List<ShowServicePackModel> getAll();
+
+    List<ShowServicePackModel> getAllForOwner();
 }

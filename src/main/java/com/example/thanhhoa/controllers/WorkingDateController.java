@@ -50,6 +50,22 @@ public class WorkingDateController {
         }
     }
 
+    @PostMapping(value = "/v2/compensateWorkingDate", produces = "application/json;charset=UTF-8")
+    public ResponseEntity<Object> compensateWorkingDate(@RequestParam String workingDateID,
+                                                        @RequestParam String date,
+                                                        HttpServletRequest request) {
+        String roleName = jwtUtil.getRoleNameFromRequest(request);
+        if(!roleName.equalsIgnoreCase("Manager") && !roleName.equalsIgnoreCase("Owner")) {
+            throw new ResponseStatusException(HttpStatus.FORBIDDEN, "-----------------------------------Người dùng không có quyền truy cập---------------------------");
+        }
+        String result = workingDateService.compensateWorkingDate(workingDateID, date);
+        if(result.equals("Tạo thành công.")) {
+            return ResponseEntity.ok().body(result);
+        } else {
+            return ResponseEntity.badRequest().body(result);
+        }
+    }
+
     @PostMapping(value = "/v2/addEndWorkingDate", produces = "application/json;charset=UTF-8")
     public ResponseEntity<Object> addEndWorkingDate(@RequestParam String workingDateID,
                                                     @RequestParam String endWorkingIMG,
@@ -77,6 +93,21 @@ public class WorkingDateController {
             throw new ResponseStatusException(HttpStatus.FORBIDDEN, "-----------------------------------Người dùng không có quyền truy cập---------------------------");
         }
         String result = workingDateService.updateWorkingDateStaffID(workingDateID, note, staffID);
+        if(result.equals("Chỉnh sửa thành công.")) {
+            return ResponseEntity.ok().body(result);
+        } else {
+            return ResponseEntity.badRequest().body(result);
+        }
+    }
+
+    @PutMapping(value = "/v2/swapWorkingDate", produces = "application/json;charset=UTF-8")
+    public ResponseEntity<Object> swapWorkingDate(@RequestParam String workingDateID,
+                                                  HttpServletRequest request) {
+        String roleName = jwtUtil.getRoleNameFromRequest(request);
+        if(!roleName.equalsIgnoreCase("Owner") && !roleName.equalsIgnoreCase("Manager")) {
+            throw new ResponseStatusException(HttpStatus.FORBIDDEN, "-----------------------------------Người dùng không có quyền truy cập---------------------------");
+        }
+        String result = workingDateService.swapWorkingDate(workingDateID);
         if(result.equals("Chỉnh sửa thành công.")) {
             return ResponseEntity.ok().body(result);
         } else {

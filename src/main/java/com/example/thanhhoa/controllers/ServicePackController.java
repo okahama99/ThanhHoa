@@ -81,4 +81,11 @@ public class ServicePackController {
         List<ShowServicePackModel> model = servicePackService.getAll();
         return model;
     }
+
+    @GetMapping(value = "/v2/getAllForOwner", produces = "application/json;charset=UTF-8")
+    public @ResponseBody
+    List<ShowServicePackModel> getAllForOwner() {
+        List<ShowServicePackModel> model = servicePackService.getAllForOwner();
+        return model;
+    }
 }

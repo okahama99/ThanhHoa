@@ -621,14 +621,20 @@ public class ContractServiceImpl implements ContractService {
 
         contract.setStaff(newStaff);
 
+        List<WorkingDate> workingDateList = new ArrayList<>();
         for(ContractDetail detail : contract.getContractDetailList()){
             for(WorkingDate workingDate : detail.getWorkingDateList()){
-                if(workingDate.getStatus().toString().equalsIgnoreCase("WAITING")){
-                    workingDate.setStaff(newStaff);
-                    workingDateRepository.save(workingDate);
-                }
+                workingDateList.add(workingDate);
             }
         }
+
+        for(WorkingDate workingDate : workingDateList) {
+            if(workingDate.getStatus().toString().equalsIgnoreCase("WAITING")){
+                workingDate.setStaff(newStaff);
+                workingDateRepository.save(workingDate);
+            }
+        }
+
 
         contractRepository.save(contract);
 

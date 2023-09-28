@@ -1,6 +1,7 @@
 package com.example.thanhhoa.repositories;
 
 import com.example.thanhhoa.entities.WorkingDate;
+import com.example.thanhhoa.enums.Status;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
@@ -18,4 +19,6 @@ public interface WorkingDateRepository extends JpaRepository<WorkingDate, String
     List<WorkingDate> findByContractDetail_IdAndWorkingDateBetween(String contractDetailID, LocalDateTime fromDate, LocalDateTime toDate);
 
     WorkingDate findFirstByOrderByIdDesc();
+
+    WorkingDate findByIdAndStatus(String workingDateID, Status status);
 }

@@ -17,6 +17,7 @@ import com.example.thanhhoa.utils.Util;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import java.time.DayOfWeek;
@@ -45,6 +46,59 @@ public class WorkingDateServiceImpl implements WorkingDateService {
     private UserRepository userRepository;
     @Autowired
     private ServicePriceRepository servicePriceRepository;
+
+    @Override
+    public String swapWorkingDate(String workingDateID) {
+        WorkingDate oldWorkingDate = workingDateRepository.findByIdAndStatus(workingDateID, Status.WAITING);
+        if(oldWorkingDate == null) {
+            return "Không tìm thấy WorkingDate với ID là " + workingDateID + " có status WAITING.";
+        }
+
+        WorkingDate workingDate = new WorkingDate();
+        WorkingDate lastWorkingDate = workingDateRepository.findFirstByOrderByIdDesc();
+        if(lastWorkingDate == null) {
+            workingDate.setId(util.createNewID("WD"));
+        } else {
+            workingDate.setId(util.createIDFromLastID("WD", 2, lastWorkingDate.getId()));
+        }
+        workingDate.setWorkingDate(oldWorkingDate.getWorkingDate());
+        workingDate.setStatus(Status.WAITING);
+        workingDate.setIsReported(false);
+        workingDate.setContractDetail(oldWorkingDate.getContractDetail());
+        workingDate.setStaff(oldWorkingDate.getStaff());
+        workingDateRepository.save(workingDate);
+
+        workingDateRepository.deleteById(workingDateID);
+        return "Chỉnh sửa thành công.";
+    }
+
+    @Override
+    public String compensateWorkingDate(String workingDateID, String date) {
+        WorkingDate oldWorkingDate = workingDateRepository.findByIdAndStatus(workingDateID, Status.MISSED);
+        if(oldWorkingDate == null) {
+            return "Không tìm thấy WorkingDate với ID là " + workingDateID + " có status MISSED.";
+        }
+
+        LocalDateTime wDate = util.isLocalDateTimeValid(date);
+        if(wDate == null) {
+            return "Nhập theo khuôn được định sẵn yyyy-MM-dd, ví dụ : 2021-12-21";
+        }
+
+        WorkingDate workingDate = new WorkingDate();
+        WorkingDate lastWorkingDate = workingDateRepository.findFirstByOrderByIdDesc();
+        if(lastWorkingDate == null) {
+            workingDate.setId(util.createNewID("WD"));
+        } else {
+            workingDate.setId(util.createIDFromLastID("WD", 2, lastWorkingDate.getId()));
+        }
+        workingDate.setWorkingDate(wDate);
+        workingDate.setStatus(Status.WAITING);
+        workingDate.setIsReported(false);
+        workingDate.setContractDetail(oldWorkingDate.getContractDetail());
+        workingDate.setStaff(oldWorkingDate.getStaff());
+        workingDateRepository.save(workingDate);
+        return "Tạo thành công.";
+    }
 
     @Override
     public String addStartWorkingDate(String workingDateID, String startWorkingIMG, Long staffID) {
