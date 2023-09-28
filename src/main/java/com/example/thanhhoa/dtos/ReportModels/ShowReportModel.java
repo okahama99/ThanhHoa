@@ -1,5 +1,10 @@
 package com.example.thanhhoa.dtos.ReportModels;
 
+import com.example.thanhhoa.dtos.ContractModels.ShowServiceModel;
+import com.example.thanhhoa.dtos.ContractModels.ShowServiceTypeModel;
+import com.example.thanhhoa.dtos.ContractModels.ShowWorkingDateModel;
+import com.example.thanhhoa.dtos.OrderModels.ShowCustomerModel;
+import com.example.thanhhoa.dtos.OrderModels.ShowStaffModel;
 import com.example.thanhhoa.enums.Status;
 import lombok.Getter;
 import lombok.Setter;
@@ -15,20 +20,14 @@ public class ShowReportModel implements Serializable {
     private String reason;
     private Status status;
     private LocalDateTime createdDate;
-    private String workingDateID;
-    private LocalDateTime workingDate;
-    private String contractDetailID;
-    private String serviceTypeID;
-    private String serviceTypeName;
-    private String serviceID;
-    private String serviceName;
-    private Long customerID;
-    private String fullName;
-    private String phone;
-    private String email;
-    private Long staffID;
-    private String staffName;
     private String contractID;
+    private String contractDetailID;
     private String timeWorking;
+
+    private ShowWorkingDateModel showWorkingDateModel;
+    private ShowServiceTypeModel showServiceTypeModel;
+    private ShowServiceModel showServiceModel;
+    private ShowCustomerModel showCustomerModel;
+    private ShowStaffModel showStaffModel;
     private Double totalPage;
 }

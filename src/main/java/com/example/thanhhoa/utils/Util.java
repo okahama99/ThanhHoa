@@ -1700,24 +1700,64 @@ public class Util {
                     ShowReportModel model = new ShowReportModel();
                     model.setId(report.getId());
                     model.setCreatedDate(report.getCreatedDate());
-                    model.setWorkingDateID(report.getWorkingDate().getId());
-                    model.setWorkingDate(report.getWorkingDate().getWorkingDate());
                     model.setContractDetailID(report.getWorkingDate().getContractDetail().getId());
-                    model.setServiceTypeID(report.getWorkingDate().getContractDetail().getServiceType().getId());
-                    model.setServiceTypeName(report.getWorkingDate().getContractDetail().getServiceType().getName());
-                    model.setServiceID(report.getWorkingDate().getContractDetail().getServiceType().getService().getId());
-                    model.setServiceName(report.getWorkingDate().getContractDetail().getServiceType().getService().getName());
                     model.setDescription(report.getDescription());
-                    model.setCustomerID(report.getCustomer().getId());
-                    model.setFullName(report.getCustomer().getFullName());
-                    model.setEmail(report.getCustomer().getEmail());
-                    model.setPhone(report.getCustomer().getPhone());
                     model.setReason(report.getReason());
                     model.setStatus(report.getStatus());
-                    model.setStaffID(report.getWorkingDate().getStaff().getId());
-                    model.setStaffName(report.getWorkingDate().getStaff().getFullName());
                     model.setContractID(report.getWorkingDate().getContractDetail().getContract().getId());
                     model.setTimeWorking(report.getWorkingDate().getContractDetail().getTimeWorking());
+
+                    WorkingDate workingDate = report.getWorkingDate();
+                    if(workingDate != null){
+                        com.example.thanhhoa.dtos.ContractModels.ShowWorkingDateModel showWorkingDateModel = new com.example.thanhhoa.dtos.ContractModels.ShowWorkingDateModel();
+                        showWorkingDateModel.setId(workingDate.getId());
+                        showWorkingDateModel.setWorkingDate(workingDate.getWorkingDate());
+                        showWorkingDateModel.setIsReported(workingDate.getIsReported());
+                        showWorkingDateModel.setStatus(workingDate.getStatus());
+                    }
+
+                    ServiceType serviceType = report.getWorkingDate().getContractDetail().getServiceType();
+                    if(serviceType != null){
+                        com.example.thanhhoa.dtos.ContractModels.ShowServiceTypeModel showServiceTypeModel = new com.example.thanhhoa.dtos.ContractModels.ShowServiceTypeModel();
+                        showServiceTypeModel.setId(serviceType.getId());
+                        showServiceTypeModel.setTypeName(serviceType.getName());
+                        showServiceTypeModel.setTypeSize(serviceType.getSize());
+                        showServiceTypeModel.setTypeUnit(serviceType.getUnit());
+                        showServiceTypeModel.setTypePercentage(serviceType.getPercentage());
+                        showServiceTypeModel.setTypeApplyDate(serviceType.getApplyDate());
+                    }
+
+                    com.example.thanhhoa.entities.Service service = report.getWorkingDate().getContractDetail().getServiceType().getService();
+                    if(service != null){
+                        com.example.thanhhoa.dtos.ContractModels.ShowServiceModel showServiceModel = new com.example.thanhhoa.dtos.ContractModels.ShowServiceModel();
+                        showServiceModel.setId(service.getId());
+                        showServiceModel.setDescription(service.getDescription());
+                        showServiceModel.setName(service.getName());
+                        showServiceModel.setAtHome(service.getAtHome());
+                    }
+
+                    tblAccount customer = report.getCustomer();
+                    if(customer != null){
+                        ShowCustomerModel showCustomerModel = new ShowCustomerModel();
+                        showCustomerModel.setId(customer.getId());
+                        showCustomerModel.setAddress(customer.getAddress());
+                        showCustomerModel.setEmail(customer.getEmail());
+                        showCustomerModel.setPhone(customer.getPhone());
+                        showCustomerModel.setFullName(customer.getFullName());
+                        showCustomerModel.setAvatar(customer.getAvatar());
+                    }
+
+                    tblAccount staff = report.getWorkingDate().getStaff();
+                    if(staff != null){
+                        ShowStaffModel showStaffModel = new ShowStaffModel();
+                        showStaffModel.setId(staff.getId());
+                        showStaffModel.setAddress(staff.getAddress());
+                        showStaffModel.setEmail(staff.getEmail());
+                        showStaffModel.setPhone(staff.getPhone());
+                        showStaffModel.setFullName(staff.getFullName());
+                        showStaffModel.setAvatar(staff.getAvatar());
+                    }
+
                     model.setTotalPage(totalPage);
                     return model;
                 }
