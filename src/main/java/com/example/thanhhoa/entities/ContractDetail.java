@@ -38,21 +38,21 @@ public class ContractDetail implements Serializable {
     @Column
     private String plantStatus;
 
-    @ManyToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "contract_id")
     private Contract contract;
 
-    @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY, mappedBy = "contractDetail")
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "contractDetail")
     private List<WorkingDate> workingDateList;
 
-    @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY, mappedBy = "contractDetail")
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "contractDetail")
     private List<PlantStatusIMG> plantStatusIMGList;
 
-    @ManyToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "service_type_id")
     private ServiceType serviceType;
 
-    @ManyToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "service_pack_id")
     private ServicePack servicePack;
 }

@@ -23,7 +23,7 @@ public class ContractIMG implements Serializable {
     @Column(nullable = false)
     private String imgURL;
 
-    @ManyToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "contract_id")
     private Contract contract;
 }

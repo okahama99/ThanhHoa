@@ -80,24 +80,24 @@ public class Contract implements Serializable {
     @Enumerated(EnumType.STRING)
     private Status status;
 
-    @ManyToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "store_id")
     private Store store;
 
-    @ManyToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "account_staff_id")
     private tblAccount staff;
 
-    @ManyToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "account_customer_id")
     private tblAccount customer;
 
-    @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY, mappedBy = "contract")
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "contract")
     private List<ContractDetail> contractDetailList;
 
-    @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY, mappedBy = "contract")
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "contract")
     private List<ContractIMG> contractIMGList;
 
-    @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY, mappedBy = "contract")
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "contract")
     private List<Transaction> transactionList;
 }
