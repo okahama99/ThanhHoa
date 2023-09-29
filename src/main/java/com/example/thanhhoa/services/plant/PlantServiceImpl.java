@@ -207,10 +207,15 @@ public class PlantServiceImpl implements PlantService {
         plantPrice.setPlant(plant);
         plantPrice.setStatus(Status.ACTIVE);
 
-        if(plant.getPlantIMGList() != null){
-            for(PlantIMG image : plant.getPlantIMGList()) {
-                image.setPlant(null);
-                plantIMGRepository.save(image);
+        if(plant.getPlantIMGList()  != null){
+            List<String> plantIMGID = new ArrayList<>();
+            for(PlantIMG plantIMG : plant.getPlantIMGList()) {
+                plantIMGID.add(plantIMG.getId());
+            }
+            for(String id : plantIMGID) {
+                PlantIMG plantIMG = plantIMGRepository.getById(id);
+                plantIMG.setPlant(null);
+                plantIMGRepository.saveAndFlush(plantIMG);
             }
         }
 
@@ -307,14 +312,17 @@ public class PlantServiceImpl implements PlantService {
                 plantPrice.setPlant(plant);
                 plantPrice.setStatus(Status.ACTIVE);
                 plantPriceRepository.save(plantPrice);
-
-                plant.getPlantPriceList().add(plantPrice);
             }
 
             if(plant.getPlantIMGList()  != null){
-                for(PlantIMG image : plant.getPlantIMGList()) {
-                    image.setPlant(null);
-                    plantIMGRepository.save(image);
+                List<String> plantIMGID = new ArrayList<>();
+                for(PlantIMG plantIMG : plant.getPlantIMGList()) {
+                    plantIMGID.add(plantIMG.getId());
+                }
+                for(String id : plantIMGID) {
+                    PlantIMG plantIMG = plantIMGRepository.getById(id);
+                    plantIMG.setPlant(null);
+                    plantIMGRepository.saveAndFlush(plantIMG);
                 }
             }
 

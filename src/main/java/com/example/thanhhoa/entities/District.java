@@ -17,7 +17,7 @@ public class District implements Serializable {
     @Column(nullable = false, length = 50)
     private String districtName;
 
-    @ManyToOne(cascade = { CascadeType.MERGE, CascadeType.PERSIST , CascadeType.DETACH, CascadeType.REFRESH}, fetch = FetchType.LAZY)
+    @ManyToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     @JoinColumn(name = "province_id")
     private Province province;
 }

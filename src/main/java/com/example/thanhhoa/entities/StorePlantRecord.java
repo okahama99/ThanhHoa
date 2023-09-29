@@ -29,7 +29,7 @@ public class StorePlantRecord implements Serializable {
     @Column
     private String reason;
 
-    @ManyToOne(cascade = { CascadeType.MERGE, CascadeType.PERSIST , CascadeType.DETACH, CascadeType.REFRESH}, fetch = FetchType.LAZY)
+    @ManyToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     @JoinColumn(name = "store_plant_id")
     private StorePlant storePlant;
 }

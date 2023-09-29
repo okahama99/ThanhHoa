@@ -26,6 +26,6 @@ public class DistancePrice implements Serializable {
     @Enumerated(EnumType.STRING)
     private Status status;
 
-    @OneToMany(cascade = { CascadeType.MERGE, CascadeType.PERSIST , CascadeType.DETACH, CascadeType.REFRESH}, fetch = FetchType.LAZY, mappedBy = "distancePrice")
+    @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY, mappedBy = "distancePrice")
     private List<tblOrder> tblOrderList;
 }

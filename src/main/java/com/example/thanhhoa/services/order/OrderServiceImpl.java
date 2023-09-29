@@ -403,6 +403,7 @@ public class OrderServiceImpl implements OrderService {
                     order.setReceiptIMG(receiptIMG);
                 }
                 order.setProgressStatus(Status.RECEIVED);
+                order.setIsPaid(true);
                 order.setReceivedDate(LocalDateTime.now(ZoneId.of("Asia/Ho_Chi_Minh")));
                 action = "nhận hàng";
             } else {
