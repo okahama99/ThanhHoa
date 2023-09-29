@@ -80,7 +80,7 @@ public class CategoryServiceImpl implements CategoryService{
     }
 
     @Override
-    public String create(String name) {
+    public String create(String name, Status status) {
         Category checkExisted = categoryRepository.findByName(name);
         if(checkExisted != null){
             return "Đã tồn tại Category với Tên là : " + name + ".";
@@ -93,7 +93,7 @@ public class CategoryServiceImpl implements CategoryService{
             category.setId(util.createIDFromLastID("C", 1, lastCategory.getId()));
         }
         category.setName(name);
-        category.setStatus(Status.INACTIVE);
+        category.setStatus(status);
         categoryRepository.save(category);
         return "Tạo thành công.";
     }

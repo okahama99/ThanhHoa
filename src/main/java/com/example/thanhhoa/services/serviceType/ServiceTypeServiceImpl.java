@@ -52,7 +52,7 @@ public class ServiceTypeServiceImpl implements ServiceTypeService {
         serviceType.setUnit(createServiceTypeModel.getUnit());
         serviceType.setPercentage(createServiceTypeModel.getPercentage());
         serviceType.setApplyDate(LocalDateTime.now(ZoneId.of("Asia/Ho_Chi_Minh")));
-        serviceType.setStatus(Status.ACTIVE);
+        serviceType.setStatus(Status.valueOf(createServiceTypeModel.getStatus()));
         serviceType.setService(service);
         serviceTypeRepository.save(serviceType);
         return "Tạo thành công.";

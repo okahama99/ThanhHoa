@@ -64,6 +64,20 @@ public class ServiceController {
         return ResponseEntity.badRequest().body(result);
     }
 
+    @PutMapping(value = "/v2/activeService", produces = "application/json;charset=UTF-8")
+    public ResponseEntity<Object> activeService(@RequestParam String serviceID,
+                                                HttpServletRequest request) throws Exception {
+        String roleName = jwtUtil.getRoleNameFromRequest(request);
+        if(!roleName.equalsIgnoreCase("Owner") && !roleName.equalsIgnoreCase("Manager")) {
+            throw new ResponseStatusException(HttpStatus.FORBIDDEN, "-----------------------------------Người dùng không có quyền truy cập---------------------------");
+        }
+        String result = serviceService.activeService(serviceID);
+        if(result.equals("Chỉnh sửa thành công.")) {
+            return ResponseEntity.ok().body(result);
+        }
+        return ResponseEntity.badRequest().body(result);
+    }
+
     @DeleteMapping(value = "/{serviceID}", produces = "application/json;charset=UTF-8")
     public ResponseEntity<Object> deleteService(@PathVariable(name = "serviceID") String serviceID,
                                                 HttpServletRequest request) {

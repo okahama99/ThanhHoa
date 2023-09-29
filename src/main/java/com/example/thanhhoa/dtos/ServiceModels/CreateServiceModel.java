@@ -15,6 +15,7 @@ public class CreateServiceModel implements Serializable {
     private String name;
     private Double price;
     private String description;
+    private String status;
     private List<CreateServiceTypeModel> createServiceTypeModel;
     @Nullable
     private List<String> listURL;

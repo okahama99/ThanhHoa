@@ -1244,6 +1244,7 @@ public class Util {
                     model.setEndDate(detail.getEndDate());
                     model.setExpectedEndDate(detail.getExpectedEndDate());
                     model.setPlantStatus(detail.getPlantStatus());
+                    model.setPlantName(detail.getPlantName());
 
                     List<ShowPlantStatusIMGModel> plantStatusIMGModelList = new ArrayList<>();
                     if(detail.getPlantStatusIMGList() != null && !detail.getPlantStatusIMGList().isEmpty()){

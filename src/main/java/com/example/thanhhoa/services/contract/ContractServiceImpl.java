@@ -170,6 +170,7 @@ public class ContractServiceImpl implements ContractService {
                 model.setStartDate(detail.getStartDate());
                 model.setExpectedEndDate(detail.getExpectedEndDate());
                 model.setPlantStatus(detail.getPlantStatus());
+                model.setPlantName(detail.getPlantName());
                 model.setPrice(detail.getPrice());
 
                 List<ShowPlantStatusIMGModel> plantStatusIMGModelList = new ArrayList<>();
@@ -378,6 +379,7 @@ public class ContractServiceImpl implements ContractService {
             detail.setContract(contract);
             detail.setServicePack(servicePack);
             detail.setServiceType(serviceType);
+            detail.setPlantName(model.getPlantName());
             contractDetailRepository.save(detail);
         }
 
@@ -479,6 +481,7 @@ public class ContractServiceImpl implements ContractService {
             detail.setContract(contract);
             detail.setServicePack(servicePack);
             detail.setServiceType(serviceType);
+            detail.setPlantName(model.getPlantName());
             contractDetailRepository.save(detail);
         }
 
@@ -568,6 +571,7 @@ public class ContractServiceImpl implements ContractService {
         detail.setServiceType(serviceType);
         detail.setServicePack(servicePack);
         detail.setPlantStatus(updateContractDetailModel.getPlantStatus());
+        detail.setPlantName(updateContractDetailModel.getPlantName());
         contractDetailRepository.save(detail);
 
         Contract contract = detail.getContract();
@@ -1014,6 +1018,7 @@ public class ContractServiceImpl implements ContractService {
             model.setEndDate(detail.getEndDate());
             model.setStartDate(detail.getStartDate());
             model.setExpectedEndDate(detail.getExpectedEndDate());
+            model.setPlantName(detail.getPlantName());
             model.setPlantStatus(detail.getPlantStatus());
             model.setPrice(detail.getPrice());
 
@@ -1164,6 +1169,7 @@ public class ContractServiceImpl implements ContractService {
             model.setEndDate(detail.getEndDate());
             model.setStartDate(detail.getStartDate());
             model.setExpectedEndDate(detail.getExpectedEndDate());
+            model.setPlantName(detail.getPlantName());
             model.setPlantStatus(detail.getPlantStatus());
             model.setPrice(detail.getPrice());
 

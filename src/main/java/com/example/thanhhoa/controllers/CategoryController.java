@@ -2,6 +2,7 @@ package com.example.thanhhoa.controllers;
 
 import com.example.thanhhoa.dtos.CategoryModels.ShowCategoryModel;
 import com.example.thanhhoa.enums.SearchType;
+import com.example.thanhhoa.enums.Status;
 import com.example.thanhhoa.services.category.CategoryService;
 import com.example.thanhhoa.utils.JwtUtil;
 import com.example.thanhhoa.utils.Util;
@@ -75,12 +76,13 @@ public class CategoryController {
 
     @PostMapping(produces = "application/json;charset=UTF-8")
     public ResponseEntity<Object> create(@RequestParam String name,
+                                         @RequestParam String status,
                                          HttpServletRequest request) throws Exception {
         String roleName = jwtUtil.getRoleNameFromRequest(request);
         if(!roleName.equalsIgnoreCase("Owner") && !roleName.equalsIgnoreCase("Manager")) {
             throw new ResponseStatusException(HttpStatus.FORBIDDEN, "-----------------------------------Người dùng không có quyền truy cập---------------------------");
         }
-        String result = categoryService.create(name);
+        String result = categoryService.create(name, Status.valueOf(status));
         if(result.equals("Tạo thành công.")) {
             return ResponseEntity.ok().body(result);
         }

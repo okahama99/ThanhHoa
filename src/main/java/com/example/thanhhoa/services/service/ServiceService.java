@@ -15,6 +15,8 @@ public interface ServiceService {
 
     String updateService(UpdateServiceModel updateServiceModel) throws Exception;
 
+    String activeService(String serviceID) throws Exception;
+
     String deleteService(String serviceID);
 
     List<ShowServiceModel> getAllService(Pageable pageable);

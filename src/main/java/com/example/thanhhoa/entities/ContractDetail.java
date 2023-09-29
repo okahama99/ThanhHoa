@@ -36,6 +36,9 @@ public class ContractDetail implements Serializable {
     private Double price;
 
     @Column
+    private String plantName;
+
+    @Column
     private String plantStatus;
 
     @ManyToOne(cascade = { CascadeType.MERGE, CascadeType.PERSIST , CascadeType.DETACH, CascadeType.REFRESH}, fetch = FetchType.LAZY)

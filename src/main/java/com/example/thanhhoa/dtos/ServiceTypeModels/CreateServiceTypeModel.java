@@ -13,6 +13,7 @@ public class CreateServiceTypeModel implements Serializable {
     private String size;
     private String unit;
     private Integer percentage;
+    private String status;
     @Nullable
     private String serviceID;
 }

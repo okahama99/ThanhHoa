@@ -68,7 +68,7 @@ public class ServiceServiceImpl implements ServiceService {
 
         service.setName(createServiceModel.getName());
         service.setDescription(createServiceModel.getDescription());
-        service.setStatus(Status.INACTIVE);
+        service.setStatus(Status.valueOf(createServiceModel.getStatus()));
         service.setAtHome(createServiceModel.getAtHome());
 
         if(service.getServiceIMGList() != null){
@@ -190,6 +190,18 @@ public class ServiceServiceImpl implements ServiceService {
             serviceIMG.setImgURL(imageURL);
             serviceIMGRepository.save(serviceIMG);
         }
+        serviceRepository.save(service);
+        return "Chỉnh sửa thành công.";
+    }
+
+    @Override
+    public String activeService(String serviceID) throws Exception {
+        Service service = serviceRepository.findByIdAndStatus(serviceID, Status.INACTIVE);
+        if(service == null) {
+            return "Không tìm thấy Service với ID là " + serviceID + " đang INACTIVE.";
+        }
+
+        service.setStatus(Status.ACTIVE);
         serviceRepository.save(service);
         return "Chỉnh sửa thành công.";
     }

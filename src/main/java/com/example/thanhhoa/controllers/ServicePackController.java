@@ -1,6 +1,7 @@
 package com.example.thanhhoa.controllers;
 
 import com.example.thanhhoa.dtos.ServicePackModels.ShowServicePackModel;
+import com.example.thanhhoa.enums.Status;
 import com.example.thanhhoa.services.servicePack.ServicePackService;
 import com.example.thanhhoa.utils.JwtUtil;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -33,12 +34,13 @@ public class ServicePackController {
     public ResponseEntity<Object> create(@RequestParam String range,
                                          @RequestParam String unit,
                                          @RequestParam Integer percentage,
+                                         @RequestParam String status,
                                          HttpServletRequest request) throws Exception {
         String roleName = jwtUtil.getRoleNameFromRequest(request);
         if(!roleName.equalsIgnoreCase("Owner") && !roleName.equalsIgnoreCase("Manager")) {
             throw new ResponseStatusException(HttpStatus.FORBIDDEN, "-----------------------------------Người dùng không có quyền truy cập---------------------------");
         }
-        String result = servicePackService.create(range, unit, percentage);
+        String result = servicePackService.create(range, unit, percentage, Status.valueOf(status));
         if(result.equals("Tạo thành công.")) {
             return ResponseEntity.ok().body(result);
         }
