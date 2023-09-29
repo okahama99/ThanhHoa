@@ -73,8 +73,8 @@ public class ReportServiceImpl implements ReportService {
             model.setTimeWorking(report.getWorkingDate().getContractDetail().getTimeWorking());
 
             WorkingDate workingDate = report.getWorkingDate();
+            ShowWorkingDateModel showWorkingDateModel = new ShowWorkingDateModel();
             if(workingDate != null){
-                ShowWorkingDateModel showWorkingDateModel = new ShowWorkingDateModel();
                 showWorkingDateModel.setId(workingDate.getId());
                 showWorkingDateModel.setWorkingDate(workingDate.getWorkingDate());
                 showWorkingDateModel.setIsReported(workingDate.getIsReported());
@@ -82,8 +82,8 @@ public class ReportServiceImpl implements ReportService {
             }
 
             ServiceType serviceType = report.getWorkingDate().getContractDetail().getServiceType();
+            ShowServiceTypeModel showServiceTypeModel = new ShowServiceTypeModel();
             if(serviceType != null){
-                ShowServiceTypeModel showServiceTypeModel = new ShowServiceTypeModel();
                 showServiceTypeModel.setId(serviceType.getId());
                 showServiceTypeModel.setTypeName(serviceType.getName());
                 showServiceTypeModel.setTypeSize(serviceType.getSize());
@@ -93,8 +93,8 @@ public class ReportServiceImpl implements ReportService {
             }
 
             com.example.thanhhoa.entities.Service service = report.getWorkingDate().getContractDetail().getServiceType().getService();
+            ShowServiceModel showServiceModel = new ShowServiceModel();
             if(service != null){
-                ShowServiceModel showServiceModel = new ShowServiceModel();
                 showServiceModel.setId(service.getId());
                 showServiceModel.setDescription(service.getDescription());
                 showServiceModel.setName(service.getName());
@@ -102,8 +102,8 @@ public class ReportServiceImpl implements ReportService {
             }
 
             tblAccount customer = report.getCustomer();
+            ShowCustomerModel showCustomerModel = new ShowCustomerModel();
             if(customer != null){
-                ShowCustomerModel showCustomerModel = new ShowCustomerModel();
                 showCustomerModel.setId(customer.getId());
                 showCustomerModel.setAddress(customer.getAddress());
                 showCustomerModel.setEmail(customer.getEmail());
@@ -113,8 +113,8 @@ public class ReportServiceImpl implements ReportService {
             }
 
             tblAccount staff = report.getWorkingDate().getStaff();
+            ShowStaffModel showStaffModel = new ShowStaffModel();
             if(staff != null){
-                ShowStaffModel showStaffModel = new ShowStaffModel();
                 showStaffModel.setId(staff.getId());
                 showStaffModel.setAddress(staff.getAddress());
                 showStaffModel.setEmail(staff.getEmail());
@@ -123,6 +123,11 @@ public class ReportServiceImpl implements ReportService {
                 showStaffModel.setAvatar(staff.getAvatar());
             }
 
+            model.setShowServiceModel(showServiceModel);
+            model.setShowServiceTypeModel(showServiceTypeModel);
+            model.setShowWorkingDateModel(showWorkingDateModel);
+            model.setShowCustomerModel(showCustomerModel);
+            model.setShowStaffModel(showStaffModel);
             modelList.add(model);
         }
         return modelList;
@@ -147,8 +152,8 @@ public class ReportServiceImpl implements ReportService {
             model.setTimeWorking(report.getWorkingDate().getContractDetail().getTimeWorking());
 
             WorkingDate workingDate = report.getWorkingDate();
+            ShowWorkingDateModel showWorkingDateModel = new ShowWorkingDateModel();
             if(workingDate != null){
-                ShowWorkingDateModel showWorkingDateModel = new ShowWorkingDateModel();
                 showWorkingDateModel.setId(workingDate.getId());
                 showWorkingDateModel.setWorkingDate(workingDate.getWorkingDate());
                 showWorkingDateModel.setIsReported(workingDate.getIsReported());
@@ -156,8 +161,8 @@ public class ReportServiceImpl implements ReportService {
             }
 
             ServiceType serviceType = report.getWorkingDate().getContractDetail().getServiceType();
+            ShowServiceTypeModel showServiceTypeModel = new ShowServiceTypeModel();
             if(serviceType != null){
-                ShowServiceTypeModel showServiceTypeModel = new ShowServiceTypeModel();
                 showServiceTypeModel.setId(serviceType.getId());
                 showServiceTypeModel.setTypeName(serviceType.getName());
                 showServiceTypeModel.setTypeSize(serviceType.getSize());
@@ -167,8 +172,8 @@ public class ReportServiceImpl implements ReportService {
             }
 
             com.example.thanhhoa.entities.Service service = report.getWorkingDate().getContractDetail().getServiceType().getService();
+            ShowServiceModel showServiceModel = new ShowServiceModel();
             if(service != null){
-                ShowServiceModel showServiceModel = new ShowServiceModel();
                 showServiceModel.setId(service.getId());
                 showServiceModel.setDescription(service.getDescription());
                 showServiceModel.setName(service.getName());
@@ -176,8 +181,8 @@ public class ReportServiceImpl implements ReportService {
             }
 
             tblAccount customer = report.getCustomer();
+            ShowCustomerModel showCustomerModel = new ShowCustomerModel();
             if(customer != null){
-                ShowCustomerModel showCustomerModel = new ShowCustomerModel();
                 showCustomerModel.setId(customer.getId());
                 showCustomerModel.setAddress(customer.getAddress());
                 showCustomerModel.setEmail(customer.getEmail());
@@ -187,8 +192,8 @@ public class ReportServiceImpl implements ReportService {
             }
 
             tblAccount staff = report.getWorkingDate().getStaff();
+            ShowStaffModel showStaffModel = new ShowStaffModel();
             if(staff != null){
-                ShowStaffModel showStaffModel = new ShowStaffModel();
                 showStaffModel.setId(staff.getId());
                 showStaffModel.setAddress(staff.getAddress());
                 showStaffModel.setEmail(staff.getEmail());
@@ -197,6 +202,11 @@ public class ReportServiceImpl implements ReportService {
                 showStaffModel.setAvatar(staff.getAvatar());
             }
 
+            model.setShowServiceModel(showServiceModel);
+            model.setShowServiceTypeModel(showServiceTypeModel);
+            model.setShowWorkingDateModel(showWorkingDateModel);
+            model.setShowCustomerModel(showCustomerModel);
+            model.setShowStaffModel(showStaffModel);
             modelList.add(model);
         }
         return modelList;

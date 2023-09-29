@@ -1709,8 +1709,8 @@ public class Util {
                     model.setTimeWorking(report.getWorkingDate().getContractDetail().getTimeWorking());
 
                     WorkingDate workingDate = report.getWorkingDate();
+                    com.example.thanhhoa.dtos.ContractModels.ShowWorkingDateModel showWorkingDateModel = new com.example.thanhhoa.dtos.ContractModels.ShowWorkingDateModel();
                     if(workingDate != null){
-                        com.example.thanhhoa.dtos.ContractModels.ShowWorkingDateModel showWorkingDateModel = new com.example.thanhhoa.dtos.ContractModels.ShowWorkingDateModel();
                         showWorkingDateModel.setId(workingDate.getId());
                         showWorkingDateModel.setWorkingDate(workingDate.getWorkingDate());
                         showWorkingDateModel.setIsReported(workingDate.getIsReported());
@@ -1718,8 +1718,8 @@ public class Util {
                     }
 
                     ServiceType serviceType = report.getWorkingDate().getContractDetail().getServiceType();
+                    com.example.thanhhoa.dtos.ContractModels.ShowServiceTypeModel showServiceTypeModel = new com.example.thanhhoa.dtos.ContractModels.ShowServiceTypeModel();
                     if(serviceType != null){
-                        com.example.thanhhoa.dtos.ContractModels.ShowServiceTypeModel showServiceTypeModel = new com.example.thanhhoa.dtos.ContractModels.ShowServiceTypeModel();
                         showServiceTypeModel.setId(serviceType.getId());
                         showServiceTypeModel.setTypeName(serviceType.getName());
                         showServiceTypeModel.setTypeSize(serviceType.getSize());
@@ -1729,8 +1729,8 @@ public class Util {
                     }
 
                     com.example.thanhhoa.entities.Service service = report.getWorkingDate().getContractDetail().getServiceType().getService();
+                    com.example.thanhhoa.dtos.ContractModels.ShowServiceModel showServiceModel = new com.example.thanhhoa.dtos.ContractModels.ShowServiceModel();
                     if(service != null){
-                        com.example.thanhhoa.dtos.ContractModels.ShowServiceModel showServiceModel = new com.example.thanhhoa.dtos.ContractModels.ShowServiceModel();
                         showServiceModel.setId(service.getId());
                         showServiceModel.setDescription(service.getDescription());
                         showServiceModel.setName(service.getName());
@@ -1738,8 +1738,8 @@ public class Util {
                     }
 
                     tblAccount customer = report.getCustomer();
+                    ShowCustomerModel showCustomerModel = new ShowCustomerModel();
                     if(customer != null){
-                        ShowCustomerModel showCustomerModel = new ShowCustomerModel();
                         showCustomerModel.setId(customer.getId());
                         showCustomerModel.setAddress(customer.getAddress());
                         showCustomerModel.setEmail(customer.getEmail());
@@ -1749,8 +1749,8 @@ public class Util {
                     }
 
                     tblAccount staff = report.getWorkingDate().getStaff();
+                    ShowStaffModel showStaffModel = new ShowStaffModel();
                     if(staff != null){
-                        ShowStaffModel showStaffModel = new ShowStaffModel();
                         showStaffModel.setId(staff.getId());
                         showStaffModel.setAddress(staff.getAddress());
                         showStaffModel.setEmail(staff.getEmail());
@@ -1759,7 +1759,11 @@ public class Util {
                         showStaffModel.setAvatar(staff.getAvatar());
                     }
 
-                    model.setTotalPage(totalPage);
+                    model.setShowServiceModel(showServiceModel);
+                    model.setShowServiceTypeModel(showServiceTypeModel);
+                    model.setShowWorkingDateModel(showWorkingDateModel);
+                    model.setShowCustomerModel(showCustomerModel);
+                    model.setShowStaffModel(showStaffModel);
                     return model;
                 }
 
