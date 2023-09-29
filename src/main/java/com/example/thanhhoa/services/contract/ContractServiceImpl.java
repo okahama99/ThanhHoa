@@ -547,7 +547,8 @@ public class ContractServiceImpl implements ContractService {
         ContractDetail detail = checkExisted.get();
         if(detail.getPlantStatusIMGList() != null){
             for(PlantStatusIMG image : detail.getPlantStatusIMGList()) {
-                plantStatusIMGRepository.deleteById(image.getId());
+                image.setContractDetail(null);
+                plantStatusIMGRepository.save(image);
             }
         }
 
@@ -709,7 +710,8 @@ public class ContractServiceImpl implements ContractService {
 
         if(contract.getContractIMGList() != null){
             for(ContractIMG image : contract.getContractIMGList()) {
-                contractIMGRepository.deleteById(image.getId());
+                image.setContract(null);
+                contractIMGRepository.save(image);
             }
         }
 

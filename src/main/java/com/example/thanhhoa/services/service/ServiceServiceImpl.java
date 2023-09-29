@@ -73,7 +73,8 @@ public class ServiceServiceImpl implements ServiceService {
 
         if(service.getServiceIMGList() != null){
             for(ServiceIMG image : service.getServiceIMGList()) {
-                serviceIMGRepository.deleteById(image.getId());
+                image.setService(null);
+                serviceIMGRepository.save(image);
             }
         }
 
@@ -174,7 +175,8 @@ public class ServiceServiceImpl implements ServiceService {
 
         if(service.getServiceIMGList() != null){
             for(ServiceIMG image : service.getServiceIMGList()) {
-                serviceIMGRepository.deleteById(image.getId());
+                image.setService(null);
+                serviceIMGRepository.save(image);
             }
         }
 

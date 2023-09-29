@@ -209,7 +209,8 @@ public class PlantServiceImpl implements PlantService {
 
         if(plant.getPlantIMGList() != null){
             for(PlantIMG image : plant.getPlantIMGList()) {
-                plantIMGRepository.deleteById(image.getId());
+                image.setPlant(null);
+                plantIMGRepository.save(image);
             }
         }
 
@@ -312,7 +313,8 @@ public class PlantServiceImpl implements PlantService {
 
             if(plant.getPlantIMGList()  != null){
                 for(PlantIMG image : plant.getPlantIMGList()) {
-                    plantIMGRepository.deleteById(image.getId());
+                    image.setPlant(null);
+                    plantIMGRepository.save(image);
                 }
             }
 
@@ -370,7 +372,8 @@ public class PlantServiceImpl implements PlantService {
         Optional<PlantIMG> checkExisted = plantIMGRepository.findById(id);
         if(checkExisted != null) {
             PlantIMG plantIMG = checkExisted.get();
-            plantIMGRepository.deleteById(plantIMG.getId());
+            plantIMG.setPlant(null);
+            plantIMGRepository.save(plantIMG);
             return "Xóa thành công.";
         }
         return "Không tìm thấy PlantIMG với ID là " + id + ".";

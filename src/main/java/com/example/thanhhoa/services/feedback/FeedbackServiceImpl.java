@@ -104,7 +104,8 @@ public class FeedbackServiceImpl implements FeedbackService {
 
         if(orderFeedback.getOrderFeedbackIMGList() != null){
             for(OrderFeedbackIMG image : orderFeedback.getOrderFeedbackIMGList()) {
-                orderFeedbackIMGRepository.deleteById(image.getId());
+                image.setOrderFeedback(null);
+                orderFeedbackIMGRepository.save(image);
             }
         }
 
@@ -147,7 +148,8 @@ public class FeedbackServiceImpl implements FeedbackService {
 
         if(orderFeedback.getOrderFeedbackIMGList() != null){
             for(OrderFeedbackIMG image : orderFeedback.getOrderFeedbackIMGList()) {
-                orderFeedbackIMGRepository.deleteById(image.getId());
+                image.setOrderFeedback(null);
+                orderFeedbackIMGRepository.save(image);
             }
         }
 
