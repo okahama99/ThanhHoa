@@ -732,7 +732,7 @@ public class ContractServiceImpl implements ContractService {
 
         contract.setStatus(Status.SIGNED);
         contract.setIsSigned(true);
-        contract.setStartedDate(LocalDateTime.now(ZoneId.of("Asia/Ho_Chi_Minh")));
+//        contract.setStartedDate(LocalDateTime.now(ZoneId.of("Asia/Ho_Chi_Minh")));
         contract.setSignedDate(LocalDateTime.now(ZoneId.of("Asia/Ho_Chi_Minh")));
 
         contractRepository.save(contract);
