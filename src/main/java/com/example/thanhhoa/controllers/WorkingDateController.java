@@ -102,12 +102,13 @@ public class WorkingDateController {
 
     @PutMapping(value = "/v2/swapWorkingDate", produces = "application/json;charset=UTF-8")
     public ResponseEntity<Object> swapWorkingDate(@RequestParam String workingDateID,
+                                                  @RequestParam String date,
                                                   HttpServletRequest request) {
         String roleName = jwtUtil.getRoleNameFromRequest(request);
         if(!roleName.equalsIgnoreCase("Owner") && !roleName.equalsIgnoreCase("Manager")) {
             throw new ResponseStatusException(HttpStatus.FORBIDDEN, "-----------------------------------Người dùng không có quyền truy cập---------------------------");
         }
-        String result = workingDateService.swapWorkingDate(workingDateID);
+        String result = workingDateService.swapWorkingDate(workingDateID, date);
         if(result.equals("Chỉnh sửa thành công.")) {
             return ResponseEntity.ok().body(result);
         } else {
