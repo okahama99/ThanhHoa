@@ -12,7 +12,7 @@ import java.util.List;
 public interface WorkingDateRepository extends JpaRepository<WorkingDate, String> {
     List<WorkingDate> findByContractDetail_IdOrderByWorkingDateDesc(String contractDetailID);
 
-    List<WorkingDate> findByStaff_Id(Long staffID);
+    List<WorkingDate> findByStaff_IdAndWorkingDateBetween(Long staffID, LocalDateTime from, LocalDateTime to);
 
     List<WorkingDate> findByWorkingDateBefore(LocalDateTime date);
 

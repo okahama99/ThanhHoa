@@ -164,13 +164,25 @@ public class WorkingDateController {
 
     @GetMapping(value = "/v2/getByStaffID", produces = "application/json;charset=UTF-8")
     public ResponseEntity<Object> getByStaffID(@RequestParam Long userID,
+                                               @RequestParam String from,
+                                               @RequestParam String to,
                                                HttpServletRequest request) {
         String roleName = jwtUtil.getRoleNameFromRequest(request);
         if(!roleName.equalsIgnoreCase("Staff") && !roleName.equalsIgnoreCase("Manager")
                 && !roleName.equalsIgnoreCase("Owner")) {
             throw new ResponseStatusException(HttpStatus.FORBIDDEN, "-----------------------------------Người dùng không có quyền truy cập---------------------------");
         }
-        return ResponseEntity.ok().body(workingDateService.getByStaffID(userID));
+
+        LocalDateTime fromDate = util.isLocalDateTimeValid(from);
+        if(fromDate == null) {
+            return ResponseEntity.badRequest().body("Nhập theo khuôn được định sẵn yyyy-MM-dd, ví dụ : 2021-12-21");
+        }
+        LocalDateTime toDate = util.isLocalDateTimeValid(to);
+        if(toDate == null) {
+            return ResponseEntity.badRequest().body("Nhập theo khuôn được định sẵn yyyy-MM-dd, ví dụ : 2021-12-21");
+        }
+
+        return ResponseEntity.ok().body(workingDateService.getByStaffID(userID, fromDate, toDate));
     }
 
     @GetMapping(value = "/v2/getByWorkingDate", produces = "application/json;charset=UTF-8")

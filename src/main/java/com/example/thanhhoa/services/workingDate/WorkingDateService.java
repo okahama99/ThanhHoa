@@ -32,7 +32,7 @@ public interface WorkingDateService {
 
     List<ShowWorkingDateModel> getByWorkingDateInRange(Long userID, LocalDateTime from, LocalDateTime to, String roleName);
 
-    List<ShowWorkingDateModel> getByStaffID(Long userID);
+    List<ShowWorkingDateModel> getByStaffID(Long userID, LocalDateTime from, LocalDateTime to);
 
     String generateWorkingSchedule(String contractDetailID);
 

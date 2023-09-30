@@ -541,9 +541,9 @@ public class WorkingDateServiceImpl implements WorkingDateService {
     }
 
     @Override
-    public List<ShowWorkingDateModel> getByStaffID(Long userID) {
+    public List<ShowWorkingDateModel> getByStaffID(Long userID, LocalDateTime from, LocalDateTime to) {
         List<ShowWorkingDateModel> modelList = new ArrayList<>();
-        List<WorkingDate> workingDateList = workingDateRepository.findByStaff_Id(userID);
+        List<WorkingDate> workingDateList = workingDateRepository.findByStaff_IdAndWorkingDateBetween(userID, from, to);
         if(workingDateList == null) {
             return null;
         }
