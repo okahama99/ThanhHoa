@@ -192,6 +192,7 @@ public class WorkingDateServiceImpl implements WorkingDateService {
         model.setStartDate(detail.getStartDate());
         model.setExpectedEndDate(detail.getExpectedEndDate());
         model.setPlantStatus(detail.getPlantStatus());
+        model.setPlantName(detail.getPlantName());
 
         List<ShowPlantStatusIMGModel> plantStatusIMGModelList = new ArrayList<>();
         if(detail.getPlantStatusIMGList() != null && !detail.getPlantStatusIMGList().isEmpty()) {
@@ -277,6 +278,7 @@ public class WorkingDateServiceImpl implements WorkingDateService {
                 model.setStartDate(detail.getStartDate());
                 model.setExpectedEndDate(detail.getExpectedEndDate());
                 model.setPlantStatus(detail.getPlantStatus());
+                model.setPlantName(detail.getPlantName());
 
                 List<ShowPlantStatusIMGModel> plantStatusIMGModelList = new ArrayList<>();
                 if(detail.getPlantStatusIMGList() != null && !detail.getPlantStatusIMGList().isEmpty()) {
@@ -368,6 +370,7 @@ public class WorkingDateServiceImpl implements WorkingDateService {
             model.setStartDate(detail.getStartDate());
             model.setExpectedEndDate(detail.getExpectedEndDate());
             model.setPlantStatus(detail.getPlantStatus());
+            model.setPlantName(detail.getPlantName());
 
             List<ShowPlantStatusIMGModel> plantStatusIMGModelList = new ArrayList<>();
             if(detail.getPlantStatusIMGList() != null && !detail.getPlantStatusIMGList().isEmpty()) {
@@ -471,6 +474,7 @@ public class WorkingDateServiceImpl implements WorkingDateService {
                 model.setStartDate(detail.getStartDate());
                 model.setExpectedEndDate(detail.getExpectedEndDate());
                 model.setPlantStatus(detail.getPlantStatus());
+                model.setPlantName(detail.getPlantName());
 
                 List<ShowPlantStatusIMGModel> plantStatusIMGModelList = new ArrayList<>();
                 if(detail.getPlantStatusIMGList() != null && !detail.getPlantStatusIMGList().isEmpty()) {
@@ -563,6 +567,7 @@ public class WorkingDateServiceImpl implements WorkingDateService {
             model.setStartDate(detail.getStartDate());
             model.setExpectedEndDate(detail.getExpectedEndDate());
             model.setPlantStatus(detail.getPlantStatus());
+            model.setPlantName(detail.getPlantName());
 
             List<ShowPlantStatusIMGModel> plantStatusIMGModelList = new ArrayList<>();
             if(detail.getPlantStatusIMGList() != null && !detail.getPlantStatusIMGList().isEmpty()) {
