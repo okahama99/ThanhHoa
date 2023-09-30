@@ -13,7 +13,6 @@ import com.example.thanhhoa.entities.PlantCategory;
 import com.example.thanhhoa.entities.PlantIMG;
 import com.example.thanhhoa.entities.PlantPrice;
 import com.example.thanhhoa.entities.PlantShipPrice;
-import com.example.thanhhoa.entities.ServiceIMG;
 import com.example.thanhhoa.entities.StorePlant;
 import com.example.thanhhoa.enums.Status;
 import com.example.thanhhoa.repositories.CategoryRepository;
@@ -207,7 +206,7 @@ public class PlantServiceImpl implements PlantService {
         plantPrice.setPlant(plant);
         plantPrice.setStatus(Status.ACTIVE);
 
-        if(plant.getPlantIMGList()  != null){
+        if(plant.getPlantIMGList() != null) {
             List<String> plantIMGID = new ArrayList<>();
             for(PlantIMG plantIMG : plant.getPlantIMGList()) {
                 plantIMGID.add(plantIMG.getId());
@@ -314,7 +313,7 @@ public class PlantServiceImpl implements PlantService {
                 plantPriceRepository.save(plantPrice);
             }
 
-            if(plant.getPlantIMGList()  != null){
+            if(plant.getPlantIMGList() != null) {
                 List<String> plantIMGID = new ArrayList<>();
                 for(PlantIMG plantIMG : plant.getPlantIMGList()) {
                     plantIMGID.add(plantIMG.getId());

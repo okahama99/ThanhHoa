@@ -3,7 +3,6 @@ package com.example.thanhhoa.services.category;
 import com.example.thanhhoa.dtos.CategoryModels.ShowCategoryModel;
 import com.example.thanhhoa.entities.Category;
 import com.example.thanhhoa.entities.PlantCategory;
-import com.example.thanhhoa.entities.Role;
 import com.example.thanhhoa.enums.Status;
 import com.example.thanhhoa.repositories.CategoryRepository;
 import com.example.thanhhoa.repositories.PlantCategoryRepository;
@@ -19,7 +18,7 @@ import java.util.List;
 import java.util.Optional;
 
 @Service
-public class CategoryServiceImpl implements CategoryService{
+public class CategoryServiceImpl implements CategoryService {
 
     @Autowired
     private Util util;
@@ -39,7 +38,7 @@ public class CategoryServiceImpl implements CategoryService{
     @Override
     public ShowCategoryModel getCategoryByID(String categoryID) {
         Optional<Category> searchResult = categoryRepository.findById(categoryID);
-        if(searchResult == null){
+        if(searchResult == null) {
             return null;
         }
         Category category = searchResult.get();
@@ -53,7 +52,7 @@ public class CategoryServiceImpl implements CategoryService{
     @Override
     public List<ShowCategoryModel> getCategory() {
         List<Category> list = categoryRepository.findAll();
-        if(list == null){
+        if(list == null) {
             return null;
         }
         List<ShowCategoryModel> listModel = new ArrayList<>();
@@ -82,7 +81,7 @@ public class CategoryServiceImpl implements CategoryService{
     @Override
     public String create(String name, Status status) {
         Category checkExisted = categoryRepository.findByName(name);
-        if(checkExisted != null){
+        if(checkExisted != null) {
             return "Đã tồn tại Category với Tên là : " + name + ".";
         }
         Category category = new Category();
@@ -101,11 +100,11 @@ public class CategoryServiceImpl implements CategoryService{
     @Override
     public String update(String id, String name) {
         Optional<Category> checkExistedID = categoryRepository.findById(id);
-        if(checkExistedID == null){
+        if(checkExistedID == null) {
             return "Không tìm thấy Category với ID là : " + id + ".";
         }
         Category checkExistedName = categoryRepository.findByName(name);
-        if(checkExistedName != null){
+        if(checkExistedName != null) {
             return "Đã tồn tại Category với Tên là : " + name + ".";
         }
         Category category = checkExistedID.get();
@@ -117,14 +116,14 @@ public class CategoryServiceImpl implements CategoryService{
     @Override
     public String delete(String id) {
         Optional<Category> checkExistedID = categoryRepository.findByIdAndStatus(id, Status.ACTIVE);
-        if(checkExistedID == null){
+        if(checkExistedID == null) {
             return "Không tìm thấy Category với ID là : " + id + ".";
         }
         Category category = checkExistedID.get();
         category.setStatus(Status.INACTIVE);
 
         List<PlantCategory> plantCategoryList = plantCategoryRepository.findByCategory_IdAndStatus(id, Status.ACTIVE);
-        if(plantCategoryList != null && !plantCategoryList.isEmpty()){
+        if(plantCategoryList != null && !plantCategoryList.isEmpty()) {
             for(PlantCategory plantCategory : plantCategoryList) {
                 plantCategory.setStatus(Status.INACTIVE);
                 plantCategoryRepository.save(plantCategory);

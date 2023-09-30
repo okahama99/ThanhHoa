@@ -127,7 +127,7 @@ public class ContractServiceImpl implements ContractService {
         Page<Contract> pagingResult;
         if(type.equalsIgnoreCase("REQUEST")) {
             pagingResult = contractPagingRepository.findByStatusOrStatusOrStatus(Status.WAITING, Status.CONFIRMING, Status.APPROVED, pageable);
-        }else if(type.equalsIgnoreCase("CANCEL")) {
+        } else if(type.equalsIgnoreCase("CANCEL")) {
             pagingResult = contractPagingRepository.findByStatusOrStatusOrStatus(Status.DENIED, Status.CUSTOMERCANCELED, Status.STAFFCANCELED, pageable);
         } else {
             pagingResult = contractPagingRepository.findByStatusNotAndStatusNotAndStatusNotAndStatusNotAndStatusNotAndStatusNot(Status.WAITING, Status.CONFIRMING, Status.APPROVED, Status.DENIED, Status.CUSTOMERCANCELED, Status.STAFFCANCELED, pageable);
@@ -174,8 +174,8 @@ public class ContractServiceImpl implements ContractService {
                 model.setPrice(detail.getPrice());
 
                 List<ShowPlantStatusIMGModel> plantStatusIMGModelList = new ArrayList<>();
-                if(detail.getPlantStatusIMGList() != null && !detail.getPlantStatusIMGList().isEmpty()){
-                    for(PlantStatusIMG plantStatusIMG : detail.getPlantStatusIMGList()){
+                if(detail.getPlantStatusIMGList() != null && !detail.getPlantStatusIMGList().isEmpty()) {
+                    for(PlantStatusIMG plantStatusIMG : detail.getPlantStatusIMGList()) {
                         ShowPlantStatusIMGModel plantStatusIMGModel = new ShowPlantStatusIMGModel();
                         plantStatusIMGModel.setId(plantStatusIMG.getId());
                         plantStatusIMGModel.setImgUrl(plantStatusIMG.getImgURL());
@@ -545,7 +545,7 @@ public class ContractServiceImpl implements ContractService {
 
 
         ContractDetail detail = checkExisted.get();
-        if(detail.getPlantStatusIMGList() != null){
+        if(detail.getPlantStatusIMGList() != null) {
             for(PlantStatusIMG image : detail.getPlantStatusIMGList()) {
                 image.setContractDetail(null);
                 plantStatusIMGRepository.save(image);
@@ -627,14 +627,14 @@ public class ContractServiceImpl implements ContractService {
         contract.setStaff(newStaff);
 
         List<WorkingDate> workingDateList = new ArrayList<>();
-        for(ContractDetail detail : contract.getContractDetailList()){
-            for(WorkingDate workingDate : detail.getWorkingDateList()){
+        for(ContractDetail detail : contract.getContractDetailList()) {
+            for(WorkingDate workingDate : detail.getWorkingDateList()) {
                 workingDateList.add(workingDate);
             }
         }
 
         for(WorkingDate workingDate : workingDateList) {
-            if(workingDate.getStatus().toString().equalsIgnoreCase("WAITING")){
+            if(workingDate.getStatus().toString().equalsIgnoreCase("WAITING")) {
                 workingDate.setStaff(newStaff);
                 workingDateRepository.save(workingDate);
             }
@@ -646,10 +646,10 @@ public class ContractServiceImpl implements ContractService {
         try {
             util.createNotification("CONTRACT", oldStaff, contract.getId(), "giao cho nhân viên khác");
             util.createNotification("CONTRACT", newStaff, contract.getId(), "giao cho bạn");
-            if(contract.getCustomer() != null){
+            if(contract.getCustomer() != null) {
                 util.createNotification("CONTRACT", contract.getCustomer(), contract.getId(), "giao cho nhân viên khác");
             }
-        }catch(Exception e){
+        } catch(Exception e) {
             e.toString();
         }
 
@@ -708,7 +708,7 @@ public class ContractServiceImpl implements ContractService {
             return "Không tìm thấy URL trong List";
         }
 
-        if(contract.getContractIMGList() != null){
+        if(contract.getContractIMGList() != null) {
             for(ContractIMG image : contract.getContractIMGList()) {
                 image.setContract(null);
                 contractIMGRepository.save(image);
@@ -1027,8 +1027,8 @@ public class ContractServiceImpl implements ContractService {
             model.setPrice(detail.getPrice());
 
             List<ShowPlantStatusIMGModel> plantStatusIMGModelList = new ArrayList<>();
-            if(detail.getPlantStatusIMGList() != null && !detail.getPlantStatusIMGList().isEmpty()){
-                for(PlantStatusIMG plantStatusIMG : detail.getPlantStatusIMGList()){
+            if(detail.getPlantStatusIMGList() != null && !detail.getPlantStatusIMGList().isEmpty()) {
+                for(PlantStatusIMG plantStatusIMG : detail.getPlantStatusIMGList()) {
                     ShowPlantStatusIMGModel plantStatusIMGModel = new ShowPlantStatusIMGModel();
                     plantStatusIMGModel.setId(plantStatusIMG.getId());
                     plantStatusIMGModel.setImgUrl(plantStatusIMG.getImgURL());
@@ -1178,8 +1178,8 @@ public class ContractServiceImpl implements ContractService {
             model.setPrice(detail.getPrice());
 
             List<ShowPlantStatusIMGModel> plantStatusIMGModelList = new ArrayList<>();
-            if(detail.getPlantStatusIMGList() != null && !detail.getPlantStatusIMGList().isEmpty()){
-                for(PlantStatusIMG plantStatusIMG : detail.getPlantStatusIMGList()){
+            if(detail.getPlantStatusIMGList() != null && !detail.getPlantStatusIMGList().isEmpty()) {
+                for(PlantStatusIMG plantStatusIMG : detail.getPlantStatusIMGList()) {
                     ShowPlantStatusIMGModel plantStatusIMGModel = new ShowPlantStatusIMGModel();
                     plantStatusIMGModel.setId(plantStatusIMG.getId());
                     plantStatusIMGModel.setImgUrl(plantStatusIMG.getImgURL());

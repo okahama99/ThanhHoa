@@ -102,7 +102,7 @@ public class FeedbackServiceImpl implements FeedbackService {
         orderDetail.get().setIsFeedback(true);
         orderFeedback.setOrderDetail(orderDetail.get());
 
-        if(orderFeedback.getOrderFeedbackIMGList() != null){
+        if(orderFeedback.getOrderFeedbackIMGList() != null) {
             for(OrderFeedbackIMG image : orderFeedback.getOrderFeedbackIMGList()) {
                 image.setOrderFeedback(null);
                 orderFeedbackIMGRepository.save(image);
@@ -146,7 +146,7 @@ public class FeedbackServiceImpl implements FeedbackService {
         orderDetail.get().setIsFeedback(true);
         orderFeedback.setOrderDetail(orderDetail.get());
 
-        if(orderFeedback.getOrderFeedbackIMGList() != null){
+        if(orderFeedback.getOrderFeedbackIMGList() != null) {
             for(OrderFeedbackIMG image : orderFeedback.getOrderFeedbackIMGList()) {
                 image.setOrderFeedback(null);
                 orderFeedbackIMGRepository.save(image);
@@ -466,9 +466,9 @@ public class FeedbackServiceImpl implements FeedbackService {
     @Override
     public List<ShowOrderFeedbackModel> getOrderFeedbackByPlantID(String plantID, String role, Pageable pageable) {
         Page<OrderFeedback> pagingResult;
-        if(role.equalsIgnoreCase("CUSTOMER") || role.equalsIgnoreCase("STAFF")){
+        if(role.equalsIgnoreCase("CUSTOMER") || role.equalsIgnoreCase("STAFF")) {
             pagingResult = orderFeedbackPagingRepository.findByPlant_IdAndStatus(plantID, Status.ACTIVE, pageable);
-        }else{
+        } else {
             pagingResult = orderFeedbackPagingRepository.findByPlant_Id(plantID, pageable);
         }
 
@@ -478,9 +478,9 @@ public class FeedbackServiceImpl implements FeedbackService {
     @Override
     public List<ShowOrderFeedbackModel> getOrderFeedbackByRatingID(String ratingID, String role, Pageable pageable) {
         Page<OrderFeedback> pagingResult;
-        if(role.equalsIgnoreCase("CUSTOMER") || role.equalsIgnoreCase("STAFF")){
+        if(role.equalsIgnoreCase("CUSTOMER") || role.equalsIgnoreCase("STAFF")) {
             pagingResult = orderFeedbackPagingRepository.findByRating_IdAndStatus(ratingID, Status.ACTIVE, pageable);
-        }else{
+        } else {
             pagingResult = orderFeedbackPagingRepository.findByRating_Id(ratingID, pageable);
         }
         return util.orderFeedbackPagingConverter(pagingResult, pageable);

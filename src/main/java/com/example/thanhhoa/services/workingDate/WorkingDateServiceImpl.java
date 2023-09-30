@@ -17,7 +17,6 @@ import com.example.thanhhoa.utils.Util;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import java.time.DayOfWeek;
@@ -28,7 +27,6 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
-import java.util.Locale;
 import java.util.Optional;
 
 @Service
@@ -196,8 +194,8 @@ public class WorkingDateServiceImpl implements WorkingDateService {
         model.setPlantStatus(detail.getPlantStatus());
 
         List<ShowPlantStatusIMGModel> plantStatusIMGModelList = new ArrayList<>();
-        if(detail.getPlantStatusIMGList() != null && !detail.getPlantStatusIMGList().isEmpty()){
-            for(PlantStatusIMG plantStatusIMG : detail.getPlantStatusIMGList()){
+        if(detail.getPlantStatusIMGList() != null && !detail.getPlantStatusIMGList().isEmpty()) {
+            for(PlantStatusIMG plantStatusIMG : detail.getPlantStatusIMGList()) {
                 ShowPlantStatusIMGModel plantStatusIMGModel = new ShowPlantStatusIMGModel();
                 plantStatusIMGModel.setId(plantStatusIMG.getId());
                 plantStatusIMGModel.setImgUrl(plantStatusIMG.getImgURL());
@@ -281,8 +279,8 @@ public class WorkingDateServiceImpl implements WorkingDateService {
                 model.setPlantStatus(detail.getPlantStatus());
 
                 List<ShowPlantStatusIMGModel> plantStatusIMGModelList = new ArrayList<>();
-                if(detail.getPlantStatusIMGList() != null && !detail.getPlantStatusIMGList().isEmpty()){
-                    for(PlantStatusIMG plantStatusIMG : detail.getPlantStatusIMGList()){
+                if(detail.getPlantStatusIMGList() != null && !detail.getPlantStatusIMGList().isEmpty()) {
+                    for(PlantStatusIMG plantStatusIMG : detail.getPlantStatusIMGList()) {
                         ShowPlantStatusIMGModel plantStatusIMGModel = new ShowPlantStatusIMGModel();
                         plantStatusIMGModel.setId(plantStatusIMG.getId());
                         plantStatusIMGModel.setImgUrl(plantStatusIMG.getImgURL());
@@ -372,8 +370,8 @@ public class WorkingDateServiceImpl implements WorkingDateService {
             model.setPlantStatus(detail.getPlantStatus());
 
             List<ShowPlantStatusIMGModel> plantStatusIMGModelList = new ArrayList<>();
-            if(detail.getPlantStatusIMGList() != null && !detail.getPlantStatusIMGList().isEmpty()){
-                for(PlantStatusIMG plantStatusIMG : detail.getPlantStatusIMGList()){
+            if(detail.getPlantStatusIMGList() != null && !detail.getPlantStatusIMGList().isEmpty()) {
+                for(PlantStatusIMG plantStatusIMG : detail.getPlantStatusIMGList()) {
                     ShowPlantStatusIMGModel plantStatusIMGModel = new ShowPlantStatusIMGModel();
                     plantStatusIMGModel.setId(plantStatusIMG.getId());
                     plantStatusIMGModel.setImgUrl(plantStatusIMG.getImgURL());
@@ -475,8 +473,8 @@ public class WorkingDateServiceImpl implements WorkingDateService {
                 model.setPlantStatus(detail.getPlantStatus());
 
                 List<ShowPlantStatusIMGModel> plantStatusIMGModelList = new ArrayList<>();
-                if(detail.getPlantStatusIMGList() != null && !detail.getPlantStatusIMGList().isEmpty()){
-                    for(PlantStatusIMG plantStatusIMG : detail.getPlantStatusIMGList()){
+                if(detail.getPlantStatusIMGList() != null && !detail.getPlantStatusIMGList().isEmpty()) {
+                    for(PlantStatusIMG plantStatusIMG : detail.getPlantStatusIMGList()) {
                         ShowPlantStatusIMGModel plantStatusIMGModel = new ShowPlantStatusIMGModel();
                         plantStatusIMGModel.setId(plantStatusIMG.getId());
                         plantStatusIMGModel.setImgUrl(plantStatusIMG.getImgURL());
@@ -567,8 +565,8 @@ public class WorkingDateServiceImpl implements WorkingDateService {
             model.setPlantStatus(detail.getPlantStatus());
 
             List<ShowPlantStatusIMGModel> plantStatusIMGModelList = new ArrayList<>();
-            if(detail.getPlantStatusIMGList() != null && !detail.getPlantStatusIMGList().isEmpty()){
-                for(PlantStatusIMG plantStatusIMG : detail.getPlantStatusIMGList()){
+            if(detail.getPlantStatusIMGList() != null && !detail.getPlantStatusIMGList().isEmpty()) {
+                for(PlantStatusIMG plantStatusIMG : detail.getPlantStatusIMGList()) {
                     ShowPlantStatusIMGModel plantStatusIMGModel = new ShowPlantStatusIMGModel();
                     plantStatusIMGModel.setId(plantStatusIMG.getId());
                     plantStatusIMGModel.setImgUrl(plantStatusIMG.getImgURL());
@@ -725,10 +723,10 @@ public class WorkingDateServiceImpl implements WorkingDateService {
         return "Tạo thành công.";
     }
 
-    public void checkWorkingDate(){
+    public void checkWorkingDate() {
         List<WorkingDate> list = workingDateRepository.findByWorkingDateBefore(LocalDateTime.now(ZoneId.of("Asia/Ho_Chi_Minh")));
-        if(list == null || list.isEmpty()){
-        }else{
+        if(list == null || list.isEmpty()) {
+        } else {
             for(WorkingDate workingDate : list) {
                 workingDate.setStatus(Status.MISSED);
                 workingDateRepository.save(workingDate);

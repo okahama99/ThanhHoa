@@ -14,7 +14,7 @@ import java.util.List;
 import java.util.Optional;
 
 @Service
-public class PlantPriceServiceImpl implements PlantPriceService{
+public class PlantPriceServiceImpl implements PlantPriceService {
 
     @Autowired
     private Util util;
@@ -39,7 +39,7 @@ public class PlantPriceServiceImpl implements PlantPriceService{
     @Override
     public ShowPlantPriceModel getByID(String plantPriceID) {
         Optional<PlantPrice> checkExisted = plantPriceRepository.findById(plantPriceID);
-        if(checkExisted == null){
+        if(checkExisted == null) {
             return null;
         }
         PlantPrice plantPrice = checkExisted.get();

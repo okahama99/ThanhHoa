@@ -49,7 +49,7 @@ public class CartServiceImpl implements CartService {
             model.setPlantName(cart.getPlant().getName());
             model.setQuantity(cart.getQuantity());
             model.setPlantPrice(newestPrice.getPrice());
-            if(cart.getPlant().getPlantIMGList().size() != 0){
+            if(cart.getPlant().getPlantIMGList().size() != 0) {
                 model.setImage(cart.getPlant().getPlantIMGList().get(0).getImgURL());
             }
             model.setShipPrice(cart.getPlant().getPlantShipPrice().getPricePerPlant());
@@ -61,9 +61,9 @@ public class CartServiceImpl implements CartService {
     @Override
     public String addToCart(AddCartModel addCartModel, Long userID) {
         Cart checkExisted = cartRepository.findByPlant_IdAndAccount_Id(addCartModel.getPlantID(), userID);
-        if(checkExisted != null){
-            checkExisted.setQuantity(checkExisted.getQuantity()+addCartModel.getQuantity());
-            if(checkExisted.getQuantity()<0){
+        if(checkExisted != null) {
+            checkExisted.setQuantity(checkExisted.getQuantity() + addCartModel.getQuantity());
+            if(checkExisted.getQuantity() < 0) {
                 checkExisted.setQuantity(0);
             }
             cartRepository.save(checkExisted);
@@ -79,7 +79,7 @@ public class CartServiceImpl implements CartService {
             cart.setId(util.createIDFromLastID("CART", 4, lastCart.getId()));
         }
         cart.setQuantity(addCartModel.getQuantity());
-        if(addCartModel.getQuantity()<0){
+        if(addCartModel.getQuantity() < 0) {
             cart.setQuantity(0);
         }
         cart.setAccount(account);
@@ -91,7 +91,7 @@ public class CartServiceImpl implements CartService {
     @Override
     public String deleteItem(String cartID, Long userID) {
         Cart cart = cartRepository.findByAccount_IdAndId(userID, cartID);
-        if(cart == null){
+        if(cart == null) {
             return "Không tồn tại Cart nào với UserID " + userID + " và CartID " + cartID + ".";
         }
         cart.setQuantity(0);
@@ -102,10 +102,10 @@ public class CartServiceImpl implements CartService {
     @Override
     public String updateItem(UpdateCartModel updateCartModel, Long userID) {
         Cart cart = cartRepository.findByAccount_IdAndId(userID, updateCartModel.getCartID());
-        if(cart == null){
+        if(cart == null) {
             return "Không tồn tại Cart nào với UserID " + userID + " và CartID " + updateCartModel.getCartID() + ".";
         }
-        if(updateCartModel.getQuantity() < 0){
+        if(updateCartModel.getQuantity() < 0) {
             return "Quantity phải lớn hơn 0.";
         }
         cart.setQuantity(updateCartModel.getQuantity());

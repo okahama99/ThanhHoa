@@ -13,7 +13,6 @@ import com.example.thanhhoa.dtos.OrderModels.UpdateOrderModel;
 import com.example.thanhhoa.entities.Cart;
 import com.example.thanhhoa.entities.DistancePrice;
 import com.example.thanhhoa.entities.OrderDetail;
-import com.example.thanhhoa.entities.Plant;
 import com.example.thanhhoa.entities.PlantPrice;
 import com.example.thanhhoa.entities.Store;
 import com.example.thanhhoa.entities.StoreEmployee;
