@@ -47,8 +47,8 @@ public class WorkingDateServiceImpl implements WorkingDateService {
 
     @Override
     public String swapWorkingDate(String workingDateID, String date) {
-        WorkingDate oldWorkingDate = workingDateRepository.findByIdAndStatus(workingDateID, Status.WAITING);
-        if(oldWorkingDate == null) {
+        WorkingDate workingDate = workingDateRepository.findByIdAndStatus(workingDateID, Status.WAITING);
+        if(workingDate == null) {
             return "Không tìm thấy WorkingDate với ID là " + workingDateID + " có status WAITING.";
         }
 
@@ -57,21 +57,10 @@ public class WorkingDateServiceImpl implements WorkingDateService {
             return "Nhập theo khuôn được định sẵn yyyy-MM-dd, ví dụ : 2021-12-21";
         }
 
-        WorkingDate workingDate = new WorkingDate();
-        WorkingDate lastWorkingDate = workingDateRepository.findFirstByOrderByIdDesc();
-        if(lastWorkingDate == null) {
-            workingDate.setId(util.createNewID("WD"));
-        } else {
-            workingDate.setId(util.createIDFromLastID("WD", 2, lastWorkingDate.getId()));
-        }
         workingDate.setWorkingDate(wDate);
         workingDate.setStatus(Status.WAITING);
         workingDate.setIsReported(false);
-        workingDate.setContractDetail(oldWorkingDate.getContractDetail());
-        workingDate.setStaff(oldWorkingDate.getStaff());
         workingDateRepository.save(workingDate);
-
-        workingDateRepository.deleteById(workingDateID);
         return "Chỉnh sửa thành công.";
     }
 
