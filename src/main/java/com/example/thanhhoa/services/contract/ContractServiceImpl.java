@@ -821,12 +821,11 @@ public class ContractServiceImpl implements ContractService {
     }
 
     @Override
-    public ShowContractModel getByID(String contractID) {
-        Optional<Contract> checkExisted = contractRepository.findById(contractID);
-        if(checkExisted == null) {
+    public ShowContractModel getByID(String contractID, Long userID) {
+        Contract contract = contractRepository.findByIdAndStaff_Id(contractID, userID);
+        if(contract == null) {
             return null;
         }
-        Contract contract = checkExisted.get();
         List<ContractIMG> imgList = contractIMGRepository.findByContract_Id(contract.getId());
         List<ShowContractIMGModel> imgModelList = new ArrayList<>();
         if(imgList != null) {

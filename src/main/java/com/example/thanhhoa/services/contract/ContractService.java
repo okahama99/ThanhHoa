@@ -52,7 +52,7 @@ public interface ContractService {
 
     List<ShowContractModel> getWaitingContract(Pageable pageable);
 
-    ShowContractModel getByID(String contractID);
+    ShowContractModel getByID(String contractID, Long userID);
 
     ShowContractModel getByContractDetailID(String contractDetailID);
 

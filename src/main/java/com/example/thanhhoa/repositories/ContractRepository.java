@@ -13,6 +13,8 @@ import java.util.List;
 public interface ContractRepository extends JpaRepository<Contract, String> {
     List<Contract> findByCustomer_Id(Long customerID);
 
+    Contract findByIdAndStaff_Id(String id, Long customerID);
+
     List<Contract> findByStaff_Id(Long staffID);
 
     Contract findFirstByOrderByIdDesc();

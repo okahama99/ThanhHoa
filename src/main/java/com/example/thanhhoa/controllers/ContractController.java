@@ -407,7 +407,8 @@ public class ContractController {
     List<ShowContractModel> getWaitingContract(@RequestParam int pageNo,
                                                @RequestParam int pageSize,
                                                @RequestParam(required = false, defaultValue = "ID") SearchType.CONTRACT sortBy,
-                                               @RequestParam(required = false, defaultValue = "true") Boolean sortAsc, HttpServletRequest request) {
+                                               @RequestParam(required = false, defaultValue = "true") Boolean sortAsc,
+                                               HttpServletRequest request) {
         String roleName = jwtUtil.getRoleNameFromRequest(request);
         if(!roleName.equalsIgnoreCase("Manager")) {
             throw new ResponseStatusException(HttpStatus.FORBIDDEN, "-----------------------------------Người dùng không có quyền truy cập---------------------------");
@@ -438,8 +439,9 @@ public class ContractController {
 
     @GetMapping(value = "/getByID", produces = "application/json;charset=UTF-8")
     public @ResponseBody
-    ShowContractModel getByID(@RequestParam String contractID) {
-        ShowContractModel model = contractService.getByID(contractID);
+    ShowContractModel getByID(@RequestParam String contractID,
+                              HttpServletRequest request) {
+        ShowContractModel model = contractService.getByID(contractID, jwtUtil.getUserIDFromRequest(request));
         return model;
     }
 
